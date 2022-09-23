@@ -2,6 +2,10 @@
 /robots*.txt
 /.bash_history
 
+#Google AUTH files
+/*.html
+/.well-known
+
 #Админка
 /admin/config*.php
 
