@@ -1,0 +1,8 @@
+.tabs_module, .single_module { display: none; }
+.mtype { background: #fff; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 2px; }
+.bycat, .byman, .bytag { display: none; }
+.row.bycat { padding-top: 10px; }
+.mt10 { margin-top: 10px; }
+.btn[disabled="disabled"] {
+	cursor: not-allowed;
+}

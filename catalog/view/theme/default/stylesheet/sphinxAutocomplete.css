@@ -1,0 +1,56 @@
+#search input.no-bottom-borders {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.sphinxsearch {
+	display: none;
+	width: 100%;
+	position: absolute;
+	top: 40px;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-top: 0;
+	z-index: 10;
+}
+
+.sphinxsearch a {
+	cursor: pointer;
+}
+
+.sphinxsearch .categories span,
+.sphinxsearch .products span {
+	display: block;
+	padding: 10px 0;
+	font-size: 14px;
+	text-align: center;
+	background: #02a8f3 !important;
+	color:#FFF;
+}
+
+.sphinxsearch a {
+	display: block;
+	padding: 5px;
+	color: initial;
+	line-height: 40px;
+	border-bottom: 1px solid #e9e9e9;
+}
+
+.sphinxsearch .categories a {
+	text-transform: uppercase;
+	text-indent: 10px;
+}
+
+.sphinxsearch a:hover {
+	color: #2196c2;
+}
+
+.sphinxsearch a img {
+	float: left;
+	margin: 0 10px 0 0;
+}
+
+.sphinx-viewall {
+	font-weight: bold;
+	text-align: center;
+}

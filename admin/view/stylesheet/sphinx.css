@@ -1,0 +1,128 @@
+.tab-content > .active {
+	display: block;
+}
+
+th { 
+	text-align: left;
+	padding: 15px 0 0 15px; 
+}
+
+.settings-title {
+	background: #336699;
+}
+
+.settings-header {
+	background: #EEEEEE;
+}
+
+.errors {
+	color: #FF0000;
+	display: block;
+	font-size: 12px;
+	font-weight: normal;
+	margin: 5px 0 0 10px;
+	float: left;
+}
+
+.hiddenTab {
+	display: none !important;
+}
+
+.title {
+	font: normal 13px / 1.5 Verdana, Geneva, sans-serif;
+	color: #fff;
+}
+
+.explanation {
+	font: normal 11px / 1.5 Verdana, Geneva, sans-serif;
+	color: #333;
+}
+
+.note {
+	font: normal 11px / 1.5 Verdana, Geneva, sans-serif;
+}
+
+.weights-wrap {
+	display: inline-block;
+	width: 110px;
+}
+
+.weights-field {
+	width: 50px;
+}
+
+.valign {
+	vertical-align: top;
+}
+
+.gen-suggestions-info {
+	margin-left: 10px;
+	color: #009706;
+}
+
+a.button {
+	float: left;
+}
+
+a.button.disabled {
+	background: #B1B1B1;
+}
+
+.idx-generating-error {
+	clear: both;
+	display: block;
+	margin: 10px 0;
+}
+
+#suggestions .btn,
+#rtIndex .btn {
+	float: left;
+	margin: 0 0 10px;
+}
+
+#progressBar,
+#progressBarProducts,
+#progressBarCategories {
+	display: none;
+	width: 200px;
+	height: 35px;
+	position: relative;
+	float: left;
+	margin-left: 10px;
+	background: #ECECEC;
+	text-align: center;
+	line-height: 38px;
+	color: #bbb;
+	overflow: hidden;
+	border-radius: 5px;
+}
+#progressBar div,
+#progressBarProducts div,
+#progressBarCategories div {
+	display: block;
+	width: 0;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	color: #fff;
+	background-color: #1e91cf;
+}
+
+#loader,
+#loaderConfig,
+#loaderProducts,
+#loaderCategories {
+	margin: 8px 0 0 10px;
+}
+
+#tableProgress {
+	display: block;
+	float: left;
+	line-height: 25px;
+	margin: 0 10px;
+}
+
+input.form-control {
+	text-align: left !important;
+}

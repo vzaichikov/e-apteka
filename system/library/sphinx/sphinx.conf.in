@@ -1,0 +1,137 @@
+#
+# Minimal Sphinx configuration sample (clean, simple, functional)
+#
+
+source database
+{
+	type				= mysql
+	sql_host			= {{ sphinx_config_db_host }}
+	sql_user			= {{ sphinx_config_db_user }}
+	sql_pass			= {{ sphinx_config_db_pass }}
+	sql_db				= {{ sphinx_config_db_name }}
+	sql_port			= 3306
+	sql_query_pre 		= SET CHARACTER_SET_RESULTS=utf8
+	sql_query_pre 		= SET NAMES utf8
+}
+
+source main : database
+{
+
+    sql_query			= \
+		SELECT ((pd.language_id << 22) | pd.product_id) as pr_id, pd.product_id AS product_id_attr, pd.name as name, description, pm.name as manufacturer, p.manufacturer_id as manufacturer_id, model, sku, ean, jan, isbn, mpn, price, quantity, p.status AS status, pd.language_id as language_id, date_available, \
+		(SELECT AVG(r.rating) FROM {{ sphinx_config_db_table_prefix }}review r WHERE r.product_id = pd.product_id) as rating \
+		FROM {{ sphinx_config_db_table_prefix }}product p \
+		LEFT JOIN {{ sphinx_config_db_table_prefix }}product_description pd ON p.product_id = pd.product_id \
+		LEFT JOIN {{ sphinx_config_db_table_prefix }}manufacturer pm ON p.manufacturer_id = pm.manufacturer_id
+	
+	sql_attr_uint 		= product_id_attr
+	sql_field_string 	= name
+	sql_field_string 	= description
+	sql_field_string 	= model
+	sql_field_string 	= sku
+	sql_field_string 	= ean
+	sql_field_string 	= jan
+	sql_field_string 	= isbn
+	sql_field_string 	= mpn
+	sql_attr_float 	 	= price
+	sql_attr_uint 	 	= quantity
+	sql_attr_uint 	 	= status
+	sql_attr_uint 	 	= language_id
+	sql_attr_uint 		= manufacturer_id
+	sql_attr_timestamp 	= date_available
+	sql_attr_float 		= rating
+	sql_attr_multi      = uint categories_filter from query; \
+							SELECT ((cd.language_id << 22) | pc.product_id) as product_id, pc.category_id \
+							FROM {{ sphinx_config_db_table_prefix }}product_to_category pc \
+							LEFT JOIN {{ sphinx_config_db_table_prefix }}category c ON pc.category_id = c.category_id \
+							LEFT JOIN {{ sphinx_config_db_table_prefix }}category_description cd ON c.category_id = cd.category_id \
+							WHERE c.status=1;
+	
+	sql_attr_multi      = uint store_filter from query; \
+							SELECT ((pd.language_id << 22) | ps.product_id) as product_id, ps.store_id \
+							FROM {{ sphinx_config_db_table_prefix }}product_to_store ps \
+							LEFT JOIN {{ sphinx_config_db_table_prefix }}product_description pd ON ps.product_id = pd.product_id;
+							
+	sql_attr_multi      = uint product_attribute from query; \
+							SELECT ((pa.language_id << 22) | pa.product_id) as product_id, pa.attribute_id \
+							FROM {{ sphinx_config_db_table_prefix }}product_attribute pa;
+		
+	sql_query_info		= SELECT * FROM product_description WHERE product_id=$id
+}
+
+index main
+{
+	source			 	= main
+	path			 	= {{ sphinx_config_path_to_indexes }}main_idx
+	docinfo			 	= extern
+	charset_type     	= utf-8
+	min_word_len     	= 3
+	min_prefix_len      = 2
+	enable_star			= 1
+}
+
+source suggestions : database
+{
+    sql_query           = SELECT id, trigrams, freq, LENGTH(keyword) AS len, keyword FROM {{ sphinx_config_db_table_prefix }}sphinx_suggestions
+    sql_attr_uint       = freq
+    sql_attr_uint       = len
+    sql_attr_string     = keyword
+}
+
+index suggestions
+{
+    source              = suggestions
+    path                = {{ sphinx_config_path_to_indexes }}suggestions_idx
+    docinfo             = extern
+    charset_type        = utf-8
+	min_word_len        = 3
+}
+
+source categoryinfo : database
+{
+	sql_query        	= SELECT ((cd.language_id << 22) | cd.category_id) as cat_id, cd.name, c.status, cd.language_id as language_id \
+						  FROM {{ sphinx_config_db_table_prefix }}category_description cd \
+						  LEFT JOIN {{ sphinx_config_db_table_prefix }}category c ON cd.category_id = c.category_id
+	
+	sql_field_string    = name
+	sql_attr_uint       = status
+	sql_attr_uint 	 	= language_id
+	sql_attr_multi      = uint store_filter from query; \
+							SELECT ((cd.language_id << 22) | cs.category_id) as category_id, cs.store_id \
+							FROM {{ sphinx_config_db_table_prefix }}category_to_store cs \
+							LEFT JOIN {{ sphinx_config_db_table_prefix }}category c ON cs.category_id = c.category_id \
+							LEFT JOIN {{ sphinx_config_db_table_prefix }}category_description cd ON cs.category_id = cd.category_id \
+							WHERE c.status=1;
+}
+
+index categoryinfo
+{
+    source              = categoryinfo
+    path                = {{ sphinx_config_path_to_indexes }}categoryinfo_idx
+    docinfo             = extern
+    charset_type        = utf-8
+	min_word_len        = 3
+    min_prefix_len      = 2
+    enable_star         = 1
+}
+
+indexer
+{
+	mem_limit			= 32M
+}
+
+searchd
+{
+	listen				= 9312
+	listen				= 9306:mysql41
+	log					= {{ sphinx_config_path_to_log }}searchd.log
+	query_log			= {{ sphinx_config_path_to_log }}query.log
+
+	read_timeout		= 5
+	max_children		= 30
+	pid_file			= {{ sphinx_config_path_to_log }}searchd.pid
+	max_matches			= 10000
+	seamless_rotate		= 1
+	preopen_indexes		= 0
+	unlink_old			= 1
+}

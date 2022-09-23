@@ -1,0 +1,60 @@
+body{
+	font-family: 'PT Sans',Helvetica,sans-serif;
+	margin: 0;
+	padding: 0;
+	font-size: 14px;
+	background-color: #FFF;
+	background-image: url(/img/bg.gif);
+	background-position: left top;
+	background-repeat: repeat;
+	color: #2B2B2B;
+}
+
+.wrapper_img{
+	padding-top: 50px;
+	padding-bottom: 40px;
+}
+
+.error_logo_500{
+	float: left;
+}
+
+.error_500{
+	float: right;
+    font-size: 50px;
+    font-weight: bold;
+}
+
+.wrapper_white{
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	background-color: white;
+	text-align: center;
+}
+
+.wrapper_500{
+	background: url(/img/500_bg.png) 50% 50% no-repeat;
+}
+
+.text_500_KP{
+font-size: 20px;
+padding-top: 20px;
+}
+
+.text_500_KP span{
+    background-color: #e9eae9;
+    padding: 5px;
+}
+
+.text_500{
+font-style: italic;
+color: #ccc;
+border-top: 1px solid #ededed;
+font-size: 12px;
+padding-top: 5px;
+}
+
+@media (max-width: 480px) {
+	.error_500 {
+		font-size: 30px;
+	}
+}

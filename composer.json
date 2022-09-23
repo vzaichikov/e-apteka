@@ -1,0 +1,21 @@
+{
+    "require": {
+        "mailgun/mailgun-php": "^2.5",
+        "php-http/curl-client": "^1.7",
+        "guzzlehttp/psr7": "^1.4",
+		"jaybizzle/crawler-detect" :"^1.2",
+		"mobiledetect/mobiledetectlib": "^2.8",
+		"cijic/phpmorphy": "*.*",
+        "google/apiclient": "^2.8",
+        "google/apiclient-services": "^0.154.0",
+        "picqer/php-barcode-generator": "^0.3.0",
+		"milindsingh/validator": "dev-master",
+        "phpoffice/phpspreadsheet": "^1.12",
+        "elasticsearch/elasticsearch": "^7.16",
+        "doctrine/sql-formatter": "^1.1",
+        "kex15i10/ukrposhta": "^1.0",
+        "umpirsky/transliterator": "^0.1.0",
+        "wapmorgan/morphos": "^3.2",
+        "kwn/number-to-words": "^2.5"
+    }
+}

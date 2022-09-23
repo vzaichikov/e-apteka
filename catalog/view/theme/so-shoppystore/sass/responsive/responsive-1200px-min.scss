@@ -1,0 +1,10 @@
+@include breakpoint(lg){
+	.container{width:1200px;overflow: visible;}
+	
+	/*============HOME DEFAULT ==================*/
+	.layout-1.common-home .vertical .vertical-wrapper {
+		display: block !important;
+	}
+       
+	
+}

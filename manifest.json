@@ -1,0 +1,213 @@
+{
+    "name": "Аптека Гормональних Препаратів",
+    "short_name": "Моя Аптека",
+    "start_url": "https://e-apteka.com.ua/ua/",
+    "scope": "/",
+    "display": "standalone",
+    "lang": "uk-UA",
+    "orientation": "portrait",
+    
+	"categories": ["shopping", "lifestyle"],
+	"description": "Інтернет Аптека. Завжди великий вибір ліків, вакцин та косметики. Відправка по всій Україні. Швидка оплата онлайн.",
+	
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+
+    "related_applications": [
+  	{
+    	"platform": "play",
+    	"url": "https://play.google.com/store/apps/details?id=ua.com.eapteka.twa",
+    	"id": "ua.com.eapteka.twa"
+  	}
+	],
+
+
+    "prefer_related_applications": true,
+	
+    "gcm_sender_id": "482941778795",
+	
+	"shortcuts": [
+		{
+			"name": "Поточні акції",
+			"short_name": "Акції",
+			"description": "Подивитись всі акції",
+			"url": "https://e-apteka.com.ua/ua/promotions/",
+			"icons": [
+				{
+					"src": "/icons/96.png",
+					"sizes": "96x96",
+					"type": "image/png"
+					},
+				{
+					"src": "/icons/192.png",
+					"sizes": "192x192",
+					"type": "image/png"
+				},
+				{
+					"src": "/icons/512.png",
+					"sizes": "512x512",
+					"type": "image/png"
+				}
+			]
+		},
+		{
+			"name": "Розпродаж до -60%",
+			"short_name": "Розпродаж",
+			"description": "Подивитись всі товари зі знижкою",
+			"url": "https://e-apteka.com.ua/ua/specials/",
+			"icons": [
+				{
+					"src": "/icons/96.png",
+					"sizes": "96x96",
+					"type": "image/png"
+				},
+				{
+					"src": "/icons/192.png",
+					"sizes": "192x192",
+					"type": "image/png"
+				},
+				{
+					"src": "/icons/512.png",
+					"sizes": "512x512",
+					"type": "image/png"
+				}
+			]
+		},
+		{
+			"name": "Аптеки на мапі",
+			"short_name": "Аптеки",
+			"description": "Подивитись на аптечну мережу на мапі",
+			"url": "https://e-apteka.com.ua/ua/apteki/",
+			"icons": [
+				{
+					"src": "/icons/96.png",
+					"sizes": "96x96",
+					"type": "image/png"
+				},
+				{
+					"src": "/icons/192.png",
+					"sizes": "192x192",
+					"type": "image/png"
+				},
+				{
+					"src": "/icons/512.png",
+					"sizes": "512x512",
+					"type": "image/png"
+				}
+			]
+		},
+		{
+			"name": "Перейти до мого кабінету",
+			"short_name": "Кабінет",
+			"description": "Мої замовлення, історія покупок",
+			"url": "https://e-apteka.com.ua/ua/account/",
+			"icons": [
+				{
+					"src": "/icons/96.png",
+					"sizes": "96x96",
+					"type": "image/png"
+				},
+				{
+					"src": "/icons/192.png",
+					"sizes": "192x192",
+					"type": "image/png"
+				},
+				{
+					"src": "/icons/512.png",
+					"sizes": "512x512",
+					"type": "image/png"
+				}
+			]
+		}
+		
+	],
+	
+	
+    "icons": [
+		{
+            "src": "/icons/96.png",
+            "sizes": "96x96",
+            "type": "image/png",
+			"purpose": "any"
+		},
+		{
+            "src": "/icons/96.png",
+            "sizes": "96x96",
+            "type": "image/png",
+			"purpose": "any maskable"
+		},
+        {
+            "src": "/icons/192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+			"purpose": "any"
+		},
+		{
+            "src": "/icons/192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+			"purpose": "any maskable"
+		},
+        {
+            "src": "/icons/512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+			"purpose": "any"
+		},
+		{
+            "src": "/icons/512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+			"purpose": "any maskable"
+		},		
+		{
+            "src": "/icons/512-bw.png",
+            "sizes": "512x512",
+            "type": "image/png",
+			"purpose": "monochrome"
+		}
+	],
+	
+	"screenshots": [
+		{
+			"src": "/screenshots/001.jpg",
+			"type": "image/jpg",
+			"sizes": "1080x1920"
+		},
+		{
+			"src": "/screenshots/002.jpg",
+			"type": "image/jpg",
+			"sizes": "1080x1920"
+		},
+		{
+			"src": "/screenshots/003.jpg",
+			"type": "image/jpg",
+			"sizes": "1080x1920"
+		},
+		{
+			"src": "/screenshots/004.jpg",
+			"type": "image/jpg",
+			"sizes": "1080x1920"
+		},
+		{
+			"src": "/screenshots/005.jpg",
+			"type": "image/jpg",
+			"sizes": "1080x1920"
+		},
+		{
+			"src": "/screenshots/006.jpg",
+			"type": "image/jpg",
+			"sizes": "1080x1920"
+		},
+		{
+			"src": "/screenshots/007.jpg",
+			"type": "image/jpg",
+			"sizes": "1080x1920"
+		},
+		{
+			"src": "/screenshots/008.jpg",
+			"type": "image/jpg",
+			"sizes": "1080x1920"
+		}
+	]
+}

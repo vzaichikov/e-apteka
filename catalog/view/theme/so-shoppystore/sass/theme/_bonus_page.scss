@@ -1,0 +1,308 @@
+/*===============================================
+	[SASS DIRECTORY ]
+	
+    [1] CONTACT PAGE
+    [2] PAEG ABOUT US
+    [3] PAGE BLOG
+    [4] PAGE 404 
+==============================================*/
+
+/*============ CONTACT PAGE ==============*/
+#map-canvas{
+    border: 5px solid #f3f3f3;
+}
+.info-contact{padding-top: 30px;
+    .name-store h3{
+        font-size: 16px;
+        color: $gray-darker;
+        text-transform: uppercase;
+    }
+    .text{padding-#{$left}: 30px;}
+    .comment{
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e9e9e9;
+        margin-bottom: 25px;
+    }
+    
+}
+.contact-form{
+    legend{
+        border: none;
+        padding: 0;
+        font-size: 16px;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+    
+   
+}
+
+
+/*============ PAEG ABOUT US ==============*/
+
+.title-about-us{
+  background: url("#{$imgPath}bg-title-about.png")repeat-x left 12px;
+  margin-bottom:17px;
+}
+.title-about-us h2 {
+  background: #fff;
+  display: inline-block;
+  font-size: 22px;
+  padding: side-values(0 25px 6px 0);
+  font-weight: 300;
+  color: #333;
+}
+
+.welcome-about-us {
+  .image-about-us {
+    float: $left;
+    width: 270px;
+    padding-top: 6px;
+  }
+   img:hover{
+      opacity: 0.7;
+    }
+  .des-about-us {
+    margin-#{$left}: 300px;
+    line-height: 18px;
+  }
+}
+
+.our-member {
+  clear: both;
+  padding-top: 30px;
+   img:hover{
+      opacity: 0.7;
+    }
+  .title-about-us {
+  background: url("#{$imgPath}bg-title-about.png")repeat-x $left 12px;
+    margin-bottom: 17px;
+    text-align: center;
+
+    h2 {
+      padding: 0 15px 6px 15px;
+      font-size: 22px;
+      font-weight: 300;
+      color: #333;
+    }
+  }
+
+  .short-des {
+    text-align: center;
+    color: #909090;
+    margin-bottom: 35px;
+  }
+
+  .overflow-owl-slider {
+    padding-top: 50px;
+  }
+
+  .respl-item {
+    border: 1px solid #ddd;
+    margin-bottom: 30px;
+    .item-inner{
+      padding: 20px;
+      display: inline-block;
+    }
+    .w-image-box {
+      float: $left;
+      overflow: hidden;
+    }
+
+    .info-member {
+      text-align: $left;
+      margin-#{$left}: 185px;
+      ul{@extend ul.blank}
+      li{
+        float: $left;
+        .fa{
+          width: 29px;
+          height: 29px;
+          border: 1px solid #999;
+          line-height: 27px;
+          text-align: center;
+          color: #999;
+          border-radius: 50%;
+          margin-#{$right}: 5px;
+          display: inline-block;
+          &:hover{
+            color: $background1;
+            border-color: $background1;
+          }
+        }
+        .fa-f:before{
+           content: "\f09a";
+           font-family: FontAwesome;
+          }
+        .fa-t:before{
+           content: "\f099";
+           font-family: FontAwesome;
+          }
+        .fa-s:before{
+           content: "\f17e";
+           font-family: FontAwesome;
+          }
+        .fa-g:before{
+           content: "\f0d5";
+           font-family: FontAwesome;
+        }
+      }
+      .cl-name > a {
+        font-size: 15px;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: #444!important;
+        &:hover{
+          color:$background1!important;
+        }
+      }
+
+      .cl-job {
+        padding: 5px 0px;
+        text-transform: uppercase;
+      }
+
+      .cl-des {
+        color: #909090;
+        margin-bottom: 15px;
+      }
+    }
+  }
+}
+
+.why-list { @extend ul.blank;
+  li {
+    position: relative;
+    padding-#{$left}: 29px;
+
+    &:before {
+      content: "";
+      width: 14px;
+      height: 12px;
+      display: inline-block;
+      position: absolute;
+      #{$left}: 0px;
+      top: 10px;
+      background-repeat: no-repeat;
+      background-position: top $left;
+      background-image: url("#{$imgPath}icon-whylist.png");
+    }
+
+    a {
+      display: block;
+      padding: 5px 0 7px;
+      background-image: url("#{$imgPath}border-bottom-bs.png") repeat-x left bottom;
+    }
+
+    &:last-child > a {
+      background: none;
+    }
+  }
+}
+
+.happy-about-us {
+    direction: ltr;
+  clear: both;
+  padding-top: 10px;
+  .happy-ab {
+    border: 1px solid #e9e9e9;
+    padding: 33px 8px 20px;
+
+    .title-happy-about {
+      background: #fff;
+      display: inline-block;
+      #{$left}: 20px;
+      padding: 5px 10px;
+      position: absolute;
+      top: -5px;
+
+      h2 {
+        font-size: 20px;
+        position: relative;
+        top: -2px;
+        color: #444;
+      }
+    }
+
+    .ct-why {
+      padding: 0 10px 0 25px;
+      position: relative;
+        @include if-rtl {direction: rtl;}
+      .client-say {
+        font-size: 107.69%;
+        color: #909090;
+        margin-bottom: 10px;
+      }
+
+      .client-info-about {
+        color: #000;
+
+        .name {
+          font-size: 18px;
+          color: $linkColor;
+        }
+      }
+    }
+  }
+  .owl2-controls {
+    background: #fff;
+    padding: 0 5px;
+    position: absolute;
+    #{$right}: 2px;
+    top: -47px;
+  }
+
+  .owl2-controls .owl2-prev,
+  .owl2-controls .owl2-next {
+    border: none;
+    display: inline-block;
+    width: 26px !important;
+    height: 26px !important;
+    background-position: left top;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    text-indent: -9999px;
+    background-color: transparent !important;
+    top: 0px;
+    margin: 0 3px;
+    position: relative;
+  }
+
+  .owl2-controls .owl2-prev {
+    background-image: url("#{$imgPath}btn-prev-hp.png")!important;
+    margin-right: 3px;
+    right: 0px !important;
+    left: inherit !important;
+  }
+
+  .owl2-controls .owl2-nav {
+    width: 68px;
+    display: inline-block;
+    height: 26px;
+    background: #fff;
+  }
+
+  .owl2-controls .owl2-next {
+   background-image: url("#{$imgPath}btn-next-hp.png")!important;
+    right: 0px !important;
+  }
+
+  .item > div:before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    width: 16px;
+    height: 12px;
+    left: 0px;
+    top: 6px;
+  }
+
+  .owl2-dots {
+    display: none !important;
+  }
+}
+
+
+/*============ PAGE 404  ==============*/
+.button-404 > a{margin: 0 10px;}
+

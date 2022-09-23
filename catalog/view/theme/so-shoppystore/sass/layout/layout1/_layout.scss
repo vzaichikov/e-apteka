@@ -1,0 +1,38 @@
+/*===============================================
+	[SASS DIRECTORY ]
+	
+    [1] BLOCK HEADER
+    [2] BLOCK FOOTER
+	
+==============================================*/
+
+.sohomepage-slider .so-homeslider{border: none;}
+#content{margin-bottom: 30px;}
+
+.container-megamenu.vertical .vertical-wrapper{display: none;}
+.container-megamenu.vertical:hover{
+	.vertical-wrapper{
+		position: absolute;
+		width: 90%;
+		display: block;
+		z-index: 1;
+	}	
+}
+@media (min-width: 1200px) {
+	.vertical .vertical-wrapper{
+		position: absolute;
+	    width: 90%;
+	    z-index: 9; 
+	}
+	.container-megamenu.vertical:hover .vertical-wrapper{ z-index: 9;}
+}
+.common-home header.typeheader-1 .header-bottom {
+	margin-bottom: 30px;
+}
+    
+.menu-vertical{
+    @media (min-width: 1200px) {
+        z-index: 999;
+        position: relative;
+    }
+}

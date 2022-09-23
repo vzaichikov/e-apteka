@@ -1,0 +1,41 @@
+/*===============================================
+	[SASS DIRECTORY ]
+	
+    [1] BLOCK HEADER
+    [2] BLOCK FOOTER
+	
+==============================================*/
+
+
+
+#wrapper{ background: #f7f7f7;}
+
+#main-content,#content{margin-bottom: 30px;}
+
+.common-home{
+	 #content{margin-bottom: 0px;}
+	@media (min-width: 1200px) {
+		.col-bt-1{width: 25%;}
+		.col-bt-2{width: 37.5%}
+		.col-bt-3{width: 37.5%}
+	}
+}
+.menu-vertical{
+    @media (min-width: 1200px) {
+        z-index: 999;
+        position: relative;
+    }
+}
+
+@media (min-width: 1200px) {
+	.releate-horizontal .releate-products{
+		.image{
+			width: 70px;
+		    margin-#{$right}: 10px;
+		}
+		.caption{
+			margin-#{$left}: 80px;
+		}
+		.item-element{ padding: 10px; }
+	}
+}

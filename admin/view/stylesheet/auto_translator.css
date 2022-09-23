@@ -1,0 +1,21 @@
+.btn-t-copy{
+    background-color: #a9a9a9;
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 3px 3px 0 0;
+    cursor: pointer;
+}
+.btn-g-translate{
+    background-color: #1e90ff;
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 3px 3px 0 0;
+    cursor: pointer;
+}
+.btn-m-translate{
+    background-color: #1e90ff;
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 3px 3px 0 0;
+    cursor: pointer;
+}

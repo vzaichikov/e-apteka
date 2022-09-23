@@ -1,0 +1,51 @@
+#Роботс
+/robots*.txt
+/.bash_history
+
+#Админка
+/admin/config*.php
+
+#Основные конфиги
+/config*.php
+/config.parts/*
+/system/config/*
+/system/config
+/system/*.json
+/system/config.parts/*
+
+#Фиды и сайтмапы
+/feeds/*
+/sitemaps/*
+
+#Картинки и кеш
+/image/*
+/image.*/*
+/img/*
+/img.*/*
+
+#Статика минификатора
+/min/
+
+#Кэш системного пользователя
+/.cache/
+
+#Composer
+/vendor/
+/composer.lock
+
+#JSON logs
+/catalog/*.json
+/catalog/bugjson
+
+#Всякая системная шляпа
+/system/cache
+/system/storage
+/system/temp
+/system/cache_mfp
+/system/csvprice_pro
+/system/logs
+/system/temp
+/system/pids
+
+#Директории IDE
+.idea
