@@ -35,8 +35,6 @@
 
 #Composer
 /vendor/
-/composer.lock
-/composer.phar
 
 #JSON logs
 /catalog/*.json
