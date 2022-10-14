@@ -13,12 +13,12 @@
 
 			<div class="col-sm-12 col-md-12 text-center"  id="top-temprorary-banner-wrap" style="padding:0px!important;  display:none;" >
 
-						<?php /* ?>
-				<div id="top-temprorary-banner" style="text-align: center; background-color:<?php echo $banner['background']; ?>; padding:5px 5px; color:#0066cc;">
-					Завантажуйте наш додаток з Play Store - з ним замовляти швидше. <a href="https://play.google.com/store/apps/details?id=ua.com.eapteka.twa" target="_blank" noindex nofollow rel="nofollow" title="Google Play Store"><img src="/catalog/view/image/gplay_ua1.svg" /></a>
+				<?php /* ?>
+				<div id="top-temprorary-banner" style="text-align: center; background-color:<?php echo $background; ?>; padding:5px 5px; color:white;">
+					Увага! У зв'язку з поточною ситуацією, можливі збої в роботі аптек. Резервуйте на сайті.<br />
+					Тримаймося. Слава Україні!
 				</div>
-				<?php */	?>
-
+				<?php*/	?>
 
 				<div id="banner<?php echo $module; ?>" class="swiper" style="background-color:<?php echo $banner['background']; ?>">
 					<div class="swiper-wrapper">
@@ -43,6 +43,7 @@
 						<?php $i++; } ?>
 					</div>
 				</div>
+
 				
 			</div>
 		</div>
