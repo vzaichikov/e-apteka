@@ -2315,9 +2315,8 @@
 					
 					if ($this->added_products){
 						$this->load->library('hobotix/TelegramSender');
-						$telegramSender = new hobotix\TelegramSender;
-						
-						$telegramSender->setGroupID('-418887520');
+						$telegramSender = new hobotix\TelegramSender;						
+						$telegramSender->setGroupID(TELEGRAM_CONTENT_BOT_GROUP);
 						
 						$message = '';
 						$message = 'https://e-apteka.com.ua/lots-of-happiness.jpg' . PHP_EOL;
@@ -2337,7 +2336,7 @@
 						$this->load->library('hobotix/TelegramSender');
 						$telegramSender = new hobotix\TelegramSender;
 						
-						$telegramSender->setGroupID('-418887520');
+						$telegramSender->setGroupID(TELEGRAM_CONTENT_BOT_GROUP);
 						
 						$message = '';
 						$message = 'https://e-apteka.com.ua/cat-with-hat.png' . PHP_EOL;

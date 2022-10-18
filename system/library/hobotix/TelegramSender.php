@@ -12,7 +12,10 @@
 		}
 		
 		public function SendMessage($message) { 
-            $this->group_id = TELEGRAM_BOT_GROUP;
+
+            if (!$this->group_id){
+                $this->group_id = TELEGRAM_BOT_GROUP;
+            }
 
             $telegram_url = "https://api.telegram.org/bot" . TELEGRAM_BOT_KEY . '/sendMessage';
 			
