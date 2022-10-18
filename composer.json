@@ -1,4 +1,10 @@
 {
+    "config": {
+        "platform": {
+            "php": "7.4"
+         }
+   },
+
     "require": {
         "mailgun/mailgun-php": "^2.5",
         "php-http/curl-client": "^1.7",
@@ -16,6 +22,7 @@
         "kex15i10/ukrposhta": "^1.0",
         "umpirsky/transliterator": "^0.1.0",
         "wapmorgan/morphos": "^3.2",
-        "kwn/number-to-words": "^2.5"
+        "kwn/number-to-words": "^2.5",
+        "google/auth": "^1.23"
     }
 }
