@@ -537,11 +537,41 @@
 							</div>
 
 													
-						<?php if ( isset($description) && !empty(trim(strip_tags($description))) ) { ?>
-							<div class="description-block" style="display: inline-block;margin: 25px 0; width: 100%;">
-								<?php echo $description; ?>
-							</div>
-						<?php } ?>
+							<?php if ( isset($description) && !empty(trim(strip_tags($description))) ) { ?>
+								<div class="description-block" style="display: inline-block;margin: 25px 0; width: 100%;">
+									<?php echo $description; ?>
+								</div>
+							<?php } else { ?>
+								<?php if ($attribute_groups) { ?>
+									<div class="description-block" style="display: inline-block;margin: 25px 0; width: 100%;">
+										<table class="table table-bordered">
+											<?php foreach ($attribute_groups as $attribute_group) { ?>
+												<thead>
+													<tr>
+														<td colspan="2"><strong><?php echo $attribute_group['name']; ?></strong></td>
+													</tr>
+												</thead>
+												<tbody>
+													<?php foreach ($attribute_group['attribute'] as $attribute) { ?>
+														<tr>
+															<td><?php echo $attribute['name']; ?></td>
+															<td><?php echo $attribute['text']; ?></td>
+														</tr>
+													<?php } ?>
+
+													<?php if ($gtin) { ?>
+														<tr>
+															<td>EAN</td>
+															<td><?php echo $gtin; ?></td>
+														</tr>
+													<?php } ?>
+
+												</tbody>
+											<?php } ?>
+										</table>
+									</div>
+								<?php } ?>
+							<?php } ?>
 							
 						</div>
 						
