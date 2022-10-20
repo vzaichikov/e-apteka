@@ -887,9 +887,7 @@
 				
 				$data['stocks'] = array();
 				$data['geocode'] = $this->config->get('config_geocode');			
-				
-				
-				
+												
 				//same
 				$results = $this->model_catalog_product->getProductSame($this->request->get['product_id']);
 				

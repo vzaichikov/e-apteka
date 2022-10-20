@@ -18,31 +18,39 @@
 					<i class="fa fa-times text-danger"></i>
 				<?php } ?>
 			</td>
+
+			
 			<td>
 				<?php echo $stock['address']; ?>
-				<span class="hidden-xs">
-				<br />
-				<span class="product-stock-map__time"><i class="fa fa-clock-o <? echo $stock['faclass']; ?>"></i> <i><?php echo $stock['open']; ?></i></span>
+				<?php if ((int)$stock['stock'] > 0) { ?>
+					<span class="hidden-xs">
+						<br />
+						<span class="product-stock-map__time"><i class="fa fa-clock-o <? echo $stock['faclass']; ?>"></i> <i><?php echo $stock['open']; ?></i></span>
 
-				<?php if ($stock['gmaps_link']) { ?>
-					&nbsp;&nbsp;<a href="<?php echo $stock['gmaps_link']; ?>" target="_blank"><?php echo $text_make_route; ?></a>					
+						<?php if ($stock['gmaps_link']) { ?>
+							&nbsp;&nbsp;<a href="<?php echo $stock['gmaps_link']; ?>" target="_blank"><?php echo $text_make_route; ?></a>					
+						<?php } ?>
+					</span>
 				<?php } ?>
-				</span>
 			</td>
+
+
 			<td style="white-space: nowrap;" class="<?php if ((int)$stock['stock'] >= 3) { ?>text-success<? } elseif ((int)$stock['stock'] > 0) { ?>text-warning<?php } else { ?>text-danger<? } ?>">
 				<b><?php echo $stock['stock']; ?> шт.</b>
 			</td>			
 			<td style="white-space: nowrap;">
 				<?php if ((int)$stock['stock'] > 0) { ?>
-				<button class="bbtn bbtn-small bbtn-<?php if ((int)$stock['stock'] >= 3) { ?>success<? } else { ?>warning<?php } ?> product-layout__btn-cart" onclick="$('input[name=\'oneclick_location_id\']').val('<?php echo $stock['location_id']; ?>'); callFastOrderPopup(this);"><?php echo $text_make_reserve;?></button>
+					<button class="bbtn bbtn-small bbtn-<?php if ((int)$stock['stock'] >= 3) { ?>success<? } else { ?>warning<?php } ?> product-layout__btn-cart" onclick="$('input[name=\'oneclick_location_id\']').val('<?php echo $stock['location_id']; ?>'); callFastOrderPopup(this);"><?php echo $text_make_reserve;?></button>
 				<?php }?>
 			</td>		
 		</tr>
-		<tr class="hidden-xlg hidden-md hidden-lg hidden-sm" style="border-top:0px;">
-			<td colspan="4">
-				<span class="product-stock-map__time"><i class="fa fa-clock-o <? echo $stock['faclass']; ?>"></i> <i><?php echo $stock['open']; ?></i></span>
-				&nbsp;&nbsp;<a href="<?php echo $stock['gmaps_link']; ?>" target="_blank"><?php echo $text_make_route; ?></a></span>
-			</td>
-		</tr>
+		<?php if ((int)$stock['stock'] > 0) { ?>
+			<tr class="hidden-xlg hidden-md hidden-lg hidden-sm" style="border-top:0px;">
+				<td colspan="4">
+					<span class="product-stock-map__time"><i class="fa fa-clock-o <? echo $stock['faclass']; ?>"></i> <i><?php echo $stock['open']; ?></i></span>
+					&nbsp;&nbsp;<a href="<?php echo $stock['gmaps_link']; ?>" target="_blank"><?php echo $text_make_route; ?></a></span>
+				</td>
+			</tr>
+		<?php } ?>
 	<? } ?>
 </table>

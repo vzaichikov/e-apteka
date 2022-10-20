@@ -70,8 +70,18 @@
 								</svg> -->
 							</a>
 						</li>
+
+						<?php if ( $is_mobile && isset($description) && !empty(trim(strip_tags($description)))) { ?>
+							<li>
+								<a href="#tab-description" data-toggle="tab"><?php echo $tab_description; ?>
+									<!-- <svg class="product-tabs__nav-icon">
+										<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#instruction"></use>
+									</svg> -->
+								</a>
+							</li>
+						<?php } ?>
 						
-						<?php if ( isset($instruction) && !empty($instruction) ) { ?>
+						<?php if ( isset($instruction) && !empty(trim(strip_tags($instruction)))) { ?>
 							<li>
 								<a href="#tab-instruction" data-toggle="tab"><?php echo $tab_instruction; ?>
 									<!-- <svg class="product-tabs__nav-icon">
@@ -536,8 +546,8 @@
 								</div>
 							</div>
 
-													
-							<?php if ( isset($description) && !empty(trim(strip_tags($description))) ) { ?>
+						<?php if (!$is_mobile) { ?>				
+							<?php if ( isset($description) && !empty(trim(strip_tags($description)))) { ?>
 								<div class="description-block" style="display: inline-block;margin: 25px 0; width: 100%;">
 									<?php echo $description; ?>
 								</div>
@@ -572,7 +582,7 @@
 									</div>
 								<?php } ?>
 							<?php } ?>
-							
+						<?php } ?>	
 						</div>
 						
 						<?php if ($quantity_stock > 0) { ?>
@@ -598,15 +608,25 @@
 						
 					</div>
 
+
+
 					
 					<?php if (!empty($hobofaq)) { ?>
 						<div class="tab-pane hobofaq-text-style" id="tab-hobofaq">
 							<?php echo $hobofaq; ?>
 						</div>
 					<?php } ?>
-					
+
 					<?php if ( isset($instruction) && !empty($instruction) ) { ?>
 						<div class="tab-pane information-text-style" id="tab-instruction" style="max-height:500px; overflow-y:scroll;">							
+						</div>
+					<?php } ?>
+					
+					<?php if ($is_mobile && isset($description) && !empty(trim(strip_tags($description)))) { ?>
+						<div class="tab-pane information-text-style" id="tab-description">		
+							<div class="description-block" style="display: inline-block;margin: 25px 0; width: 100%;">
+								<?php echo $description; ?>
+							</div>		
 						</div>
 					<?php } ?>
 					
