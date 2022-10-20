@@ -233,7 +233,7 @@
 												<div class="swiper-pagination"></div>
 											</div>
 											
-											<div><small class="text-muted"><i class="fa fa-exclamation-circle"></i> <?php echo $text_picture_may_differ; ?></small></div>
+											<div><small class="text-muted"><?php echo $text_picture_may_differ; ?></small></div>
 											
 										</div>
 										
@@ -241,19 +241,12 @@
 								</div>
 								
 								<div class="<?php if ($quantity_stock > 0) { ?>col-sm-8<?php } else { ?>col-sm-10<?php } ?>">
-									<?php if ($quantity_stock > 0) { ?>
-										
-										<!-- div class="product__text-row product__model">
-											<?php echo $text_model; ?> <?php echo $model; ?>
-										</div-->
-										
+									<?php if ($quantity_stock > 0) { ?>										
 										<?php if ($reward) { ?>
 											<div class="product__reward">
 												<?php echo $text_reward; ?> <?php echo $reward; ?>
 											</div>
-										<?php } ?>
-										
-										
+										<?php } ?>																				
 									<? } ?>
 									
 									<div class="product__info product-info">
@@ -341,12 +334,6 @@
 												<?php if ($price) { ?>
 													
 													<div class="product__order-wrap-main <?php if (!$options) { ?>not_options<?php } ?>">
-
-														<?php /* ?>
-														<div class="alert alert-danger">Шановні  клієнти! Забирайте, будь ласка, свої замовлення в день оформлення.</div>
-														<?php */ ?>
-
-
 														<div class="product__order-wrap <?php if ($special) { ?>is-special-bg<?php } ?> ">
 															<?php if (!$special) { ?>
 																<div class="product__price-wrap">
