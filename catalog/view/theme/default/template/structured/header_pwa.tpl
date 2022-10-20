@@ -86,7 +86,7 @@
 			console.log("[PWA] active service worker found, no need to register");
 			} else {
 			navigator.serviceWorker
-			.register("/sw.js?v=103", {scope: "/"})
+			.register("/sw.js?v=105", {scope: "/"})
 			.then(function (reg) {
 				console.log("[PWA] Service worker has been registered for scope: " + reg.scope);
 			});

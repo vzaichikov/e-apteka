@@ -1,4 +1,4 @@
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js');
 
 const OFFLINE_HTML = '/offline.html';
 const JQUERY_LIB = '/catalog/view/javascript/jquery/jquery-2.1.1.min.js';
@@ -16,45 +16,50 @@ const PRECACHE = [
 {url: BOOTSTRAP_CSS, revision: '30'},
 {url: FAVICON, revision: '10'}];
 
-/**
-	* Precache Manifest for resources available offline.
-	* https://developers.google.com/web/tools/workbox/modules/workbox-precaching#explanation_of_the_precache_list
-	*/
-	workbox.precaching.precacheAndRoute(PRECACHE);
 
-/**
-	* Enable navigation preload.
-	*/
-	workbox.navigationPreload.enable();
+workbox.precaching.precacheAndRoute(PRECACHE);
+workbox.navigationPreload.enable();
+workbox.googleAnalytics.initialize();
 
-/**
-	* Enable tracking with Google Analytics while offline.
-	* This does not work with other tracking vendors.
-	*/
-	workbox.googleAnalytics.initialize();
+workbox.routing.registerRoute(
+	/\.(?:css)$/,
+	new workbox.strategies.StaleWhileRevalidate({
+		cacheName: 'css',
+		plugins: [
+		new workbox.expiration.ExpirationPlugin({                
+			maxEntries: 100,
+			purgeOnQuotaError: true,
+		}),
+		],
+	})
+	);
 
-/**
-	* Basic caching for CSS and JS.
-	*/
-	workbox.routing.registerRoute(
-		/\.(?:js|css)$/,
-		new workbox.strategies.StaleWhileRevalidate({
-			cacheName: 'css_js'
-		})
-		);
+workbox.routing.registerRoute(
+	/\.(?:js)$/,
+	new workbox.strategies.StaleWhileRevalidate({
+		cacheName: 'js',
+		plugins: [
+		new workbox.expiration.ExpirationPlugin({                
+			maxEntries: 100,
+			purgeOnQuotaError: true,
+		}),
+		],
+	})
+	);
 
-/**
-	* Basic caching for fonts.
-	*/
-	workbox.routing.registerRoute(
-		/\.(?:woff|woff2|ttf|otf|eot)$/,
-		new workbox.strategies.StaleWhileRevalidate({
-			cacheName: 'fonts',
-		})
-		);
+workbox.routing.registerRoute(
+	/\.(?:woff|woff2|ttf|otf|eot)$/,
+	new workbox.strategies.StaleWhileRevalidate({
+		cacheName: 'fonts',
+		plugins: [
+		new workbox.expiration.ExpirationPlugin({                
+			maxEntries: 20,
+			purgeOnQuotaError: true,
+		}),
+		],
+	})
+	);
 
-// Cache Google Fonts with a stale-while-revalidate strategy, with
-// a maximum number of entries.
 workbox.routing.registerRoute(
 	({url}) => url.origin === 'https://fonts.googleapis.com' ||
 	url.origin === 'https://fonts.gstatic.com',
@@ -66,29 +71,21 @@ workbox.routing.registerRoute(
 	}),
 	);
 
+workbox.routing.registerRoute(
+	/\.(?:png|gif|jpg|jpeg|svg|webp|avif)$/,
+	new workbox.strategies.StaleWhileRevalidate({
+		cacheName: 'images',
+		plugins: [
+		new workbox.expiration.ExpirationPlugin({                
+			maxEntries: 200,
+			purgeOnQuotaError: true,
+		}),
+		],
+	})
+	);
 
-/**
-	* Basic caching for images.
-	*/
-	workbox.routing.registerRoute(
-		/\.(?:png|gif|jpg|jpeg|svg|webp)$/,
-		new workbox.strategies.StaleWhileRevalidate({
-			cacheName: 'images',
-			plugins: [
-			new workbox.expiration.ExpirationPlugin({
-                // Only cache 60 most recent images.
-                maxEntries: 60,
-                purgeOnQuotaError: true,
-            }),
-			],
-		})
-		);
 
-/*
-	* Fallback to offline HTML page when a navigation request fails.
-	*/
-	const htmlHandler = new workbox.strategies.NetworkOnly();
-// A NavigationRoute matches navigation requests in the browser, i.e. requests for HTML.
+const htmlHandler = new workbox.strategies.NetworkOnly();
 const navigationRoute = new workbox.routing.NavigationRoute(({ event }) => {
 	const request = event.request;
 	return htmlHandler
