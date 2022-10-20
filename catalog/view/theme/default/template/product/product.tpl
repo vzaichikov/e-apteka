@@ -189,6 +189,24 @@
 										<?php } ?>
 										
 										<div class="gallery-top" <?php if (!$images) { ?> style="margin-left: 0" <?php } ?>>
+
+											<style>
+												.product__btn-compare{position: absolute;right: 15px;top: 20px;width: 40px;height: 35px;z-index: 10;border: 0;padding: 0;}
+												.product__btn-wishlist{position: absolute;right: 15px;top: 60px;width: 40px;height: 35px;z-index: 10;border: 0;padding: 0;}
+												.product__btn-compare svg, .product__btn-wishlist svg{fill: #afdfee}
+											</style>	
+											<button class="bbtn bbtn--transparent product__btn-wishlist" type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $product_id; ?>');">
+												<svg class="icon featured__wishlist-icon">
+													<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#heart"></use>
+												</svg>
+											</button>
+
+											<button class="bbtn bbtn--transparent product__btn-compare" type="button" data-toggle="tooltip" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $product_id; ?>');">
+												<svg class="icon featured__compare-icon">
+													<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#balance"></use>
+												</svg>
+											</button>
+
 											<div class="swiper-container topImages_<?php echo count($images); ?>">
 												
 												<!--swiper-wrapper-->
@@ -524,20 +542,7 @@
 																	<i class="fa fa-ambulance" aria-hidden="true"></i>&nbsp;&nbsp;<b><?php echo $text_free_shipping_kyiv; ?></b>
 																</div>
 															</div>
-														<?php } ?>
-														<div class="btn-wrap">
-															<button class="bbtn bbtn--transparent product__btn-wishlist" type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $product_id; ?>');">
-																<svg class="icon featured__wishlist-icon">
-																	<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#heart"></use>
-																</svg>
-															</button>
-															
-															<button class="bbtn bbtn--transparent product__btn-compare" type="button" data-toggle="tooltip" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $product_id; ?>');">
-																<svg class="icon featured__compare-icon">
-																	<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#balance"></use>
-																</svg>
-															</button>
-														</div>
+														<?php } ?>													
 													</div>
 												
 											<?php } ?>
