@@ -22,14 +22,11 @@ if ((isset($_GET['hello']) && $_GET['hello'] == 'world')){
 if(defined('IS_DEBUG') && IS_DEBUG) {
 	$start_time = $GLOBALS['start'] = microtime();
 	$start_mem = memory_get_usage();
-
 }
 
-
-
-	ini_set('display_startup_errors', 1);
-	ini_set('error_reporting', E_ALL);
-	ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
 
 	// Version
 define('VERSION', '2.3.0.2');

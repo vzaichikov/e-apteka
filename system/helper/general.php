@@ -1,6 +1,5 @@
 <?php
 	function token($length = 32) {
-		// Create random token
 		$string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 		
 		$max = strlen($string) - 1;
@@ -15,8 +14,6 @@
 	}
 	
 	function pin($length = 4) {
-		
-		// Create random token
 		$string = '0123456789';
 		
 		$max = strlen($string) - 1;
@@ -29,6 +26,12 @@
 		
 		return $token;
 		
+	}
+
+	function size_convert($size)
+	{
+		$unit = array('b','kb','mb','gb','tb','pb');
+		return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
 	}
 	
 	function checkIfStringIsEmail($string){

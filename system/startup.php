@@ -89,6 +89,8 @@ function modification($filename) {
 	return $filename;
 }
 
+
+
 // Autoloader
 if (is_file(DIR_SYSTEM . '../vendor/autoload.php')) {
 	require_once(DIR_SYSTEM . '../vendor/autoload.php');
