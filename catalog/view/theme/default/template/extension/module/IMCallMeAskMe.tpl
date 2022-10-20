@@ -107,17 +107,11 @@
                 	<!-- Text field  -->
                 	<?php echoFieldArea($lang_settings, $language_id, 'text'); ?>
 					
+					<input type="hidden" name="token" value="<?php echo $token; ?>" />
 					
                     <div class="form-group">
-					<? /*
-						<div class="buttons col-sm-6 text-left">
-                        	<button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">
-			                    <?php echoText($lang_settings, $language_id, 'btn_cancel'); ?>
-							</button>                     	
-						</div>
-					*/ ?>
 						<div class="buttons col-sm-12 text-center">
-                        	<button type="submit" class="bbtn bbtn-primary product-layout__btn-cart" data-loading-text=">>>>>>>>>">
+                        	<button type="submit" class="bbtn bbtn-primary product-layout__btn-cart" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
                         		<?php echoText($lang_settings, $language_id, 'btn_ok'); ?>
 							</button>                        	
 						</div>
