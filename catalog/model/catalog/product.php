@@ -339,7 +339,7 @@
 						"priceCurrency": "UAH",
 						"price": "' . $seo_price  . '",
 						"priceValidUntil": "'.date('Y-m-d').'",
-						"itemCondition": "http://schema.org/New",
+						"itemCondition": "http://schema.org/NewCondition",
 						"availability": "http://schema.org/'.$in_stok.'"
 						}
 						}
@@ -1770,9 +1770,9 @@
 			}
 		}
 		
-		public function getProductsForSiteMap($languageId = 2, $start)
+		public function getProductsForSiteMap($language_id, $start)
 		{
-			$query = $this->db->query("SELECT p.product_id, p.date_modified, p.date_added, p.image, p.manufacturer_id, pd.name FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON pd.product_id = p.product_id WHERE  pd.language_id ='". (int)$languageId ."' AND p.product_id >= '". (int)$start ."' ORDER BY p.product_id ASC");
+			$query = $this->db->query("SELECT p.product_id, p.date_modified, p.date_added, p.image, p.manufacturer_id, pd.name FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON pd.product_id = p.product_id WHERE  pd.language_id ='". (int)$language_id ."' AND p.product_id >= '". (int)$start ."' ORDER BY p.product_id ASC");
 			return $query->rows;
 		}
 		
@@ -1790,9 +1790,9 @@
 			
 		}
 		
-		public function getProductsForSiteMap2($languageId = 2, $start)
+		public function getProductsForSiteMap2($language_id, $start)
 		{
-			$query = $this->db->query("SELECT p.product_id, p.date_modified, p.date_added, p.image, p.manufacturer_id, pd.name, pd.description, pd.instruction FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON pd.product_id = p.product_id  WHERE  pd.language_id ='". (int)$languageId ."' AND p.product_id >= '". (int)$start ."' ORDER BY p.product_id ASC");
+			$query = $this->db->query("SELECT p.product_id, p.date_modified, p.date_added, p.image, p.manufacturer_id, pd.name, pd.description, pd.instruction FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON pd.product_id = p.product_id  WHERE  pd.language_id ='". (int)$language_id ."' AND p.product_id >= '". (int)$start ."' ORDER BY p.product_id ASC");
 			
 			
 			return $query->rows;
