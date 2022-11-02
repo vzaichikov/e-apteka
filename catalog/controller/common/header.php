@@ -366,13 +366,13 @@
 			'catalog/view/theme/default/js/main.js',
 			'catalog/view/javascript/IMCallMeAskMe/jquery.imcallask.js',
 			'catalog/view/javascript/social_auth.js',
-			'catalog/view/theme/default/js/swiper.min.js'
+			'catalog/view/theme/default/js/swiper.min.js',
+			'catalog/view/javascript/html5-qrcode.min.v2.2.5.js'
 			);					
 			
 			$query = "f=" . implode(',', $general_js);
 			$data['general_minified_js_uri'] = Minify\StaticService\build_uri($static_uri, $query, 'js');
-			
-			/* !!!!!!!!!! */
+						
 			$data['incompatible_scripts'] = array();
 			foreach ($data['scripts'] as $script) {
 				if (stripos('//', $script) !== false){
