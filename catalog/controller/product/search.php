@@ -18,14 +18,44 @@
 			
 			if (!empty($results['hits']['hits'][0]) && !empty($results['hits']['hits'][0]['_source']) && !empty($results['hits']['hits'][0]['_source']['product_id'])){
 				
-				if ($product = $this->model_catalog_product->getProduct($results['hits']['hits'][0]['_source']['product_id'])){
-					
+				if ($product = $this->model_catalog_product->getProduct($results['hits']['hits'][0]['_source']['product_id'])){					
 					return $product;
 				}
 			}
 			
 			return false;
 		}
+
+
+		public function sku(){
+			$query = trim($this->request->get['ean']);
+
+
+			$result = [
+				'status' 	=> false,
+				'name' 		=> 'Не знайдено товар в базі'				
+			];
+
+			if (hobotix\ElasticSearch::validateResult($resultSKU = $this->elasticSearch->sku($query)) == 1){				
+				if ($product = $this->elasticSingleProductResult($resultSKU)){
+
+					$price = $product['special']?$product['special']:$product['price'];
+
+					$result = [
+						'status' 	=> true,
+						'name' 		=> $product['name'],
+						'quantity'  => $product['quantity'],
+						'stocks'    => $this->model_catalog_product->getProductStocks($product['product_id']),
+						'image' 	=> $this->model_tool_image->resize($product['image'], 150, 150),
+						'price' 	=> $this->currency->format($this->tax->calculate($price, $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']),
+						'href' 		=> $this->url->link('product/product', 'product_id=' . $product['product_id']) 							
+					];
+				}
+			}
+
+			$this->response->setOutput(json_encode($result));
+		}
+
 		
 		private function elasticResults($results, $field){
 			$this->load->model('catalog/product');
@@ -406,6 +436,14 @@
 						$field1 = $this->elasticSearch->buildField('name');
 						$field2 = 'names';
 						$suggest = $this->elasticSearch->buildField('suggest');
+
+							//TRY TO FIND BY SKU										
+						if (hobotix\ElasticSearch::validateResult($resultSKU = $this->elasticSearch->sku($query)) == 1){				
+							if ($productFoundBySKU = $this->elasticSingleProductResult($resultSKU)){
+								$this->response->redirect($this->url->link('product/product', 'product_id=' . $productFoundBySKU['product_id'] . '&search=' .  urlencode(html_entity_decode($this->request->get['search'], ENT_QUOTES, 'UTF-8'))));
+							}
+						}
+
 												
 						$product_total = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2, ['getTotal' => true, 'filter_manufacturer_id' => $filter_manufacturer_id, 'filter_category_id' => $filter_category_id]);							
 						

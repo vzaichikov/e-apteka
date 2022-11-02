@@ -243,7 +243,7 @@
 			],							
 			'query' 	=> [
 			'bool' 		=>  [
-			'must' 		=>  [ 'multi_match' => [ 'fields' => [$field1.'^8', $field2.'^10'], 'query' => $query, 'type' => 'best_fields', 'fuzziness' => $fuzziness, 'prefix_length' => 2, 'max_expansions' => 10, 'operator' => 'AND' ]	],
+			'must' 		=>  [ 'multi_match' => [ 'fields' => [$field1.'^8', $field2.'^10', 'identifier^10'], 'query' => $query, 'type' => 'best_fields', 'fuzziness' => $fuzziness, 'prefix_length' => 2, 'max_expansions' => 10, 'operator' => 'AND' ]	],
 			'should'	=> [
 			//	[ 'multi_match' => [ 'fields' => [$field3], 'query' => $query, 'fuzziness' => $fuzziness, 'prefix_length' => 2, 'operator' => 'AND' ] ]
 			],
