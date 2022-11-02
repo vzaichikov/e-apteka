@@ -54,16 +54,40 @@
 	.clear-search {
 		right: 100px;
 	}
+	#cleversearch .detect_btn{
+		display: none;
+	}
 	@media screen and (max-width:767px) {
 		.clear-search {
 			right: 80px;
+		}
+		#cleversearch .detect_btn{
+			display: block;
+		    background: 0 0;
+		    border: 0;
+		    position: absolute;
+		    right: 82px;
+		    top: 0;
+		    bottom: 0;
+		    font-size: 22px;
+		    color: #1cacdc;
+		    width: 40px;
+		}
+		.voice_search_btn,
+		.voice_search_btn i,
+		#cleversearch .detect_btn i{
+			font-size: 22px;
+		}
+		.clear-search {
+		    right: 126px;
 		}
 	}
 </style>
 <div id="cleversearch" class="sosearchpro-wrapper <?php echo $additional_class; ?>">
 	<div id="search" class="search__inner">
 		<form1 id="main-search-form" action="<?php echo $search_link; ?>">
-			<input class="autosearch-input form-control" type="text" value="<?php echo $search; ?>" size="50" autocomplete="off" placeholder="<?php echo $text_search_field ;?>" name="search" id="main-search">		
+			<input class="autosearch-input form-control" type="text" value="<?php echo $search; ?>" size="50" autocomplete="off" placeholder="<?php echo $text_search_field ;?>" name="search" id="main-search">	
+			<button class="detect_btn" onClick="initScanner();"><i class="fa fa-barcode"></i></button>
 			<ul class="dropdown-menu"></ul>
 			<span class="clear-search" id="search-status" style="display: none;">
 				<i class="fa fa-times"></i>

@@ -1,16 +1,6 @@
 </div>  <!-- /.site__content -->
 <footer class="site__footer footer">
 	
-	<div id="qrcodescanner" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-body">	
-					<div id="qrcodereader"></div>	
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<div id="boc_order" class="modal fade">
 	</div>
 	<div id="boc_success" class="modal fade">
@@ -24,14 +14,7 @@
 		</div>
 	</div>
 
-<? /*	?>
-	<script  src="https://unpkg.com/html5-qrcode@2.2.1/html5-qrcode.min.js" async defer></script>
-	<script type="text/javascript">
-		function showScanner(){
-			$('#qrcodescanner').modal('show');
-		}
-</script>
-<? */ ?>
+	<?php include(DIR_TEMPLATEINCLUDE . 'structured/qrcode.tpl'); ?>
 
 <script type="text/javascript"><!--
 
@@ -268,8 +251,7 @@ $(document).ready(function() {
 								<use xlink:href="/catalog/view/theme/default/img/sprite/symbol/sprite.svg#instagram-logo"></use>
 							</svg>
 						</a></noindex></li>
-					</ul>
-					<p class="hidden-sm hidden-xs" onclick="showScanner()"><?php echo $text_3; ?></p>
+					</ul>					
 				</div>
 			</div>
 		</div>
@@ -858,15 +840,14 @@ $(document).ready(function() {
 <script>
 	
 	$('document').ready(function(){
-		
+
 		window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 		
 		if (window.SpeechRecognition) {
 			console.log('Voice search supported, triggering');
 			var current_input = $('#main-search').val();
 			$('#main-search').after('<button class="voice_search_btn" id="voice-search-btn"><i class="fa fa-microphone"></i></button>');
-			
-			
+						
 			var recognition = new SpeechRecognition();
 			recognition.interimResults = true;
 			recognition.lang = 'ru-RU';

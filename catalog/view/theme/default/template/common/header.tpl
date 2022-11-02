@@ -831,20 +831,20 @@
 							</div>
 						</div>
 					</div>  <!-- /.header__bottom -->
-					<div class="header__mobile <?php if ($logged) { ?>logged<?php } ?>">
+					<div class="header__mobile <?php /* if ($logged) { ?>logged<?php } */ ?>">
 						<button class="mobile-main-menu">
 							<svg height="384pt" viewBox="0 -53 384 384" width="384pt" xmlns="http://www.w3.org/2000/svg"><path d="m368 154.667969h-352c-8.832031 0-16-7.167969-16-16s7.167969-16 16-16h352c8.832031 0 16 7.167969 16 16s-7.167969 16-16 16zm0 0"/><path d="m368 32h-352c-8.832031 0-16-7.167969-16-16s7.167969-16 16-16h352c8.832031 0 16 7.167969 16 16s-7.167969 16-16 16zm0 0"/><path d="m368 277.332031h-352c-8.832031 0-16-7.167969-16-16s7.167969-16 16-16h352c8.832031 0 16 7.167969 16 16s-7.167969 16-16 16zm0 0"/></svg>
 						</button>
 						<div class="search-wrap">
 							
 						</div>
-						<?php if ($logged) { ?>
+						<?php /* if ($logged) { ?>
 							<a href="<?php echo $account; ?>" title="Войдите в личный кабинет" class="logged-mobile-header">
 								<svg class="icon header__account-icon">
 									<use xlink:href="/catalog/view/theme/default/img/sprite/symbol/sprite.svg#user"></use>
 								</svg>
 							</a>
-						<?php } ?>						
+						<?php } */ ?>						
 						<span id="mobile-cart"><?php echo $cart; ?></span>
 					</div>
 				</div>  <!-- /.header__fixed-container -->
@@ -868,7 +868,7 @@
 										<svg class="icon header__account-icon">
 											<use xlink:href="/catalog/view/theme/default/img/sprite/symbol/sprite.svg#user"></use>
 										</svg>
-										Вітаємо, <?php echo $text_account; ?>
+										<?php echo $text_account; ?> <i class="fa fa-caret-down"></i>
 									</span>
 									<ul class="dropdown-menu mobile-logged">
 										<li><a href="<?php echo $account; ?>"><?php echo $text_account; ?></a></li>
@@ -876,8 +876,7 @@
 										<li><a href="<?php echo $transaction; ?>"><?php echo $text_transaction; ?></a></li>
 										<li><a href="<?php echo $download; ?>"><?php echo $text_download; ?></a></li>
 										<li><a href="<?php echo $logout; ?>"><?php echo $text_logout; ?></a></li>
-									</ul>
-									
+									</ul>									
 								</div>
 								<?php if ($card) { ?>
 									<li class="cardModal_mob">
@@ -885,9 +884,7 @@
 											<span><?php echo $text_mycard; ?>
 											<b><?php echo $text_mycard_small; ?></b></span>
 										</a>
-										<div class="cardModal_wrap">
-											
-										</div>
+										<div class="cardModal_wrap"></div>
 									</li>
 								<?php } ?>
 								<?php } else { ?>
@@ -896,9 +893,14 @@
 										<use xlink:href="/catalog/view/theme/default/img/sprite/symbol/sprite.svg#user"></use>
 									</svg>
 									<span><?php echo $text_account; ?></span>
-								</a>
-								
+								</a>								
 							<?php } ?>
+								<li class="cardModal_mob">
+										<a href="javascript:void(0);" class="do-popup-element" onclick="initScanner();"><i class="fa fa-barcode"></i>
+											<span>Пошук по штрихкоду</span>
+										</a>									
+								</li>
+
 							
 							
 							
@@ -910,7 +912,7 @@
 								<div class="mob-menu__list"></div>
 								<div class="mob-wishlist">
 									<li>
-										<a href="<?php echo $compare; ?>" title="Сравнение">
+										<a href="<?php echo $compare; ?>" title="Порівняння">
 											<svg class="icon compare__icon">
 												<use xlink:href="/catalog/view/theme/default/img/sprite/symbol/sprite.svg#balance"></use>
 											</svg>
