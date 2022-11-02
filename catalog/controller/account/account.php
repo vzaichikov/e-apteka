@@ -18,10 +18,6 @@
 			'href' => $this->url->link('common/home')
 			);
 			
-			$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_account'),
-			'href' => $this->url->link('account/account', '', true)
-			);
 			
 			if (isset($this->session->data['success'])) {
 				$data['success'] = $this->session->data['success'];
