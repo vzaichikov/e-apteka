@@ -10,8 +10,8 @@
 	"categories": ["shopping", "lifestyle"],
 	"description": "Інтернет Аптека. Завжди великий вибір ліків, вакцин та косметики. Відправка по всій Україні. Швидка оплата онлайн.",
 	
-    "background_color": "#ffffff",
-    "theme_color": "#ffffff",
+    "background_color": "#4ea2cb",
+    "theme_color": "#4ea2cb",
 
     "related_applications": [
   	{
