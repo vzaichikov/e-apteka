@@ -175,11 +175,6 @@ class ControllerAccountAddress extends Controller {
 			'href' => $this->url->link('account/account', '', true)
 		);
 
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('account/address', '', true)
-		);
-
 		$data['heading_title'] = $this->language->get('heading_title');
 
 		$data['text_address_book'] = $this->language->get('text_address_book');

@@ -40,12 +40,6 @@ class ControllerAccountSimpleEdit extends SimpleController {
             'separator' => $this->language->get('text_separator')
         );
 
-        $this->_templateData['breadcrumbs'][] = array(
-            'text'      => $this->language->get('text_edit'),
-            'href'      => $this->url->link('account/simpleedit', '', 'SSL'),
-            'separator' => $this->language->get('text_separator')
-        );
-
         $this->_templateData['action'] = 'index.php?'.$this->simpleedit->getAdditionalParams().'route=account/simpleedit';
 
         $this->_templateData['heading_title']   = $this->language->get('heading_title');

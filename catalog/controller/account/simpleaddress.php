@@ -46,12 +46,6 @@ class ControllerAccountSimpleaddress extends SimpleController {
             'separator' => $this->language->get('text_separator')
         );
 
-        $this->_templateData['breadcrumbs'][] = array(
-            'text'      => $this->language->get($this->simpleaddress->getOpencartVersion() < 300 ? 'text_add_address' : 'text_address_add'),
-            'href'      => $this->url->link('account/simpleaddress/insert', '', 'SSL'),
-            'separator' => $this->language->get('text_separator')
-        );
-
         $this->_templateData['action'] = 'index.php?'.$this->simpleaddress->getAdditionalParams().'route=account/simpleaddress/insert';
 
         $this->_templateData['heading_title']   = $this->language->get('heading_title');
@@ -197,12 +191,6 @@ class ControllerAccountSimpleaddress extends SimpleController {
         $this->_templateData['breadcrumbs'][] = array(
             'text'      => $this->language->get('heading_title'),
             'href'      => $this->url->link('account/address', '', 'SSL'),
-            'separator' => $this->language->get('text_separator')
-        );
-
-        $this->_templateData['breadcrumbs'][] = array(
-            'text'      => $this->language->get($this->simpleaddress->getOpencartVersion() < 300 ? 'text_edit_address' : 'text_address_edit'),
-            'href'      => $this->url->link('account/simpleaddress/update', 'address_id=' . $addressId, 'SSL'),
             'separator' => $this->language->get('text_separator')
         );
 

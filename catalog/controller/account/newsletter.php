@@ -33,11 +33,6 @@ class ControllerAccountNewsletter extends Controller {
 			'href' => $this->url->link('account/account', '', true)
 		);
 
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_newsletter'),
-			'href' => $this->url->link('account/newsletter', '', true)
-		);
-
 		$data['heading_title'] = $this->language->get('heading_title');
 
 		$data['text_yes'] = $this->language->get('text_yes');

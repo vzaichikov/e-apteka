@@ -35,12 +35,6 @@ class ControllerAccountSimpleRegister extends SimpleController {
             'separator' => false
         );
 
-        $this->_templateData['breadcrumbs'][] = array(
-            'text'      => $this->language->get('heading_title'),
-            'href'      => $this->url->link('account/simpleregister', '', 'SSL'),
-            'separator' => $this->language->get('text_separator')
-        );
-
         $this->_templateData['action'] = 'index.php?'.$this->simpleregister->getAdditionalParams().'route=account/simpleregister';
 
         $this->_templateData['heading_title']        = $this->language->get('heading_title');

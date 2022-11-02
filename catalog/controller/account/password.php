@@ -47,11 +47,6 @@ class ControllerAccountPassword extends Controller {
 			'href' => $this->url->link('account/account', '', true)
 		);
 
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('account/password', '', true)
-		);
-
 		$data['heading_title'] = $this->language->get('heading_title');
 
 		$data['text_password'] = $this->language->get('text_password');

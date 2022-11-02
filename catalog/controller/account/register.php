@@ -55,11 +55,6 @@ class ControllerAccountRegister extends Controller {
 			'href' => $this->url->link('account/account', '', true)
 		);
 
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_register'),
-			'href' => $this->url->link('account/register', '', true)
-		);
-
 		$data['heading_title'] = $this->language->get('heading_title');
 
 		$data['text_account_already'] = sprintf($this->language->get('text_account_already'), $this->url->link('account/login', '', true));
