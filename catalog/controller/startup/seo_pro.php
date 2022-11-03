@@ -374,6 +374,7 @@
 							$queries[] = 'collection_id=' . $collection;
 						}
 						unset($data[$key]);
+					//	$postfix = 1;
 						break;
 						
 						case 'collection_id':
@@ -388,7 +389,7 @@
 						}					
 						//$queries[] = $key . '=' . $value;
 						unset($data[$key]);
-						$postfix = 1;
+					//	$postfix = 1;
 						break;														
 						
 						case 'special_id':
