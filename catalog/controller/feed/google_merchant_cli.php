@@ -90,6 +90,13 @@
 			
 			return $result;
 		}
+
+		//VERY FAST AND DIRTY FIX
+		private function linkUA($uri){
+			if ($this->config->get('config_language_id') == 3){
+				return str_ireplace(HTTPS_SERVER, HTTPS_SERVER . 'ua/', $uri);
+			}
+		}
 		
 		protected function printItem($product, $google_base_category){
 			
@@ -111,11 +118,11 @@
 			
 			if (mb_strlen($product['description']) >= 1000){
 				$product['description'] = mb_substr($product['description'], 0, 996) . '...';
-			}
+			}			
 			
 			$output .= '<item>' . PHP_EOL;
 			$output .= '<title><![CDATA[' . $this->normalizeForGoogle($product['name']) . ']]></title>' . PHP_EOL;
-			$output .= '<link>' . $this->url->link('product/product', 'product_id=' . $product['product_id']) . '</link>' . PHP_EOL;
+			$output .= '<link>' . $this->linkUA($this->url->link('product/product', 'product_id=' . $product['product_id'])) . '</link>' . PHP_EOL;
 			$output .= '<description><![CDATA[' . $product['description'] . ']]></description>' . PHP_EOL;
 			$output .= '<g:brand><![CDATA[' . html_entity_decode($product['manufacturer'], ENT_QUOTES, 'UTF-8') . ']]></g:brand>' . PHP_EOL;
 			$output .= '<g:condition>new</g:condition>' . PHP_EOL;
@@ -427,9 +434,7 @@
 			
 			if (!defined('OPENCART_CLI_MODE')){
 				die('CLI ONLY');
-			}
-			
-		//	$this->cache->flush();
+			}		
 			
 			error_reporting(E_ALL);		
 			ini_set('display_errors', 'On');
@@ -513,9 +518,7 @@
 			}
 			
 			$this->barcodeValidator = new \Ced\Validator\Barcode();
-			
-			//$this->cache->flush();
-			
+									
 			error_reporting(E_ALL);		
 			ini_set('display_errors', 'On');
 			ini_set('memory_limit', '1024M');
@@ -538,8 +541,7 @@
 					$this->config->set('config_language_code_explicit', $language['code']);										
 					
 					$this->echoLine('[GMC] Язык ' . $language['code']);
-					
-					
+										
 					$output  = '<?xml version="1.0" encoding="UTF-8" ?>' . PHP_EOL;
 					$output .= '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">' . PHP_EOL;
 					$output .= '  <channel>' . PHP_EOL;

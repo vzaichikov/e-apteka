@@ -25,6 +25,13 @@
 			$unit=array('b','kb','mb','gb','tb','pb');
 			return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
 		}
+
+		//VERY FAST AND DIRTY FIX
+		private function linkUA($uri){
+			if ($this->config->get('config_language_id') == 3){
+				return str_ireplace(HTTPS_SERVER, HTTPS_SERVER . 'ua/', $uri);
+			}
+		}
 		
 		private function writeSitemap($sitemap, $output){
 			
@@ -129,7 +136,7 @@
 						unset($product);
 						foreach ($products as $product) {									
 							$output .= '<url>';
-							$output .= '<loc><![CDATA[' . $this->url->link('product/product', 'product_id=' . $product['product_id']) . ']]></loc>';
+							$output .= '<loc><![CDATA[' . $this->linkUA($this->url->link('product/product', 'product_id=' . $product['product_id'])) . ']]></loc>';
 							$output .= '<changefreq>weekly</changefreq>';
 							
 							$date_modified = $product['date_modified'] != '0000-00-00 00:00:00' ? $product['date_modified'] : $product['date_added'];
@@ -187,7 +194,7 @@
 					
 					foreach ($manufacturers as $manufacturer) {
 						$output .= '<url>';
-						$output .= '<loc><![CDATA[' . $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $manufacturer['manufacturer_id']) . ']]></loc>';
+						$output .= '<loc><![CDATA[' . $this->linkUA($this->url->link('product/manufacturer/info', 'manufacturer_id=' . $manufacturer['manufacturer_id'])) . ']]></loc>';
 						$output .= '<changefreq>weekly</changefreq>';
 						$output .= '<priority>0.7</priority>';
 						$output .= '</url>';
@@ -208,7 +215,7 @@
 					
 					foreach ($informations as $information) {
 						$output .= '<url>';
-						$output .= '<loc><![CDATA[' . $this->url->link('information/information', 'information_id=' . $information['information_id']) . ']]></loc>';
+						$output .= '<loc><![CDATA[' . $this->linkUA($this->url->link('information/information', 'information_id=' . $information['information_id'])) . ']]></loc>';
 						$output .= '<changefreq>weekly</changefreq>';
 						$output .= '<priority>0.5</priority>';
 						$output .= '</url>';
@@ -242,7 +249,7 @@
 							}
 							
 							$output .= '<url>';
-							$output .= '<loc><![CDATA[' . $link . ']]></loc>';
+							$output .= '<loc><![CDATA[' . $this->linkUA($link) . ']]></loc>';
 							$output .= '<changefreq>weekly</changefreq>';
 							$output .= '<priority>0.7</priority>';
 							$output .= '</url>';
@@ -285,7 +292,7 @@
 					$articles = $this->model_simple_blog_article->getArticles();
 					foreach ($articles as $article){
 						$output .= '<url>';
-						$output .= '<loc><![CDATA[' . $this->url->link('simple_blog_article/article', 'simple_blog_article_id=' . $article['simple_blog_article_id']) . ']]></loc>';
+						$output .= '<loc><![CDATA[' . $this->linkUA($this->url->link('simple_blog_article/article', 'simple_blog_article_id=' . $article['simple_blog_article_id'])) . ']]></loc>';
 						$output .= '<changefreq>weekly</changefreq>';
 						$output .= '<priority>0.7</priority>';
 						$output .= '</url>';
@@ -318,7 +325,7 @@
 				//	$this->echoLine('[c] Категория ' . $result['name']);
 				
 				$output .= '<url>';
-				$output .= '<loc><![CDATA[' . $this->url->link('product/category', 'path=' . $new_path) . ']]></loc>';
+				$output .= '<loc><![CDATA[' . $this->linkUA($this->url->link('product/category', 'path=' . $new_path)) . ']]></loc>';
 				$output .= '<changefreq>weekly</changefreq>';
 				$output .= '<priority>0.7</priority>';
 				$output .= '</url>';
@@ -365,7 +372,7 @@
 				//	$this->echoLine('[c] Коллекция ' . $result['name']);
 				
 				$output .= '<url>';
-				$output .= '<loc><![CDATA[' . $this->url->link('product/collection', 'colpath=' . $new_path) . ']]></loc>';
+				$output .= '<loc><![CDATA[' . $this->linkUA($this->url->link('product/collection', 'colpath=' . $new_path)) . ']]></loc>';
 				$output .= '<changefreq>weekly</changefreq>';
 				$output .= '<priority>0.7</priority>';
 				$output .= '</url>';			
