@@ -30,6 +30,8 @@
 		private function linkUA($uri){
 			if ($this->config->get('config_language_id') == 3){
 				return str_ireplace(HTTPS_SERVER, HTTPS_SERVER . 'ua/', $uri);
+			} else {
+				return $uri;
 			}
 		}
 		
