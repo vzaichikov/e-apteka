@@ -198,8 +198,8 @@
 					
 					$data['locations'][] = array(
 					'location_id' => $location_info['location_id'],
-					'name'        => $name,
-					'address'     => nl2br($address),
+					'name'        => $this->db->escape($name),
+					'address'     => $this->db->escape(nl2br($address)),
 					'geocode'     => $location_info['geocode'],
 					'telephone'   => $location_info['telephone'],
 					'email'   	  => $this->config->get('config_email'),
