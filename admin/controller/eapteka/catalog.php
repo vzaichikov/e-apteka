@@ -1,18 +1,18 @@
 <?php
 	ini_set('memory_limit', '-1');
 	class ControllerEaptekaCatalog extends Controller {
-		private $updateFromLastFile = false;
+		private $updateFromLastFile = true;
 		
 		
-		private $error = array();
-		private $nodes = array();
-		private $address = "";
-		private $login = "";
-		private $password = "";
-		private $json_file = DIR_CATALOG . "../cron/data/catalog_test.json";
-		private $last_file = DIR_CATALOG . "/catalog.json";
-		private $exchange_data = "";
-		private $httpcode = "";
+		private $error 			= [];
+		private $nodes 			= [];
+		private $address 		= "";
+		private $login 			= "";
+		private $password 		= "";
+		private $json_file 		= DIR_CATALOG . "../cron/data/catalog_test.json";
+		private $last_file 		= DIR_CATALOG . "/catalog.json";
+		private $exchange_data 	= "";
+		private $httpcode 		= "";
 		private $added_products 		= [];
 		private $added_manufacturers 	= [];
 		private $addedOrEditedProducts 	= [];
@@ -20,11 +20,15 @@
 		
 		private $mapFieldsToGeneralLogic = [
 		'КлассификаторАТХИМЯ' 	=> 'КлассификаторАТХ_ua',
-		'КлассификаторАТХИМЯRU' => 'КлассификаторАТХ_ru'
+		'КлассификаторАТХИМЯRU' => 'КлассификаторАТХ_ru',
+		'СсылкаНоменклатураОсновноеДействуещиеВеществоНаименование' 	=> 'СсылкаНоменклатураОсновноеДействуещиеВеществоНаименование_ru',
+		'СсылкаНоменклатураОсновноеДействуещиеВеществоНаименованиеУкр' 	=> 'СсылкаНоменклатураОсновноеДействуещиеВеществоНаименование_ua',
+		'ДействуещиеВеществоНаименование' 								=> 'ДействуещиеВеществоНаименование_ru',
+		'ДействуещиеВеществоНаименованиеУкр' 							=> 'ДействуещиеВеществоНаименование_ua'
 		];
 		
-		private $main_category_name_id = 0;
-		private $null_uuid = '00000000-0000-0000-0000-000000000000';
+		private $main_category_name_id 	= 0;
+		private $null_uuid 				= '00000000-0000-0000-0000-000000000000';
 		
 		private $category_name_array 		= array();
 		private $category_uuid_array 		= array();
@@ -35,10 +39,9 @@
 		private $product_name_array 		= array();
 		private $product_uuid_array 		= array();
 		private $attribute_name_array 		= array();
-		private $socialprogram_name_array 		= array();
+		private $socialprogram_name_array 	= array();
 		
-		private function convert($size)
-		{
+		private function convert($size){
 			$unit=array('b','kb','mb','gb','tb','pb');
 			return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
 		}
@@ -881,10 +884,24 @@
 			}
 			unset($row);									
 		}
+
+		public function reparseArrayForMultilang($array){
+			$reparsed = [];
+
+			foreach ($array as $key => $value){
+				if (!empty($this->mapFieldsToGeneralLogic[$key])){
+					$reparsed[$this->mapFieldsToGeneralLogic[$key]] = $value;
+				} else {
+					$reparsed[$key] = $value;
+				}
+			}
+
+			return $reparsed;
+		}	
+
 		
-		public function reparseJSONToExcludeBadParams($json){
-			$tmpJSON = $json;
-			$resultJSON = array();
+		public function reparseJSONToExcludeBadParams($json){			
+			$resultJSON = [];
 			
 			foreach ($json as &$product){
 				
@@ -1634,7 +1651,7 @@
 						//---------------------------- *Атрибуты* ----------------------------
 						$mapAttributes = array(
 						'СсылкаНоменклатураФармакотерапевтическаяГруппаНаименование',
-						'СсылкаНоменклатураОсновноеДействуещиеВеществоНаименование',
+					//	'СсылкаНоменклатураОсновноеДействуещиеВеществоНаименование',				
 						'СсылкаНоменклатураОтпускПоРецепту',
 						'СсылкаНоменклатураТермолабильный',
 						'СтранаПроисхождения',
@@ -1642,16 +1659,21 @@
 						);
 						
 						$mapMultilangAttributes = array(
-						'ФормаВыпуска' => array(
+						'ФормаВыпуска' => [
 						'ru' => '2',
 						'en' => '4',
 						'uk' => '3'
-						),
-						'КлассификаторАТХ' => array(
+						],
+						'КлассификаторАТХ' => [
 						'ru' => '2',
 						'en' => '4',
 						'ua' => '3'
-						)
+						],
+						'СсылкаНоменклатураОсновноеДействуещиеВеществоНаименование' => [
+						'ru' => '2',
+						'en' => '4',
+						'ua' => '3'	
+						]
 						);
 						
 						$mapAttributesYesOnly = array(
@@ -1707,7 +1729,7 @@
 									$product_attribute[] = array(
 									'attribute_id' => $attribute_id,
 									'product_attribute_description' => $value_array
-									);
+									);									
 									
 									echo "[A] Атрибут " . $attribute_id . ', значение ' . $text . PHP_EOL;
 									
@@ -1728,33 +1750,42 @@
 									if (is_array($product[$map]) && isset($product[$map][$iter])){
 										
 										if ($attribute_id = $this->findIndexAttribute($map, $iter)) {
+											$product[$map][$iter] = $this->reparseArrayForMultilang($product[$map][$iter]);
 											
 											echo "[A] Нашли индексный атрибут " . $attribute_id . PHP_EOL;
 											
-											$val = array();
-											
+											$val = [];
+											$value_array = [];
+
 											foreach ($indexData['data'] as $valmap){
-												if (isset($product[$map][$iter][$valmap]) && $product[$map][$iter][$valmap]){
-													$val[] =  $product[$map][$iter][$valmap];
-												}
+												foreach ($languageMap as $langCode => $landID){												
+													if (!empty($product[$map][$iter][$valmap . '_' . $langCode])){
+														$value_array[$langCode][] =  $product[$map][$iter][$valmap . '_' . $langCode];
+													} elseif (isset($product[$map][$iter][$valmap]) && $product[$map][$iter][$valmap]){
+														$value_array[$langCode][] =  $product[$map][$iter][$valmap];
+													}
+												}												
+											}								
+											
+											$text = [];
+											foreach ($languageMap as $langCode => $landID){
+												$text[$landID] = implode(' ', $value_array[$langCode]);
 											}
+
+											echo '[A] Значение: ' . $text[2] . PHP_EOL;
 											
-											$text = implode(' ', $val);
-											
-											echo '[A] Значение: ' . $text . PHP_EOL;
-											
-											if ($val && $text && $this->ifToAddAttribute($text)){
+											if ($value_array && $text && $this->ifToAddAttribute($text[2]) && $this->ifToAddAttribute($text[3])){
 												$product_attribute[] = array(
 												'attribute_id' => $attribute_id,
 												'product_attribute_description' => array(
 												"2" => array(
-												'text' => $text,
+												'text' => $text[2],
 												),
 												"3" => array(
-												'text' => $text,
+												'text' => $text[3],
 												),
 												"4" => array(
-												'text' => $text,
+												'text' => $text[4],
 												)
 												)
 												);
@@ -1869,37 +1900,44 @@
 						foreach ($mapMultiAttributes as $map => $maptext){
 							$attribute_id = $this->findMultiAttribute($map, true);
 							
-							if ($attribute_id && isset($product[$map])){
+							if ($attribute_id && isset($product[$map])){								
 								
 								echo "[A] Нашли мультиатрибут " . $attribute_id . PHP_EOL;
 								
-								$text = array();
+								$text = [];
 								foreach ($product[$map] as $val){
-									if (isset($val[$maptext])) {
-										if ($this->ifToAddAttribute($val[$maptext])) {
-											$text[] = $val[$maptext];
+									$val = $this->reparseArrayForMultilang($val);
+
+									foreach ($languageMap as $langCode => $landID){	
+										if (!empty($val[$maptext . '_' . $langCode]) && $this->ifToAddAttribute($val[$maptext . '_' . $langCode])){
+											$text[$landID][] = $val[$maptext . '_' . $langCode];
+										} elseif (!empty($val[$maptext]) && $this->ifToAddAttribute($val[$maptext])){
+											$text[$landID] = $val[$maptext];
 										}
+
 									}
 								}
 								
-								$text = implode(';',$text);
+								foreach ($languageMap as $langCode => $landID){	
+									$text[$landID] = implode(';', $text[$landID]);
+								}
 								
-								if ($text && $this->ifToAddAttribute($text)){
+								if ($text && $this->ifToAddAttribute($text[2]) && $this->ifToAddAttribute($text[3])){
 									$product_attribute[] = array(
 									'attribute_id' => $attribute_id,
 									'product_attribute_description' => array(
 									"2" => array(
-									'text' => $text,
+									'text' => $text[2],
 									),
 									"3" => array(
-									'text' => $text,
+									'text' => $text[3],
 									),
 									"4" => array(
-									'text' => $text,
+									'text' => $text[4],
 									)
 									)
 									);
-									echo "[A] Атрибут " . $attribute_id . ', значение ' . $text . PHP_EOL;
+									echo "[A] Атрибут " . $attribute_id . ', значение ' . $text[2] . PHP_EOL;
 									
 									} else {
 									
