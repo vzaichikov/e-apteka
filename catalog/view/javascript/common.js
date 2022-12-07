@@ -78,7 +78,7 @@ $(document).ready(function() {
 	
 	$('#search input[name=\'search\']').on('keydown', function(e) {
 		if (e.keyCode == 13) {
-			$('header #search input[name=\'search\']').parent().find('button').trigger('click');
+			$('#submit_search1').trigger('click');
 		}
 	});
 	
