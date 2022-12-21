@@ -87,6 +87,8 @@ $_['button_list'] = 'Список';
 $_['button_grid'] = 'Сітка';
 $_['button_map'] = 'Показати карту';
 
+$_['text_we_work_while_no_light'] = '<i class="fa fa-lightbulb-o" aria-hidden="true"></i> Працюємо навіть без світла';
+
 $_['text_login_modal']					= 'Увійти в особистий кабінет';
 $_['text_login_as']					= 'Увійти, як користувач';
 $_['text_filldata_from']			= 'Заповнити дані з';

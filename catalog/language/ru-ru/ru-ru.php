@@ -45,6 +45,8 @@
 	
 	$_['please_select_street'] = 'Выберите улицу Киева';
 	
+	$_['text_we_work_while_no_light'] = '<i class="fa fa-lightbulb-o" aria-hidden="true"></i> Работаем даже без света';
+
 	// Buttons
 	$_['button_address_add']		= 'Добавить адрес';
 	$_['button_back']					= 'Назад';
