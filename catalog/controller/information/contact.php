@@ -195,6 +195,7 @@
 
 					}
 
+					$data['text_we_work_while_no_light'] = $this->language->get('text_we_work_while_no_light');
 					
 					$data['locations'][] = array(
 					'location_id' => $location_info['location_id'],

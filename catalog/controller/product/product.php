@@ -125,7 +125,7 @@
 						}
 					}	
 				*/
-					
+					$data['text_we_work_while_no_light'] = $this->language->get('text_we_work_while_no_light');
 					
 					$data['stocks'][] = array(
 						'name'			=> $result['name'],

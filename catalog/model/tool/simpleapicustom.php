@@ -346,9 +346,10 @@
 				unset($location);
 				foreach ($stock_locations as $location){
 					$name = '<b class="drugstore-radio-head">';
-
-					$name .= $location['name'];
+					$name .= $location['name'];					
 					$name .= '</b>';
+
+					$name .= '<br /><small class="text-success"><b>' . $this->language->get('text_we_work_while_no_light') . '</b></small>';
 					$name .= '<br />';
 
 					$open_info = $this->isOpenNow($location);
@@ -360,7 +361,6 @@
 					} else {
 						$name .= '<span class="text text-success "><i class="fa fa-check-circle" aria-hidden="true"></i> ' . $this->language->get('products_available_tomorrow') . '</span>';
 					}
-
 
 					$values[] = array(
 						'id'   => $location['location_id'],
@@ -374,8 +374,9 @@
 
 					$name .= $location['name'];
 					$name .= '</b>';
+					$name .= '<br /><small class="text-success"><b>' . $this->language->get('text_we_work_while_no_light') . '</b></small>';
 					$name .= '<br />';
-					$name .= '<span class="text text-warning "><i class="fa fa-hourglass" aria-hidden="true"></i> ' . sprintf($this->language->get('products_available_later'), date('d.m', strtotime('+2 days'))) . '</span>';					
+					$name .= '<span class="text text-warning "><i class="fa fa-clock-o" aria-hidden="true"></i> ' . sprintf($this->language->get('products_available_later'), date('d.m', strtotime('+2 days'))) . '</span>';					
 
 					$values[] = array(
 						'id'   => $location['location_id'],
