@@ -458,7 +458,7 @@ class ControllerUserUser extends Controller {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
-		if ((utf8_strlen($this->request->post['username']) < 3) || (utf8_strlen($this->request->post['username']) > 20)) {
+		if ((utf8_strlen($this->request->post['username']) < 3) || (utf8_strlen($this->request->post['username']) > 30)) {
 			$this->error['username'] = $this->language->get('error_username');
 		}
 
@@ -499,7 +499,7 @@ class ControllerUserUser extends Controller {
 		}
 
 		if ($this->request->post['password'] || (!isset($this->request->get['user_id']))) {
-			if ((utf8_strlen($this->request->post['password']) < 4) || (utf8_strlen($this->request->post['password']) > 20)) {
+			if ((utf8_strlen($this->request->post['password']) < 4) || (utf8_strlen($this->request->post['password']) > 40)) {
 				$this->error['password'] = $this->language->get('error_password');
 			}
 
