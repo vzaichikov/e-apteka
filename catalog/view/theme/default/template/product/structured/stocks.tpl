@@ -23,6 +23,7 @@
 			<td>
 				<?php echo $stock['address']; ?>
 				<?php if ((int)$stock['stock'] > 0) { ?>
+					<br /><small class="text-success"><b><?php echo $text_we_work_while_no_light; ?></b></small>
 					<span class="hidden-xs">
 						<br />
 						<span class="product-stock-map__time"><i class="fa fa-clock-o <? echo $stock['faclass']; ?>"></i> <i><?php echo $stock['open']; ?></i></span>

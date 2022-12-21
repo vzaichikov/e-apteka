@@ -6,6 +6,7 @@
     b.drugstore-radio-head{color:#0385c1; font-size:16px;}
     b.drugstore-radio-head.grey{color:#888; font-size:16px;}
     .el-radio-style .text-success{padding-left:10px;}
+    .el-radio-style .text-warning{padding-left:10px;}
     
     .loadingspan {float: right; margin-right: 6px; margin-top: -20px;position: relative;z-index: 2;color: red;}
 </style>

@@ -54,7 +54,10 @@
 				<?php $i=0; foreach ($locations as $location) { ?>
 					<tr <?php if ($location['geocode']) { ?>class="location_has_geocode" data-i="<?php echo $i; ?>"<?php } ?>>
 						<td>
-							<b class="product-stock-map__name"><?php echo $location['address']; ?></b><br />
+							<b class="product-stock-map__name"><?php echo $location['address']; ?></b>
+							<br />
+							<small class="text-success"><b><?php echo $text_we_work_while_no_light; ?></b></small>
+							<br />
 							<span class="product-stock-map__time"><i class="fa fa-clock-o <? echo $location['faclass']; ?>"></i> <i><?php echo $location['open']; ?></i></span><br />
 							<small><?php echo $location['telephone']; ?></small>
 						</td>
@@ -81,8 +84,6 @@
 			    // var data = 7;
 			    select.innerHTML += "<option value=\"" + i + "\" data-i=\"" + i + "\" class=\"location_has_geocode\">" + opt + "</option>";
 			}
-
-
 
 			var markers = new Array();
 			var windows = new Array();      
@@ -115,7 +116,7 @@
 				
 				
 				<?php if ($location['geocode']) { ?>
-					markers[<? echo $i; ?>] = L.marker([<?php echo $location['geocode'];?>], {icon:icon<?php echo $i; ?>}).addTo(map).bindPopup('<div class="" style="margin-bottom: 10px;"><img src="<?php echo $location['image']; ?>" alt="" /></div><h4><? echo $location['name']; ?></h4><p><?php echo $location['open']; ?></p><h4><strong><?php echo $location['telephone']; ?></strong></h4><p><h4><? echo $location['email']; ?></h4></p>');
+					markers[<? echo $i; ?>] = L.marker([<?php echo $location['geocode'];?>], {icon:icon<?php echo $i; ?>}).addTo(map).bindPopup('<div class="" style="margin-bottom: 10px;"><img src="<?php echo $location['image']; ?>" alt="" /></div><h4><? echo $location['name']; ?></h4><small class="text-success"><b><?php echo $text_we_work_while_no_light; ?></b></small><p><?php echo $location['open']; ?></p><h4><strong><?php echo $location['telephone']; ?></strong></h4><p><h4><? echo $location['email']; ?></h4></p>');
 				<? } ?>
 			<? $i++; } ?>
 			
