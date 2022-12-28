@@ -352,7 +352,7 @@
 			echo '[i] END CURL DEBUG' . PHP_EOL;
 			echo PHP_EOL;
 			
-			file_put_contents(DIR_CATALOG . '/catalog.json', $data);
+			file_put_contents(DIR_CATALOG . '/catalog.json', $data);			
 			
 			$data = trim($data);
 			$bom = pack('H*','EFBBBF');
