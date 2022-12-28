@@ -260,7 +260,12 @@
 				$this->response->redirect($this->url->link('information/contact/success'));
 			}
 		*/
+			$data['breadcrumbs'] = array();
 			
+			$data['breadcrumbs'][] = array(
+			'text' => $this->language->get('breadcrumb_home'),
+			'href' => $this->url->link('common/home')
+			);
 			
 			$data['heading_title'] = $this->language->get('heading_title');
 			
