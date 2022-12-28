@@ -62,7 +62,7 @@
 	if (defined('IS_ADMIN')){
 		try{
 			$registry->set('dbCalls', false);
-			if (fsockopen(AMI_DB_HOST, 3306, $fsock_errcode, $fsock_errmessage, 2)){
+			if (fsockopen(AMI_DB_HOST, 3306, $fsock_errcode, $fsock_errmessage, 1)){
 				$registry->set('dbCalls', new DB('mysqli_remote', AMI_DB_HOST, AMI_DB_USER, AMI_DB_PASSWORD, AMI_DB_NAME, 3306));
 			}		
 			} catch (\Exception $e){
