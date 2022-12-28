@@ -11,7 +11,7 @@
 				}
 			</style>
 
-			<div class="col-sm-12 col-md-12 text-center"  id="top-temprorary-banner-wrap" style="padding:0px!important;  display:none;" >
+			<div class="col-sm-12 col-md-12 text-center"  id="top-temprorary-banner-wrap">
 
 				<?php /* ?>
 				<div id="top-temprorary-banner" style="text-align: center; background-color:<?php echo $background; ?>; padding:5px 5px; color:white;">
@@ -45,7 +45,6 @@
 				</div>
 
 				
-			</div>
 		</div>
 	</div>
 </div>
