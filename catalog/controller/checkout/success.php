@@ -10,8 +10,8 @@
 			$this->load->language('checkout/success');
 			$this->load->language('checkout/detail_success');
 				
-				if (!isset($this->session->data['order_id']) && $_SERVER['REMOTE_ADDR'] == '37.55.189.160'){
-					//$this->session->data['order_id'] = 157781;	
+				if (!isset($this->session->data['order_id']) && $_SERVER['REMOTE_ADDR'] == '31.43.104.37'){
+					//$this->session->data['order_id'] = 161090;	
 				}
 			
 			if (isset($this->session->data['order_id']) && (!empty($this->session->data['order_id']))) {
@@ -33,13 +33,13 @@
 				$data['order']['total'] = $this->currency->format($data['order']['total'], $this->session->data['currency']);
 				$data['products'] = array();
 
-				if ($data['order']['total'] && (float)$data['order']['payment_code'] == 'whitepay' /* && $data['order']['order_status_id'] == $this->config->get('whitepay_order_status_id') */){
-					$this->load->language('extension/payment/whitepay');					
-					$data['whitepay_payment'] = $this->url->link('extension/payment/whitepay/payment');
-					$data['whitepay_pay_button_text'] = $this->language->get('whitepay_pay_button_text');
+				if ($data['order']['total'] && $data['order']['payment_code'] == 'whitepay' /* && $data['order']['order_status_id'] == $this->config->get('whitepay_order_status_id') */){
+					// $this->load->language('extension/payment/whitepay');					
+					// $data['whitepay_payment'] = $this->url->link('extension/payment/whitepay/payment');
+					// $data['whitepay_pay_button_text'] = $this->language->get('whitepay_pay_button_text');
 
-					$this->load->language('checkout/success');
-					$this->load->language('checkout/detail_success');
+					// $this->load->language('checkout/success');
+					// $this->load->language('checkout/detail_success');
 				}
 				
 				$data['text_success1'] = sprintf($this->language->get('text_success1'), $this->session->data['order_id']);
@@ -156,11 +156,11 @@
 				$data['text_phone'] = $this->language->get('text_phone');
 				$data['text_fax'] = $this->language->get('text_fax');
 				
-				$data['text_delivery'] = $this->language->get('text_delivery');
-				$data['text_payment'] = $this->language->get('text_payment');
-				$data['text_address'] = $this->language->get('text_address');
-				$data['text_callcenter'] = $this->language->get('text_callcenter');
-				$data['text_seller'] = $this->language->get('text_seller');
+				$data['text_delivery'] 		= $this->language->get('text_delivery');
+				$data['text_payment'] 		= $this->language->get('text_payment');
+				$data['text_address'] 		= $this->language->get('text_address');
+				$data['text_callcenter'] 	= $this->language->get('text_callcenter');
+				$data['text_seller'] 		= $this->language->get('text_seller');
 				
 				$data['text_allday'] = $this->language->get('text_seller');
 				$data['text_datetime'] = $this->language->get('text_datetime');
@@ -172,9 +172,21 @@
 				$data['seller']	=	nl2br($this->config->get('config_address'));
 				
 				if ($data['order']['location_id']){
-					
+					$location_id = $data['order']['location_id'];					
+				} elseif (strpos($data['order']['shipping_code'], 'multiflat') !== false){
+					$location_id = 7;
+					foreach (['Дарницький','Деснянський','Дніпровський'] as $leftShoreRegion){
+						if (strpos($data['order']['shipping_address_1'], $leftShoreRegion) !== false){
+							$location_id = 6; break;							
+						}
+					}
+				} elseif (strpos($data['order']['shipping_code'], 'novaposhta') !== false || strpos($data['order']['shipping_code'], 'ukrposhta') !== false){
+					$location_id = 7;
+				}		
+
+				if ($location_id){
 					$this->load->model('localisation/location');
-					$location_info = $this->model_localisation_location->getLocation($data['order']['location_id']);
+					$location_info = $this->model_localisation_location->getLocation($location_id);
 					
 					$multilang_fields = ['open'];
 					foreach ($multilang_fields as $_field){
@@ -184,8 +196,13 @@
 							${$_field} = $location_info[$_field];
 						}
 					}
-					
+
+					$real_seller = $location_info['address'];					
 					$data['open'] = $open;
+				}
+
+				if ($real_seller){
+					$data['seller'] = str_replace(['б-р Лесі Українки, 9', 'б-р Леси Украинки, 9'], $real_seller, $data['seller']);		
 				}
 				
 				// Add to activity log

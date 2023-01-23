@@ -4,8 +4,7 @@
 		@link   http://www.simpleopencart.com
 	*/
 		
-		class ModelToolSimpleApiCustom extends Model {
-			private $openedStores = [6,7];
+		class ModelToolSimpleApiCustom extends Model {			
 			private $leftShoreRegions = array('Дарницький','Деснянський','Дніпровський');
 
 			public function example($filterFieldValue) {
