@@ -544,14 +544,11 @@
 			return $query->row;
 		}
 		
-		public function updateProductByRegistryNumber($product_id, $data) {
-			
-			$query = $this->db->query("UPDATE " . DB_PREFIX . "product SET reg_json = '" . $this->db->escape(json_encode($data)) . "' WHERE product_id = '" . (int)$product_id . "'");
-		
+		public function updateProductByRegistryNumber($product_id, $data) {			
+			$query = $this->db->query("UPDATE " . DB_PREFIX . "product SET reg_json = '" . $this->db->escape(json_encode($data)) . "' WHERE product_id = '" . (int)$product_id . "'");		
 		}
 		
-		public function getProductByRegistryNumber($reg_number) {
-			
+		public function getProductByRegistryNumber($reg_number) {			
 			$query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.reg_number LIKE '" . $this->db->escape($reg_number) . "'");
 
 			return $query->row;

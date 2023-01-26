@@ -311,6 +311,7 @@
 				
 				case 'product/product/review':
 				case 'product/product/instruction':
+				case 'product/product/likreestr':
 				case 'extension/soconfig/quickview':
 				case 'information/information/info':			
 				return $link;

@@ -51,73 +51,28 @@
 		"Термін придатності: одиниця вимірювання"
 		];
 		
-		private function parseCSV(){
-			
+		private function parseCSV(){			
 			$csv = array_map('str_getcsvLR', file($this->path));
 			array_walk($csv, function(&$a) use ($csv) {
 				$a = array_combine($csv[0], $a);
 			});
 			array_shift($csv); # remove column header
 			
-			return $csv;
-			
+			return $csv;			
 		}
 		
 		
 		public function index(){
-			$this->load->model('catalog/product');
-			
-			
-			$data = $this->parseCSV();
-			
-			foreach ($data as $line){
-				
-				$registryNumber = $line['Номер Реєстраційного посвідчення'];
-				
-				if ($registryNumber && $product = $this->model_catalog_product->getProductByRegistryNumber($registryNumber)){
-				
+			$this->load->model('catalog/product');					
+			$data = $this->parseCSV();			
+			foreach ($data as $line){				
+				$registryNumber = $line['Номер Реєстраційного посвідчення'];				
+				if ($registryNumber && $product = $this->model_catalog_product->getProductByRegistryNumber($registryNumber)){				
 					echoLine('Нашли товар c регистрационным номером ' . $registryNumber . ': ' . $product['name']);
-					$this->model_catalog_product->updateProductByRegistryNumber($product['product_id'], $line);
-					
-				} else {
-				
-					echoLine('Не нашли товар c регистрационным номером ' . $registryNumber);
-				
+					$this->model_catalog_product->updateProductByRegistryNumber($product['product_id'], $line);					
+				} else {				
+					echoLine('Не нашли товар c регистрационным номером ' . $registryNumber);				
 				}
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-			}
-			
-			
-			
-			
-			
-			
-			
+			}			
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	}			

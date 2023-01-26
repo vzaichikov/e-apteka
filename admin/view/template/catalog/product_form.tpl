@@ -115,10 +115,8 @@
 						<div class="tab-pane" id="tab-likreestr">
 							<div class="form-group">
 								<table class="table table-striped table-bordered">
-									<?php if (!empty($reg_json)) { ?>
-										
-										<?php foreach ($reg_json as $key => $value) {  ?>
-											
+									<?php if (!empty($reg_json)) { ?>										
+										<?php foreach ($reg_json as $key => $value) {  ?>											
 											<tr>
 												<td>
 													<?php echo $key; ?>
@@ -126,10 +124,8 @@
 												<td>
 													<?php echo $value; ?>
 												</td>
-											</tr>
-											
-										<?php } ?>
-										
+											</tr>											
+										<?php } ?>										
 									<?php } ?>
 								</table>
 							</div>
