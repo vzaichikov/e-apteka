@@ -89,6 +89,7 @@
 	
 	$_['tab_description'] = 'Опис';
 	$_['tab_instruction']                       = 'Інструкція';
+	$_['tab_likreestr']                       = 'Дані з реєстру';
 	$_['tab_attribute'] = 'Характеристики';
 	$_['tab_analogs']                           = 'Аналоги';
 	$_['tab_same']                           = 'Форми випуску';

@@ -182,7 +182,29 @@
 			$data['instruction'] = html_entity_decode($this->model_catalog_product->getProductInstruction($product_id), ENT_QUOTES, 'UTF-8');
 			
 			$this->response->setOutput($this->load->view('product/structured/instruction', $data));			
-		}		
+		}	
+
+		public function likreestr() {
+			$this->load->language('product/product');
+			$this->load->model('catalog/product');		
+			
+			if (isset($this->request->get['product_id'])) {
+				$product_id = (int)$this->request->get['product_id'];
+				} else {
+				$product_id = 0;
+			}
+			
+			$ajaxrequest = (!empty($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+			
+			if (!$ajaxrequest){
+				$this->response->redirect($this->url->link('product/product', 'product_id=' . $product_id), 301);	
+			}							
+
+			$likreestr = $this->model_catalog_product->getProductLikReestr($product_id);
+			$data['likreestr'] = json_decode($likreestr)?json_decode($likreestr, true):false;
+			
+			$this->response->setOutput($this->load->view('product/structured/likreestr', $data));			
+		}	
 
 
 		public function delivery_pay(){
@@ -619,6 +641,7 @@
 				
 				$data['tab_description'] = $this->language->get('tab_description');
 				$data['tab_instruction'] = $this->language->get('tab_instruction');
+				$data['tab_likreestr'] = $this->language->get('tab_likreestr');
 				$data['tab_analogs'] = $this->language->get('tab_analogs');
 				$data['tab_same'] = $this->language->get('tab_same');
 				$data['tab_attribute'] = $this->language->get('tab_attribute');
@@ -638,6 +661,7 @@
 				$data['points'] = $product_info['points'];
 				$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
 				$data['instruction'] = html_entity_decode($product_info['instruction'], ENT_QUOTES, 'UTF-8');
+				$data['likreestr'] 	 = json_decode($product_info['reg_json'])?json_decode($product_info['reg_json'], true):false;
 				
 				$data['config_free_shipping'] = $this->config->get('config_free_shipping');
 				

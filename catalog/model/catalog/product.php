@@ -87,12 +87,18 @@
 
 			return '';
 		}	
-		
-		
+
+		public function getProductLikReestr($product_id){
+			$query = $this->db->query("SELECT reg_json FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "'");
+
+			if ($query->num_rows){
+				return $query->row['reg_json'];
+			}
+
+			return '';
+		}	
+				
 		public function getProductEcommerceData($product){												
-			
-			
-			
 		}
 		
 		protected function getPath($parent_id, $current_path = '') {
@@ -158,8 +164,7 @@
 			
 			return $product_category_data;
 		}
-		
-		
+				
 		public function getProductTags($product_id) {
 			$product_category_data = array();
 			
@@ -489,6 +494,7 @@
                     'description'      => $query->row['description'],
                     'special_date_end' => $query->row['special_date_end'],
                     'instruction'      => $query->row['instruction'],
+                    'reg_json'         => $query->row['reg_json'],
 					'backlight' 	   => ($query->row['backlight']!='#000000')?$query->row['backlight']:'',
 					'no_shipping'      => $query->row['no_shipping'],
 					'no_payment'       => $query->row['no_payment'],

@@ -90,6 +90,16 @@
 								</a>
 							</li>
 						<?php } ?>
+
+						<?php if ( !empty($likreestr)) { ?>
+							<li>
+								<a href="#tab-likreestr" data-toggle="tab"><?php echo $tab_likreestr; ?>
+									<!-- <svg class="product-tabs__nav-icon">
+										<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#instruction"></use>
+									</svg> -->
+								</a>
+							</li>
+						<?php } ?>
 						
 						<?php if ($attribute_groups) { ?>
 							<li>
@@ -611,6 +621,11 @@
 
 					<?php if ( isset($instruction) && !empty($instruction) ) { ?>
 						<div class="tab-pane information-text-style" id="tab-instruction" style="max-height:500px; overflow-y:scroll;">							
+						</div>
+					<?php } ?>
+
+					<?php if ( !empty($likreestr) ) { ?>
+						<div class="tab-pane information-text-style" id="tab-likreestr" style="max-height:500px; overflow-y:scroll;">							
 						</div>
 					<?php } ?>
 					
@@ -1197,6 +1212,14 @@
 			if (!instruction_shown){
 				console.log('Fired loading instruction');
 				$('#tab-instruction').load('index.php?route=product/product/instruction&product_id=<?php echo $product_id; ?>', function(){ instruction_shown = true; });				
+			}
+		});
+
+		var likreestr_shown = false;
+		$('a[href="#tab-likreestr"]').on('shown.bs.tab', function (event) {
+			if (!likreestr_shown){
+				console.log('Fired loading likreestr');
+				$('#tab-likreestr').load('index.php?route=product/product/likreestr&product_id=<?php echo $product_id; ?>', function(){ likreestr_shown = true; });				
 			}
 		});
 
