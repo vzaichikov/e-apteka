@@ -660,8 +660,6 @@
 
 		<script type="text/javascript">
 			$(document).ready(function(){
-
-
 				window.dataLayer = window.dataLayer || [];
 				console.log('dataLayer.push ' + 'orderPurchaseSuccess');
 				dataLayer.push({

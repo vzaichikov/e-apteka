@@ -69,6 +69,8 @@ $(document).ready(function() {
 							success = false;
 						}
 					});
+
+					$('#ecommerce-result').load('index.php?route=checkout/success&ecommerce=true');
 				}
 			},
 			error: function(xhr, ajaxOptions, thrownError) {

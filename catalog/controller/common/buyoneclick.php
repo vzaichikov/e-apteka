@@ -244,7 +244,7 @@
 					if (!empty($option_data)) {
 						$this->session->data['boc_product_option'] = $option_data;
 					}
-					// Display prices
+
 					if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
 						$price = $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
 						$boc_price = $product['price'];
@@ -260,8 +260,6 @@
 					}
 					
 					$discounts = $this->model_catalog_product->getProductDiscounts($this->request->post['product_id']);
-					
-					// var_dump($discounts);
 					
 					if ($discounts) {
 						foreach ($discounts as $discount) {
@@ -340,9 +338,7 @@
 					} else {
 					$json['redirect'] = str_replace('&amp;', '&', $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']));
 				}
-			}
-			
-			// var_dump($json);
+			}								
 			
 			$this->response->addHeader('Content-Type: application/json');
 			$this->response->setOutput(json_encode($json));

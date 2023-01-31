@@ -87,8 +87,7 @@
 							}
 						}
 					}
-					
-					// Calculate total
+										
 					if (!$product_option) {
 						$boc_unit_price = $boc_price;
 						$boc_total = $boc_price * $product_quantity;
@@ -105,8 +104,6 @@
 								$option_total = (float)$option['value_price_value'];
 							}
 						}
-						//$boc_unit_price = $boc_price + $option_total;
-						//$boc_total = ($boc_price + $option_total) * $product_quantity;
 						$boc_unit_tax = $this->tax->getTax(($option_total * $product_quantity), $product_info['tax_class_id']);
 						
 						$boc_price = $option_total;
@@ -117,8 +114,7 @@
 					
 					$boc_tax_total = $boc_unit_tax * $product_quantity;
 					$boc_order_total = $boc_total;
-					
-					// $order_data['products'] = array();
+										
 					$order_data['products'][] = array (
 					'product_id' => $product_info['product_id'],
 					'name'       => $product_info['name'],
@@ -237,6 +233,7 @@
 					
 					$this->load->model('checkout/order');
 					$data['order_id'] = $this->model_checkout_order->addOrder($order_data);
+					$this->session->data['recent_order_id'] = $data['order_id'];
 					
 					
 					unset($this->session->data['boc_product_option']);
@@ -246,7 +243,6 @@
 					if (empty($data['order_id'])) {
 						$json['error']['order'] = $this->language->get('error_order');
 						} else {
-						//	$this->session->data['order_id'] = $data['order_id'];
 						
 						$this->model_checkout_order->addOrderHistory($data['order_id'], $this->fastOrderStatus, $comment = '', $notify = false, $override = false, $redirect = false);
 						$json['success'] = sprintf($this->language->get('text_success'), $data['order_id'], $phone);
@@ -335,12 +331,14 @@
 					
 					
 					} else {
+
 					$json['redirect'] = str_replace('&amp;', '&', $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']));
 				}
 				
 				} else {
 				$json['error']['product'] = $this->language->get('error_product');
 			}
+
 			$this->response->addHeader('Content-Type: application/json');
 			$this->response->setOutput(json_encode($json));
 		}

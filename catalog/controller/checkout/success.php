@@ -33,14 +33,14 @@
 				$data['order']['total'] = $this->currency->format($data['order']['total'], $this->session->data['currency']);
 				$data['products'] = array();
 
-				if ($data['order']['total'] && $data['order']['payment_code'] == 'whitepay' /* && $data['order']['order_status_id'] == $this->config->get('whitepay_order_status_id') */){
-					// $this->load->language('extension/payment/whitepay');					
-					// $data['whitepay_payment'] = $this->url->link('extension/payment/whitepay/payment');
-					// $data['whitepay_pay_button_text'] = $this->language->get('whitepay_pay_button_text');
+				// if ($data['order']['total'] && $data['order']['payment_code'] == 'whitepay' && $data['order']['order_status_id'] == $this->config->get('whitepay_order_status_id') ){
+				// 	// $this->load->language('extension/payment/whitepay');					
+				// 	// $data['whitepay_payment'] = $this->url->link('extension/payment/whitepay/payment');
+				// 	// $data['whitepay_pay_button_text'] = $this->language->get('whitepay_pay_button_text');
 
-					// $this->load->language('checkout/success');
-					// $this->load->language('checkout/detail_success');
-				}
+				// 	// $this->load->language('checkout/success');
+				// 	// $this->load->language('checkout/detail_success');
+				// }
 				
 				$data['text_success1'] = sprintf($this->language->get('text_success1'), $this->session->data['order_id']);
 				$data['text_success2'] = $this->language->get('text_success2');
@@ -205,7 +205,6 @@
 					$data['seller'] = str_replace(['б-р Лесі Українки, 9', 'б-р Леси Украинки, 9'], $real_seller, $data['seller']);		
 				}
 				
-				// Add to activity log
 				if ($this->config->get('config_customer_activity')) {
 					$this->load->model('account/activity');
 					
@@ -278,7 +277,11 @@
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
-			
-			$this->response->setOutput($this->load->view('common/success', $data));
+				
+			if (!empty($this->request->get['ecommerce']) && $ajaxrequest = (!empty($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')){
+				$this->response->setOutput($this->load->view('common/success_ecommerce', $data));
+			} else {
+				$this->response->setOutput($this->load->view('common/success', $data));
+			}
 		}
 	}										

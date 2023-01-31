@@ -165,6 +165,7 @@
 					<div class="clearfix"></div>
 					<div class="col-pd-15"><hr /></div>
 					<div class="clearfix"></div>
+					<div id="ecommerce-result"></div>
 					<div class="col-pd-15">
 						<button type="submit" id="boc_submit" class="btn btn-lg btn-block btn-primary" style="max-width:250px; margin:0 auto;"><?php echo $buyoneclick_button_order; ?></button>
 					</div>
