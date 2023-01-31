@@ -6,7 +6,7 @@
 		private $config;
 		private $registry;
 		
-		public function __construct($hostname, $username, $password, $database, $port = '3306', $registry) {
+		public function __construct($hostname, $username, $password, $database, $port, $registry) {			
 			
 			if (stripos($hostname, 'sock')){
 				$socket = $hostname;
@@ -14,10 +14,8 @@
 				} else {
 				$socket = false;
 			}
-			
-			
-			$this->registry = $registry;		
-			$this->cache = $this->registry->get('cache');						
+							
+			$this->cache = $registry->get('cache');						
 			
 			$this->connection = new \mysqli($hostname, $username, $password, $database, $port, $socket);
 			
@@ -40,7 +38,7 @@
 			// 	}
 			// }			
 								
-			if (stripos($sql, 'select ') === 0){
+			if (stripos($sql, 'select ') === 0 && !(defined('IS_DEBUG') && IS_DEBUG)){
 				if ($result = $this->cache->get('sql.' . md5($sql))){
 					if (isset($result->sql) AND $result->sql == $sql) {
 						$result->fromCache = 'FromCache';

@@ -12,7 +12,11 @@ class Cache {
 		}
 	}
 	
-	public function get($key) {				
+	public function get($key) {
+		if (defined('IS_DEBUG') && IS_DEBUG){
+			return false;
+		}
+
 		return $this->adaptor->get($key);
 	}
 	

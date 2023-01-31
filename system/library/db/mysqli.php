@@ -3,7 +3,7 @@
 	final class MySQLi {
 		private $connection;
 		
-		public function __construct($hostname, $username, $password, $database, $port = '3306', $registry) {
+		public function __construct($hostname, $username, $password, $database, $port, $registry) {
 			
 			if (stripos($hostname, 'sock')){
 				$socket = $hostname;
@@ -11,11 +11,8 @@
 				} else {
 				$socket = false;
 			}
-			
-			
-			$this->registry = $registry;		
-			$this->cache = $this->registry->get('cache');
-			
+									
+			$this->cache = $registry->get('cache');			
 			$this->connection = new \mysqli($hostname, $username, $password, $database, $port, $socket);
 			
 			if ($this->connection->connect_error) {
