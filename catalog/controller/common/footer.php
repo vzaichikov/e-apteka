@@ -86,6 +86,10 @@
 					);
 				}
 			}
+
+			$data['hb_snippets_local_enable'] 	= $this->config->get('hb_snippets_local_enable');
+			$data['hb_snippets_local_snippet'] 	= html_entity_decode($this->config->get('hb_snippets_local_snippet'));
+			$data['search_link']				= $this->url->link('product/search', 'search={search_term_string}');
 			
 			$data['phone'] = $this->config->get('config_telephone');
 			$data['address'] = $this->config->get('config_address');

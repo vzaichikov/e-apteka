@@ -270,6 +270,35 @@ $(document).ready(function() {
 	
 	<div class="footer__info">
 		<div class="container">
+
+			<?php if ($hb_snippets_local_enable) { ?>
+				<?php echo $hb_snippets_local_snippet; ?>
+			<?php } ?>
+
+			<script type="application/ld+json">
+				{
+					"@context": "http://schema.org",
+					"@type": "Organization",
+					"url": "https://e-apteka.com.ua","logo": "https://e-apteka.com.ua/image/data/logo_02.png",
+					"potentialAction": {
+						"@type": "SearchAction",
+						"target": "<?php echo $search_link; ?>",
+						"query-input": "required name=search_term_string"
+					},
+					"contactPoint" : [
+						{
+							"@type" : "ContactPoint",
+							"telephone" : "+380445200333",
+							"contactType" : "Customer Service"
+						},
+						{
+							"@type" : "ContactPoint",
+							"telephone" : "+380683450131",
+							"contactType" : "Customer Service"
+						}],
+					"sameAs" : ["https://www.instagram.com/agp.kyiv/","https://www.facebook.com/agp.kyiv/"]}
+			</script>									 									 									 									 
+
 			<div class="row">
 				
 				<div class="col-sm-3">
