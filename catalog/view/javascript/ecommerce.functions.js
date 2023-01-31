@@ -153,7 +153,7 @@ function passEcommerceToDataLayer(evt, product_id, quantity, fbevt){
 			console.log('dataLayer.push ' + evt);
 			
 			var products = [{ 
-				'id':		json.product_id,
+				'id':		json.id,
 				'name':		json.name,
 				'price':	json.price,
 				'brand':	json.brand,
@@ -163,7 +163,7 @@ function passEcommerceToDataLayer(evt, product_id, quantity, fbevt){
 			switch(evt){
 				case 'productDetail':				
 				products = [{ 
-					'id':		json.product_id,
+					'id':		json.id,
 					'name':		json.name,
 					'price':	json.price,
 					'brand':	json.brand,
