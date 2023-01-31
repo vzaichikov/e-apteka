@@ -21,28 +21,19 @@
 				$server = $this->config->get('config_url');
 			}
 			
-			/*
-				if (is_file(DIR_IMAGE . $this->config->get('config_icon'))) {
-				$this->document->addLink($server . 'image/' . $this->config->get('config_icon'), 'icon');
-				}
-			*/
-			
-			
-			$data['base'] = $server;
-			$data['description'] = $this->document->getDescription();
-			$data['title'] = $this->document->getTitle();
-			$data['keywords'] = $this->document->getKeywords();
-			$data['robots_meta'] = $this->document->getRobotsMeta();
-			// OCFilter start
-			$data['noindex'] = $this->document->isNoindex();
-			// OCFilter end
-			$data['links'] = $this->document->getLinks();
-			$data['styles'] = $this->document->getStyles();
-			$data['scripts'] = $this->document->getScripts();
-			$data['htmllang'] = $this->language->get('code');
-			$data['lang'] = $this->language->get('code');
-			$data['direction'] = $this->language->get('direction');
-			$data['text_page'] = $this->language->get('text_page');
+			$data['base'] 			= $server;
+			$data['description'] 	= $this->document->getDescription();
+			$data['title'] 			= $this->document->getTitle();
+			$data['keywords'] 		= $this->document->getKeywords();
+			$data['robots_meta'] 	= $this->document->getRobotsMeta();			
+			$data['noindex'] 		= $this->document->isNoindex();			
+			$data['links'] 			= $this->document->getLinks();
+			$data['styles'] 		= $this->document->getStyles();
+			$data['scripts'] 		= $this->document->getScripts();
+			$data['htmllang'] 		= $this->language->get('code');
+			$data['lang'] 			= $this->language->get('code');
+			$data['direction'] 		= $this->language->get('direction');
+			$data['text_page'] 		= $this->language->get('text_page');
 			
 			if (!empty($this->request->get['page']) && is_numeric($this->request->get['page']) && (int)$this->request->get['page'] > 1){
 				$data['seo_page'] = (int)$this->request->get['page'];	
@@ -281,9 +272,6 @@
 			
 			$data['vacancies'] = $this->url->link('newsblog/category', 'newsblog_category_id=3');
 			$data['text_vacancies'] = $this->language->get('text_vacancies');
-			
-			/***theme's changes***/
-			//$data['theme'] = $this->config->get('theme_default_directory');
 			$data['store_id'] = $this->config->get('config_store_id');
 			$data['lang'] = $this->config->get('config_language_id');
 			
@@ -304,9 +292,7 @@
 			'catalog/view/javascript/IMCallMeAskMe/jquery.imcallback.css',
 			'catalog/view/theme/default/stylesheet/popupcart.css',
 			'catalog/view/theme/default/stylesheet/swiper.min.css'
-			);
-			
-			
+			);						
 			
 			$query = "f=" . implode(',', $general_css);
 			$data['general_minified_css_uri'] = Minify\StaticService\build_uri($static_uri, $query, 'css');
@@ -418,16 +404,12 @@
 			
 			$data['pwasession'] = $this->customer->getPWASession();	
 			
-			$data['search'] = $this->load->controller('common/search');						
+			$data['search'] 	= $this->load->controller('common/search');						
 			$data['loginmodal'] = $this->load->controller('account/loginmodal');
-			$data['language'] = $this->load->controller('common/language');
-			$data['currency'] = $this->load->controller('common/currency');
-			//$data['search_link'] = $this->load->controller('common/search');
-			//$data['cart'] = $this->load->controller('common/cart');
-			$data['catalog'] = $this->load->controller('common/afterload/catalog');
+			$data['language'] 	= $this->load->controller('common/language');
+			$data['currency'] 	= $this->load->controller('common/currency');
+			$data['catalog'] 	= $this->load->controller('common/afterload/catalog');
 			
-			
-			// For page specific css
 			if (isset($this->request->get['route']) AND strlen($this->request->get['route']) != 0) {
 				if (isset($this->request->get['product_id'])) {
 					$class = '-' . $this->request->get['product_id'];
