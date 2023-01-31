@@ -244,28 +244,24 @@
 			
 			$this->load->model('catalog/product');
             $product_info = $this->model_catalog_product->getProduct($product_id);
-			
-			
+						
 			if ($product_info) {											
 				$json['currency'] 	= $this->session->data['currency'];
-				$json['id'] = $product_info['ecommerceData']['id'];
+				$json['id'] 		= $product_info['ecommerceData']['id'];
 				$json['name'] 		= $product_info['ecommerceData']['name'];				
 				$json['price'] 		= $product_info['ecommerceData']['price'];
 				$json['gtin'] 		= $product_info['ecommerceData']['gtin'];
 				$json['brand'] 		= $product_info['ecommerceData']['brand'];				
 				$json['category']   = $product_info['ecommerceData']['category'];
 				
-				$json = array_map('prepareEcommString', $json);
-				
-			}
+				$json = array_map('prepareEcommString', $json);				
+			}			
 			
 			$this->response->setOutput(json_encode($json));
 		}
 		
 		
 		public function index($tab = false) {
-		
-
 			$devMode = $data['devMode'] = ($this->customer->getEmail() == 'dev@e-apteka.com.ua');
 			
 			$this->load->language('product/product');

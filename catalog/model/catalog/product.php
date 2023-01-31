@@ -121,6 +121,41 @@
 				}
 			}
 		}
+
+		public function getGoogleCategoryPathForCategory($category_id){
+			if (!$string = $this->cache->get('category.google.tree.' . $category_id . '.' . $this->config->get('config_language_id'))){
+
+				$query = $this->db->query("SELECT google_tree FROM " . DB_PREFIX . "category_description WHERE category_id = '" . $category_id . "' AND language_id = '" . $this->config->get('config_language_id') . "' LIMIT 1");
+				if (!$query->num_rows || empty($query->row['google_tree']) || !$string = $query->row['google_tree']){
+					
+					$path = $string = '';
+					if (!empty($category_id)){				
+						$path = $this->getPath($category_id);
+					}
+					
+					if ($path) {
+						$string = '';
+						
+						foreach (explode('_', $path) as $path_id) {
+							$category_info = $this->model_catalog_category->getCategory($path_id);
+							
+							if ($category_info) {
+								if (!$string) {
+									$string = $category_info['name'];
+								} else {
+									$string .= '/' . $category_info['name'];
+								}
+							}
+						}
+					}
+
+					$this->db->query("UPDATE " . DB_PREFIX . "category_description SET google_tree = '" . $this->db->escape($string) . "' WHERE category_id = '" . $category_id . "' AND language_id = '" . $this->config->get('config_language_id') . "'");
+				}
+				$this->cache->set('category.google.tree.' . $category_id . '.' . $this->config->get('config_language_id'), $string);
+			}
+			
+			return $string;
+		}
 		
 		public function getGoogleCategoryPath($product_id){
 
@@ -200,7 +235,7 @@
 		
 		public function getProduct($product_id, $explicit = false) {
 			
-			$product_info = $this->cache->get('product.info.' . $product_id.'.'.(int)$this->config->get('config_language_id'));
+			$product_info = $this->cache->get('product.info.' . $product_id . '.'.(int)$this->config->get('config_language_id'));
 			
 			if($product_info){
 				return $product_info;
@@ -223,6 +258,8 @@
 				(SELECT lcd.unit FROM " . DB_PREFIX . "length_class_description lcd WHERE p.length_class_id = lcd.length_class_id AND lcd.language_id = '" . (int)$this->config->get('config_language_id') . "') AS length_class, 
 				
 				(SELECT AVG(rating) AS total FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = p.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating, 
+
+				(SELECT category_id FROM " . DB_PREFIX . "product_to_category p2cm WHERE p2cm.product_id = p.product_id ORDER BY main_category DESC LIMIT 1) as main_category_id,
 				
 				(SELECT COUNT(*) AS total FROM " . DB_PREFIX . "review r2 WHERE r2.product_id = p.product_id AND r2.status = '1' GROUP BY r2.product_id) AS reviews, p.sort_order FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.product_id = '" . (int)$product_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 
@@ -375,12 +412,12 @@
 					
 					if ($query->num_rows) {
 						$ecommerceData = array(
-						'id'		=> (int)$query->row['product_id'],
+						'id'		=> (int)$product_id,
 						'name' 		=> prepareEcommString($query->row['name']),
 						'gtin' 		=> prepareEcommString($query->row['ean']),			
 						'brand' 	=> prepareEcommString($query->row['manufacturer']),		
 						'price' 	=> prepareEcommString($query->row['special']?$query->row['special']:$query->row['price']),
-						'category' 	=> prepareEcommString($this->getGoogleCategoryPath($query->row['product_id']))
+						'category' 	=> prepareEcommString($this->getGoogleCategoryPathForCategory($query->row['main_category_id']))
 						);
 					}
 					
@@ -542,6 +579,7 @@
                     'width'            => $query->row['width'],
                     'height'           => $query->row['height'],
                     'length_class_id'  => $query->row['length_class_id'],
+                    'main_category_id' => $query->row['main_category_id'],
                     'subtract'         => $query->row['subtract'],
                     'rating'           => round($query->row['rating']),
                     'reviews'          => $query->row['reviews'] ? $query->row['reviews'] : 0,
