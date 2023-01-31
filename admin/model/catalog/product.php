@@ -543,6 +543,24 @@
 			
 			return $query->row;
 		}
+
+		public function insertDataToLikReestr($drug_id, $json, $product_id = null) {			
+			$query = $this->db->query("INSERT INTO " . DB_PREFIX . "likreestr SET 
+				`json_old` 		= `json`,
+				`json` 			= '" . $this->db->escape(json_encode($json)) . "',
+				`product_id` 	= '" . (int)$product_id . "',			
+				`drug_id` 		= '" . $this->db->escape($drug_id) . "'
+				ON DUPLICATE KEY UPDATE
+				`json_old` 		= `json`,
+				`json` 			= '" . $this->db->escape(json_encode($json)) . "',
+				`product_id` 	= '" . (int)$product_id . "'");		
+		}
+
+		public function getAllDataFromLikReestr(){
+			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "likreestr WHERE 1");
+
+			return $query->rows;
+		}
 		
 		public function updateProductByRegistryNumber($product_id, $data) {			
 			$query = $this->db->query("UPDATE " . DB_PREFIX . "product SET reg_json = '" . $this->db->escape(json_encode($data)) . "' WHERE product_id = '" . (int)$product_id . "'");		

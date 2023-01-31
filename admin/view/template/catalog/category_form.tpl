@@ -61,9 +61,17 @@
 										<div class="form-group">
 											<label class="col-sm-2 control-label" for="input-seo_name<?php echo $language['language_id']; ?>">SEO Название</label>
 											<div class="col-sm-10">
-												<input type="text" name="category_description[<?php echo $language['language_id']; ?>][seo_name]" value="<?php echo isset($category_description[$language['language_id']]) ? $category_description[$language['language_id']]['seo_name'] : ''; ?>" placeholder="<?php echo $entry_name; ?>" id="input-seo_name<?php echo $language['language_id']; ?>" class="form-control" />
+												<input type="text" name="category_description[<?php echo $language['language_id']; ?>][seo_name]" value="<?php echo isset($category_description[$language['language_id']]) ? $category_description[$language['language_id']]['seo_name'] : ''; ?>" placeholder="Google Category Tree" id="input-seo_name<?php echo $language['language_id']; ?>" class="form-control" />
 											</div>
 										</div>
+
+										<div class="form-group">
+											<label class="col-sm-2 control-label" for="input-google_tree<?php echo $language['language_id']; ?>">Google Tree</label>
+											<div class="col-sm-10">
+												<input type="text" name="category_description[<?php echo $language['language_id']; ?>][google_tree]" value="<?php echo isset($category_description[$language['language_id']]) ? $category_description[$language['language_id']]['google_tree'] : ''; ?>" placeholder="<?php echo $entry_name; ?>" id="input-google_tree<?php echo $language['language_id']; ?>" class="form-control" />
+											</div>
+										</div>
+
 										<div class="form-group">
 											<label class="col-sm-2 control-label" for="input-description<?php echo $language['language_id']; ?>"><?php echo $entry_description; ?></label>
 											<div class="col-sm-10">

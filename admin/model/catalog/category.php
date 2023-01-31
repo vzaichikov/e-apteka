@@ -22,7 +22,7 @@
 			}
 			
 			foreach ($data['category_description'] as $language_id => $value) {
-				$this->db->query("INSERT INTO " . DB_PREFIX . "category_description SET category_id = '" . (int)$category_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', alternate_name = '" . $this->db->escape($value['alternate_name']) . "', normalized_name = '" . $this->db->escape(normalizeString($value['name'])) . "',  soundex_name = '" . $this->db->escape(transSoundex($value['name'])) . "', seo_name = '" . $this->db->escape($value['seo_name']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "category_description SET category_id = '" . (int)$category_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', alternate_name = '" . $this->db->escape($value['alternate_name']) . "', normalized_name = '" . $this->db->escape(normalizeString($value['name'])) . "',  soundex_name = '" . $this->db->escape(transSoundex($value['name'])) . "', seo_name = '" . $this->db->escape($value['seo_name']) . "', google_tree = '" . $this->db->escape($value['google_tree']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "'");
 			}
 			if (isset($data['category_banner'])) {
 				foreach ($data['category_banner'] as $cat_id) {
@@ -111,7 +111,7 @@
 			$this->db->query("DELETE FROM " . DB_PREFIX . "category_description WHERE category_id = '" . (int)$category_id . "'");
 			
 			foreach ($data['category_description'] as $language_id => $value) {
-				$this->db->query("INSERT INTO " . DB_PREFIX . "category_description SET category_id = '" . (int)$category_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', alternate_name = '" . $this->db->escape($value['alternate_name']) . "', normalized_name = '" . $this->db->escape(normalizeString($value['name'])) . "',  soundex_name = '" . $this->db->escape(transSoundex($value['name'])) . "', seo_name = '" . $this->db->escape($value['seo_name']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "category_description SET category_id = '" . (int)$category_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', alternate_name = '" . $this->db->escape($value['alternate_name']) . "', normalized_name = '" . $this->db->escape(normalizeString($value['name'])) . "',  soundex_name = '" . $this->db->escape(transSoundex($value['name'])) . "', seo_name = '" . $this->db->escape($value['seo_name']) . "', google_tree = '" . $this->db->escape($value['google_tree']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "'");
 			}
 			
 			$this->db->query("DELETE FROM " . DB_PREFIX . "category_banners WHERE parent_id = '" . (int)$category_id . "'");
@@ -347,6 +347,7 @@
 				$category_description_data[$result['language_id']] = array(
                 'name'             => $result['name'],
 				'seo_name'         => $result['seo_name'],
+				'google_tree'      => $result['google_tree'],
 				'alternate_name'   => $result['alternate_name'],
                 'meta_title'       => $result['meta_title'],
                 'meta_description' => $result['meta_description'],
