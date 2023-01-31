@@ -40,10 +40,29 @@
 		
 	}
 	
-	function echoLine($line){
-		
+	function echoLine($line, $type = 'l'){
 		if (php_sapi_name() === 'cli'){
-			echo $line . PHP_EOL;
+
+			switch ($type) {
+				case 'e':
+				echo "\033[31m$line \033[0m" . PHP_EOL;
+				break;
+				case 's':
+				echo "\033[32m$line \033[0m" . PHP_EOL;
+				break;
+				case 'w':
+				echo "\033[33m$line \033[0m" . PHP_EOL;
+				break;  
+				case 'i':
+				echo "\033[36m$line \033[0m" . PHP_EOL;
+				break;    
+				case 'l':
+				echo $line . PHP_EOL;
+				break;  
+				default:
+				echo $line . PHP_EOL;
+				break;
+			}
 		}
 	}
 	

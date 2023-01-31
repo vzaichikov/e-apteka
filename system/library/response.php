@@ -102,8 +102,8 @@ class Response {
 				$line .= '<div style="width:100%; color:#000; font-size:10px; background:white; padding:1px 2px; border-top:1px solid #ddd">' . $query['query2'] . '</div>';
 
 				$line .= '<div style="width:100%; border-top:1px solid #ddd;  font-family:Courier; font-size:10px; background:white;  margin-bottom:2px; padding:1px 2px;">';
-				foreach ($query['debug'] as $debug){
-					$line .= "# " . $debug['function'] . ', line ' . $debug['line'] . ' at ' . $debug['class'] . '<br />';
+				foreach ($query['debug'] as $debug){					
+					$line .= "# " . $debug['function'] . ', line ' . $debug['line'] . ' at ' . $debug['class'] . ' in ' . $debug['file'] . '<br />';
 				}
 				$line .= "</div>";
 
