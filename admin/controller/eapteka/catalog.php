@@ -1,7 +1,7 @@
 <?php
 	ini_set('memory_limit', '-1');
 	class ControllerEaptekaCatalog extends Controller {
-		private $updateFromLastFile = true;
+		private $updateFromLastFile = false;
 		
 		
 		private $error 			= [];
