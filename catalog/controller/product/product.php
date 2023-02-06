@@ -449,28 +449,31 @@
 					
 					$text = '"review": [';
 					foreach($data['reviews'] AS $row){
-                        if($row['author'] == "" || ctype_space($row['author'])){
-                            $row['author'] = 'Провизор';
+						if($row['author'] == "" || ctype_space($row['author'])){
+							$row['author'] = 'Провизор';
 						}
 						$text .= '{
-						"@type": "Review",
-						"author": "' . $row['author'] . '",
-						"datePublished": "' . $row['date_added'] . '",
-						"description": "' . removequotes($row['text']) . '",
-						"name": "' . removequotes($product_info['name']) . '",
-						"reviewRating": {
-						"@type": "Rating",
-						"bestRating": "5",
-						"ratingValue": "'.$row['rating'].'",
-						"worstRating": "1"
+							"@type": "Review",
+							"author": {
+								"@type": "Person",
+								"name": "' . $row['author'] . '"
+								},
+								"datePublished": "' . $row['date_added'] . '",
+								"description": "' . removequotes($row['text']) . '",
+								"name": "' . removequotes($product_info['name']) . '",
+								"reviewRating": {
+									"@type": "Rating",
+									"bestRating": "5",
+									"ratingValue": "'.$row['rating'].'",
+									"worstRating": "1"
+								}
+							},';
 						}
-						},';
+						$text = trim($text, ',');
+						$text .= "],";
+						
+						$data['seo'] = str_replace('"offers"',$text."\n".'"offers"', $data['seo']);
 					}
-					$text = trim($text, ',');
-					$text .= "],";
-					
-					$data['seo'] = str_replace('"offers"',$text."\n".'"offers"', $data['seo']);
-				}
 				
 
 
