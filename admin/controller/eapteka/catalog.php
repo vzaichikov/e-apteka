@@ -2116,17 +2116,15 @@
 						}
 
 						
-						$sku = '';
+						$morion_code = '';
 						if (trim($product['SKU'])){
-							$sku = $mpn = $product['sku'];
+							$morion_code = $product['SKU'];
 						}
 						
+						$sku = $model = '';
 						if (trim($product['КОДТОВАРА'])){
 							$model = $product['КОДТОВАРА'];
-							
-							if (!$sku){
-								$sku = $product['КОДТОВАРА'];
-							}
+							$sku = $product['КОДТОВАРА'];							
 						}
 						
 						if (!$model){
@@ -2253,7 +2251,7 @@
 						'image' 						=> $real_product?$real_product['image']:'',
 						'model'  						=> $model,
 						'sku'    						=> $sku,
-						'upc'    						=> $real_product?$real_product['upc']:'',
+						'upc'    						=> $morion_code,
 						'no_shipping' 					=> (isset($product['НетДоставки']) && $product['НетДоставки'])?'1':'0',
 						'no_payment' 					=> (isset($product['НетОплатыОнлайн']) && $product['НетОплатыОнлайн'])?'1':'0',
 						'no_advert' 	 				=> (isset($product['ЗапрещеноКРекламеВИнтернет']) && $product['ЗапрещеноКРекламеВИнтернет'])?'1':'0',
@@ -2261,7 +2259,8 @@
 						'ean'    						=> trim($product['barcode_ean']),
 						'jan'    						=> $real_product?$real_product['jan']:'',
 						'isbn'    						=> $real_product?$real_product['isbn']:'',
-						'mpn'     						=> $real_product?$real_product['mpn']:'',
+						'mpn'     						=> !empty($product['number_reg_posvidchennya'])?trim($product['number_reg_posvidchennya']):'',
+						'reg_number'					=> !empty($product['number_reg_posvidchennya'])?trim($product['number_reg_posvidchennya']):'',
 						'keyword'     					=> $real_product?$real_product['keyword']:'',
 						'location'     					=> '',
 						'minimum'     					=> '',
@@ -2298,7 +2297,6 @@
 						'name_of_part'					=> !empty($product['name_ed_izm'])?trim($product['name_ed_izm']):'',
 						'uuid_of_part'					=> !empty($product['uuid_ed_izm'])?trim($product['uuid_ed_izm']):'',						
 						'count_of_parts'				=> !empty($product['kolvo_vupakovke'])?round((1 / $product['kolvo_vupakovke'])):1,
-						'reg_number'					=> !empty($product['number_reg_posvidchennya'])?trim($product['number_reg_posvidchennya']):'',
 						/* PARTS */
 						'quantity'   					=> $real_product?$real_product['quantity']:0,
 						'social_program'				=> isset($product['Соцпрограмма'])?$product['Соцпрограмма']:'',
