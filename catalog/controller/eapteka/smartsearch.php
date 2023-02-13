@@ -215,7 +215,6 @@
 			}			
 			
 			try {
-
 				if ($length <= 3){
 					
 					$field = $this->elasticSearch->buildField('names'); 
@@ -237,11 +236,15 @@
 					$r1 = $this->prepareResults($results, $highlight, true, $query);
 
 					if (count($r1) < 8){
-						$field1 = $this->elasticSearch->buildField('name');
-						$highlight = $this->elasticSearch->buildField('name');
-						$field2 = 'names';
+						if (\hobotix\Elasticsearch::validateResult($resultsP = $this->elasticSearch->sku($query)) == 1){
+						} else {	
+							$field1 = $this->elasticSearch->buildField('name');
+							$highlight = $this->elasticSearch->buildField('name');
+							$field2 = 'names';
 
-						$resultsP = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2);	
+							$resultsP = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2);								
+						}
+
 						$r2 = $this->prepareResults($resultsP, $highlight, true, $query);
 					}
 					
