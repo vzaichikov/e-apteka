@@ -211,7 +211,8 @@
 			'is_stock',
 			'is_catalog',
 			'is_customer',
-			'is_cards'	
+			'is_cards',
+			'is_preorder',
 			);
 			
 			foreach ($txt_fields as $_field){

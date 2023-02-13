@@ -11,6 +11,7 @@
 			is_catalog = '" . (int)$data['is_catalog'] . "', 
 			is_customer = '" . (int)$data['is_customer'] . "', 	
 			is_cards = '" . (int)$data['is_cards'] . "',
+			is_preorder = '" . (int)$data['is_preorder'] . "',
 			node_url = '" . $this->db->escape($data['node_url']) . "', 			
 			node_auth = '" . $this->db->escape($data['node_auth']) . "', 
 			node_password = '" . $this->db->escape($data['node_password']) . "'");
@@ -30,6 +31,7 @@
 			is_catalog = '" . (int)$data['is_catalog'] . "', 
 			is_customer = '" . (int)$data['is_customer'] . "',
  			is_cards = '" . (int)$data['is_cards'] . "',
+ 			is_preorder = '" . (int)$data['is_preorder'] . "',
 			node_url = '" . $this->db->escape($data['node_url']) . "', 			
 			node_auth = '" . $this->db->escape($data['node_auth']) . "', 
 			node_password = '" . $this->db->escape($data['node_password']) . "'

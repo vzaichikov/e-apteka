@@ -44,6 +44,7 @@
 									<td class="text-left">Каталог</td>
 									<td class="text-left">Клиенты</td>	
 									<td class="text-left">Карты</td>
+									<td class="text-left">Под заказ</td>
 									<td class="text-left">Последнее действие</td>
 									<td class="text-left">Статус узла</td>
 									<td class="text-right"><?php echo $column_action; ?></td>
@@ -92,6 +93,13 @@
 											</td>		
 											<td class="text-center">
 												<?php if ($node['is_cards']) { ?>
+													<span class="label label-success"><i class="fa fa-plus"></i></span>
+													<? } else { ?>					  
+													<span class="label label-danger"><i class="fa fa-minus"></i></span>
+												<? } ?>
+											</td>
+											<td class="text-center">
+												<?php if ($node['is_preorder']) { ?>
 													<span class="label label-success"><i class="fa fa-plus"></i></span>
 													<? } else { ?>					  
 													<span class="label label-danger"><i class="fa fa-minus"></i></span>
