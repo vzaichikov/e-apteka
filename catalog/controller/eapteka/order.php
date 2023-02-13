@@ -207,7 +207,6 @@
 		}
 		
 		private function getOrderUUID($order_id){
-			
 			$query = $this->db->query("SELECT uuid FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int) $order_id . "'");
 			
 			if ($query->num_rows){
@@ -215,11 +214,9 @@
 				} else {
 				return '';
 			}
-			
 		}
 		
-		private function getOrderIDByUUID($uuid){
-			
+		private function getOrderIDByUUID($uuid){			
 			$query = $this->db->query("SELECT order_id FROM `" . DB_PREFIX . "order` WHERE uuid = '" . $this->db->escape( $uuid ). "'");
 			
 			if ($query->num_rows){
@@ -227,10 +224,8 @@
 				} else {
 				return '';
 			}
-			
 		}
-		
-		
+				
 		private function prepareComment($data = array())
 		{
 			return implode(PHP_EOL, $data);
@@ -301,30 +296,23 @@
 				$message .= '<b>[PHP DEBUG]</b> Stack trace is not used in this case, cause of unlimitness of tracing <b>[PHP DEBUG]</b>' . PHP_EOL;
 				
 				//	$telegramSender->SendMessage($message);
-			}
-			
+			}			
 		}
 		
-		private function startQueue(){
-			
+		private function startQueue(){			
 			if (file_exists(DIR_CACHE . 'orderqueue.pid')){				
 				die('[EAPTEKA SYNC] Очередь работает!' . PHP_EOL);
 				} else {
 				touch(DIR_CACHE . 'orderqueue.pid');
-			}
-			
-			
+			}						
 		}
 		
-		private function stopQueue(){
-			
+		private function stopQueue(){			
 			if (file_exists(DIR_CACHE . 'orderqueue.pid')){
 				unlink(DIR_CACHE . 'orderqueue.pid');
-			}
-			
+			}			
 		}
-		
-		
+				
 		public function orderstatus(){
 			$this->load->model('localisation/location');
 			$this->load->model('checkout/order');
@@ -402,8 +390,7 @@
 				
 			}
 		}
-		
-		
+				
 		public function queue(){
 			$this->load->model('checkout/order');
 			
@@ -514,15 +501,10 @@
 				}
 			}
 			
-			$this->stopQueue();
-			
+			$this->stopQueue();		
 		}
-		
-		
-		
-		
-		private function pushJSON()
-		{
+								
+		private function pushJSON(){
 			$this->load->model('localisation/location');
 			//	$log = new Log('send_to_odinass.txt');
 			//	$log->write(serialize($this->address));
@@ -666,8 +648,7 @@
 				}
 			}
 		}
-		
-		
+				
 		public function sendOrder($order_id){
 			$this->load->model('checkout/order');
 			$this->load->model('account/customer');

@@ -4,6 +4,7 @@
 		public function listing(){
 			$this->load->language('product/collection');
 			$this->load->model('catalog/collection');
+			$this->load->model('tool/image');
 			
 			$data['breadcrumbs'] = array();
 			
@@ -53,13 +54,11 @@
 		
 		public function index() {				
 			$this->load->language('product/collection');
-			
-			
+						
 			$this->load->model('catalog/collection');
 			$this->load->model('catalog/category');
 			$this->load->model('catalog/product');
-			$this->load->model('catalog/manufacturer');
-			
+			$this->load->model('catalog/manufacturer');		
 			$this->load->model('tool/image');
 			
 			if (isset($this->request->get['filter'])) {
