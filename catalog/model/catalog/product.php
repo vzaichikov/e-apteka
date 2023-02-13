@@ -552,6 +552,8 @@
                     'jan'              => $query->row['jan'],
                     'isbn'             => $query->row['isbn'],
                     'mpn'              => $query->row['mpn'],
+                    'reg_number'       => $query->row['reg_number'],
+                    'morion'	       => $query->row['upc'],
                     'uuid'             => $query->row['uuid'],
                     'location'         => $query->row['location'],					
                     'quantity'         => $query->row['quantity'],

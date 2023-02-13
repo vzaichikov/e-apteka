@@ -194,21 +194,25 @@
 		}
 		
 		public static function makeIdentifiersArray($sku){
-			$results = array();
-			
+			$results = array();			
 			$sku = trim($sku);
+
+			if ($sku){
+				$results[] = $sku;
+				$results[] = str_replace('/', '', $sku);
+			}
 			
-			$results[] = str_replace(' ', '', $sku);
-			$results[] = str_replace('.', '', $sku);
-			$results[] = str_replace('-', '', $sku);
-			$results[] = str_replace('/', '', $sku);		
-			$results[] = str_replace(array(' ', '.', '-', '/'), '', $sku);
-			$results[] = str_replace(array(' ', '-'), '', $sku);
-			$results[] = str_replace(array(' ', '.'), '', $sku);
-			$results[] = str_replace(array('-', '.'), '', $sku);
-			$results[] = str_replace(array('/', '.'), '', $sku);
-			$results[] = str_replace(array('/', ' '), '', $sku);
-			$results[] = str_replace(array('/', '-'), '', $sku);
+			// $results[] = str_replace(' ', '', $sku);
+			// $results[] = str_replace('.', '', $sku);
+			// $results[] = str_replace('-', '', $sku);
+			// $results[] = str_replace('/', '', $sku);		
+			// $results[] = str_replace(array(' ', '.', '-', '/'), '', $sku);
+			// $results[] = str_replace(array(' ', '-'), '', $sku);
+			// $results[] = str_replace(array(' ', '.'), '', $sku);
+			// $results[] = str_replace(array('-', '.'), '', $sku);
+			// $results[] = str_replace(array('/', '.'), '', $sku);
+			// $results[] = str_replace(array('/', ' '), '', $sku);
+			// $results[] = str_replace(array('/', '-'), '', $sku);
 			
 			return array_filter(array_values(array_unique($results)));		
 		}	
@@ -859,6 +863,8 @@
 			'atxes'				=> [ 'type' => 'text', 'analyzer' => 'russian', 'index' => 'true' ],
 			'farmgorups'		=> [ 'type' => 'text', 'analyzer' => 'russian', 'index' => 'true' ],		
 			'ean'				=> [ 'type' => 'text', 'analyzer' => 'identifier', 'index' => 'true' ],
+			'reg_number'		=> [ 'type' => 'text', 'analyzer' => 'identifier', 'index' => 'true' ],
+			'morion'			=> [ 'type' => 'text', 'analyzer' => 'identifier', 'index' => 'true' ],
 			'identifier'		=> [ 'type' => 'text', 'analyzer' => 'identifier', 'index' => 'true' ],
 			'stock_status_id'	=> [ 'type' => 'integer', 'index' => 'true' ],
 			'quantity'			=> [ 'type' => 'integer', 'index' => 'true' ],
@@ -970,8 +976,10 @@
 				$params['body']['price']  			= $product['price'];
 				$params['body']['special']  		= $product['special'];		
 				$params['body']['ean'] 				= self::makeIdentifiersArray($product['ean']);
+				$params['body']['morion'] 			= self::makeIdentifiersArray($product['upc']);
+				$params['body']['reg_number'] 		= self::makeIdentifiersArray($product['reg_number']);
 				
-				$params['body']['identifier'] = array_values(array_unique(array_merge($params['body']['ean'])));
+				$params['body']['identifier'] = array_values(array_unique(array_merge($params['body']['ean'], $params['body']['reg_number'], $params['body']['morion'])));
 				
 				if ($product['status']){
 					//Индексация фармгруппы и ATX
