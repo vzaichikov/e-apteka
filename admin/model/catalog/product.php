@@ -539,7 +539,7 @@
 		}
 		
 		public function getProduct($product_id) {
-			$query = $this->db->query("SELECT DISTINCT *, (SELECT keyword FROM " . DB_PREFIX . "url_alias WHERE query = 'product_id=" . (int)$product_id . "') AS keyword FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) WHERE p.product_id = '" . (int)$product_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "'");
+			$query = $this->db->query("SELECT DISTINCT *, (SELECT name FROM " . DB_PREFIX . "manufacturer_description md WHERE md.manufacturer_id = p.manufacturer_id AND md.language_id =  '" . (int)$this->config->get('config_language_id') . "') AS manufacturer, (SELECT keyword FROM " . DB_PREFIX . "url_alias WHERE query = 'product_id=" . (int)$product_id . "') AS keyword FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) WHERE p.product_id = '" . (int)$product_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "'");
 			
 			return $query->row;
 		}
@@ -553,7 +553,9 @@
 				ON DUPLICATE KEY UPDATE
 				`json_old` 		= `json`,
 				`json` 			= '" . $this->db->escape(json_encode($json)) . "',
-				`product_id` 	= '" . (int)$product_id . "'");		
+				`product_id` 	= '" . (int)$product_id . "'");
+
+
 		}
 
 		public function getAllDataFromLikReestr(){
@@ -563,7 +565,16 @@
 		}
 		
 		public function updateProductByRegistryNumber($product_id, $data) {			
-			$query = $this->db->query("UPDATE " . DB_PREFIX . "product SET reg_json = '" . $this->db->escape(json_encode($data)) . "' WHERE product_id = '" . (int)$product_id . "'");		
+			$query = $this->db->query("UPDATE " . DB_PREFIX . "product SET reg_json = '" . $this->db->escape(json_encode($data)) . "' WHERE product_id = '" . (int)$product_id . "'");	
+
+			$this->db->query("UPDATE " . DB_PREFIX . "product SET 
+				reg_trade_name 			= '" . $this->db->escape($data['Торгівельне найменування']) . "',
+				reg_unpatented_name 	= '" . $this->db->escape($data['Міжнародне непатентоване найменування']) . "',
+				reg_save_terms 			= '" . $this->db->escape($data['Термін придатності']) . "',
+				reg_atx_1 				= '" . $this->db->escape($data['Код АТС 1']) . "',
+				reg_atx_2 				= '" . $this->db->escape($data['Код АТС 2']) . "',
+				reg_atx_3 				= '" . $this->db->escape($data['Код АТС 3']) . "'
+				WHERE product_id 		= '" . (int)$product_id . "'");
 		}
 		
 		public function getProductByRegistryNumber($reg_number) {			
