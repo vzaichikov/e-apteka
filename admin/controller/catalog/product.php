@@ -766,7 +766,14 @@
 			if (isset($this->request->get['product_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
 				$product_info = $this->model_catalog_product->getProduct($this->request->get['product_id']);
 				$data['product_id'] = $product_info['product_id'];								
-				$data['reg_json'] = json_decode($product_info['reg_json'])?json_decode($product_info['reg_json'], true):false;								
+				$data['reg_json'] = json_decode($product_info['reg_json'])?json_decode($product_info['reg_json'], true):false;
+
+				$data['reg_trade_name']			= $product_info['reg_trade_name'];						
+				$data['reg_unpatented_name']	= $product_info['reg_unpatented_name'];
+				$data['reg_save_terms']			= $product_info['reg_save_terms'];
+				$data['reg_atx_1']				= $product_info['reg_atx_1'];
+				$data['reg_atx_2']				= $product_info['reg_atx_2'];
+				$data['reg_atx_3']				= $product_info['reg_atx_3'];
 			}
 			
 			$data['token'] = $this->session->data['token'];

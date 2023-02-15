@@ -114,6 +114,42 @@
 						
 						<div class="tab-pane" id="tab-likreestr">
 							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-reg_trade_name">Торгівельне найменування</label>
+								<div class="col-sm-10">
+									<input type="text" name="reg_trade_name" value="<?php echo $reg_trade_name; ?>" class="form-control" />											
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-reg_unpatented_name">Міжнародне непатентоване найменування</label>
+								<div class="col-sm-10">
+									<input type="text" name="reg_unpatented_name" value="<?php echo $reg_unpatented_name; ?>" class="form-control" />											
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-reg_save_terms">Термін придатності</label>
+								<div class="col-sm-10">
+									<input type="text" name="reg_save_terms" value="<?php echo $reg_save_terms; ?>" class="form-control" />											
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-reg_atx_1">Код АТС 1</label>
+								<div class="col-sm-10">
+									<input type="text" name="reg_atx_1" value="<?php echo $reg_atx_1; ?>" class="form-control" />											
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-reg_atx_2">Код АТС 2</label>
+								<div class="col-sm-10">
+									<input type="text" name="reg_atx_2" value="<?php echo $reg_atx_2; ?>" class="form-control" />											
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-reg_atx_3">Код АТС 3</label>
+								<div class="col-sm-10">
+									<input type="text" name="reg_atx_3" value="<?php echo $reg_atx_3; ?>" class="form-control" />											
+								</div>
+							</div>
+							<div class="form-group">
 								<table class="table table-striped table-bordered">
 									<?php if (!empty($reg_json)) { ?>										
 										<?php foreach ($reg_json as $key => $value) {  ?>											
