@@ -66,6 +66,14 @@
 					'children' => array()		
 					);
 				}
+
+				if ($this->user->hasPermission('access', 'catalog/ehealth')) {
+					$catalog[] = array(
+					'name'	   => 'Сопоставление Ehealth/Скарб',
+					'href'     => $this->url->link('catalog/ehealth', 'token=' . $this->session->data['token'], true),
+					'children' => array()		
+					);
+				}
 				
 				if ($this->user->hasPermission('access', 'extension/module/price_control')) {
 					$catalog[] = array(
