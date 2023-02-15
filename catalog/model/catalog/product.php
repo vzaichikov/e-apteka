@@ -532,6 +532,9 @@
                     'special_date_end' => $query->row['special_date_end'],
                     'instruction'      => $query->row['instruction'],
                     'reg_json'         => $query->row['reg_json'],
+                    'reg_trade_name'         => $query->row['reg_trade_name'],
+                    'reg_unpatented_name'    => $query->row['reg_unpatented_name'],                   
+                    'reg_atx_1'    	   => $query->row['reg_atx_1'],
 					'backlight' 	   => ($query->row['backlight']!='#000000')?$query->row['backlight']:'',
 					'no_shipping'      => $query->row['no_shipping'],
 					'no_payment'       => $query->row['no_payment'],
@@ -1137,6 +1140,20 @@
 			
 			return $query->rows;
 			
+		}
+
+		public function getJustProductAttributeValues($product_id, $attribute_ids = []) {
+			$results = [];
+
+			$query = $this->db->query("SELECT text FROM " . DB_PREFIX . "product_attribute WHERE product_id = '" . (int)$product_id . "' AND attribute_id IN (" . implode(',', $attribute_ids) . ")");
+
+			foreach($query->rows as $row){
+				if ($row['text']){
+					$results[] = $row['text'];
+				}
+			}
+
+			return array_unique($results);
 		}
 		
 		public function getProductAttributes($product_id) {
