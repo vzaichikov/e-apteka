@@ -155,8 +155,7 @@
 			return $words;
 		}
 
-		public static function createMappingToIDS($query, $indexOne, $indexTwo){
-			
+		public static function createMappingToIDS($query, $indexOne, $indexTwo){			
 			$mapping = array();
 			if ($query->num_rows){										
 				foreach ($query->rows as $row){
@@ -247,7 +246,7 @@
 			],							
 			'query' 	=> [
 			'bool' 		=>  [
-			'must' 		=>  [ 'multi_match' => [ 'fields' => [$field1.'^8', $field2.'^10', 'identifier^10'], 'query' => $query, 'type' => 'best_fields', 'fuzziness' => $fuzziness, 'prefix_length' => 2, 'max_expansions' => 10, 'operator' => 'AND' ]	],
+			'must' 		=>  [ 'multi_match' => [ 'fields' => [$field1.'^8', $field2.'^10', 'medical_data^8', 'identifier^10', 'atx^12'], 'query' => $query, 'type' => 'best_fields', 'fuzziness' => $fuzziness, 'prefix_length' => 2, 'max_expansions' => 10, 'operator' => 'AND' ]	],
 			'should'	=> [
 			//	[ 'multi_match' => [ 'fields' => [$field3], 'query' => $query, 'fuzziness' => $fuzziness, 'prefix_length' => 2, 'operator' => 'AND' ] ]
 			],
@@ -493,9 +492,6 @@
 				$string = $this->transliteratorRu->cyr2Lat($tmp_name);
 				$params['body']['names'][] = $string;
 
-//				$string = $this->transliteratorUk->cyr2Lat($tmp_name);
-//				$params['body']['names'][] = $string;
-
 				$string = str_replace('-', '', $tmp_name);				
 				$params['body']['names'][] = $string;
 
@@ -688,7 +684,6 @@
 					$params['body']['suggest_' . $language_code] = $params['body']['name_' . $language_code];
 				}
 			}		
-
 		//	self::parseArrayToTranslit($params);
 		}
 		
@@ -775,7 +770,7 @@
 			'analyzer' => [
 			'russian' 			=> [ 'char_filter' => [ 'html_strip', 'remove symbols', 'ru_en_key' ], 'tokenizer' => 'standard', 'filter' => ['lowercase', 'ru_stop', 'en_stop', 'ru_stemmer', 'en_stemmer', 'phonemas'] ],
 			'ukrainian' 		=> [ 'char_filter' => [ 'html_strip', 'remove symbols', 'ru_en_key' ], 'tokenizer' => 'standard', 'filter' => ['lowercase', 'ua_stop', 'en_stop', 'ua_stemmer', 'en_stemmer', 'phonemas'] ],
-			'russian_ukrainian' => [ 'char_filter' => [ 'html_strip', 'remove symbols', 'ru_en_key' ], 'tokenizer' => 'standard', 'filter' => ['lowercase', 'ru_stop', 'ua_stop', 'en_stop', 'ru_stemmer', 'ua_stemmer', 'en_stemmer', 'phonemas' ] ],
+			'russian_ukrainian' => [ 'char_filter' => [ 'html_strip', 'remove symbols', 'ru_en_key' ], 'tokenizer' => 'standard', 'filter' => ['lowercase', 'ru_stop', 'ua_stop', 'en_stop', 'ru_stemmer', 'ua_stemmer', 'en_stemmer', 'phonemas' ] ],		
 			'integer' 	=> [ 'char_filter' => [ 'html_strip' ], 'tokenizer' => 'standard']
 			] ] ],			
 			'mappings' 	=> [ 'properties' => [
@@ -809,7 +804,7 @@
 			];
 			
 			try{
-			//	$response = $this->elastic->indices()->delete($deleteParams);
+				//$response = $this->elastic->indices()->delete($deleteParams);
 			} catch (\Exception $e){
 				echoLine($e->getMessage());
 			}
@@ -840,8 +835,7 @@
 			'analyzer' => [
 			'russian' 		=> [ 'char_filter' => [ 'html_strip', 'remove symbols', 'ru_en_key' ], 'tokenizer' => 'standard', 'filter' => ['lowercase', 'ru_stop', 'en_stop', 'ru_stemmer', 'en_stemmer', 'edge_ngram', 'phonemas'] ],
 			'ukrainian' 	=> [ 'char_filter' => [ 'html_strip', 'remove symbols', 'ru_en_key' ], 'tokenizer' => 'standard', 'filter' => ['lowercase', 'ua_stop', 'en_stop', 'ua_stemmer', 'en_stemmer', 'edge_ngram', 'phonemas'] ],
-			'names' 		=> [ 'char_filter' => [ 'html_strip', 'remove symbols', 'ru_en_key' ], 'tokenizer' => 'standard', 'filter' => ['lowercase', 'ru_stop', 'en_stop', 'ru_stemmer', 'en_stemmer', 'phonemas'] ],
-			'ukrainian' 	=> [ 'char_filter' => [ 'html_strip', 'ru_en_key' ], 'tokenizer' => 'standard', 'filter' => ['lowercase', 'ua_stop', 'en_stop', 'ua_stemmer', 'en_stemmer', 'edge_ngram', 'phonemas'] ],
+			'names' 		=> [ 'char_filter' => [ 'html_strip', 'remove symbols', 'ru_en_key' ], 'tokenizer' => 'standard', 'filter' => ['lowercase', 'ru_stop', 'en_stop', 'ru_stemmer', 'en_stemmer', 'phonemas'] ],						
 			'integer' 		=> [ 'char_filter' => [ 'html_strip' ], 'tokenizer' => 'standard'],
 			'identifier' 	=> [ 'char_filter' => [ 'html_strip' ], 'tokenizer' => 'standard', 'filter' => ['lowercase']]
 			] ] ],			
@@ -860,7 +854,8 @@
 			'name_ru' 			=> [ 'type' => 'text', 'analyzer' => 'russian', 'index' => 'true' ], 
 			'name_ua' 			=> [ 'type' => 'text', 'analyzer' => 'ukrainian', 'index' => 'true' ],  
 			'names' 			=> [ 'type' => 'text', 'analyzer' => 'names', 'index' => 'true' ],
-			'atxes'				=> [ 'type' => 'text', 'analyzer' => 'russian', 'index' => 'true' ],
+			'medical_data' 		=> [ 'type' => 'text', 'analyzer' => 'names', 'index' => 'true' ],
+			'atx'				=> [ 'type' => 'text', 'analyzer' => 'russian', 'index' => 'true' ],
 			'farmgorups'		=> [ 'type' => 'text', 'analyzer' => 'russian', 'index' => 'true' ],		
 			'ean'				=> [ 'type' => 'text', 'analyzer' => 'identifier', 'index' => 'true' ],
 			'reg_number'		=> [ 'type' => 'text', 'analyzer' => 'identifier', 'index' => 'true' ],
@@ -975,19 +970,20 @@
 				$params['body']['viewed']  			= $product['viewed'];
 				$params['body']['price']  			= $product['price'];
 				$params['body']['special']  		= $product['special'];		
+				$params['body']['atx'] 				= $product['reg_atx_1'];
 				$params['body']['ean'] 				= self::makeIdentifiersArray($product['ean']);
 				$params['body']['morion'] 			= self::makeIdentifiersArray($product['upc']);
-				$params['body']['reg_number'] 		= self::makeIdentifiersArray($product['reg_number']);
+				$params['body']['reg_number'] 		= self::makeIdentifiersArray($product['reg_number']);				
+				$params['body']['identifier'] 		= array_values(array_unique(array_merge($params['body']['ean'], $params['body']['reg_number'], $params['body']['morion'])));
 				
-				$params['body']['identifier'] = array_values(array_unique(array_merge($params['body']['ean'], $params['body']['reg_number'], $params['body']['morion'])));
-				
-				if ($product['status']){
+				if ($product['status']){					
 					//Индексация фармгруппы и ATX
-
+					$attributes = $this->model_catalog_product->getJustProductAttributeValues($product['product_id'], [19, 35, 40]);
+					$params['body']['medical_data'] = array_values(array_unique(array_merge($attributes, [$product['reg_trade_name'], $product['reg_unpatented_name']])));			
 
 					//Индексация названий
 					$namequery = $this->db->query("SELECT TRIM(name) as name, language_id FROM oc_product_description WHERE product_id = '" . (int)$product_id . "'");		
-					$this->prepareProductIndex($namequery, $product_id, $params);	
+					$this->prepareProductIndex($namequery, $product_id, $params);
 					
 					//Привязка к категориям
 					$catquery = $this->db->query("SELECT category_id FROM oc_product_to_category WHERE product_id = '" . (int)$product['product_id'] . "' AND main_category = 1 AND category_id NOT IN (SELECT category_id FROM oc_category WHERE parent_id = 1 OR status = 0)");
