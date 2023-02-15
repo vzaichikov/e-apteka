@@ -42,7 +42,6 @@
 	
 	function echoLine($line, $type = 'l'){
 		if (php_sapi_name() === 'cli'){
-
 			switch ($type) {
 				case 'e':
 				echo "\033[31m$line \033[0m" . PHP_EOL;
@@ -63,6 +62,29 @@
 				echo $line . PHP_EOL;
 				break;
 			}
+		} else {
+			ob_end_flush();
+			switch ($type) {
+				case 'e':
+				echo "<span class='text-error'>$line</span><br />";
+				break;
+				case 's':
+				echo "<span class='text-success'>$line</span><br />";
+				break;
+				case 'w':
+				echo "<span class='text-warning'>$line</span><br />";
+				break;  
+				case 'i':
+				echo "<span class='text-info'>$line</span><br />";
+				break;    
+				case 'l':
+				echo $line . '<br />';
+				break;  
+				default:
+				echo $line . '<br />';
+				break;
+			}
+			flush();
 		}
 	}
 	
