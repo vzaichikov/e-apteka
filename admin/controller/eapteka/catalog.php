@@ -550,10 +550,8 @@
 		public function findAttribute($sync_name){
 			$attribute_id = false;			
 			
-			if (isset($this->attribute_name_array[$sync_name])){
-				
-				$attribute_id = $this->attribute_name_array[$sync_name];
-				
+			if (isset($this->attribute_name_array[$sync_name])){				
+				$attribute_id = $this->attribute_name_array[$sync_name];				
 			}
 			
 			return $attribute_id;			
@@ -1705,7 +1703,7 @@
 						),
 						);
 						
-						$product_attribute = array();
+						$product_attribute = [];
 						
 						//Мультиязычные атрибуты
 						foreach ($mapMultilangAttributes as $map => $languageMap){
@@ -1798,11 +1796,8 @@
 											}
 											
 										}
-									}
-									
-									
-								}
-								
+									}																		
+								}								
 							}
 						}
 						
@@ -1842,13 +1837,10 @@
 									
 									echo "[AERR] Значение атрибута не подходит: " . $text[2] . PHP_EOL;
 									
-								}
-								
+								}								
 							}
 						}
-						
-						
-						
+																
 						foreach ($mapAttributes as $map){
 							$attribute_id = $this->findAttribute($map);
 							
@@ -1945,8 +1937,7 @@
 									
 								}
 								
-							}
-							
+							}							
 						}
 						
 						unset($map);
@@ -1983,10 +1974,8 @@
 										
 										echo "[A] В наименовании есть атрибут " . $attribute_id . ', значение ' . $text . PHP_EOL;
 										
-									}
-									
-								}
-								
+									}									
+								}								
 							}
 						}
 						//---------------------------- *Атрибуты* ----------------------------
@@ -2071,8 +2060,7 @@
 						}
 						
 						//Страна производитель
-						if ($real_product && $real_product['manufacturer_id']){
-							
+						if ($real_product && $real_product['manufacturer_id']){							
 							if ($attribute_id = $this->findAttribute('ProductFieldMAP:MANUFACTURERCOUNTRY')){
 								$product_attribute[] = array(
 								'attribute_id' => $attribute_id,
@@ -2092,9 +2080,55 @@
 								$text = $countries[2];
 								
 								echo "[AСП] У товара задана страна-производитель " . $attribute_id . ', значение ' . $text . PHP_EOL;
-							}
-							
-							
+							}														
+						}
+
+						//Торговое наименование
+						if ($real_product && $real_product['reg_trade_name']){							
+							if ($attribute_id = $this->findAttribute('ProductFieldMAP:REGTRADENAME')){
+								$product_attribute[] = array(
+								'attribute_id' => $attribute_id,
+								'product_attribute_description' => array(
+								"2" => array(
+								'text' => $real_product['reg_trade_name'],
+								),
+								"3" => array(
+								'text' => $real_product['reg_trade_name'],
+								),
+								"4" => array(
+								'text' => $real_product['reg_trade_name'],
+								)
+								)
+								);
+								
+								$text = $real_product['reg_trade_name'];
+								
+								echo "[AСП] У товара есть торговое наименование из реестра " . $attribute_id . ', значение ' . $real_product['reg_trade_name'] . PHP_EOL;
+							}														
+						}
+
+						//Сроки хранения
+						if ($real_product && $real_product['reg_save_terms']){							
+							if ($attribute_id = $this->findAttribute('ProductFieldMAP:SAVETERMS')){
+								$product_attribute[] = array(
+								'attribute_id' => $attribute_id,
+								'product_attribute_description' => array(
+								"2" => array(
+								'text' => $real_product['reg_save_terms'],
+								),
+								"3" => array(
+								'text' => $real_product['reg_save_terms'],
+								),
+								"4" => array(
+								'text' => $real_product['reg_save_terms'],
+								)
+								)
+								);
+								
+								$text = $real_product['reg_save_terms'];
+								
+								echo "[AСП] У товара есть сроки хранения из реестра " . $attribute_id . ', значение ' . $real_product['reg_save_terms'] . PHP_EOL;
+							}														
 						}
 						
 						
