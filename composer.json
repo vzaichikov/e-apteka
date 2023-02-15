@@ -23,6 +23,7 @@
         "umpirsky/transliterator": "^0.1.0",
         "wapmorgan/morphos": "^3.2",
         "kwn/number-to-words": "^2.5",
-        "google/auth": "^1.23"
+        "google/auth": "^1.23",
+        "shuchkin/simplexlsx": "^1.0"
     }
 }
