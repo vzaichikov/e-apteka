@@ -935,45 +935,46 @@
 				$detect = new \Mobile_Detect();
 				$data['disable_map'] = $data['is_mobile'] = $detect->isMobile();
 				
-				$data['stocks'] = array();
-				$data['geocode'] = $this->config->get('config_geocode');			
-												
-				//same
-				$results = $this->model_catalog_product->getProductSame($this->request->get['product_id']);
+				$data['stocks'] 	= array();
+				$data['geocode'] 	= $this->config->get('config_geocode');
+
+				$data['text_full_analogs'] 			= $this->language->get('text_full_analogs');
+				$data['text_similar_pharmaceutic'] 	= $this->language->get('text_similar_pharmaceutic');
 				
-				if (!$results){					
-					$results = $this->model_catalog_product->guessSameProducts($product_info['name'], $this->request->get['product_id'], 12, false);
+				/*					
+					Товары "формы выпуска", подбор по REG_TRADE_NAME
+				*/							
+				$results 	  = $this->model_catalog_product->getProductSame($this->request->get['product_id'], $product_info);						
+				$data['same'] = $this->model_catalog_product->prepareProductArray($results);
+
+				if ($_SERVER['REMOTE_ADDR'] == '31.43.104.37'){
+				//	var_dump($data['same']);
 				}
+
+				/*
+					Аналоги, схожее терапевтическое действие
+				*/
+				$results = $this->model_catalog_product->getProductAnalog($this->request->get['product_id']);			
+				$data['analogs'] = $this->model_catalog_product->prepareProductArray($results);			
 				
-				$data['same'] = $this->model_catalog_product->prepareProductArray($results);							
+				/*					
+					Товары для рецептурного - без рецепта, назначаются вручную
+				*/
+				$results 		= $this->model_catalog_product->getProductLights($this->request->get['product_id']);	
+				$data['lights'] = $this->model_catalog_product->prepareProductArray($results);						
 				
-				$data['entry_view_else'] = $this->language->get('entry_view_else');
-				$data['quantity_stock'] = $product_info['quantity'];
+				$data['entry_view_else'] 	= $this->language->get('entry_view_else');
+				$data['quantity_stock'] 	= $product_info['quantity'];				
+				$data['is_receipt'] 		= ($product_info['no_payment'] || $product_info['is_receipt']);
+				$data['text_is_receipt'] 	= $this->language->get('text_is_receipt');
+				$data['text_is_receipt2'] 	= $this->language->get('text_is_receipt2');				
+				$data['no_fast_order'] 		= false;//($product_info['is_pko'] || $product_info['is_drug']);				
+				$data['is_thermolabel'] 	= $product_info['is_thermolabel'];
+				$data['text_product_is_thermolabel'] = $this->language->get('text_product_is_thermolabel');																					
 				
-				$data['is_receipt'] = ($product_info['no_payment'] || $product_info['is_receipt']);
-				$data['text_is_receipt'] = $this->language->get('text_is_receipt');
-				$data['text_is_receipt2'] = $this->language->get('text_is_receipt2');
-				
-				$data['no_fast_order'] = false;//($product_info['is_pko'] || $product_info['is_drug']);
-				
-				$data['is_thermolabel'] = $product_info['is_thermolabel'];
-				$data['text_product_is_thermolabel'] = $this->language->get('text_product_is_thermolabel');
-				
-				
-				//lights				
-				$results = $this->model_catalog_product->getProductLights($this->request->get['product_id'], true);	
-				$data['lights'] = $this->model_catalog_product->prepareProductArray($results);			
-				
-				//analogs
-				if ($product_info['quantity'] > 0) {					
-					$results = $this->model_catalog_product->getProductAnalog($this->request->get['product_id']);
-					} else {					
-					$results = $this->model_catalog_product->getProductAnalog($this->request->get['product_id'], true);					
-				}				
-				$data['analogs'] = $this->model_catalog_product->prepareProductArray($results);	
-				
-				
-				//$results = $this->model_catalog_product->getProductRelated($this->request->get['product_id']);
+				/*					
+					Товары покупают вместе
+				*/	
 				$results = $this->model_catalog_product->getProductAlsoBought($this->request->get['product_id']);
 				$data['products'] = $this->model_catalog_product->prepareProductArray($results);
 				
@@ -989,11 +990,11 @@
 				
 				$data['gtin'] = $product_info['ean'];
 				
-				//collection
+				//Коллекция
 				$data['collection'] = false;
 				$data['collection_products'] = false;
 				$data['text_all_collection_products'] = $this->language->get('text_all_collection_products');
-				if ($collection_id = $this->model_catalog_product->getProductCollection($this->request->get['product_id'])){
+				if (!$data['same'] && $collection_id = $this->model_catalog_product->getProductCollection($this->request->get['product_id'])){
 					$this->load->model('catalog/collection');
 					
 					$collection = $this->model_catalog_collection->getCollection($collection_id);
@@ -1023,45 +1024,8 @@
 						);
 						
 						$data['collection_rendered'] = $this->load->view('product/structured/products_slider', array_merge($data, $slider_data));
-					}
-					
-				}
-				
-				
-				//Что выводить в блоке под товаром
-				//Товар обычный, не рецептурный, есть в наличии, значит можно вывести дозировки, но только те, которые дороже и в нал
-				$data['proposal'] = array();
-				$data['is_good_proposal'] = false;
-				if ($product_info['quantity'] > 0 && !$data['is_receipt']){
-					$results = $this->model_catalog_product->getProductAnalogSame($this->request->get['product_id'], $expensive = true);
-					$data['proposal'] = $this->model_catalog_product->prepareProductArray($results);
-					$data['proposal_text'] = $this->language->get('proposal_text_same_expensive');
-				}
-				
-				if ($product_info['quantity'] == 0 && !$data['is_receipt']){
-					$results = $this->model_catalog_product->getProductAnalogSame($this->request->get['product_id']);
-					$data['is_good_proposal'] = true;
-					$data['proposal'] = $this->model_catalog_product->prepareProductArray($results);
-					$data['proposal_text'] = $this->language->get('proposal_text_same_fornotinstock');					
-				}
-				
-				if ($data['is_receipt'] && $results = $this->model_catalog_product->getProductLights($this->request->get['product_id'])){
-					$data['proposal'] = $this->model_catalog_product->prepareProductArray($results);
-					$data['proposal_text'] = $this->language->get('proposal_text_ligts');
-					$data['text_is_receipt'] = $this->language->get('text_is_receipt_2');
-				}
-				
-				
-				if ($data['proposal']){
-					$slider_data = array(
-					'slider_class' 			=> $data['is_good_proposal']?'green':'blue',
-					'slider_title'    		=> $data['proposal_text'],
-					'slider_products' 		=> $data['proposal']
-					);
-					
-					$data['proposal_rendered'] = $this->load->view('product/structured/products_slider', array_merge($data, $slider_data));
-				}
-				
+					}					
+				}												
 				
 				$data['tags'] = array();
 				
@@ -1083,15 +1047,13 @@
 				$this->model_catalog_product->updateViewed($this->request->get['product_id']);
 				//$this->model_catalog_product->catchAlsoViewed($this->request->get['product_id']);
 				
-				$data['column_left'] = $this->load->controller('common/column_left');
-				$data['column_right'] = $this->load->controller('common/column_right');
-				$data['content_top'] = $this->load->controller('common/content_top');
-				$data['content_bottom'] = $this->load->controller('common/content_bottom');
-				$data['footer'] = $this->load->controller('common/footer');
-				$data['header'] = $this->load->controller('common/header');				
-				
-				
-				// BuyOneClick
+				$data['column_left'] 		= $this->load->controller('common/column_left');
+				$data['column_right'] 		= $this->load->controller('common/column_right');
+				$data['content_top'] 		= $this->load->controller('common/content_top');
+				$data['content_bottom'] 	= $this->load->controller('common/content_bottom');
+				$data['footer'] 			= $this->load->controller('common/footer');
+				$data['header'] 			= $this->load->controller('common/header');				
+								
 				$this->load->model('setting/setting');
 				$current_language_id = $this->config->get('config_language_id');
 				

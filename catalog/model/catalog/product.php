@@ -1073,38 +1073,6 @@
 			return $product_data;
 		}
 		
-		public function guessSameProducts($product_name, $product_id, $limit, $in_stock = false){
-			$exploded = explode(' ', $product_name);
-			
-			$results = array();
-			
-			//Попытка получить по трем словам
-			if (isset($exploded[0]) && isset($exploded[1]) && isset($exploded[2])){
-				$results = $this->getSimilarProductsByName($exploded[0] . ' ' . $exploded[1] . ' ' . $exploded[2], $product_id, $limit, $in_stock);
-			}
-			
-			//Попытка получить по двум словам
-			if (count($results) < $limit){
-				
-				if (isset($exploded[0]) && isset($exploded[1])){
-					$results = array_merge($this->getSimilarProductsByName($exploded[0] . ' ' . $exploded[1], $product_id, ($limit - count($results)),  $in_stock), $results);
-				}
-				
-			}
-			
-			//Попытка получить по одному слову
-			if (count($results) < $limit){
-				
-				if (isset($exploded[0]) && isset($exploded[1])){
-					//	$results = array_merge($this->getSimilarProductsByName($exploded[0], $product_id, ($limit - count($results)), $in_stock), $results);
-				}
-				
-			}
-			
-			return $results;
-			
-		}
-		
 		public function getPopularProducts($limit) {
 			$product_data = $this->cache->get('product.popular.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
 			
@@ -1382,7 +1350,7 @@
 			return $product_data;
 		}
 		
-		public function getProductLights($product_id, $in_stock = false) {
+		public function getProductLights($product_id) {
 			$product_data = array();
 			
 			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_light pr LEFT JOIN " . DB_PREFIX . "product p ON (pr.Light_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.quantity > 0 AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY p.price DESC");
@@ -1394,20 +1362,11 @@
 			return $product_data;
 		}
 		
-		public function getProductAnalog($product_id, $in_stock = false, $expensive = false) {
+		public function getProductAnalog($product_id) {
 			$product_data = array();
 			
-			$sql = "SELECT * FROM " . DB_PREFIX . "product_analog pr LEFT JOIN " . DB_PREFIX . "product p ON (pr.analog_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1'";
-			
-			if ($in_stock){
-				$sql .= " AND p.quantity > 0 ";
-			}
-			
-			if ($expensive){
-				$sql .= " AND p.price > (SELECT price FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "' LIMIT 1) ";
-			}
-			
-			$sql .= " AND p.quantity > 0 AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'  ORDER BY (p.quantity > 0) DESC, p.price DESC";
+			//This is set by hands
+			$sql = "SELECT * FROM " . DB_PREFIX . "product_analog pr LEFT JOIN " . DB_PREFIX . "product p ON (pr.analog_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.quantity > 0 AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'  ORDER BY (p.quantity > 0) DESC, p.price DESC";
 			
 			$query = $this->db->query($sql);
 			
@@ -1418,45 +1377,57 @@
 			return $product_data;
 		}
 		
-		public function getProductSame($product_id, $in_stock = false, $expensive = false) {
+		public function getProductSame($product_id, $product_info = []) {
 			$product_data = array();
 			
-			$sql = "SELECT * FROM " . DB_PREFIX . "product_same pr LEFT JOIN " . DB_PREFIX . "product p ON (pr.same_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' ";
-			
-			if ($in_stock){
-				$sql .= " AND p.quantity > 0 ";
-			}
-			
-			if ($expensive){
-				$sql .= " AND p.price > (SELECT price FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "' LIMIT 1) ";
-			}
-			
-			$sql .= " AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'  ORDER BY (p.quantity > 0) DESC, p.price DESC";
-			
+			//This is set by hands
+			$sql = "SELECT DISTINCT pr.same_id FROM " . DB_PREFIX . "product_same pr 
+				LEFT JOIN " . DB_PREFIX . "product p ON (pr.same_id = p.product_id)
+				WHERE pr.product_id = '" . (int)$product_id . "' 
+				AND p.status = '1' 
+				AND p.date_available <= NOW() 
+				AND p.quantity > 0 
+				ORDER BY (p.quantity > 0) DESC, p.price DESC";			
+
 			$query = $this->db->query($sql);
 			
 			foreach ($query->rows as $result) {
 				$product_data[$result['same_id']] = $this->getProduct($result['same_id']);
 			}
+
+			//This is a full analog
+			if (!empty($product_info['reg_atx_1'])){
+				if (mb_strlen($product_info['reg_atx_1']) == 7){
+					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
+					p.reg_atx_1 = '" . $this->db->escape($product_info['reg_atx_1']) . "' 
+					AND p.status = '1'
+					AND p.product_id <> '" . (int)$product_id . "'
+					AND p.date_available <= NOW() 
+					AND p.quantity > 0				
+					ORDER BY (p.quantity > 0) DESC, p.price DESC";						
+				} elseif (mb_strlen($product_info['reg_atx_1']) < 7 && $product_info['reg_unpatented_name']){
+					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
+					p.reg_unpatented_name = '" . $this->db->escape($product_info['reg_unpatented_name']) . "' 
+					AND p.status = '1'
+					AND p.product_id <> '" . (int)$product_id . "'
+					AND p.date_available <= NOW() 	
+					AND p.quantity > 0				
+					ORDER BY (p.quantity > 0) DESC, p.price DESC";					
+				}
+			}
+
+			$query = $this->db->query($sql);
+
+			foreach ($query->rows as $result) {
+				if (empty($product_data[$result['product_id']])){
+					$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
+				}
+			}
 			
 			return $product_data;
 		}
-		
-		public function getProductAnalogSame($product_id, $expensive = false){
-			
-			$a1 = $this->getProductSame($product_id, true, $expensive);
-			$a2 = $this->getProductAnalog($product_id, true, $expensive);
-			
-			return array_merge($a1, $a2);
-			
-			foreach ($a2 as $_a2elem => $_a2value){
-				if (!isset($a1[$_a2elem])){
-					$a1[$_a2elem] = $_a2value;
-				}					
-			}
-			
-			return $a1;
-		}
+
+
 		
 		public function getProductLayoutId($product_id) {
 			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_layout WHERE product_id = '" . (int)$product_id . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "'");
