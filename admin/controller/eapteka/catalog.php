@@ -2350,8 +2350,7 @@
 						);	
 						
 						//Обновление информации о социальной программе в основном товаре
-						if ($social_parent_id){
-							
+						if ($social_parent_id){							
 							if ($socialprogram_id = $this->findSocialProgram($product['Соцпрограмма'])){
 								
 								echo '[i] Нашли социальную программу, обновляем основной товар: ' . $product['Соцпрограмма'] . PHP_EOL;
@@ -2364,6 +2363,27 @@
 								$this->updateProductSocialInfo($social_parent_id, $product_social_data);
 							}
 						}
+
+						if ($real_product && empty($real_product['reg_atx_1']) && !empty($product['КлассификаторАТХ_ua'])){
+							$exploded = explode(' ', $product['КлассификаторАТХ_ua']);
+							$reg_atx_1 = '';
+							if (count($exploded) >= 3){
+								$reg_atx_1 = trim($exploded[0]) . trim($exploded[1]);
+							} elseif (count($exploded) == 2){
+								$reg_atx_1 = trim($exploded[0]);
+							}
+
+
+							$cyrillic = ['А', 'а', 'В', 'в', 'Е', 'е', 'К', 'к', 'М', 'м', 'Н', 'о', 'Р', 'р', 'С', 'с', 'Т', 'т', 'У', 'Х', 'х'];
+   							$latin = [ 'A', 'a', 'B', 'b', 'E', 'e', 'K', 'k', 'M', 'm', 'H', 'o', 'P', 'p', 'C', 'c', 'T', 't', 'Y', 'X', 'x' ];
+   							$reg_atx_1 = str_replace($cyrillic, $latin, $reg_atx_1);
+
+							if ($reg_atx_1){
+								echo '[i] REG_ATX_1 FOUND: ' . $reg_atx_1 . PHP_EOL;
+
+								$this->db->query("UPDATE " . DB_PREFIX . "product SET reg_atx_1 = '" . $this->db->escape($reg_atx_1) . "' WHERE product_id = '" . (int)$real_product['product_id'] . "'");
+							}
+						}						
 						
 						
 						if ($product_id){
