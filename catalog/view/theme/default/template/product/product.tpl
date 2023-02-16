@@ -57,6 +57,13 @@
 		<div id="content" class="<?php echo $class; ?> product-page__content">
 			
 			<h1 class="product__title text-center"><?php echo $heading_title; ?></h1>
+			<div class="row">
+				<div class="col-sm-12 text-center">														
+					<small class="text-muted product__title__manufacturer">
+						<?php echo $manufacturer; ?>
+					</small>
+				</div>
+			</div>
 			
 			<!-- tab new product -->
 			<div class="product-tabs">
@@ -111,7 +118,7 @@
 							</li>
 						<?php } ?>
 						
-						<?php if ( isset($analogs) && count($analogs)>0 ) { ?>
+						<?php if ( !empty($analogs) || !empty($same) ) { ?>
 							<li>
 								<a href="#tab-analog" data-toggle="tab"><?php echo $tab_analogs;?>
 									<!-- <svg class="product-tabs__nav-icon">
@@ -120,16 +127,6 @@
 								</a>
 							</li>
 						<?php } ?>						
-						
-						<?php if ( isset($same) && count($same)>0 ) { ?>
-							<li>
-								<a href="#tab-forms-of-release" data-toggle="tab"><?php echo $tab_same;?>
-									<!-- <svg class="product-tabs__nav-icon">
-										<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#plus"></use>
-									</svg> -->
-								</a>
-							</li>
-						<?php } ?>
 
 						<li>
 							<a href="#tab-delivery-pay" data-toggle="tab"><?php echo $text_delivery_pay; ?>
@@ -239,12 +236,9 @@
 												</div>
 												<!--/swiper-wrapper-->
 												<div class="swiper-pagination"></div>
-											</div>
-											
-											<div><small class="text-muted"><?php echo $text_picture_may_differ; ?></small></div>
-											
-										</div>
-										
+											</div>											
+											<div><small class="text-muted"><?php echo $text_picture_may_differ; ?></small></div>											
+										</div>										
 									<?php } ?>
 								</div>
 								
@@ -341,8 +335,8 @@
 											<?php if ($quantity_stock > 0) { ?>
 												<?php if ($price) { ?>
 													
-													<div class="product__order-wrap-main <?php if (!$options) { ?>not_options<?php } ?>">
-														<div class="product__order-wrap <?php if ($special) { ?>is-special-bg<?php } ?> ">
+													<div class="product__order-wrap-main <?php if ($special) { ?>is-special-bg<?php } ?> <?php if (!$options) { ?>not_options<?php } ?>">
+														<div class="product__order-wrap">
 															<?php if (!$special) { ?>
 																<div class="product__price-wrap">
 																	<span class="product__price"><?php echo $price; ?></span>
@@ -395,7 +389,7 @@
 														<?php if ($options) { ?>
 															<?php foreach ($options as $option) { ?>
 																<?php foreach ($option['product_option_value'] as $option_value) { ?>
-																	<div class="product__order-wrap <?php if ($special) { ?>is-special-bg<?php } ?>">
+																	<div class="product__order-wrap">
 																		<?php if ($option_value['price']) { ?>
 																			<div class="product__price-wrap">
 																				<span class="product__price"><?php echo $option_value['price']; ?></span>
@@ -502,19 +496,13 @@
 													<hr>
 												<?php } ?>
 												
-												<div class="product__text-row product__manufacturer row">
-													<div class="col-sm-12">														
-														<a href="<?php echo $manufacturers; ?>" title="<?php echo $manufacturer; ?>">
-															<?php echo $manufacturer; ?>
-														</a>
-													</div>
-													
-													<?php if ($brand) { ?>
+												<?php if ($brand) { ?>
+													<div class="product__text-row product__manufacturer row">																									
 														<div class="col-sm-12">
 															<?php echo $text_brand; ?> <?php echo $brand; ?>
-														</div>
-													<?php } ?>
-												</div>
+														</div>													
+													</div>
+												<?php } ?>
 												
 												<?php if ($collection) { ?>
 													<div class="product__text-row product__manufacturer">
@@ -546,57 +534,62 @@
 								</div>
 							</div>
 
-						<?php if (!$is_mobile) { ?>				
-							<?php if ( isset($description) && !empty(trim(strip_tags($description)))) { ?>
-								<div class="description-block" style="display: inline-block;margin: 25px 0; width: 100%;">
-									<?php echo $description; ?>
-								</div>
-							<?php } else { ?>
+							<?php if (!$is_mobile) { ?>				
+								<?php if ( isset($description) && !empty(trim(strip_tags($description)))) { ?>
+									<div class="description-block" style="display: inline-block;margin: 10px 0; width: 100%;">
+										<?php echo $description; ?>
+									</div>
+								<?php } ?>
 								<?php if ($attribute_groups) { ?>
-									<div class="description-block" style="display: inline-block;margin: 25px 0; width: 100%;">
-										<table class="table table-bordered">
-											<?php foreach ($attribute_groups as $attribute_group) { ?>
-												<thead>
+									<div class="description-block" style="display: inline-block;margin-bottom:10px; width: 100%;">
+										<table class="table table-striped table-bordered">
+											<tbody>	
+												<?php if ($manufacturer) { ?>
 													<tr>
-														<td colspan="2"><strong><?php echo $attribute_group['name']; ?></strong></td>
+														<td><?php echo $text_manufacturer; ?></td>
+														<td><a href="<?php echo $manufacturers; ?>" title="<?php echo $manufacturer; ?>"><?php echo $manufacturer; ?></a></td>
 													</tr>
-												</thead>
-												<tbody>
-													<?php foreach ($attribute_group['attribute'] as $attribute) { ?>
-														<tr>
-															<td><?php echo $attribute['name']; ?></td>
-															<td><?php echo $attribute['text']; ?></td>
-														</tr>
-													<?php } ?>
+												<?php } ?>
 
-													<?php if ($attribute_group['attribute_group_id'] == 8 && $gtin) { ?>
-														<tr>
-															<td>EAN</td>
-															<td><?php echo $gtin; ?></td>
-														</tr>
-													<?php } ?>
-													<?php if ($attribute_group['attribute_group_id'] == 8 && $atx_tree) { ?>
-														<tr>
-															<td>ATX</td>
-															<td>
-																<?php foreach ($atx_tree as $atx) { ?>
-																	<?php if ($atx['atx_code'] == $reg_atx_1) { ?>
-																		<b><?php echo $atx['atx_code']; ?></b>
-																	<?php } else { ?>
-																		<?php echo $atx['atx_code']; ?>
-																	<?php } ?>
-																	<a href="<?php echo $atx['href']?>" title="<?php echo $atx['name']; ?>"><?php echo $atx['name']; ?></a><br />
+												<?php foreach ($attribute_groups as $attribute_group) { ?>
+													<?php foreach ($attribute_group['attribute'] as $attribute) { ?>
+														<?php if ($attribute['text']) { ?>
+															<tr>
+																<td><?php echo $attribute['name']; ?></td>
+																<td><?php echo $attribute['text']; ?></td>
+															</tr>
+														<?php } ?>
+													<?php } ?>												
+												<?php } ?>
+
+												<?php if ($attribute_group['attribute_group_id'] == 8 && $gtin) { ?>
+													<tr>
+														<td>EAN</td>
+														<td><?php echo $gtin; ?></td>
+													</tr>
+												<?php } ?>
+
+												<?php if ($attribute_group['attribute_group_id'] == 8 && $atx_tree) { ?>
+													<tr>
+														<td>ATX</td>
+														<td>
+															<?php foreach ($atx_tree as $atx) { ?>
+																<?php if ($atx['atx_code'] == $reg_atx_1) { ?>
+																	<b><?php echo $atx['atx_code']; ?></b>
+																<?php } else { ?>
+																	<?php echo $atx['atx_code']; ?>
 																<?php } ?>
-															</td>
-														</tr>
-													<?php } ?>
-												</tbody>
-											<?php } ?>
+																<a href="<?php echo $atx['href']?>" title="<?php echo $atx['name']; ?>"><?php echo $atx['name']; ?></a><br />
+															<?php } ?>
+														</td>
+													</tr>
+												<?php } ?>
+											</tbody>
 										</table>
 									</div>
 								<?php } ?>
 							<?php } ?>
-						<?php } ?>	
+	
 						</div>
 						
 						<?php if ($quantity_stock > 0) { ?>
@@ -618,12 +611,8 @@
 							<div id="proposal" class="row">
 								<?php echo $proposal_rendered; ?>
 							</div>
-						<?php } ?>
-						
+						<?php } ?>						
 					</div>
-
-
-
 					
 					<?php if (!empty($hobofaq)) { ?>
 						<div class="tab-pane hobofaq-text-style" id="tab-hobofaq">
@@ -650,76 +639,84 @@
 					<?php } ?>
 					
 					<?php if ($attribute_groups) { ?>
-						<div class="tab-pane" id="tab-specification">
-							<table class="table table-bordered">
-								<?php foreach ($attribute_groups as $attribute_group) { ?>
-									<thead>
+						<div class="tab-pane information-text-style" id="tab-specification">
+							<table class="table table-striped table-bordered">
+								<tbody>	
+									<?php if ($manufacturer) { ?>
 										<tr>
-											<td colspan="2"><strong><?php echo $attribute_group['name']; ?></strong></td>
+											<td><?php echo $text_manufacturer; ?></td>
+											<td><a href="<?php echo $manufacturers; ?>" title="<?php echo $manufacturer; ?>"><?php echo $manufacturer; ?></a></td>
 										</tr>
-									</thead>
-									<tbody>
+									<?php } ?>
+
+									<?php foreach ($attribute_groups as $attribute_group) { ?>
 										<?php foreach ($attribute_group['attribute'] as $attribute) { ?>
-											<tr>
-												<td><?php echo $attribute['name']; ?></td>
-												<td><?php echo $attribute['text']; ?></td>
-											</tr>
-										<?php } ?>										
-										<?php if ($attribute_group['attribute_group_id'] == 8 && $gtin) { ?>
-											<tr>
-												<td>EAN</td>
-												<td><?php echo $gtin; ?></td>
-											</tr>
-										<?php } ?>
-										<?php if ($attribute_group['attribute_group_id'] == 8 && $atx_tree) { ?>
-											<tr>
-												<td>ATX</td>
-												<td>
-													<?php foreach ($atx_tree as $atx) { ?>
-														<?php if ($atx['atx_code'] == $reg_atx_1) { ?>
-															<b><?php echo $atx['atx_code']; ?></b>
-														<?php } else { ?>
-															<?php echo $atx['atx_code']; ?>
-														<?php } ?>
-														<a href="<?php echo $atx['href']?>" title="<?php echo $atx['name']; ?>"><?php echo $atx['name']; ?></a><br />
+											<?php if ($attribute['text']) { ?>
+												<tr>
+													<td><?php echo $attribute['name']; ?></td>
+													<td><?php echo $attribute['text']; ?></td>
+												</tr>
+											<?php } ?>
+										<?php } ?>												
+									<?php } ?>
+
+									<?php if ($attribute_group['attribute_group_id'] == 8 && $gtin) { ?>
+										<tr>
+											<td>EAN</td>
+											<td><?php echo $gtin; ?></td>
+										</tr>
+									<?php } ?>
+
+									<?php if ($attribute_group['attribute_group_id'] == 8 && $atx_tree) { ?>
+										<tr>
+											<td>ATX</td>
+											<td>
+												<?php foreach ($atx_tree as $atx) { ?>
+													<?php if ($atx['atx_code'] == $reg_atx_1) { ?>
+														<b><?php echo $atx['atx_code']; ?></b>
+													<?php } else { ?>
+														<?php echo $atx['atx_code']; ?>
 													<?php } ?>
-												</td>
-											</tr>
-										<?php } ?>											
-									</tbody>
-								<?php } ?>
+													<a href="<?php echo $atx['href']?>" title="<?php echo $atx['name']; ?>"><?php echo $atx['name']; ?></a><br />
+												<?php } ?>
+											</td>
+										</tr>
+									<?php } ?>
+								</tbody>
 							</table>
 						</div>
 					<?php } ?>
 					
-					<?php if ( isset($analogs) && count($analogs)>0 ) { ?>
+					<?php if ( !empty($analogs) || !empty($same) ) { ?>
 						<div class="tab-pane" id="tab-analog">
-							<div class="product-category-list">
-								<?php foreach ($analogs as $product) { ?>
-									<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single.tpl'); ?>
-								<?php } ?>
-							</div>
+
+							<?php if ( !empty($same) ) { ?>
+								<h3><?php echo $text_full_analogs; ?> для <?php echo $heading_title; ?></h3>
+								<div class="product-category-list">
+									<?php foreach ($same as $product) { ?>
+										<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single.tpl'); ?>
+									<?php } ?>
+								</div>
+							<?php } ?>
+
+							<?php if ( !empty($analogs) ) { ?>
+								<h3><?php echo $text_similar_pharmaceutic; ?></h3>
+								<div class="product-category-list">
+									<?php foreach ($analogs as $product) { ?>
+										<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single.tpl'); ?>
+									<?php } ?>
+								</div>
+							<?php } ?>
 						</div>
 					<?php } ?>
+
 					
 					<div class="tab-pane" id="tab-delivery-pay">
 						<div class="tab-delivery-wrap">
 							<!-- доставка и оплата -->
 							<?php echo $content_top; ?>
 						</div>
-					</div>
-					
-					
-					
-					<?php if ( isset($same) && count($same)>0 ) { ?>
-						<div class="tab-pane" id="tab-forms-of-release">
-							<div class="product-category-list">
-								<?php foreach ($same as $product) { ?>
-									<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single.tpl'); ?>
-								<?php } ?>
-							</div>
-						</div>
-					<?php } ?>
+					</div>					
 					
 					<?php if ($review_status) { ?>
 						<div class="tab-pane" id="tab-review">
@@ -792,8 +789,7 @@
 			</div>
 			<!-- tab new product END-->
 		</div>
-		
-		
+				
 		<?php if (!empty($collection_rendered)) { ?>
 			<?php echo $collection_rendered; ?>
 		<?php } ?>
@@ -801,19 +797,7 @@
 		<?php if (!empty($products_rendered)) { ?>
 			<?php echo $products_rendered; ?>
 		<?php } ?>
-		
-		
-		<?php if ($tags) { ?>
-			<p><?php echo $text_tags; ?>
-				<?php for ($i = 0; $i < count($tags); $i++) { ?>
-					<?php if ($i < (count($tags) - 1)) { ?>
-						<a href="<?php echo $tags[$i]['href']; ?>"><?php echo $tags[$i]['tag']; ?></a>,
-						<?php } else { ?>
-						<a href="<?php echo $tags[$i]['href']; ?>"><?php echo $tags[$i]['tag']; ?></a>
-					<?php } ?>
-				<?php } ?>
-			</p>
-		<?php } ?>
+
 	<?php echo $content_bottom; ?></div>
 <?php echo $column_right; ?></div>
 <div class="addTo-cart-wrapper" style="height: 125px;">
@@ -855,8 +839,6 @@
 	</div>
 </div>
 </div>
-
-
 
 <script>
 	$(document).ready(function(){
