@@ -91,7 +91,7 @@
 	$_['tab_analogs']                           = 'Аналоги и заменители';
 
 
-	$_['text_full_analogs'] = 'Полные аналоги';
+	$_['text_full_analogs'] = 'Аналоги';
 	$_['text_similar_pharmaceutic'] = 'Со схожим терапевтическим действием';
 
 	$_['text_bought_for_month']    = 'Этот товар купили %s раз за последнюю неделю';

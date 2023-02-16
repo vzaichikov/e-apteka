@@ -93,7 +93,7 @@
 	$_['tab_attribute'] = 'Характеристики';
 	$_['tab_analogs']                           = 'Аналоги i замінники';
 
-	$_['text_full_analogs']    = 'Повні аналоги';
+	$_['text_full_analogs']    = 'Аналоги';
 	$_['text_similar_pharmaceutic']    = 'Зі схожою терапевтичною дією';
 
 	$_['text_bought_for_month']    	= 'Цей товар купили %s раз за останній тиждень';
