@@ -1,9 +1,10 @@
 <?php
-// Heading
 $_['heading_title'] = 'Пошук';
 $_['heading_tag'] = 'По тегу - ';
 
-// Text
+
+$_['text_search_field'] = 'Назва, діюча речовина, код АТХ';
+
 $_['text_search'] = 'Результати пошуку';
 $_['text_keyword'] = 'Ключові слова';
 $_['text_category'] = 'категорії';
@@ -31,13 +32,7 @@ $_['text_limit'] = 'Показати';
 
 $_['text_go2cat']        = 'Перейти до категорії';
 $_['text_drop_intersection']        = 'Скинути';
-
-// Entry
 $_['entry_search'] = 'Пошук:';
 $_['entry_description'] = 'Шукати в описі товарів';
 $_['entry_suggestion']  = 'По запросу <b>%s</b> нічого не знайдено, можливо ви мали на увазі <b><a href="%s">%s</a></b>';
-
-
-
-//$_['text_name_order_count_asc']        = 'Лiдери продажу (А - Я)';
 $_['text_name_order_count_desc']        = 'Лiдери продажу';
