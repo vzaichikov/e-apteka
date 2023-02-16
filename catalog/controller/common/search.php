@@ -3,10 +3,11 @@ class ControllerCommonSearch extends Controller {
 	public function index() {
 		$this->load->language('product/search');
 
-		$data['search_link'] = $this->url->link('product/search');
-		$data['text_search_field'] = $this->language->get('text_search_field');
-		$data['search_show_all_results'] = $this->language->get('search_show_all_results');					
-		$data['text_empty'] = $this->language->get('text_empty');
+		$data['search_link'] 				= $this->url->link('product/search');
+		$data['text_search_field'] 			= $this->language->get('text_search_field');		
+
+		$data['search_show_all_results'] 	= $this->language->get('search_show_all_results');					
+		$data['text_empty'] 				= $this->language->get('text_empty');
 
 		$data['text_popular_histories'] =  $this->language->get('text_popular_histories');
 		$data['text_my_search_history'] =  $this->language->get('text_my_search_history');
