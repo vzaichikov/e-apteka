@@ -46,7 +46,7 @@
 					$rating = false;
 				}									
 				
-				$return[] = array(
+				$return[$result['product_id']] = array(
 				'product_id'  		=> $result['product_id'],
 				'seo'		  		=> $result['seo'],
 				'ecommerceCurrency' => $this->session->data['currency'],
@@ -1014,10 +1014,20 @@
 
 			return $query->row;
 		}
+
+		public function getProductStockSum($product_id){
+			$query_total = $this->db->query("SELECT SUM(quantity) as total FROM " . DB_PREFIX . "stocks WHERE product_id = '" . (int)$product_id . "'");
+			$query_drugstores = $this->db->query("SELECT COUNT(DISTINCT location_id) as total FROM " . DB_PREFIX . "stocks WHERE product_id = '" . (int)$product_id . "' AND quantity > 0");
+
+
+			return [
+				'quantity' 	 => $query_total->row['total'],
+				'drugstores' => $query_drugstores->row['total'],
+			];
+		}
 		
 		
 		public function getProductStocks($product_id, $cached = false, $in_stock = false){
-
 			$sql = "SELECT s.*, ld.*, l.gmaps_link, l.information_id, p.tax_class_id FROM " . DB_PREFIX . "stocks s 
 			LEFT JOIN " . DB_PREFIX . "location l ON s.location_id = l.location_id 
 			LEFT JOIN " . DB_PREFIX . "location_description ld ON l.location_id = ld.location_id 
@@ -1362,16 +1372,44 @@
 			return $product_data;
 		}
 		
-		public function getProductAnalog($product_id) {
+		public function getProductAnalog($product_id, $product_info = [], $same = []) {
 			$product_data = array();
 			
 			//This is set by hands
-			$sql = "SELECT * FROM " . DB_PREFIX . "product_analog pr LEFT JOIN " . DB_PREFIX . "product p ON (pr.analog_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.quantity > 0 AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'  ORDER BY (p.quantity > 0) DESC, p.price DESC";
+			$sql = "SELECT * FROM " . DB_PREFIX . "product_analog pr LEFT JOIN " . DB_PREFIX . "product p ON (pr.analog_id = p.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.quantity > 0 AND p.date_available <= NOW() ORDER BY (p.quantity > 0) DESC, p.price DESC";
 			
 			$query = $this->db->query($sql);
 			
 			foreach ($query->rows as $result) {
 				$product_data[$result['analog_id']] = $this->getProduct($result['analog_id']);
+			}
+
+			if (!empty($product_info['reg_atx_1'])){				
+				if (mb_strlen($product_info['reg_atx_1']) <= 5){
+					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
+					p.reg_atx_1 = '" . $this->db->escape($product_info['reg_atx_1']) . "' 
+					AND p.status = '1'
+					AND p.product_id <> '" . (int)$product_id . "'
+					AND p.date_available <= NOW() 
+					AND p.quantity > 0				
+					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT 20";
+				} else {
+					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
+					p.reg_atx_1 LIKE '" . $this->db->escape(mb_substr($product_info['reg_atx_1'], 0, 5)) . "%' 
+					AND p.status = '1'
+					AND p.product_id <> '" . (int)$product_id . "'
+					AND p.date_available <= NOW() 
+					AND p.quantity > 0				
+					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT 20";
+				}
+
+				$query = $this->db->query($sql);
+
+				foreach ($query->rows as $result) {
+					if (empty($product_data[$result['product_id']]) && !in_array($result['product_id'], $same)){
+						$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
+					}
+				}
 			}
 			
 			return $product_data;
@@ -1382,12 +1420,12 @@
 			
 			//This is set by hands
 			$sql = "SELECT DISTINCT pr.same_id FROM " . DB_PREFIX . "product_same pr 
-				LEFT JOIN " . DB_PREFIX . "product p ON (pr.same_id = p.product_id)
-				WHERE pr.product_id = '" . (int)$product_id . "' 
-				AND p.status = '1' 
-				AND p.date_available <= NOW() 
-				AND p.quantity > 0 
-				ORDER BY (p.quantity > 0) DESC, p.price DESC";			
+			LEFT JOIN " . DB_PREFIX . "product p ON (pr.same_id = p.product_id)
+			WHERE pr.product_id = '" . (int)$product_id . "' 
+			AND p.status = '1' 
+			AND p.date_available <= NOW() 
+			AND p.quantity > 0 
+			ORDER BY (p.quantity > 0) DESC, p.price DESC";			
 
 			$query = $this->db->query($sql);
 			
@@ -1404,30 +1442,39 @@
 					AND p.product_id <> '" . (int)$product_id . "'
 					AND p.date_available <= NOW() 
 					AND p.quantity > 0				
-					ORDER BY (p.quantity > 0) DESC, p.price DESC";						
-				} elseif (mb_strlen($product_info['reg_atx_1']) < 7 && $product_info['reg_unpatented_name']){
+					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT 20";						
+				} elseif (mb_strlen($product_info['reg_atx_1']) < 7 && $product_info['reg_unpatented_name'] && $product_info['reg_unpatented_name'] <> 'Comb drug'){
 					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
 					p.reg_unpatented_name = '" . $this->db->escape($product_info['reg_unpatented_name']) . "' 
 					AND p.status = '1'
 					AND p.product_id <> '" . (int)$product_id . "'
 					AND p.date_available <= NOW() 	
 					AND p.quantity > 0				
-					ORDER BY (p.quantity > 0) DESC, p.price DESC";					
+					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT 20";					
 				}
-			}
 
-			$query = $this->db->query($sql);
 
-			foreach ($query->rows as $result) {
-				if (empty($product_data[$result['product_id']])){
-					$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
+				$query = $this->db->query($sql);
+
+				foreach ($query->rows as $result) {
+					if (empty($product_data[$result['product_id']])){
+						$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
+					}
 				}
 			}
 			
 			return $product_data;
 		}
 
+		public function getCountBoughtForMonth($product_id){
+			$sql = "SELECT SUM(quantity) as total FROM " . DB_PREFIX . "order_product op 
+			WHERE op.product_id = '". (int)$product_id ."' AND op.order_id IN 
+			(SELECT o.order_id FROM `" . DB_PREFIX . "order` o WHERE o.order_status_id > 0 AND DATE(o.date_added) >= DATE(DATE_SUB(NOW(),INTERVAL 120 DAY)))";
 
+			$query = $this->db->query($sql);
+
+			return $query->row['total'];
+		}
 		
 		public function getProductLayoutId($product_id) {
 			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_layout WHERE product_id = '" . (int)$product_id . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "'");
