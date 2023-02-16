@@ -35,16 +35,16 @@ class ControllerEaptekaATX extends Controller {
 							'meta_description'  => '',
 							'meta_keyword'      => '',
 						),
-						"4" => array(
-							'name' 				=> $row['name_eng'] . ' (ATX-код ' . $row['code'] . ')',
-							'alternate_name'	=> '',
-							'seo_name' 			=> $row['name_eng'] . ' (ATX-код ' . $row['code'] . ')',
-							'faq_name' 			=> '',
-							'description'		=> '',
-							'meta_title'        => $row['name_eng'] . ' (ATX-код ' . $row['code'] . ')',
-							'meta_description'  => '',
-							'meta_keyword'      => '',
-						)
+						// "4" => array(
+						// 	'name' 				=> $row['name_eng'] . ' (ATX-код ' . $row['code'] . ')',
+						// 	'alternate_name'	=> '',
+						// 	'seo_name' 			=> $row['name_eng'] . ' (ATX-код ' . $row['code'] . ')',
+						// 	'faq_name' 			=> '',
+						// 	'description'		=> '',
+						// 	'meta_title'        => $row['name_eng'] . ' (ATX-код ' . $row['code'] . ')',
+						// 	'meta_description'  => '',
+						// 	'meta_keyword'      => '',
+						// )
 					),
 					'category_store' => array(
 						'0'

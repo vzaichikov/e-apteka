@@ -704,46 +704,46 @@
 				$this->db->query("DELETE FROM oc_product_attribute WHERE attribute_id = '" . (int)$attribute_id . "'");
 				$this->db->query("INSERT IGNORE INTO oc_product_attribute (`product_id`,`attribute_id`,`language_id`,`text`) SELECT product_id, '" . (int)$attribute_id . "', '2', (SELECT country FROM oc_manufacturer_description WHERE manufacturer_id = oc_product.manufacturer_id AND language_id = '2') as text FROM oc_product WHERE manufacturer_id > 0");
 				$this->db->query("INSERT IGNORE INTO oc_product_attribute (`product_id`,`attribute_id`,`language_id`,`text`) SELECT product_id, '" . (int)$attribute_id . "', '3', (SELECT country FROM oc_manufacturer_description WHERE manufacturer_id = oc_product.manufacturer_id AND language_id = '3') as text FROM oc_product WHERE manufacturer_id > 0");
-				$this->db->query("INSERT IGNORE INTO oc_product_attribute (`product_id`,`attribute_id`,`language_id`,`text`) SELECT product_id, '" . (int)$attribute_id . "', '4', (SELECT country FROM oc_manufacturer_description WHERE manufacturer_id = oc_product.manufacturer_id AND language_id = '4') as text FROM oc_product WHERE manufacturer_id > 0");
+				// $this->db->query("INSERT IGNORE INTO oc_product_attribute (`product_id`,`attribute_id`,`language_id`,`text`) SELECT product_id, '" . (int)$attribute_id . "', '4', (SELECT country FROM oc_manufacturer_description WHERE manufacturer_id = oc_product.manufacturer_id AND language_id = '4') as text FROM oc_product WHERE manufacturer_id > 0");
 			}
 			
 			//Общая обработка
 			$this->model_catalog_category->repairCategories();
 			
-			//удаляем пустые категории
-			$query = $this->db->query("SELECT DISTINCT category_id FROM oc_category WHERE uuid = '' AND category_id NOT IN (SELECT DISTINCT(category_id) FROM oc_product_to_category WHERE 1)");
-			if ($query->num_rows) {
-				foreach ($query->rows as $row){
-					$this->model_catalog_category->deleteCategory($row['category_id']);
-					echo '[i] Пост-обработка.. Удаляем пустую категорию ' . $row['category_id'] . PHP_EOL;
-				}
-			}
+			// //удаляем пустые категории
+			// $query = $this->db->query("SELECT DISTINCT category_id FROM oc_category WHERE uuid = '' AND category_id NOT IN (SELECT DISTINCT(category_id) FROM oc_product_to_category WHERE 1)");
+			// if ($query->num_rows) {
+			// 	foreach ($query->rows as $row){
+			// 		$this->model_catalog_category->deleteCategory($row['category_id']);
+			// 		echo '[i] Пост-обработка.. Удаляем пустую категорию ' . $row['category_id'] . PHP_EOL;
+			// 	}
+			// }
 			
-			//надо отключить пустые категории
-			echo '[i] Пост-обработка.. Отключение пустых категорий ' . PHP_EOL;
+			// //надо отключить пустые категории
+			// echo '[i] Пост-обработка.. Отключение пустых категорий ' . PHP_EOL;
 			
-			$filter_data = array(
-            'start' => 0,
-            'limit' => 10000
-			);
+			// $filter_data = array(
+            // 'start' => 0,
+            // 'limit' => 10000
+			// );
 			
-			$categories = $this->model_catalog_category->getCategories($filter_data);
+			// $categories = $this->model_catalog_category->getCategories($filter_data);
 			
-			foreach ($categories as $category){
-				$filter_data = array(
-                'filter_category_id' => $category['category_id'],
-                'filter_sub_category' => true
-				);
+			// foreach ($categories as $category){
+			// 	$filter_data = array(
+            //     'filter_category_id' => $category['category_id'],
+            //     'filter_sub_category' => true
+			// 	);
 				
-				$product_total = $this->model_catalog_product->getTotalProductsExtended($filter_data);
+			// 	$product_total = $this->model_catalog_product->getTotalProductsExtended($filter_data);
 				
-				if ($product_total){
-					echo '[EXIST] Количество: ' . $product_total . ' в категории ' . html_entity_decode($category['name']) . PHP_EOL;
-					} else {
-					echo '[NOPRO] Количество: ' . $product_total . ' в категории ' . html_entity_decode($category['name']) . PHP_EOL;
-					$this->db->query("UPDATE oc_category SET status = 0 WHERE category_id = '" . (int)$category['category_id'] . "'");
-				}
-			}
+			// 	if ($product_total){
+			// 		echo '[EXIST] Количество: ' . $product_total . ' в категории ' . html_entity_decode($category['name']) . PHP_EOL;
+			// 		} else {
+			// 		echo '[NOPRO] Количество: ' . $product_total . ' в категории ' . html_entity_decode($category['name']) . PHP_EOL;
+			// 		$this->db->query("UPDATE oc_category SET status = 0 WHERE category_id = '" . (int)$category['category_id'] . "'");
+			// 	}
+			// }
 			
 			echo '[i] Пост-обработка.. Обработка товаров которые нельзя доставить или оплатить' . PHP_EOL;
 			
@@ -1147,17 +1147,17 @@
 								'meta_description'  => $real_category?$real_category['category_description'][3]['meta_description']:'',
 								'meta_keyword'      => $real_category?$real_category['category_description'][3]['meta_keyword']:'',
 								),
-								"4" => array(
-								'name' 				=> $real_category?$real_category['category_description'][4]['name']:$product['СсылкаРодительНаименование'],
-								//'name' 				=> $product['СсылкаРодительНаименование'],
-								'alternate_name'	=> $real_category?$real_category['category_description'][4]['alternate_name']:'',
-								'seo_name' 			=> $real_category?$real_category['category_description'][4]['seo_name']:'',
-								'faq_name' 			=> $real_category?$real_category['category_description'][4]['faq_name']:'',
-								'description' 		=> $real_category?$real_category['category_description'][4]['description']:'',
-								'meta_title'        => $real_category?$real_category['category_description'][4]['meta_title']:'',
-								'meta_description'  => $real_category?$real_category['category_description'][4]['meta_description']:'',
-								'meta_keyword'      => $real_category?$real_category['category_description'][4]['meta_keyword']:'',
-								)
+								// "4" => array(
+								// 'name' 				=> $real_category?$real_category['category_description'][4]['name']:$product['СсылкаРодительНаименование'],
+								// //'name' 				=> $product['СсылкаРодительНаименование'],
+								// 'alternate_name'	=> $real_category?$real_category['category_description'][4]['alternate_name']:'',
+								// 'seo_name' 			=> $real_category?$real_category['category_description'][4]['seo_name']:'',
+								// 'faq_name' 			=> $real_category?$real_category['category_description'][4]['faq_name']:'',
+								// 'description' 		=> $real_category?$real_category['category_description'][4]['description']:'',
+								// 'meta_title'        => $real_category?$real_category['category_description'][4]['meta_title']:'',
+								// 'meta_description'  => $real_category?$real_category['category_description'][4]['meta_description']:'',
+								// 'meta_keyword'      => $real_category?$real_category['category_description'][4]['meta_keyword']:'',
+								// )
 								),
 								'category_store' => array(
 								'0'
@@ -1233,17 +1233,17 @@
 							'meta_description'  => $real_category?$real_category['category_description'][3]['meta_description']:'',
 							'meta_keyword'      => $real_category?$real_category['category_description'][3]['meta_keyword']:'',
 							),
-							"4" => array(
-							'name' 				=> $real_category?$real_category['category_description'][4]['name']:$product['СсылкаНаименование'],
-							//'name' 				=> $product['СсылкаНаименование'],
-							'alternate_name'	=> $real_category?$real_category['category_description'][4]['alternate_name']:'',
-							'seo_name' 			=> $real_category?$real_category['category_description'][4]['seo_name']:'',
-							'faq_name' 			=> $real_category?$real_category['category_description'][4]['faq_name']:'',
-							'description' 		=> $real_category?$real_category['category_description'][4]['description']:'',
-							'meta_title'        => $real_category?$real_category['category_description'][4]['meta_title']:'',
-							'meta_description'  => $real_category?$real_category['category_description'][4]['meta_description']:'',
-							'meta_keyword'      => $real_category?$real_category['category_description'][4]['meta_keyword']:'',
-							)
+							// "4" => array(
+							// 'name' 				=> $real_category?$real_category['category_description'][4]['name']:$product['СсылкаНаименование'],
+							// //'name' 				=> $product['СсылкаНаименование'],
+							// 'alternate_name'	=> $real_category?$real_category['category_description'][4]['alternate_name']:'',
+							// 'seo_name' 			=> $real_category?$real_category['category_description'][4]['seo_name']:'',
+							// 'faq_name' 			=> $real_category?$real_category['category_description'][4]['faq_name']:'',
+							// 'description' 		=> $real_category?$real_category['category_description'][4]['description']:'',
+							// 'meta_title'        => $real_category?$real_category['category_description'][4]['meta_title']:'',
+							// 'meta_description'  => $real_category?$real_category['category_description'][4]['meta_description']:'',
+							// 'meta_keyword'      => $real_category?$real_category['category_description'][4]['meta_keyword']:'',
+							// )
 							),
 							'category_store' => array(
 							'0'
@@ -1331,17 +1331,17 @@
 							'meta_description'  => $real_category?$real_category['category_description'][3]['meta_description']:'',
 							'meta_keyword'      => $real_category?$real_category['category_description'][3]['meta_keyword']:'',
 							),
-							"4" => array(
-							'name' 				=> $real_category?$real_category['category_description'][4]['name']:$product['СсылкаРодительНаименование'],
-							//'name' 				=> $product['СсылкаРодительНаименование'],
-							'alternate_name'	=> $real_category?$real_category['category_description'][4]['alternate_name']:'',
-							'seo_name' 			=> $real_category?$real_category['category_description'][4]['seo_name']:'',
-							'faq_name' 			=> $real_category?$real_category['category_description'][4]['faq_name']:'',
-							'description' 		=> $real_category?$real_category['category_description'][4]['description']:'',
-							'meta_title'        => $real_category?$real_category['category_description'][4]['meta_title']:'',
-							'meta_description'  => $real_category?$real_category['category_description'][4]['meta_description']:'',
-							'meta_keyword'      => $real_category?$real_category['category_description'][4]['meta_keyword']:'',
-							)
+							// "4" => array(
+							// 'name' 				=> $real_category?$real_category['category_description'][4]['name']:$product['СсылкаРодительНаименование'],
+							// //'name' 				=> $product['СсылкаРодительНаименование'],
+							// 'alternate_name'	=> $real_category?$real_category['category_description'][4]['alternate_name']:'',
+							// 'seo_name' 			=> $real_category?$real_category['category_description'][4]['seo_name']:'',
+							// 'faq_name' 			=> $real_category?$real_category['category_description'][4]['faq_name']:'',
+							// 'description' 		=> $real_category?$real_category['category_description'][4]['description']:'',
+							// 'meta_title'        => $real_category?$real_category['category_description'][4]['meta_title']:'',
+							// 'meta_description'  => $real_category?$real_category['category_description'][4]['meta_description']:'',
+							// 'meta_keyword'      => $real_category?$real_category['category_description'][4]['meta_keyword']:'',
+							// )
 							),
 							'category_store' => array(
 							'0'
@@ -1413,13 +1413,13 @@
 								$category_names = array(
 								'2' => 'Справочник лекарств ' . $first_letter,
 								'3' => 'Довідник ліків ' . $first_letter,
-								'4' => 'Medicines Reference ' . $first_letter,
+							//	'4' => 'Medicines Reference ' . $first_letter,
 								);
 								} else {
 								$category_names = array(
 								'2' => 'Справочник лекарств на букву ' . $first_letter,
 								'3' => 'Довідник ліків на букву ' . $first_letter,
-								'4' => 'Medicines Reference ' . $first_letter,
+							//	'4' => 'Medicines Reference ' . $first_letter,
 								);
 							}
 							
@@ -1462,16 +1462,16 @@
 							'meta_description'  => $real_category?$real_category['category_description'][3]['meta_description']:'',
 							'meta_keyword'      => $real_category?$real_category['category_description'][3]['meta_keyword']:'',
 							),
-							"4" => array(
-							'name' 				=> $first_letter,
-							'alternate_name'	=> $real_category?$real_category['category_description'][4]['alternate_name']:'',
-							'seo_name' 			=> $real_category?$real_category['category_description'][4]['seo_name']:'',
-							'faq_name' 			=> $real_category?$real_category['category_description'][4]['faq_name']:'',
-							'description' 		=> $real_category?$real_category['category_description'][4]['description']:'',
-							'meta_title'        => $real_category?$real_category['category_description'][4]['meta_title']:'',
-							'meta_description'  => $real_category?$real_category['category_description'][4]['meta_description']:'',
-							'meta_keyword'      => $real_category?$real_category['category_description'][4]['meta_keyword']:'',
-							)
+							// "4" => array(
+							// 'name' 				=> $first_letter,
+							// 'alternate_name'	=> $real_category?$real_category['category_description'][4]['alternate_name']:'',
+							// 'seo_name' 			=> $real_category?$real_category['category_description'][4]['seo_name']:'',
+							// 'faq_name' 			=> $real_category?$real_category['category_description'][4]['faq_name']:'',
+							// 'description' 		=> $real_category?$real_category['category_description'][4]['description']:'',
+							// 'meta_title'        => $real_category?$real_category['category_description'][4]['meta_title']:'',
+							// 'meta_description'  => $real_category?$real_category['category_description'][4]['meta_description']:'',
+							// 'meta_keyword'      => $real_category?$real_category['category_description'][4]['meta_keyword']:'',
+							// )
 							),
 							'category_store' => array(
 							'0'
@@ -1608,15 +1608,15 @@
 						'meta_description'  => $real_manufacturer?$real_manufacturer['manufacturer_description'][3]['meta_description']:'',
 						'meta_keyword'      => $real_manufacturer?$real_manufacturer['manufacturer_description'][3]['meta_keyword']:'',
 						),
-						"4" => array(
-						'name'				=> $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['name']:($product['СсылкаПроизводитель_en']?$product['СсылкаПроизводитель_en']:$product['СсылкаНоменклатураПроизводительНаименование']),
-						'country'			=> $countries[4],
-						'alternate_name' 	=> $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['alternate_name']:'',
-						'description' 		=> $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['description']:'',
-						'custom_title' 		=> $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['custom_title']:'',
-						'meta_description'  => $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['meta_description']:'',
-						'meta_keyword'      => $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['meta_keyword']:'',
-						)
+						// "4" => array(
+						// 'name'				=> $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['name']:($product['СсылкаПроизводитель_en']?$product['СсылкаПроизводитель_en']:$product['СсылкаНоменклатураПроизводительНаименование']),
+						// 'country'			=> $countries[4],
+						// 'alternate_name' 	=> $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['alternate_name']:'',
+						// 'description' 		=> $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['description']:'',
+						// 'custom_title' 		=> $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['custom_title']:'',
+						// 'meta_description'  => $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['meta_description']:'',
+						// 'meta_keyword'      => $real_manufacturer?$real_manufacturer['manufacturer_description'][4]['meta_keyword']:'',
+						// )
 						),
 						'manufacturer_store' => array(
 						'0'
@@ -1782,9 +1782,9 @@
 												"3" => array(
 												'text' => $text[3],
 												),
-												"4" => array(
-												'text' => $text[4],
-												)
+												// "4" => array(
+												// 'text' => $text[4],
+												// )
 												)
 												);
 												echo "[A] Атрибут " . $attribute_id . ', значение ' . $text . PHP_EOL;
@@ -1827,9 +1827,9 @@
 									"3" => array(
 									'text' => $text[3],
 									),
-									"4" => array(
-									'text' => $text[4],
-									)
+									// "4" => array(
+									// 'text' => $text[4],
+									// )
 									)
 									);
 									echo "[A] Атрибут " . $attribute_id . ', значение ' . $text[2] . PHP_EOL;
@@ -1873,9 +1873,9 @@
 									"3" => array(
 									'text' => $text[3],
 									),
-									"4" => array(
-									'text' => $text[4],
-									)
+									// "4" => array(
+									// 'text' => $text[4],
+									// )
 									)
 									);
 									echo "[A] Атрибут " . $attribute_id . ', значение ' . $text[2] . PHP_EOL;
@@ -1924,9 +1924,9 @@
 									"3" => array(
 									'text' => $text[3],
 									),
-									"4" => array(
-									'text' => $text[4],
-									)
+									// "4" => array(
+									// 'text' => $text[4],
+									// )
 									)
 									);
 									echo "[A] Атрибут " . $attribute_id . ', значение ' . $text[2] . PHP_EOL;
@@ -1966,9 +1966,9 @@
 										"3" => array(
 										'text' => $text,
 										),
-										"4" => array(
-										'text' => $text,
-										)
+										// "4" => array(
+										// 'text' => $text,
+										// )
 										)
 										);
 										
@@ -2050,9 +2050,9 @@
 								"3" => array(
 								'text' => $text,
 								),
-								"4" => array(
-								'text' => $text,
-								)
+								// "4" => array(
+								// 'text' => $text,
+								// )
 								)
 								);
 								echo "[A] У товара задан бренд " . $attribute_id . ', значение ' . $text . PHP_EOL;
@@ -2071,9 +2071,9 @@
 								"3" => array(
 								'text' => $countries[3],
 								),
-								"4" => array(
-								'text' => $countries[4],
-								)
+								// "4" => array(
+								// 'text' => $countries[4],
+								// )
 								)
 								);
 								
@@ -2095,9 +2095,9 @@
 								"3" => array(
 								'text' => $real_product['reg_trade_name'],
 								),
-								"4" => array(
-								'text' => $real_product['reg_trade_name'],
-								)
+								// "4" => array(
+								// 'text' => $real_product['reg_trade_name'],
+								// )
 								)
 								);
 								
@@ -2119,9 +2119,9 @@
 								"3" => array(
 								'text' => $real_product['reg_save_terms'],
 								),
-								"4" => array(
-								'text' => $real_product['reg_save_terms'],
-								)
+								// "4" => array(
+								// 'text' => $real_product['reg_save_terms'],
+								// )
 								)
 								);
 								
@@ -2266,18 +2266,18 @@
 						'meta_description'      => $real_product?$real_product['product_description'][3]['meta_description']:'',
 						'meta_keyword'          => $real_product?$real_product['product_description'][3]['meta_keyword']:''
 						),
-						"4" => array(
-						'name'					=> $product_names[4],
-						'original_name' 		=> $original_names[4],
-						'seo_name'				=> $real_product?$real_product['product_description'][4]['seo_name']:'',
-						'faq_name' 				=> $real_product?$real_product['product_description'][4]['faq_name']:'',
-						'description' 			=> $real_product?$real_product['product_description'][4]['description']:'',
-						'instruction' 			=> $real_product?$real_product['product_description'][4]['instruction']:'',
-						'tag'         			=> $real_product?$real_product['product_description'][4]['tag']:'',
-						'meta_title'        	=> $real_product?$real_product['product_description'][4]['meta_title']:$product_names[4],
-						'meta_description'      => $real_product?$real_product['product_description'][4]['meta_description']:'',
-						'meta_keyword'          => $real_product?$real_product['product_description'][4]['meta_keyword']:''
-						)
+						// "4" => array(
+						// 'name'					=> $product_names[4],
+						// 'original_name' 		=> $original_names[4],
+						// 'seo_name'				=> $real_product?$real_product['product_description'][4]['seo_name']:'',
+						// 'faq_name' 				=> $real_product?$real_product['product_description'][4]['faq_name']:'',
+						// 'description' 			=> $real_product?$real_product['product_description'][4]['description']:'',
+						// 'instruction' 			=> $real_product?$real_product['product_description'][4]['instruction']:'',
+						// 'tag'         			=> $real_product?$real_product['product_description'][4]['tag']:'',
+						// 'meta_title'        	=> $real_product?$real_product['product_description'][4]['meta_title']:$product_names[4],
+						// 'meta_description'      => $real_product?$real_product['product_description'][4]['meta_description']:'',
+						// 'meta_keyword'          => $real_product?$real_product['product_description'][4]['meta_keyword']:''
+						// )
 						),
 						'product_store' => array(
 						'0'
