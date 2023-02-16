@@ -460,15 +460,27 @@
 														<div class="alert alert-info" style="padding:5px 0px;"><i class="fa fa-info-circle"></i> <?php echo $text_minimum; ?></div>
 													<?php } ?>
 												</div>
+
+												<?php if (!empty($text_available_in_drugstores)) { ?>
+													<div class="text-info" style="padding:5px 0px 5px;">
+														<i class="fa fa-check-circle" aria-hidden="true"></i> <?php echo $text_available_in_drugstores; ?>
+													</div>
+												<?php } ?>
+
+												<?php if (!empty($text_bought_for_month)) { ?>
+													<div class="text-success" style="padding:5px 0px 5px;">
+														<i class="fa fa-check-circle" aria-hidden="true"></i> <?php echo $text_bought_for_month; ?>
+													</div>
+												<?php } ?>
 												
 												<?php if ($delivery_to_ukraine_unavailable) { ?>
-													<div class="text-danger" style="padding:10px 0px 5px;">
+													<div class="text-danger" style="padding:5px 0px 5px;">
 														<i class="fa fa-exclamation-circle" aria-hidden="true"></i> <?php echo $text_delivery_to_ukraine_unavailable; ?>
 													</div>
 												<?php } ?>
 												
 												<?php if ($is_receipt) { ?>
-													<div class="text-danger" style="padding:10px 0px 5px;">
+													<div class="text-danger" style="padding:5px 0px 5px;">
 														<i class="fa fa-exclamation-circle" aria-hidden="true"></i> <?php echo $text_is_receipt; ?>
 													<? /*	<br />
 														<i class="fa fa-exclamation-circle" aria-hidden="true"></i> <?php echo $text_is_receipt2; ?>
