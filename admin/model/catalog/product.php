@@ -554,8 +554,6 @@
 				`json_old` 		= `json`,
 				`json` 			= '" . $this->db->escape(json_encode($json)) . "',
 				`product_id` 	= '" . (int)$product_id . "'");
-
-
 		}
 
 		public function getAllDataFromLikReestr(){
