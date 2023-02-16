@@ -4,8 +4,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xlg-10 col-lg-12 col-xlg-offset-1 smlkuvannia-image">
-				<span><i>Самолікування</i> може бути шкідливим</span>
-				<p>для вашого <i>здоров'я</i></p>					
+				<span>Самолікування може бути шкідливим для вашого здоров'я</span>								
 			</div>
 		</div>
 	</div>
@@ -143,153 +142,151 @@
 <style>
 	
 	.imcallask-btn-mini .imcallask-btn-mini-phone.active:before{
-	background-image: url("image/error.png");
-	color:white ;
+		background-image: url("image/error.png");
+		color:white ;
 	}
 	a.imcallask-btn-mini.hidden-xs {
-	/*display: block!important;*/
-	display: none;
+		/*display: block!important;*/
+		display: none;
 	}
-	.footer__bottom{
-		padding-top: 20px;
-	}	
+	
 	.footer__bottom_custom .fa{
-	font-size: 45px;
+		font-size: 45px;
 	}
 	.footer__bottom_custom{
-	position: fixed;
-	bottom: 140px;
-	right: 65px;
-	cursor: pointer;
-	z-index: 99999;
+		position: fixed;
+		bottom: 140px;
+		right: 65px;
+		cursor: pointer;
+		z-index: 99999;
 	}
 	.footer__bottom_custom.active{
-	display: block;
+		display: block;
 	}
 	.footer__bottom_custom.disactive{
-	display: none;
+		display: none;
 	}
 	
 	.custom_call{
-	cursor: pointer;
-	color: #fcfcff;
-	background-color: #6fbddbbf;
-	border-radius: 50px;
-	width: 50px;
-	height: 50px;
-	padding: 3px;
-	margin: 5px;
-	text-align: center;
+		cursor: pointer;
+		color: #fcfcff;
+		background-color: #6fbddbbf;
+		border-radius: 50px;
+		width: 50px;
+		height: 50px;
+		padding: 3px;
+		margin: 5px;
+		text-align: center;
 	}
 	.smlkuvannia-image{
-	text-align: center;
+		text-align: center;
 	}
 	.smlkuvannia-image span{
-	text-transform: uppercase;
-	color: #a2a2a2;
-	width: 100%;
-	text-align: center;
-	font-size: 46px;
-	letter-spacing: 8px;
+		text-transform: uppercase;
+		color: #a2a2a2;
+		width: 100%;
+		text-align: center;
+		font-size: 24px;
+		letter-spacing: 8px;
 	}
 	.smlkuvannia-image i{
-	font-style: normal;
+		font-style: normal;
 	}
 	.smlkuvannia-image p{
-	text-transform: uppercase;
-	color: #a2a2a2;
-	font-size: 94px;
-	letter-spacing: 6px;
+		text-transform: uppercase;
+		color: #a2a2a2;
+		font-size: 20px;
+		letter-spacing: 6px;
 	}
 	@media screen and (max-width: 1500px){
-	.smlkuvannia-image span {
-	font-size: 38px;
-	letter-spacing: 7px;
-	}
-	.smlkuvannia-image p {
-	font-size: 76px;
-	letter-spacing: 7px;
-	}
-	
+		.smlkuvannia-image span {
+			font-size: 20px;
+			letter-spacing: 7px;
+		}
+		.smlkuvannia-image p {
+			font-size: 16px;
+			letter-spacing: 7px;
+		}
+
 	}
 	@media screen and (max-width: 1200px){
-	.smlkuvannia-image span {
-	font-size: 35px;
-	letter-spacing: 3px;
-	}
-	.smlkuvannia-image p {
-	font-size: 60px;
-	letter-spacing: 7px;
-	}
+		.smlkuvannia-image span {
+			font-size: 18px;
+			letter-spacing: 3px;
+		}
+		.smlkuvannia-image p {
+			font-size: 14px;
+			letter-spacing: 2px;
+		}
 	}
 	@media screen and (max-width: 1000px){
-	.smlkuvannia-image span {
-	font-size: 26px;
-	letter-spacing: 3px;
-	}
-	.smlkuvannia-image p {
-	font-size: 43px;
-	letter-spacing: 7px;
-	}
+		.smlkuvannia-image span {
+			font-size: 16px;
+			letter-spacing: 3px;
+		}
+		.smlkuvannia-image p {
+			font-size: 14px;
+			letter-spacing: 2px;
+		}
 	}
 	@media screen and (max-width: 767px){
-	.smlkuvannia-image span {
-	font-size: 20px;
-	letter-spacing: 4px;
-	}
-	.smlkuvannia-image p {
-	font-size: 30px;
-	letter-spacing: 10px;
-	}
+		.smlkuvannia-image span {
+			font-size: 16px;
+			letter-spacing: 4px;
+		}
+		.smlkuvannia-image p {
+			font-size: 12px;
+			letter-spacing: 2px;
+		}
 	}
 	@media screen and (max-width: 650px){
-	.smlkuvannia-image span {
-	font-size: 15px;
-	letter-spacing: 3px;
-	}
-	.smlkuvannia-image p {
-	font-size: 23px;
-	letter-spacing: 8px;
-	}
+		.smlkuvannia-image span {
+			font-size: 12px;
+			letter-spacing: 3px;
+		}
+		.smlkuvannia-image p {
+			font-size: 10px;
+			letter-spacing: 2px;
+		}
 	}
 	@media screen and (max-width: 500px){
-	.smlkuvannia-image span {
-	font-size: 20px;
-	letter-spacing: 4px;
-	margin-bottom: 6px;
-	display: block;
-	}
-	.smlkuvannia-image span i {
-	display: block;
-	font-size: 33px;
-	}
-	.smlkuvannia-image p {
-	font-size: 38px;
-	letter-spacing: 8px;
-	line-height: 1.1;
-	}
-	.smlkuvannia-image p i {
-	display: block;			
-	font-size: 52px;
-	
-	}
+		.smlkuvannia-image span {
+			font-size: 12px;
+			letter-spacing: 2px;
+			margin-bottom: 6px;
+			display: block;
+		}
+		.smlkuvannia-image span i {
+			display: block;
+			font-size: 33px;
+		}
+		.smlkuvannia-image p {
+			font-size: 10px;
+			letter-spacing: 2px;
+			line-height: 1.1;
+		}
+		.smlkuvannia-image p i {
+			display: block;
+			font-size: 52px;
+
+		}
 	}
 	@media screen and (max-width: 400px){
-	.smlkuvannia-image span {
-	font-size: 15px;
-	}
-	.smlkuvannia-image span i {
-	display: block;
-	font-size: 24px;
-	}
-	.smlkuvannia-image p {
-	font-size: 27px;
-	}
-	.smlkuvannia-image p i {
-	display: block;			
-	font-size: 38px;
-	
-	}
+		.smlkuvannia-image span {
+			font-size: 12px;
+		}
+		.smlkuvannia-image span i {
+			display: block;
+			font-size: 24px;
+		}
+		.smlkuvannia-image p {
+			font-size: 10px;
+		}
+		.smlkuvannia-image p i {
+			display: block;
+			font-size: 38px;
+
+		}
 	}
 </style>
 

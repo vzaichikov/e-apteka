@@ -262,8 +262,8 @@ $(document).ready(function() {
 	<div class="container">
 		<div class="row">
 			<div class="col-xlg-10 col-lg-12 col-xlg-offset-1 smlkuvannia-image">
-				<span><i>Самолікування</i> може бути шкідливим</span>
-				<p>для вашого <i>здоров'я</i></p>
+				<span>Самолікування може бути шкідливим для вашого здоров'я</span>
+				<p>Перед застосуванням препарату проконсультуйтесь з лікарем</p>										
 			</div>
 		</div>
 	</div>
@@ -763,7 +763,7 @@ $(document).ready(function() {
 		color: #a2a2a2;
 		width: 100%;
 		text-align: center;
-		font-size: 46px;
+		font-size: 24px;
 		letter-spacing: 8px;
 	}
 	.smlkuvannia-image i{
@@ -772,64 +772,64 @@ $(document).ready(function() {
 	.smlkuvannia-image p{
 		text-transform: uppercase;
 		color: #a2a2a2;
-		font-size: 94px;
+		font-size: 20px;
 		letter-spacing: 6px;
 	}
 	@media screen and (max-width: 1500px){
 		.smlkuvannia-image span {
-			font-size: 38px;
+			font-size: 20px;
 			letter-spacing: 7px;
 		}
 		.smlkuvannia-image p {
-			font-size: 76px;
+			font-size: 16px;
 			letter-spacing: 7px;
 		}
 
 	}
 	@media screen and (max-width: 1200px){
 		.smlkuvannia-image span {
-			font-size: 35px;
+			font-size: 18px;
 			letter-spacing: 3px;
 		}
 		.smlkuvannia-image p {
-			font-size: 60px;
-			letter-spacing: 7px;
+			font-size: 14px;
+			letter-spacing: 2px;
 		}
 	}
 	@media screen and (max-width: 1000px){
 		.smlkuvannia-image span {
-			font-size: 26px;
+			font-size: 16px;
 			letter-spacing: 3px;
 		}
 		.smlkuvannia-image p {
-			font-size: 43px;
-			letter-spacing: 7px;
+			font-size: 14px;
+			letter-spacing: 2px;
 		}
 	}
 	@media screen and (max-width: 767px){
 		.smlkuvannia-image span {
-			font-size: 20px;
+			font-size: 16px;
 			letter-spacing: 4px;
 		}
 		.smlkuvannia-image p {
-			font-size: 30px;
-			letter-spacing: 10px;
+			font-size: 12px;
+			letter-spacing: 2px;
 		}
 	}
 	@media screen and (max-width: 650px){
 		.smlkuvannia-image span {
-			font-size: 15px;
+			font-size: 12px;
 			letter-spacing: 3px;
 		}
 		.smlkuvannia-image p {
-			font-size: 23px;
-			letter-spacing: 8px;
+			font-size: 10px;
+			letter-spacing: 2px;
 		}
 	}
 	@media screen and (max-width: 500px){
 		.smlkuvannia-image span {
-			font-size: 20px;
-			letter-spacing: 4px;
+			font-size: 12px;
+			letter-spacing: 2px;
 			margin-bottom: 6px;
 			display: block;
 		}
@@ -838,8 +838,8 @@ $(document).ready(function() {
 			font-size: 33px;
 		}
 		.smlkuvannia-image p {
-			font-size: 38px;
-			letter-spacing: 8px;
+			font-size: 10px;
+			letter-spacing: 2px;
 			line-height: 1.1;
 		}
 		.smlkuvannia-image p i {
@@ -850,14 +850,14 @@ $(document).ready(function() {
 	}
 	@media screen and (max-width: 400px){
 		.smlkuvannia-image span {
-			font-size: 15px;
+			font-size: 12px;
 		}
 		.smlkuvannia-image span i {
 			display: block;
 			font-size: 24px;
 		}
 		.smlkuvannia-image p {
-			font-size: 27px;
+			font-size: 10px;
 		}
 		.smlkuvannia-image p i {
 			display: block;

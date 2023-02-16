@@ -782,11 +782,10 @@
 									<a class="header-bottom-nav__link" href="<?php echo $delivery; ?>"><i class="fa fa-ambulance" aria-hidden="true"></i> <?php echo $text_de; ?></a>
 									<a class="header-bottom-nav__link" href="<?php echo $about_us; ?>"><i class="fa fa-info-circle" aria-hidden="true"></i> <?php echo $text_about; ?></a>
 									
-									<a class="header-bottom-nav__link" href="<?php echo $vacancies; ?>"><i class="fa fa-bullhorn" aria-hidden="true"></i> <?php echo $text_vacancies; ?></a>
-									
 									<? /*
-										<a class="header-bottom-nav__link" href="<?php echo $loyality; ?>"><?php echo $text_3; ?></a>
-										<a class="header-bottom-nav__link" href="<?php echo $newsfeed; ?>"><?php echo $text_5; ?></a>
+									<a class="header-bottom-nav__link" href="<?php echo $vacancies; ?>"><i class="fa fa-bullhorn" aria-hidden="true"></i> <?php echo $text_vacancies; ?></a>
+									<a class="header-bottom-nav__link" href="<?php echo $loyality; ?>"><?php echo $text_3; ?></a>
+									<a class="header-bottom-nav__link" href="<?php echo $newsfeed; ?>"><?php echo $text_5; ?></a>
 									*/ ?>
 								</div>
 								
