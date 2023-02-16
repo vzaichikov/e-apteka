@@ -31,7 +31,12 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 			<?php } ?>
 		</div>
 		
-		<h4 class="product-layout__name"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a></h4>
+		<div class="product-layout__name__wrap">
+			<h4 class="product-layout__name"><a href="<?php echo $product['href']; ?>" title="<?php echo $product['name']; ?>"><?php echo $product['name']; ?></a></h4>
+			<?php if ($product['manufacturer']) { ?>
+				<small class='product-layout__name__manufacturer text-muted'><?php echo $product['manufacturer']; ?></small>
+			<?php } ?>
+		</div>
 	</div>
 
 	<div class="price_group">

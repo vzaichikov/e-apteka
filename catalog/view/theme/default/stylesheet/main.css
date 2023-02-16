@@ -4509,10 +4509,10 @@ a.bbtn--small .icon {
     font-size: 15px;
     display: inline-block;
     line-height: 1.25em;
-    height: 2.6em;
+    max-height: 3.0em;
+    height: auto;
     overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 10px;
+    text-overflow: ellipsis;    
 }
 
 .product-layout .price {
@@ -4816,7 +4816,7 @@ h2.cat-header:before {
 
 .product-category-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 15px;
     margin-top: 25px;
     margin-bottom: 20px;
@@ -9262,16 +9262,19 @@ label.el-checkbox {
     border-radius: 20px;
 }
 
+.product-item .product-layout__caption .product-layout__name__wrap {
+    height: 60px;    
+    margin-bottom: 20px;
+}
+
 .product-item .product-layout__caption .product-layout__name {
     text-align: left;
-    height: 60px;
-    margin-bottom: 10px;
 }
 
 .product-item .product-layout__caption .product-layout__name a {
     font-size: 16px;
     font-weight: 500;
-    line-height: 20px;
+    line-height: 16px;
     margin-bottom: 0;
     height: auto;
     word-wrap: anywhere;
@@ -9362,6 +9365,10 @@ label.el-checkbox {
 .product-category-list.product-category-list--list .product-item .product-layout__caption .rating {
     position: relative;
     right: 0;
+}
+
+.product-category-list.product-category-list--list .product-item .product-layout__caption .product-layout__name__wrap {
+    height: auto;
 }
 
 .product-category-list.product-category-list--list .product-item .product-layout__caption .product-layout__name {
@@ -9573,11 +9580,13 @@ label.el-checkbox {
         margin-bottom: 20px;
     }
     .product-item .product-layout__caption .product-layout__name a {
-        font-size: 16px;
-        line-height: 19px;
+        font-size: 14px;
+        line-height: 16px;
     }
-    .product-item .product-layout__caption .product-layout__name {
+    .product-item .product-layout__caption .product-layout__name__wrap {
         height: 45px;
+    }    
+    .product-item .product-layout__caption .product-layout__name {
     }
     .product-item .button-group .product-layout__btn-cart {
         font-size: 17px;
@@ -9604,8 +9613,10 @@ label.el-checkbox {
     .wrap-slider .swiper-container {
         padding: 0 15px;
     }
-    .product-item .product-layout__caption .product-layout__name {
+    .product-item .product-layout__caption .product-layout__name__wrap {
         height: 60px;
+    }
+    .product-item .product-layout__caption .product-layout__name {        
     }
     .product__order-wrap .product__button-group > * {
         /*margin-bottom: 15px !important;*/

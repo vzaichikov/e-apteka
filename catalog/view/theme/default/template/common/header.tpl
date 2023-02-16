@@ -410,7 +410,7 @@
 			.product-layout{text-align:center}
 			.product-layout__image{margin-bottom:15px}
 			.product-layout__image img{margin:0 auto}
-			.product-layout__name,.product-layout__name a{color:#353535;font-size:15px;line-height:1.25em;height:2.6em;overflow:hidden;text-overflow:ellipsis;margin-bottom:10px}
+			.product-layout__name,.product-layout__name a{color:#353535;font-size:15px;line-height:1.25em;height:2.6em;overflow:hidden;text-overflow:ellipsis;}			
 			.banner-2{padding:65px 0}
 			.banner-2__item{position:relative;margin-bottom:25px}
 			.banner-2__content{position:absolute;top:0;left:0;bottom:0;max-width:300px;padding-left:50px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center}
