@@ -347,6 +347,9 @@
 			[ 'range' => [ 'priority' => [ 'lte' => self::CATEGORY_PRIORITY+10, 'boost' => 6.0 ] ] ], 
 			[ 'range' => [ 'priority' => [ 'lte' => self::OCFILTER_PRIORITY_BRANDPAGE+10, 'boost' => 5.0 ] ] ],
 			[ 'range' => [ 'priority' => [ 'lte' => self::OCFILTER_PRIORITY+10, 'boost' => 4.0 ] ] ],
+			],
+			'filter' 	=> [ 
+			[ 'range' => [ 'total_products' 		=> [ 'gte' => 1 ] ] ]
 			],			
 			'minimum_should_match' => 0
 			] ],
@@ -684,7 +687,6 @@
 					$params['body']['suggest_' . $language_code] = $params['body']['name_' . $language_code];
 				}
 			}		
-		//	self::parseArrayToTranslit($params);
 		}
 		
 		public function prepareProductIndex($namequery, $product_id, &$params){
@@ -773,12 +775,12 @@
 			'russian_ukrainian' => [ 'char_filter' => [ 'html_strip', 'remove symbols', 'ru_en_key' ], 'tokenizer' => 'standard', 'filter' => ['lowercase', 'ru_stop', 'ua_stop', 'en_stop', 'ru_stemmer', 'ua_stemmer', 'en_stemmer', 'phonemas' ] ],		
 			'integer' 	=> [ 'char_filter' => [ 'html_strip' ], 'tokenizer' => 'standard']
 			] ] ],			
-			'mappings' 	=> [ 'properties' => [
+			'mappings' 	=> [ 'properties' => [			
 			'category_id' 			=> [ 'type' => 'integer', 'index' => 'false' ],
 			'manufacturer_id' 		=> [ 'type' => 'integer', 'index' => 'false' ],
 			'collection_id' 		=> [ 'type' => 'integer', 'index' => 'false' ],
 			'image' 				=> [ 'type' => 'text', 'index' => 'false' ],
-			'total_products'		=> [ 'type' => 'integer', 'index' => 'false' ],
+			'total_products'		=> [ 'type' => 'integer', 'index' => 'true' ],
 			'ocfilter_page_id' 		=> [ 'type' => 'integer', 'index' => 'true' ],			
 			'ocfilter_page_keyword' => [ 'type' => 'text', 'index' => 'true' ],
 			'ocfilter_page_params'  => [ 'type' => 'text', 'index' => 'true' ],
