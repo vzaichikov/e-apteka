@@ -88,7 +88,12 @@
 	$_['tab_description']                       = 'Описание';
 	$_['tab_instruction']                       = 'Инструкция';
 	$_['tab_likreestr']                       = 'Данные из реестра';
-	$_['tab_analogs']                           = 'Аналоги';
+	$_['tab_analogs']                           = 'Аналоги и заменители';
+
+
+	$_['text_full_analogs'] = 'Полные аналоги';
+	$_['text_similar_pharmaceutic'] = 'Со схожим терапевтическим действием';
+
 	$_['tab_same']                              = 'Формы выпуска';
 	$_['tab_attribute']                         = 'Характеристики';
 	$_['tab_review']                            = 'Отзывов (%s)';

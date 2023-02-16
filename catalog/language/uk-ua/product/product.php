@@ -6,7 +6,7 @@
 	// Text
 	$_['text_search'] = 'Пошук';
 	$_['text_brand'] = 'Бренд:';
-	$_['text_manufacturer'] = 'Виробник:';
+	$_['text_manufacturer'] = 'Виробник';
 	$_['text_collection']                         = 'Підбірка:';
 	$_['text_model'] = 'Модель:';
 	$_['text_reward'] = 'Бонусні бали:';
@@ -91,7 +91,11 @@
 	$_['tab_instruction']                       = 'Інструкція';
 	$_['tab_likreestr']                       = 'Дані з реєстру';
 	$_['tab_attribute'] = 'Характеристики';
-	$_['tab_analogs']                           = 'Аналоги';
+	$_['tab_analogs']                           = 'Аналоги i замінники';
+
+	$_['text_full_analogs']    = 'Повні аналоги';
+	$_['text_similar_pharmaceutic']    = 'Зі схожою терапевтичною дією';
+
 	$_['tab_same']                           = 'Форми випуску';
 	$_['tab_review'] = 'Відгуків (%s)';
 	$_['button_continue'] = 'Відправити відгук';
