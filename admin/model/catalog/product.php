@@ -767,6 +767,20 @@
 			
 			return $product_filter_data;
 		}
+
+		public function getJustProductAttributeValues($product_id, $attribute_ids = []) {
+			$results = [];
+
+			$query = $this->db->query("SELECT text FROM " . DB_PREFIX . "product_attribute WHERE product_id = '" . (int)$product_id . "' AND attribute_id IN (" . implode(',', $attribute_ids) . ")");
+
+			foreach($query->rows as $row){
+				if ($row['text']){
+					$results[] = $row['text'];
+				}
+			}
+
+			return array_unique($results);
+		}
 		
 		public function getProductAttributes($product_id) {
 			$product_attribute_data = array();
