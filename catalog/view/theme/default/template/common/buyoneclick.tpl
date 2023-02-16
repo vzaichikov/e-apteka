@@ -112,7 +112,7 @@
 
 					<?php if (!empty($location)) { ?>
 							<input type="hidden" name="location_id" value="<?php echo $location['location_id']; ?>" />
-							<div class="col-pd-15"><small class="text text-info"><i class="fa fa-info-circle" aria-hidden="true"></i> <?php echo $text_reserve1; ?> <b><?php echo $location['address']; ?></b></div>
+							<div class="col-pd-15"><small class="text text-info"><i class="fa fa-info-circle" aria-hidden="true"></i> <?php echo $text_reserve1; ?> <b><?php echo $location['address']; ?></b></small></div>
 							<div class="col-pd-15">
 							<small class="text text-success">	
 								<i class="fa fa-clock-o text-success"></i> <?php echo $text_reserve3; ?> <?php echo $location['open']; ?>

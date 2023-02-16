@@ -83,6 +83,7 @@
 		<?php } ?>
 		
 		<style>
+			.b24-widget-button-position-top-left{bottom:100px!important;;left:20px!important;}
 			.xdstickers{font-size: 10px;display: inline-block;}
 			@charset "UTF-8";
 			button::-moz-focus-inner{padding:0;border:0}
@@ -410,6 +411,7 @@
 			.product-layout{text-align:center}
 			.product-layout__image{margin-bottom:15px}
 			.product-layout__image img{margin:0 auto}
+			.product-page__content{margin-bottom:10px;}
 			.product-layout__name,.product-layout__name a{color:#353535;font-size:15px;line-height:1.25em;height:2.6em;overflow:hidden;text-overflow:ellipsis;}			
 			.banner-2{padding:65px 0}
 			.banner-2__item{position:relative;margin-bottom:25px}
