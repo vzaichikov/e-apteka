@@ -7,9 +7,33 @@
 		}
 		
 		public function getCategories($parent_id = 0) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "category c LEFT JOIN " . DB_PREFIX . "category_description cd ON (c.category_id = cd.category_id) LEFT JOIN " . DB_PREFIX . "category_to_store c2s ON (c.category_id = c2s.category_id) WHERE c.parent_id = '" . (int)$parent_id . "' AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND c2s.store_id = '" . (int)$this->config->get('config_store_id') . "'  AND c.status = '1' ORDER BY c.sort_order, LCASE(cd.name)");
+			$sql = "SELECT * FROM " . DB_PREFIX . "category c 
+				LEFT JOIN " . DB_PREFIX . "category_description cd ON (c.category_id = cd.category_id) 
+				LEFT JOIN " . DB_PREFIX . "category_to_store c2s ON (c.category_id = c2s.category_id) 
+				WHERE c.parent_id = '" . (int)$parent_id . "' 
+				AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' 
+				AND c2s.store_id = '" . (int)$this->config->get('config_store_id') . "'  
+				AND c.status = '1'";
+
+			if ($parent_id == 543){
+				$sql .= "ORDER BY atx_code ASC";
+			} else {
+				$sql .= "ORDER BY c.sort_order, LCASE(cd.name)";				
+			}
+
+			$query = $this->db->query($sql);
 			
 			return $query->rows;
+		}
+
+		public function getCategoryByATX($atx_code){
+			$query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "category c LEFT JOIN " . DB_PREFIX . "category_description cd ON (c.category_id = cd.category_id) LEFT JOIN " . DB_PREFIX . "category_to_store c2s ON (c.category_id = c2s.category_id) WHERE c.atx_code = '" . $this->db->escape($atx_code) . "' AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND c2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND c.status = '1'");
+
+			if ($query->num_rows){
+				return $this->getFullCategoryPath($query->row['category_id']) . $query->row['category_id'];				
+			}
+
+			return false;
 		}
 		
 		
@@ -60,9 +84,7 @@
 		}
 		
 		public function getFullCategoryPath($category_id) {
-
 			if (!$path = $this->cache->get('catfullpath.' . (int)$category_id . '.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id'))){
-
 				$path = '';
 				$category = $this->db->query("SELECT category_id, parent_id FROM " . DB_PREFIX . "category WHERE category_id = '" . (int)$category_id . "'")->row;
 				if (!$category) return '';
@@ -73,7 +95,6 @@
 				}
 
 				$this->cache->set('catfullpath.' . (int)$category_id . '.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id'), $path);
-
 			}
 
 			return $path;
