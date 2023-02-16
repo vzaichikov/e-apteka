@@ -3855,7 +3855,7 @@ a.load_more {
     -ms-flex-align: center;
     align-items: center;
     color: inherit;
-    font-size: 16px;
+    font-size: 14px;
     width: 100%;
     min-height: 43px;
     height: auto;
@@ -5327,7 +5327,7 @@ h2.cat-header:before {
         left: 0;
         width: 100%;
         z-index: 99;
-        background: #ebf6fa;
+        background: #e3f6fb;
         padding: 10px 5px;
         justify-content: center;
         box-shadow: 0 -1px 8px #223a4661;
@@ -9084,7 +9084,8 @@ label.el-checkbox {
     min-width: 110px;
 }
 .product__order-wrap-main {
-    background: #fff4f6;
+    background: #e3f6fb;
+    border-radius: 5px;
     padding: 10px 5px;
 }
 .product__order-wrap {
