@@ -1065,32 +1065,30 @@
 				
 				$data['tags'] = array();
 				
-				if ($product_info['tag']) {
-					$tags = explode(',', $product_info['tag']);
+				// if ($product_info['tag']) {
+				// 	$tags = explode(',', $product_info['tag']);
 					
-					foreach ($tags as $tag) {
-						$data['tags'][] = array(
-						'tag'  => trim($tag),
-						'href' => $this->url->link('product/search', 'tag=' . trim($tag))
-						);
-					}
-				}
+				// 	foreach ($tags as $tag) {
+				// 		$data['tags'][] = array(
+				// 		'tag'  => trim($tag),
+				// 		'href' => $this->url->link('product/search', 'tag=' . trim($tag))
+				// 		);
+				// 	}
+				// }
 				
 				//!overload for deletion
-				$data['tags'] = array();
-				
+				$data['tags'] = array();				
 				$data['recurrings'] = $this->model_catalog_product->getProfiles($this->request->get['product_id']);
 				
 				$this->model_catalog_product->updateViewed($this->request->get['product_id']);
-				$this->model_catalog_product->catchAlsoViewed($this->request->get['product_id']);
+				//$this->model_catalog_product->catchAlsoViewed($this->request->get['product_id']);
 				
 				$data['column_left'] = $this->load->controller('common/column_left');
 				$data['column_right'] = $this->load->controller('common/column_right');
 				$data['content_top'] = $this->load->controller('common/content_top');
 				$data['content_bottom'] = $this->load->controller('common/content_bottom');
 				$data['footer'] = $this->load->controller('common/footer');
-				$data['header'] = $this->load->controller('common/header');
-				
+				$data['header'] = $this->load->controller('common/header');				
 				
 				
 				// BuyOneClick
