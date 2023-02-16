@@ -120,6 +120,13 @@
 									<input type="text" name="uuid" value="<?php echo $uuid; ?>" placeholder="uuid" id="input-uuid" class="form-control" />
 								</div>
 							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-uuid">ATX CODE</label>
+								<div class="col-sm-10">
+									<input type="text" name="atx_code" value="<?php echo $atx_code; ?>" placeholder="atx_code" id="input-atx_code" class="form-control" />
+								</div>
+							</div>
 							
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-no_payment">Не разрешать оплату</label>

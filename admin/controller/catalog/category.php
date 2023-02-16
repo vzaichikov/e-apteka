@@ -530,6 +530,14 @@
                 $data['uuid'] = '';
             }
             
+            if (isset($this->request->post['atx_code'])) {
+                $data['atx_code'] = $this->request->post['atx_code'];
+                } elseif (!empty($category_info)) {
+                $data['atx_code'] = $category_info['atx_code'];
+                } else {
+                $data['atx_code'] = '';
+            }
+            
             if (isset($this->request->post['keyword'])) {
                 $data['keyword'] = $this->request->post['keyword'];
                 } elseif (!empty($category_info)) {
