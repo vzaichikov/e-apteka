@@ -5,8 +5,7 @@
 			$detect = new \Mobile_Detect();
 			if ($detect->isMobile()){
 				return '';
-			}
-			
+			}			
 			
 			$this->load->language('extension/module/category');
 			
@@ -39,8 +38,7 @@
 				return $return;
 			}
 			
-			$this->load->model('catalog/category');
-			
+			$this->load->model('catalog/category');			
 			$this->load->model('catalog/product');
 			
 			$data['categories'] = array();
@@ -71,15 +69,21 @@
 				);
 				
 				$data['categories'][] = array(
-				'category_id' => $category['category_id'],
-				'icon' => $category['icon'],
-				'name'        => $category['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
-				'children'    => $children_data,
-				'href'        => $this->url->link('product/category', 'path=' .$category_id . '_' . $category['category_id'])
+				'category_id' 	=> $category['category_id'],
+				'icon' 			=> $category['icon'],
+				'name'        	=> $category['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
+				'children'    	=> $children_data,
+				'href'        	=> $this->url->link('product/category', 'path=' .$category_id . '_' . $category['category_id'])
 				);
 			}
 			
-			$return = $this->load->view('extension/module/category', $data);			
+			if ($category_id == 1){
+				$return = $this->load->view('extension/module/category_small', $data);	
+			} else {
+				$return = $this->load->view('extension/module/category', $data);			
+			}
+			
+
 			$this->cache->set('ControllerExtensionModuleCategory' . $category_id. '.' . (int)$this->config->get('config_language_id'), $return);
 			
 			return $return;
