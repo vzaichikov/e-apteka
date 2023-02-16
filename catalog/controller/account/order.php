@@ -59,6 +59,7 @@
 			
 			$this->load->model('account/order');
 			$this->load->model('catalog/product');
+			$this->load->model('tool/image');
 			
 			$order_total = $this->model_account_order->getTotalOrders();
 			
