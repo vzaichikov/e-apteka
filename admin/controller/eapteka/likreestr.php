@@ -69,7 +69,6 @@ class ControllerEaptekaLikReestr extends Controller {
 		return $csv;			
 	}
 
-
 	public function index(){
 		$this->load->model('catalog/product');					
 		$data = $this->parseCSV();			
@@ -81,7 +80,9 @@ class ControllerEaptekaLikReestr extends Controller {
 			} else {				
 				echoLine('Не нашли товар c регистрационным номером ' . $registryNumber);				
 			}
-		}			
+		}
+
+		$this->db->query("INSERT IGNORE INTO oc_product_to_category (product_id, category_id, main_category) SELECT product_id, (SELECT category_id FROM oc_category WHERE atx_code = oc_product.reg_atx_1) as category_id, 0 FROM oc_product WHERE reg_atx_1 <> ''");			
 	}
 
 	public function full(){
