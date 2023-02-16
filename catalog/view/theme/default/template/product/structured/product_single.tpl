@@ -75,7 +75,7 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 					<?php if ($product['price_of_part']) { ?>
 						<span><?php echo $product['price_of_part']; ?></span>
 					<?php } ?>
-					<small>Часть упаковки</small>
+					<small><?php echo $product['text_part_pack']; ?></small>
 				</p>
 				<span id="option_<?php echo $product['product_id']; ?>" style="display:none;"><input type='hidden' name="option[<?php echo $product['pov_part_id']['product_option_id']; ?>]" value="<?php echo $product['pov_part_id']['product_option_value_id']; ?>" /></span>
 				<button class="bbtn bbtn-primary product-layout__btn-cart" type="button" onclick="cart.add('<?php echo $product['product_id']; ?>', 1, false, false);">

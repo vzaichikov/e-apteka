@@ -90,22 +90,22 @@
 								</a>
 							</li>
 						<?php } ?>
-
-						<?php if ( !empty($likreestr)) { ?>
-							<li>
-								<a href="#tab-likreestr" data-toggle="tab"><?php echo $tab_likreestr; ?>
-									<!-- <svg class="product-tabs__nav-icon">
-										<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#instruction"></use>
-									</svg> -->
-								</a>
-							</li>
-						<?php } ?>
 						
 						<?php if ($attribute_groups) { ?>
 							<li>
 								<a href="#tab-specification" data-toggle="tab"><?php echo $tab_attribute; ?>
 									<!-- <svg class="product-tabs__nav-icon">
 										<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#bars"></use>
+									</svg> -->
+								</a>
+							</li>
+						<?php } ?>
+
+						<?php if ( !empty($likreestr)) { ?>
+							<li>
+								<a href="#tab-likreestr" data-toggle="tab"><?php echo $tab_likreestr; ?>
+									<!-- <svg class="product-tabs__nav-icon">
+										<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#instruction"></use>
 									</svg> -->
 								</a>
 							</li>
@@ -119,17 +119,7 @@
 									</svg> -->
 								</a>
 							</li>
-						<?php } ?>
-						
-						<li>
-							<a href="#tab-delivery-pay" data-toggle="tab"><?php echo $text_delivery_pay; ?>
-								<!-- <svg class="product-tabs__nav-icon">
-									<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#edit"></use>
-								</svg> -->
-							</a>
-						</li>
-						
-						
+						<?php } ?>						
 						
 						<?php if ( isset($same) && count($same)>0 ) { ?>
 							<li>
@@ -140,6 +130,14 @@
 								</a>
 							</li>
 						<?php } ?>
+
+						<li>
+							<a href="#tab-delivery-pay" data-toggle="tab"><?php echo $text_delivery_pay; ?>
+								<!-- <svg class="product-tabs__nav-icon">
+									<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#edit"></use>
+								</svg> -->
+							</a>
+						</li>												
 						
 						<?php if ( !empty($hobofaq)) { ?>
 							<li>
@@ -483,7 +481,7 @@
 													*/ ?>
 													</div>
 												<?php } ?>
-												<?php if ($review_status) { ?>
+												<?php if (false && $review_status) { ?>
 													<hr>
 													<div class="rating">
 														<?php for ($i = 1; $i <= 5; $i++) { ?>
@@ -571,13 +569,27 @@
 														</tr>
 													<?php } ?>
 
-													<?php if ($gtin) { ?>
+													<?php if ($attribute_group['attribute_group_id'] == 8 && $gtin) { ?>
 														<tr>
 															<td>EAN</td>
 															<td><?php echo $gtin; ?></td>
 														</tr>
 													<?php } ?>
-
+													<?php if ($attribute_group['attribute_group_id'] == 8 && $atx_tree) { ?>
+														<tr>
+															<td>ATX</td>
+															<td>
+																<?php foreach ($atx_tree as $atx) { ?>
+																	<?php if ($atx['atx_code'] == $reg_atx_1) { ?>
+																		<b><?php echo $atx['atx_code']; ?></b>
+																	<?php } else { ?>
+																		<?php echo $atx['atx_code']; ?>
+																	<?php } ?>
+																	<a href="<?php echo $atx['href']?>" title="<?php echo $atx['name']; ?>"><?php echo $atx['name']; ?></a><br />
+																<?php } ?>
+															</td>
+														</tr>
+													<?php } ?>
 												</tbody>
 											<?php } ?>
 										</table>
@@ -652,15 +664,28 @@
 												<td><?php echo $attribute['name']; ?></td>
 												<td><?php echo $attribute['text']; ?></td>
 											</tr>
-										<?php } ?>
-										
-										<?php if ($gtin) { ?>
+										<?php } ?>										
+										<?php if ($attribute_group['attribute_group_id'] == 8 && $gtin) { ?>
 											<tr>
 												<td>EAN</td>
 												<td><?php echo $gtin; ?></td>
 											</tr>
 										<?php } ?>
-										
+										<?php if ($attribute_group['attribute_group_id'] == 8 && $atx_tree) { ?>
+											<tr>
+												<td>ATX</td>
+												<td>
+													<?php foreach ($atx_tree as $atx) { ?>
+														<?php if ($atx['atx_code'] == $reg_atx_1) { ?>
+															<b><?php echo $atx['atx_code']; ?></b>
+														<?php } else { ?>
+															<?php echo $atx['atx_code']; ?>
+														<?php } ?>
+														<a href="<?php echo $atx['href']?>" title="<?php echo $atx['name']; ?>"><?php echo $atx['name']; ?></a><br />
+													<?php } ?>
+												</td>
+											</tr>
+										<?php } ?>											
 									</tbody>
 								<?php } ?>
 							</table>
