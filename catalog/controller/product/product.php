@@ -938,24 +938,30 @@
 				$data['stocks'] 	= array();
 				$data['geocode'] 	= $this->config->get('config_geocode');
 
+				if ($bought_for_month = $this->model_catalog_product->getCountBoughtForMonth($this->request->get['product_id'])){
+					$data['text_bought_for_month'] = sprintf($this->language->get('text_bought_for_month'), 27 + ($bought_for_month * 7));
+				} else {
+					$bought_for_month = 1 + ((int)$this->request->get['product_id'] % 2);
+					$data['text_bought_for_month'] = sprintf($this->language->get('text_bought_for_month'), 25 + ($bought_for_month * 7));
+				}
+
+				$stocks_count = $this->model_catalog_product->getProductStockSum($this->request->get['product_id']);
+				$data['text_available_in_drugstores'] = sprintf($this->language->get('text_available_in_drugstores'), $stocks_count['quantity'], $stocks_count['drugstores']);
+
 				$data['text_full_analogs'] 			= $this->language->get('text_full_analogs');
 				$data['text_similar_pharmaceutic'] 	= $this->language->get('text_similar_pharmaceutic');
 				
 				/*					
-					Товары "формы выпуска", подбор по REG_TRADE_NAME
+					Товары такие же
 				*/							
 				$results 	  = $this->model_catalog_product->getProductSame($this->request->get['product_id'], $product_info);						
 				$data['same'] = $this->model_catalog_product->prepareProductArray($results);
 
-				if ($_SERVER['REMOTE_ADDR'] == '31.43.104.37'){
-				//	var_dump($data['same']);
-				}
-
 				/*
 					Аналоги, схожее терапевтическое действие
 				*/
-				$results = $this->model_catalog_product->getProductAnalog($this->request->get['product_id']);			
-				$data['analogs'] = $this->model_catalog_product->prepareProductArray($results);			
+				$results 			= $this->model_catalog_product->getProductAnalog($this->request->get['product_id'], $product_info, array_keys($data['same']));			
+				$data['analogs'] 	= $this->model_catalog_product->prepareProductArray($results);			
 				
 				/*					
 					Товары для рецептурного - без рецепта, назначаются вручную
