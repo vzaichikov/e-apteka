@@ -206,7 +206,6 @@
 			$this->response->setOutput($this->load->view('product/structured/likreestr', $data));			
 		}	
 
-
 		public function delivery_pay(){
 			$this->load->language('product/delivery_pay');
 			$this->load->model('catalog/product');
@@ -231,7 +230,6 @@
 
 			$this->response->setOutput($this->load->view('product/structured/delivery_pay', $data));
 		}
-
 		
 		public function getEcommerceInfo(){
 			$json = array();
@@ -259,8 +257,7 @@
 			
 			$this->response->setOutput(json_encode($json));
 		}
-		
-		
+				
 		public function index($tab = false) {
 			$devMode = $data['devMode'] = ($this->customer->getEmail() == 'dev@e-apteka.com.ua');
 			
@@ -901,9 +898,39 @@
 					$data['captcha'] = '';
 				}
 				
-				$data['share'] = $this->url->link('product/product', 'product_id=' . (int)$this->request->get['product_id']);
-				
+				$data['share'] = $this->url->link('product/product', 'product_id=' . (int)$this->request->get['product_id']);				
 				$data['attribute_groups'] = $this->model_catalog_product->getProductAttributes($this->request->get['product_id']);
+
+				$data['atx_tree'] = [];
+				if ($product_info['reg_atx_1']){
+					$data['reg_atx_1'] = $product_info['reg_atx_1'];
+					$atx_path = $this->model_catalog_category->getCategoryByATX($product_info['reg_atx_1']);
+					$atx_path = rtrim($atx_path, '_');
+
+
+					$path = '';
+					foreach (explode('_', $atx_path) as $category_id) {
+						if (!$path) {
+							$path = $category_id;
+						} else {
+							$path .= '_' . $category_id;
+						}
+
+						$category_info = $this->model_catalog_category->getCategory($category_id);
+
+						if ($category_info) {
+							$category_name = mb_strstr($category_info['name'], '(ATX-код', true);							
+
+							$data['atx_tree'][] = [
+								'atx_code' 	=> $category_info['atx_code'],
+								'href' 		=> $this->url->link('product/category', 'path=' . $path),
+								'name' 		=> $category_name,
+							];
+						}
+					}
+
+					array_shift($data['atx_tree']);
+				}
 				
 				$detect = new \Mobile_Detect();
 				$data['disable_map'] = $data['is_mobile'] = $detect->isMobile();
@@ -1175,10 +1202,7 @@
 				$this->response->setOutput($this->load->view('error/not_found', $data));
 			}
 		}
-		
-		
-		
-		
+			
 		public function review() {
 			$this->load->language('product/product');
 			
