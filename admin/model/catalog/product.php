@@ -539,7 +539,10 @@
 		}
 		
 		public function getProduct($product_id) {
-			$query = $this->db->query("SELECT DISTINCT *, (SELECT name FROM " . DB_PREFIX . "manufacturer_description md WHERE md.manufacturer_id = p.manufacturer_id AND md.language_id =  '" . (int)$this->config->get('config_language_id') . "') AS manufacturer, (SELECT keyword FROM " . DB_PREFIX . "url_alias WHERE query = 'product_id=" . (int)$product_id . "') AS keyword FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) WHERE p.product_id = '" . (int)$product_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "'");
+			$query = $this->db->query("SELECT DISTINCT *, 
+				(SELECT IF(type = '%', (p.price - p.price/100*price), price) FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special, 
+					(SELECT name FROM " . DB_PREFIX . "manufacturer_description md WHERE md.manufacturer_id = p.manufacturer_id AND md.language_id =  '" . (int)$this->config->get('config_language_id') . "') AS manufacturer, 
+					(SELECT keyword FROM " . DB_PREFIX . "url_alias WHERE query = 'product_id=" . (int)$product_id . "') AS keyword FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) WHERE p.product_id = '" . (int)$product_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "'");
 			
 			return $query->row;
 		}
@@ -1215,8 +1218,7 @@
 			
 		}
 		
-		public function getProductStocks($product_id){
-			
+		public function getProductStocks($product_id){			
 			$query = $this->db->query("SELECT s.*, l.name
 			FROM " . DB_PREFIX . "stocks s
 			LEFT JOIN " . DB_PREFIX . "location l ON l.location_id = s.location_id
@@ -1227,27 +1229,26 @@
 			return $query->rows;
 		}
 		
-		public function updateProductStocks($data){
-			
+		public function updateProductStocks($data){			
 			$this->db->query("INSERT IGNORE INTO " . DB_PREFIX . "stocks SET
-			product_id = '" . (int)$data['product_id'] . "',
-			location_id = '" . (int)$data['location_id'] . "',
-			quantity = '" . (int)$data['quantity'] . "',
-			quantity_of_parts = '" . (int)$data['quantity_of_parts'] . "',
-			price = '" . (float)$data['price'] . "',
-			price_retail = '" . (float)$data['price_retail'] . "',
-			price_of_part = '" . (float)$data['price_of_part'] . "',
-			count = '" . (int)$data['count'] . "',
-			reserve = '" . (int)$data['reserve'] . "',
-			ocfilter_value_id = '" . (int)$data['ocfilter_value_id'] . "'
+			product_id 			= '" . (int)$data['product_id'] . "',
+			location_id 		= '" . (int)$data['location_id'] . "',
+			quantity 			= '" . (int)$data['quantity'] . "',
+			quantity_of_parts 	= '" . (int)$data['quantity_of_parts'] . "',
+			price 				= '" . (float)$data['price'] . "',
+			price_retail 		= '" . (float)$data['price_retail'] . "',
+			price_of_part 		= '" . (float)$data['price_of_part'] . "',
+			count 				= '" . (int)$data['count'] . "',
+			reserve 			= '" . (int)$data['reserve'] . "',
+			ocfilter_value_id 	= '" . (int)$data['ocfilter_value_id'] . "'
 			ON DUPLICATE KEY UPDATE
-			quantity = '" . (int)$data['quantity'] . "',
-			quantity_of_parts = '" . (int)$data['quantity_of_parts'] . "',
-			price = '" . (float)$data['price'] . "',
-			price_retail = '" . (float)$data['price_retail'] . "',
-			price_of_part = '" . (float)$data['price_of_part'] . "',
-			count = '" . (int)$data['count'] . "',
-			reserve = '" . (int)$data['reserve'] . "',
-			ocfilter_value_id = '" . (int)$data['ocfilter_value_id'] . "'");
+			quantity 			= '" . (int)$data['quantity'] . "',
+			quantity_of_parts 	= '" . (int)$data['quantity_of_parts'] . "',
+			price 				= '" . (float)$data['price'] . "',
+			price_retail 		= '" . (float)$data['price_retail'] . "',
+			price_of_part 		= '" . (float)$data['price_of_part'] . "',
+			count 				= '" . (int)$data['count'] . "',
+			reserve 			= '" . (int)$data['reserve'] . "',
+			ocfilter_value_id 	= '" . (int)$data['ocfilter_value_id'] . "'");
 		}
 	}										
