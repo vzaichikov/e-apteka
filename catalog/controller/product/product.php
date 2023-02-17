@@ -15,14 +15,21 @@
 			}
 
 			$results = $this->model_catalog_product->getProductStocks($product_id);
-
-
 			$multilang_fields = array(
 				'open',
 				'address',
 				'name',
 				'comment'		
 			);
+
+
+			$data['text_is_in_stock_in_drugstores'] = $this->language->get('text_is_in_stock_in_drugstores');
+			$data['text_make_route'] 				= $this->language->get('text_make_route');
+			$data['text_make_reserve'] 				= $this->language->get('text_make_reserve');
+
+			$data['text_we_work_while_no_light'] 	= $this->language->get('text_we_work_while_no_light');
+			$data['text_we_can_deliver_in_2_days'] 	= $this->language->get('text_we_can_deliver_in_2_days');
+			$data['text_we_can_deliver_in_4_days'] 	= $this->language->get('text_we_can_deliver_in_4_days');
 
 			foreach ($results as $result) {
 
@@ -40,8 +47,7 @@
 
 				$open = '';
 				$mcolor = 'red';
-				$is_open_now = false;
-					//parse open time struct
+				$is_open_now = false;					
 				if ($result['open_struct']){
 					date_default_timezone_set('Europe/Kiev');
 
@@ -117,51 +123,82 @@
 					$tdclass = 'bg-warning';
 				}
 
-				/*	foreach ($multilang_fields as $_field){
-						if ($_mlvalue = $this->model_localisation_location->getLocationML($result['location_id'], $_field)){
-							${$_field} = $_mlvalue;
-							} else {
-							${$_field} = $result[$_field];
-						}
-					}	
-				*/
-					$data['text_we_work_while_no_light'] = $this->language->get('text_we_work_while_no_light');
-					
-					$data['stocks'][] = array(
-						'name'			=> $result['name'],
-						'address'		=> $result['address'],
-						'location_id'	=> $result['location_id'],
-						'image' 		=> $image,
-						'stock' 		=> $result['quantity'],
-						'geocode' 		=> $result['geocode'],
-						'gmaps_link' 	=> $result['gmaps_link'],
-						'open_text' 	=> $open_text,
-						'open'			=> $result['open'],
-						'tdclass' 		=> $tdclass,
-						'faclass' 		=> $faclass,
-						'icon' 	    	=> HTTPS_SERVER . 'image/gmarkers/source/marker_' . $mcolor . '.png',
-						'price' 		=> ($result['quantity'] && $price)?$price:$this->language->get('text_preorder'),					
-					);									
-				}		
+				$text_class 		= 'text-success';
+				$stock_text 		= $result['quantity'] . ' шт.';
+				$stock_icon 		= 'fa-clock-o';
+				$can_not_deliver 	= false;
 
-				$tmp_stocks = [];
-				foreach ($data['stocks'] as $stock){
-					if ($stock['stock'] > 0){
-						array_unshift($tmp_stocks, $stock);
-					} else {
-						array_push($tmp_stocks, $stock);
-					}
+				if ($result['quantity'] >= 3){
+					
+					$text_class = 'text-success';
+					$stock_text = $result['quantity'] . ' шт.';
+					$stock_icon = 'fa-check';
+
+				} elseif ($result['quantity'] > 0){
+					
+					$text_class = 'text-warning';
+					$stock_text = $result['quantity'] . ' шт.';
+					$stock_icon = 'fa-check';
+
+				} elseif ($result['is_pko'] && $result['quantity'] == 0) {
+
+					$text_class = 'text-danger';
+					$stock_text = $result['quantity'] . ' шт.';
+					$stock_icon = 'fa-times';
+					$can_not_deliver = true;
+
+				} else {
+
+					$text_class = 'text-warning';
+					$stock_text = $this->language->get('text_we_can_deliver_in_2_days');
+					$stock_icon = 'fa-clock-o';
+
 				}
 
-			//	$data['stocks'] = $tmp_stocks;
+				if ($result['is_preorder']){
 
-				$data['text_is_in_stock_in_drugstores'] = $this->language->get('text_is_in_stock_in_drugstores');
-				$data['text_make_route'] = $this->language->get('text_make_route');
-				$data['text_make_reserve'] = $this->language->get('text_make_reserve');
+					$text_class = 'text-warning';
+					$stock_text = $this->language->get('text_we_can_deliver_in_4_days');
+					$stock_icon = 'fa-clock-o';
 
-				$this->response->setOutput($this->load->view('product/structured/stocks', $data));		
+				}
 
+				$data['stocks'][] = array(
+					'name'			=> $result['name'],
+					'address'		=> $result['address'],
+					'location_id'	=> $result['location_id'],
+					'image' 		=> $image,
+					'is_preorder' 	=> $result['is_preorder'],
+					'text_class' 	=> $text_class,
+					'stock_text'	=> $stock_text,
+					'stock_icon'	=> $stock_icon,
+					'can_not_deliver' => $can_not_deliver,
+					'stock' 		=> $result['quantity'],
+					'geocode' 		=> $result['geocode'],
+					'gmaps_link' 	=> $result['gmaps_link'],
+					'open_text' 	=> $open_text,
+					'open'			=> $result['open'],
+					'tdclass' 		=> $tdclass,
+					'faclass' 		=> $faclass,
+					'icon' 	    	=> HTTPS_SERVER . 'image/gmarkers/source/marker_' . $mcolor . '.png',
+					'price' 		=> ($result['quantity'] && $price)?$price:$this->language->get('text_preorder'),					
+				);									
+			}		
+
+			$tmp_stocks = [];
+			foreach ($data['stocks'] as $stock){
+				if ($stock['stock'] > 0){
+					array_unshift($tmp_stocks, $stock);
+				} else {
+					array_push($tmp_stocks, $stock);
+				}
 			}
+
+			//	$data['stocks'] = $tmp_stocks
+
+			$this->response->setOutput($this->load->view('product/structured/stocks', $data));		
+
+		}
 
 		public function instruction() {
 			$this->load->language('product/product');
@@ -945,8 +982,18 @@
 					$data['text_bought_for_month'] = sprintf($this->language->get('text_bought_for_month'), 25 + ($bought_for_month * 7));
 				}
 
+				if ($product_info['is_pko'] || $product_info['price'] > 10000){
+					$data['text_bought_for_month'] = false;
+				}
+
 				$stocks_count = $this->model_catalog_product->getProductStockSum($this->request->get['product_id']);
-				$data['text_available_in_drugstores'] = sprintf($this->language->get('text_available_in_drugstores'), $stocks_count['quantity'], $stocks_count['drugstores']);
+
+				if ($stocks_count['quantity'] > 0){
+ 					$data['text_available_in_drugstores'] = sprintf($this->language->get('text_available_in_drugstores'), $stocks_count['quantity'], $stocks_count['drugstores']);
+				} elseif ($product_info['is_preorder'] == 1) {
+					$data['text_available_on_preorder'] = sprintf($this->language->get('text_available_on_preorder'));
+				}			
+
 
 				$data['text_full_analogs'] 			= $this->language->get('text_full_analogs');
 				$data['text_similar_pharmaceutic'] 	= $this->language->get('text_similar_pharmaceutic');
