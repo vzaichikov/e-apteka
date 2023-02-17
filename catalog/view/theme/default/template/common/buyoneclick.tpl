@@ -50,7 +50,10 @@
 									<div class="row" style="width: calc(100% + 30px);">
 										<div class="col-xs-12 col-sm-6">
 											<div class="caption" style="padding-right:1em; padding-bottom:8px;">
-												<p class="h4" style="margin-bottom:0; line-height:1;"><?php echo $product['name']; ?></p>
+												<p class="h4" style="margin-bottom:0; line-height:1;">
+													<?php echo $product['name']; ?><br />
+													<small class="product-layout__name__manufacturer text-muted" style="font-size:10px; line-height: 10px;"><?php echo $product['manufacturer']; ?></small>													
+												</p>
 												<?php if ($product['option']) { ?>
 													<div class="product_options">
 														<?php foreach ($product['option'] as $option) { ?>
@@ -87,6 +90,11 @@
 							<?php } ?>
 						</div>
 						
+						<?php if (!empty($product['is_preorder'])) { ?>
+							<div><small class="text text-danger"><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo $text_available_on_preorder; ?></small></div>						
+						<?php } ?>
+
+
 						<?php if ($product['no_payment']) { ?>
 						<div><small class="text text-danger"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> <?php echo $text_product_no_payment; ?></small></div>
 						<?php } ?>

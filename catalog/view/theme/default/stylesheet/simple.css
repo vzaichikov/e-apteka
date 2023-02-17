@@ -549,18 +549,14 @@
 .simplecheckout-warning-block {
     clear: both;
     margin-bottom: 15px;
-    padding: 10px 10px 10px 33px;
-    border: 1px solid #f8acac;
-    border-radius: 5px 5px 5px 5px;
-    color: #555555;
+    padding: 10px 10px 10px 10px;
+    color: red;
     text-align: left;
 }
 .simpleregister-warning-block {
     margin-bottom: 15px;
-    padding: 10px 10px 10px 33px;
-    border: 1px solid #f8acac;
-    border-radius: 5px 5px 5px 5px;
-    color: #555555;
+    padding: 10px 10px 10px 10px;
+    color: red;
     text-align: left;
 }
 .simplecheckout-proceed-payment {

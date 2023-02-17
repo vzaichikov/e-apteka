@@ -130,6 +130,7 @@
 			body.vision .mobile-menu-wrap {
 			    background: rgba(0,0,0,.5) !important;
 			}
+			.text-warning{color: #FF7815!important;}
 			.slider__arrows{width:90px;display:-webkit-box;display:-ms-flexbox;display:flex}
 			.slider__arrows>:not(:last-child):after{content:"";display:block;width:1px;height:22px;background:#dcdcdc;position:absolute;top:50%;right:-6px;margin-top:-11px}
 			.slider__arrow{width:32px;height:32px;position:relative;border-radius:50%;margin:0 6px}

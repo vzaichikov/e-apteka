@@ -116,7 +116,7 @@
 			.header__mobile{
 			display: none;
 			}
-			
+			.text-warning{color: #FF7815!important;}
 			.show-mobile-menu{
 			overflow: hidden !important;
 			}

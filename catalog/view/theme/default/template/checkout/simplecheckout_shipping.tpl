@@ -1,16 +1,13 @@
 	<div class="simplecheckout-block" id="simplecheckout_shipping" <?php echo $hide ? 'data-hide="true"' : '' ?> <?php echo $display_error && $has_error ? 'data-error="true"' : '' ?>>
-
-
 		<?php if ($display_header) { ?>
 			<div class="checkout-heading panel-heading"><i class="fa fa-ambulance"></i> <?php echo $text_checkout_shipping_method ?></div>
 		<?php } ?>
 		<div class="alert alert-danger simplecheckout-warning-block" <?php echo $display_error && $has_error_shipping ? '' : 'style="display:none"' ?>><?php echo $error_shipping ?></div>
 		<div class="simplecheckout-block-content">
 
-			<?php if ($no_shipping && false) { ?>
+			<?php if ($no_shipping) { ?>
 				<div class="alert alert-warning"><?php echo $text_no_shipping; ?></div>
 			<?php } ?>
-
 
 			<?php if (!empty($shipping_methods)) { ?>
 				<?php if ($display_type == 2 ) { ?>
@@ -44,7 +41,6 @@
 						<?php } ?>
 					<?php } ?>
 				<?php } else { ?>
-
 					<?php foreach ($shipping_methods as $shipping_method) { ?>
 						<?php if (!empty($shipping_method['title'])) { ?>
 							<p><b><?php echo $shipping_method['title']; ?></b>		
@@ -78,6 +74,7 @@
 							<?php if (!empty($shipping_method['warning'])) { ?>
 								<div class="simplecheckout-error-text"><?php echo $shipping_method['warning']; ?></div>
 							<?php } ?>
+
 							<?php if (empty($shipping_method['error'])) { ?>
 								<?php $first_dummy = false; ?>
 								<?php foreach ($shipping_method['quote'] as $quote) { ?>												
@@ -107,7 +104,6 @@
 											<?php if (!empty($quote['text_approxmately'])) { ?>
 												<br /><span class="text-info"><small><i class="fa fa-info-circle"></i> <?php echo $quote['text_approxmately']; ?></small></span>
 											<?php } ?>
-
 										</label>																		
 									</div>                            
 								</div>		
@@ -138,6 +134,9 @@
 						<?php foreach ($rows as $row) { ?>
 							<?php echo $row ?>
 						<?php } ?>
+					<?php } ?>
+					<?php if ($quote['code'] == 'pickup.pickup') { ?>
+						<input id="shipping_location_id" type="hidden" value="<?php echo $shipping_location_id; ?>" />
 					<?php } ?>
 				<?php } ?>
 			<?php } else { ?>

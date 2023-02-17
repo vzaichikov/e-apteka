@@ -30,9 +30,12 @@
                             <div><small class="text text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> <?php echo $stock['address'];?>: доступно <?php echo $stock['stock']; ?> шт.</small></div>
                         <?php } ?>
 
+                        <?php if ($product['is_preorder']) { ?>
+                          <div><small class="text text-danger"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> <?php echo $text_available_on_preorder; ?></small></div>
+                        <?php } ?>
 
 						<?php if ($product['no_payment']) { ?>
-						<div><small class="text text-danger"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> <?php echo $text_product_no_payment; ?></small></div>
+						  <div><small class="text text-danger"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> <?php echo $text_product_no_payment; ?></small></div>
 						<?php } ?>
 						
 						<?php if ($product['no_shipping']) { ?>

@@ -15,21 +15,26 @@
 							<?php } ?>
 						</td>
 						<td class="name">
-							<a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
+							<?php if (!empty($product['is_preorder'])) { ?>
+									<div class="text-warning" style="padding:5px 0px 5px;">
+										<label class="label label-warning"><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo $text_available_on_preorder; ?></label>
+									</div>
+							<?php } ?>
+
+							<a href="<?php echo $product['href']; ?>" title="<?php echo $product['name']; ?>"><?php echo $product['name']; ?>
+								<br /><small class="product-layout__name__manufacturer text-muted" style="font-size:10px; line-height: 10px;"><?php echo $product['manufacturer']; ?></small>
+							</a>
 							<div style="margin-bottom: 15px;">
 								<?php foreach ($product['option'] as $option) { ?>
 									 <small class="label label-info"><?php echo $option['value']; ?></small><br />
 								<?php } ?>
-							</div>
+							</div>							
 							<?php if (!$product['stock']) { ?>
 								<?php if ($product['quantity'] >= $product['maximum']) { ?>
 									<div class="text-danger"><small><i class="fa fa-exclamation-triangle"></i> <?php echo $in_stock; ?> <?php echo $product['maximum']; ?> <?php echo $pcs; ?></small></div>
 								<?php } ?>
 							<?php } ?>
 						</td>
-						<?php if ($manufacturer_show) { ?>
-							<td class="brand"><?php echo $product['manufacturer']; ?></td>
-						<?php } ?>
 						<td class="quantity">
 							<div>
 								<input type="hidden" id="product_cart_previous_key_<?php echo $product['key']; ?>" value="<?php echo $product['quantity']; ?>" />

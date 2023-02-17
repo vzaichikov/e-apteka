@@ -19,27 +19,55 @@
 	}
 	@media screen and (max-width: 556px) {
 
-    .product__order-wrap-main{
-        height: 85px !important;
-        flex-wrap: wrap;
-         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto 1fr;
-        gap: 10px;
-    }
-    .product__order-wrap-main .alert.alert-danger{
-        padding: 10px;
-        margin: 0;
-        font-size: 12px;
-        grid-column-start: 1;
-        grid-column-end: 3;
-        grid-row-start: 1;
-        grid-row-end: 1;
-    }
-    .product__order-wrap-main .product__order-wrap{
-       
-    }
-}
+	    .product__order-wrap-main{
+	        height: 85px !important;
+	        flex-wrap: wrap;
+	         display: grid;
+	        grid-template-columns: 1fr 1fr;
+	        grid-template-rows: auto 1fr;
+	        gap: 10px;
+	    }
+	    .product__order-wrap-main .alert.alert-danger{
+	        padding: 10px;
+	        margin: 0;
+	        font-size: 12px;
+	        grid-column-start: 1;
+	        grid-column-end: 3;
+	        grid-row-start: 1;
+	        grid-row-end: 1;
+	    }
+	    .product__order-wrap-main .product__order-wrap{
+	       
+	    }
+	    .product__order-wrap-main.not_options{
+    	    display: flex;
+    		gap: 0;
+		    height: 48px !important;
+	        width: 100%;
+	        padding: 5px 15px !important;
+	    }
+	     .product__order-wrap-main.not_options .product__order-wrap{
+	     	display: flex;
+	     	align-items: center;
+	     	width: 100%;
+	     }
+	     .product__order-wrap-main.not_options .product__order-wrap .boc_order_btn{
+	     	position: initial;
+	     	width: auto;
+	     	height: 39px;
+    		padding: 0 20px;
+	     }
+	      .product__order-wrap-main.not_options .button-group.product__button-group{
+	      	display: flex;
+		    flex-direction: row;
+		    align-items: center;
+		    gap: 10px;
+		    justify-content: flex-start;
+	      }
+	      .product__order-wrap-main.not_options .product__button-group .form-group{
+	      	display: none;
+	      }
+	}
 </style>
 
 <div class="container">
@@ -464,6 +492,12 @@
 												<?php if (!empty($text_available_in_drugstores)) { ?>
 													<div class="text-info" style="padding:5px 0px 5px;">
 														<i class="fa fa-check-circle" aria-hidden="true"></i> <?php echo $text_available_in_drugstores; ?>
+													</div>
+												<?php } ?>
+
+												<?php if (!empty($text_available_on_preorder)) { ?>
+													<div class="text-warning" style="padding:5px 0px 5px;">
+														<i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo $text_available_on_preorder; ?>
 													</div>
 												<?php } ?>
 

@@ -2,7 +2,7 @@
     <?php if ($display_header) { ?>
         <div class="checkout-heading panel-heading"><i class="fa fa-credit-card"></i> <?php echo $text_checkout_payment_method ?></div>
 	<?php } ?>
-    <div class="alert alert-danger simplecheckout-warning-block" <?php echo $display_error && $has_error_payment ? '' : 'style="display:none"' ?>><?php echo $error_payment ?></div>
+    <div class="simplecheckout-error-text simplecheckout-warning-block" <?php echo $display_error && $has_error_payment ? '' : 'style="display:none"' ?>>⚠️ <?php echo $error_payment ?></div>
     <div class="simplecheckout-block-content">
 		
 		<?php /* if ($no_payment) { ?>
