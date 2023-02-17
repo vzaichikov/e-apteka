@@ -141,6 +141,17 @@
 				return false;
 			}
 		}
+
+		public function getNodesForPreorderUpdate() {
+			
+			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "nodes WHERE is_preorder = 1");
+			
+			if ($query->num_rows) {
+				return $query->rows;			
+				} else {
+				return false;
+			}
+		}
 		
 		public function getNodesForStockUpdate() {
 			

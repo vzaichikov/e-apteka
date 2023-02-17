@@ -288,6 +288,7 @@
 				'is_catalog'      		=> $result['is_catalog'],
 				'is_customer'      		=> $result['is_customer'],
 				'is_cards'      		=> $result['is_cards'],
+				'is_preorder'      		=> $result['is_preorder'],
 				'node_url'      		=> $result['node_url'],
 				'node_auth'      		=> $result['node_auth'],			
 				'node_last_update'      => date($this->language->get('datetime_format'), strtotime($result['node_last_update'])),
