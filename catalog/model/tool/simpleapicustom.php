@@ -296,6 +296,21 @@
 				return $values;   
 			}
 
+			public function checkIfDrugstoreIsSelected($val){
+				//var_dump($val);
+
+				if (empty($val)){
+					return false;
+				}
+
+				if ($val == 0){
+					return false;
+				}
+
+				return true;
+
+			}
+
 			public function validateNovaPoshtaWareHouse($val){
 
 				if ($val == 0){
@@ -330,8 +345,9 @@
 				$values = [];
 				$this->load->model('localisation/location');
 
-				$all_locations = $this->model_localisation_location->getLocationsGood();
-				$available_locations = $this->cart->getCurrentLocationsAvailableForPickup();
+				$all_locations 			= $this->model_localisation_location->getLocationsGood();
+				$available_locations 	= $this->cart->getCurrentLocationsAvailableForPickup();
+				$cart_has_preorder 		= $this->cart->getIfCartHasPreorder();
 
 				$stock_locations = $not_stock_locations = [];
 				foreach ($all_locations as $location){
@@ -375,8 +391,13 @@
 					$name .= '</b>';
 					$name .= '<br /><small class="text-success"><b>' . $this->language->get('text_we_work_while_no_light') . '</b></small>';
 					$name .= '<br />';
-					$name .= '<span class="text text-warning "><i class="fa fa-clock-o" aria-hidden="true"></i> ' . sprintf($this->language->get('products_available_later'), date('d.m', strtotime('+2 days'))) . '</span>';					
 
+					if ($cart_has_preorder){
+						$name .= '<span class="text text-warning "><i class="fa fa-clock-o" aria-hidden="true"></i> ' . sprintf($this->language->get('products_available_later'), date('d.m', strtotime('+4 days'))) . '</span>';	
+					} else {
+						$name .= '<span class="text text-warning "><i class="fa fa-clock-o" aria-hidden="true"></i> ' . sprintf($this->language->get('products_available_later'), date('d.m', strtotime('+2 days'))) . '</span>';
+					}
+									
 					$values[] = array(
 						'id'   => $location['location_id'],
 						'text' => $name,

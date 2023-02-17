@@ -177,6 +177,7 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
         $this->_templateData['text_product_is_thermolabel']        = $this->language->get('text_product_is_thermolabel');
         $this->_templateData['text_product_is_receipt']            = $this->language->get('text_product_is_receipt');
         $this->_templateData['text_product_is_receipt2']            = $this->language->get('text_product_is_receipt2');
+        $this->_templateData['text_available_on_preorder']            = $this->language->get('text_available_on_preorder');
 
         $this->_templateData['button_update'] = $this->language->get('button_update');
         $this->_templateData['button_remove'] = $this->language->get('button_remove');
@@ -330,6 +331,7 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
                     'name'      => $product['name'],
                     'model'     => $product['model'],
                     'minimum'   => $product['minimum'],
+                    'is_preorder'   => $product['is_preorder'],
                     'is_receipt'    => $product['is_receipt'],
                     'no_payment'    => $product['no_payment'],
                     'no_shipping'   => $product['no_shipping'],
