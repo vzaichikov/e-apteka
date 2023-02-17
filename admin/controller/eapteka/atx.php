@@ -3,17 +3,8 @@ ini_set('memory_limit', '-1');
 class ControllerEaptekaATX extends Controller {
 	private $atx_main_category = 543;
 
-
-	public function cattree(){
-		$this->load->model('catalog/category');
-
-		$query = $this->db->query("SELECT * FROM atx_tree");
-
-		foreach ($query->rows as $row){			
-			$query2 = $this->db->query("SELECT category_id FROM oc_category WHERE atx_code = '" . $row['code'] . "'");
-
-			if (!$query2->num_rows){
-				$data = array(
+	private function prepareCategory($row){
+		$data = array(
 					'category_description' => array(
 						"2" => array(
 							'name' 				=> $row['name_ru'] . ' (ATX-код ' . $row['code'] . ')',
@@ -64,10 +55,97 @@ class ControllerEaptekaATX extends Controller {
 					'no_fucken_path' 			=> true
 				);
 
+		return $data;
+	}
+
+	public function normalizenames(){
+		$query = $this->db->query("SELECT c.atx_code, cd.name, cd.language_id, c.category_id FROM oc_category c LEFT JOIN oc_category_description cd ON c.category_id = cd.category_id WHERE c.atx_code <> ''");
+
+		foreach ($query->rows as $row){
+			$code_start = mb_substr($row['atx_code'], 0, 3);			
+
+			if (mb_strpos($row['name'], $code_start) === 0){
+				echoLine('HAVING PROBLEM, CODE ' . $row['atx_code'] . ' IN NAME: ' . $row['name'], 'w');
+				
+				$code_with_space = mb_substr($row['atx_code'], 0, 4) . ' ' . mb_substr($row['atx_code'], 4);
+				$possible_name = str_replace($code_with_space, '', $row['name']);
+				echoLine('Possible name: ' . $possible_name, 's');
+
+				$this->db->query("UPDATE oc_category_description SET name = '" . trim($possible_name) . "' WHERE language_id = '" . $row['language_id'] . "' AND category_id = '" . $row['category_id'] . "'");
+			}
+		}
+	}
+
+	public function cattree(){
+		$this->load->model('catalog/category');
+
+		$query = $this->db->query("SELECT * FROM atx_tree");
+		foreach ($query->rows as $row){			
+			$query2 = $this->db->query("SELECT category_id FROM oc_category WHERE atx_code = '" . $row['code'] . "'");
+
+			if (!$query2->num_rows){
+				$data = $this->prepareCategory($row);
+
 				$this->model_catalog_category->addCategory($data);
 				echoLine('Added category ' . $row['code'] . ' ' . $row['name_ua'], 'i');
 			}
 		}
+
+		//VALIDATE CODES
+		$query = $this->db->query("SELECT * FROM atx_tree_eapteka WHERE 1");
+		foreach ($query->rows as $row){
+			$query2 = $this->db->query("SELECT category_id FROM oc_category WHERE atx_code = '" . $row['code'] . "'");
+
+			if (!$query2->num_rows){
+				echoLine('OH SHIT, NO CATEGORY WITH ATX: ' . $row['code'], 'e');
+				$parent = '';
+
+				if (mb_strlen($row['code']) >= 7){
+					$parent = mb_substr($row['code'], 0, 5);
+				}
+
+				if (mb_strlen($row['code']) == 5){
+					$parent = mb_substr($row['code'], 0, 4);
+				}
+
+				if (mb_strlen($row['code']) == 4){
+					$parent = mb_substr($row['code'], 0, 3);
+				}
+
+				if ($parent){
+					echoLine('I THINK PARENT IS: ' . $parent, 'w');
+
+					$query3 = $this->db->query("SELECT * FROM atx_tree WHERE code = '" . $parent . "'");
+					if ($query3->num_rows){
+						echoLine('FOUND PARENT: ' . $query3->row['code'] . ': ' . $query3->row['name_ua'], 's');
+
+						echoLine('ADDING ' . $row['code'] . ': ' . $row['name_ua'], 'i');
+
+						$this->addATX([
+							'code' 		=> $row['code'],
+							'parent' 	=> $query3->row['code'],
+							'name_ua'	=> $row['name_ua'],
+							'name_ru'	=> $row['name_ru'],
+							'name_eng'	=> '',
+						]);
+					}
+				}								
+			}
+		}
+		
+		//SECOND ITERATION
+		$query = $this->db->query("SELECT * FROM atx_tree");
+		foreach ($query->rows as $row){			
+			$query2 = $this->db->query("SELECT category_id FROM oc_category WHERE atx_code = '" . $row['code'] . "'");
+
+			if (!$query2->num_rows){
+				$data = $this->prepareCategory($row);
+
+				$this->model_catalog_category->addCategory($data);
+				echoLine('Added category ' . $row['code'] . ' ' . $row['name_ua'], 'i');
+			}
+		}
+
 
 		$query = $this->db->query("SELECT * FROM oc_category WHERE atx_code <> ''");
 		foreach ($query->rows as $row){
@@ -79,6 +157,8 @@ class ControllerEaptekaATX extends Controller {
 			}
 		}
 
+
+		$this->db->query("DELETE FROM oc_product_to_category WHERE category_id IN (SELECT category_id FROM oc_category WHERE atx_code <> '')");
 		$this->db->query("INSERT IGNORE INTO oc_product_to_category (product_id, category_id, main_category) SELECT product_id, (SELECT category_id FROM oc_category WHERE atx_code = oc_product.reg_atx_1) as category_id, 0 FROM oc_product WHERE reg_atx_1 <> ''");
 
 	}
