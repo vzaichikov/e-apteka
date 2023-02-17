@@ -1004,11 +1004,15 @@
 
 		public function getProductStock($product_id, $location_id){
 
-			$sql = "SELECT s.*, ld.*, l.gmaps_link, p.tax_class_id FROM " . DB_PREFIX . "stocks s 
+			$sql = "SELECT s.*, ld.*, l.gmaps_link, p.tax_class_id, p.is_preorder, p.is_pko FROM " . DB_PREFIX . "stocks s 
 			LEFT JOIN " . DB_PREFIX . "location l ON s.location_id = l.location_id 
 			LEFT JOIN " . DB_PREFIX . "location_description ld ON l.location_id = ld.location_id 
 			LEFT JOIN " . DB_PREFIX . "product p ON p.product_id = s.product_id
-			WHERE s.product_id = '" . (int)$product_id . "' AND ld.language_id = '" . $this->config->get('config_language_id') . "' AND s.location_id !=14 AND s.location_id IN (". implode(',', $this->cart->getOpenedStores()) .") AND s.location_id = '" . (int)$location_id . "' ORDER BY l.sort_order ASC";
+			WHERE s.product_id = '" . (int)$product_id . "' 
+			AND ld.language_id = '" . $this->config->get('config_language_id') . "' 
+			AND s.location_id !=14 
+			AND s.location_id IN (". implode(',', $this->cart->getOpenedStores()) .") 
+			AND s.location_id = '" . (int)$location_id . "' ORDER BY l.sort_order ASC";
 			
 			$query = $this->db->ncquery($sql);
 
@@ -1019,7 +1023,6 @@
 			$query_total = $this->db->query("SELECT SUM(quantity) as total FROM " . DB_PREFIX . "stocks WHERE product_id = '" . (int)$product_id . "'");
 			$query_drugstores = $this->db->query("SELECT COUNT(DISTINCT location_id) as total FROM " . DB_PREFIX . "stocks WHERE product_id = '" . (int)$product_id . "' AND quantity > 0");
 
-
 			return [
 				'quantity' 	 => $query_total->row['total'],
 				'drugstores' => $query_drugstores->row['total'],
@@ -1028,7 +1031,7 @@
 		
 		
 		public function getProductStocks($product_id, $cached = false, $in_stock = false){
-			$sql = "SELECT s.*, ld.*, l.gmaps_link, l.information_id, p.tax_class_id FROM " . DB_PREFIX . "stocks s 
+			$sql = "SELECT s.*, ld.*, l.gmaps_link, l.information_id, p.tax_class_id, p.is_preorder, p.is_pko FROM " . DB_PREFIX . "stocks s 
 			LEFT JOIN " . DB_PREFIX . "location l ON s.location_id = l.location_id 
 			LEFT JOIN " . DB_PREFIX . "location_description ld ON l.location_id = ld.location_id 
 			LEFT JOIN " . DB_PREFIX . "product p ON p.product_id = s.product_id
@@ -1046,8 +1049,7 @@
 				$query = $this->db->ncquery($sql);
 			}
 			
-			return $query->rows;
-			
+			return $query->rows;			
 		}
 		
 		public function getSimilarProductsByName($product_name, $product_id, $limit, $in_stock = false){
