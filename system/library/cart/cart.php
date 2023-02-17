@@ -410,6 +410,7 @@
 					'option'          => $option_data,
 					'download'        => $download_data,
 					'quantity'        => $cart['quantity'],
+					'is_preorder'     => $product_query->row['is_preorder'],
 					'minimum'         => $product_query->row['minimum'],
 					'maximum'         => $product_query->row['quantity'],
 					'subtract'        => $product_query->row['subtract'],
@@ -545,6 +546,18 @@
 				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . (int)$value['product_id']. "' AND category_id IN (SELECT category_id FROM " . DB_PREFIX . "category_path WHERE path_id = 169)");
 				
 				if ($query->num_rows){
+					return true;
+				}
+			}
+			
+			return false;
+		}
+
+		public function getIfCartHasPreorder(){
+			$products = $this->getProducts();
+			
+			foreach ($products as $value){
+				if (!empty($value['is_preorder'])){
 					return true;
 				}
 			}
