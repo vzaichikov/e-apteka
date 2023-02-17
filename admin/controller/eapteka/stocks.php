@@ -1,17 +1,18 @@
 <?php
 	ini_set('memory_limit', '-1');
 	class ControllerEaptekaStocks extends Controller {
-		private $error = [];
-		private $nodes = [];
-		private $address = "";
-		private $login = "";
-		private $password = "";
-		private $last_update = "";
-		private $full_update = false;
-		private $json_file = DIR_CATALOG . "../cron/data/stocks_test.json";
-		private $exchange_data = "";
-		private $raw_data = "";
-		private $httpcode = "";
+		private $error 			= [];
+		private $nodes 			= [];
+		private $address 		= "";
+		private $login 			= "";
+		private $password 		= "";
+		private $last_update 	= "";
+		private $full_update 	= false;
+		private $json_file 		= DIR_CATALOG . "../cron/data/stocks_test.json";
+		private $exchange_data 	= "";
+		private $raw_data 		= "";
+		private $httpcode 		= "";
+		private $method			= "";
 		private $ocfilter_option_id = 10053;
 		private $ocfilter_location_mapping = [];
 		
@@ -25,16 +26,21 @@
 			return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
 		}
 		
-		private function initNodes(){
-			
+		private function initNodes(){			
 			$this->load->model('setting/nodes');
-			$this->nodes = $this->model_setting_nodes->getNodesForStockUpdate();
-			
+			$this->nodes = $this->model_setting_nodes->getNodesForStockUpdate();						
+		}
+
+		private function initPreorderNodes(){			
+			$this->load->model('setting/nodes');
+			$this->nodes = $this->model_setting_nodes->getNodesForPreorderUpdate();						
+		}
+
+		private function setMethod($method){
+			$this->method = $method;
 		}
 		
-		private function parseDate($date){
-			
-			
+		private function parseDate($date){						
 		}
 		
 		private function initCatalog(){	
@@ -66,8 +72,7 @@
 			unset($row);
 			foreach ($query->rows as $row){								
 				
-				foreach ($stocks as $_stock){
-					
+				foreach ($stocks as $_stock){					
 					if (!isset($stock_row_exists[$row['product_id'].':'.$_stock['location_id']])){
 						
 						$data = array(
@@ -78,10 +83,8 @@
 						$this->model_catalog_product->initProductStocks($data);
 						
 						echo '>> Инициализация записи таблицы наличия для ' . $row['product_id'] . ':' . $_stock['location_id'] . PHP_EOL;			
-					}
-					
-				}
-				
+					}					
+				}				
 			}	
 			
 			echo '[i] Инициализация аптек...' . PHP_EOL;
@@ -111,9 +114,6 @@
 					echo '[i] Не нашли аптеку ' . $row['name'] . PHP_EOL;
 				}
 			}	
-
-		//	var_dump($this->ocfilter_location_mapping);die();		
-			
 			echo '[i] Инициализировали массивы поиска. Заняли памяти ' . $this->convert(memory_get_usage(true)) . PHP_EOL;					
 		}
 		
@@ -123,8 +123,7 @@
 				return "JSON_1C_EXCEPTION";
 			}			
 			
-			return $json;
-			
+			return $json;			
 		}
 		
 		private function fixBuggyJSON(){
@@ -154,8 +153,7 @@
 				return $this->parseExceptionJSON($json);
 				} else {
 				return $json_errors[json_last_error()];
-			}
-			
+			}			
 		}
 		
 		private function getJSON($params = array()){
@@ -206,7 +204,7 @@
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $_headers);
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->method);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 			//	curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
 			//	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 10000);
@@ -269,23 +267,17 @@
 				return $this->parseExceptionJSON($json);
 				} else {
 				return $json_errors[json_last_error()];
-			}
-			
-		}
+			}			
+		}	
 		
-		
-		public function normalizeProductName($name){
-			
+		public function normalizeProductName($name){			
 			$name = trim($name);
 			$name = ltrim($name, ')(');
 			
-			return $name;
-			
+			return $name;			
 		}
-		
-		
-		public function findProduct($product){
-			
+				
+		public function findProduct($product){			
 			$product_id = false;				
 			
 			if (isset($this->product_uuid_array[$product])){
@@ -297,8 +289,7 @@
 			return $product_id;
 		}
 		
-		public function findLocation($location){
-			
+		public function findLocation($location){		
 			$location_id = false;				
 			
 			if (isset($this->location_uuid_array[$location])){
@@ -310,11 +301,10 @@
 			return $location_id;
 		}
 		
-		public function updateStocksFull(){
-			
+		public function updateStocksFull(){			
 			$this->full_update = true;			
 			$this->updateStocks();
-			
+			$this->updatePreorder();		
 		}
 		
 		public function updateStocks(){
@@ -324,6 +314,7 @@
 			$this->load->model('setting/nodes');
 			
 			$this->initNodes();
+			$this->setMethod('PUT');
 			if ($this->nodes){
 				
 				foreach ($this->nodes as $node){
@@ -487,29 +478,27 @@
 							
                             $this->model_catalog_product->updateProductStocks($data);
 							
-						}
-						
-						
+						}												
 					}
 					
-					//end foreach nodes	
-					
-					
+					//end foreach nodes											
 					echo '[i] Обработка после окончания работы с узлом' . PHP_EOL;
 					
 					echo '[i] Пост-обработка.. Обнуляем наличие' . PHP_EOL;
-					$this->db->query("UPDATE oc_product SET quantity = 0 WHERE 1");
+					$this->db->query("UPDATE oc_product SET quantity = 0 WHERE is_preorder = 0");
 					
 					echo '[i] Пост-обработка.. Установка цен и наличия' . PHP_EOL;
+
 					$this->db->query("UPDATE oc_product p SET quantity = 
 					(SELECT SUM(quantity) FROM oc_stocks s WHERE 
-					s.product_id = p.product_id 
+					s.product_id = p.product_id
 					AND location_id IN (SELECT location_id FROM oc_location WHERE temprorary_closed = 0)
-					GROUP BY s.product_id) WHERE 1");									
-					$this->db->query("UPDATE oc_product p SET quantity = 0 WHERE quantity < 0");	
-					$this->db->query("UPDATE oc_product p SET is_onstock = 0 WHERE quantity <= 0");	
-					$this->db->query("UPDATE oc_stocks SET quantity = 0 WHERE quantity < 0");											
-					$this->db->query("UPDATE oc_product p SET is_onstock = 1 WHERE quantity > 0");	
+					GROUP BY s.product_id) WHERE p.is_preorder = 0");									
+
+					$this->db->query("UPDATE oc_product p SET quantity 		= 0 WHERE quantity < 0");	
+					$this->db->query("UPDATE oc_product p SET is_onstock 	= 0 WHERE quantity <= 0");	
+					$this->db->query("UPDATE oc_stocks SET quantity 		= 0 WHERE quantity < 0");											
+					$this->db->query("UPDATE oc_product p SET is_onstock 	= 1 WHERE quantity > 0");	
 					
 					//Уведомление о косяках				
 					$query = $this->db->query("SELECT p.*, pd.name FROM `oc_product` p LEFT JOIN `oc_product_description` pd ON (pd.product_id = p.product_id AND language_id = 2) WHERE quantity > 0 AND price <= 0");
@@ -635,9 +624,134 @@
 				
 				echo '[i] Не найдено узлов для синхронизации каталога' . PHP_EOL;
 				
-			}
-			
-			
+			}						
 		}
 		
+		public function updatePreorder(){
+
+			$this->load->library('hobotix/ElasticSearch');
+			$this->elasticSearch = new hobotix\ElasticSearch($this->registry);
+
+			$this->initPreorderNodes();
+			$this->setMethod('GET');
+			if ($this->nodes){				
+				foreach ($this->nodes as $node){					
+					$this->model_setting_nodes->setNodeLastUpdateStatusSuccess($node['node_id']);
+					
+					$this->address 			= $node['node_url'];
+					$this->login 			= $node['node_auth'];
+					$this->password 		= $node['node_password'];
+					$this->last_update 		= $node['node_last_update'];
+					$this->last_registered 	= $node['node_last_registered'];
+					
+					echo '[i] Начинаем синхронизацию с узлом ' . $node['node_name'] . PHP_EOL;
+					$this->model_setting_nodes->setNodeLastUpdateStatus($node['node_id'], 'NODE_EXCHANGE_START_PROCESS');
+
+					$json = $this->getJSON();
+									
+
+					if (!$json || !is_array($json)){
+						$this->model_setting_nodes->setNodeLastUpdateStatus($node['node_id'], $json);						
+						$this->model_setting_nodes->setNodeLastUpdateStatusError($node['node_id']);
+						
+						$history_data = array(
+						'status' => $json,
+						'type'   => 'preorder',
+						'json'   => $this->exchange_data,
+						'is_error' => 1
+						);
+						
+						$this->model_setting_nodes->addNodeExchangeHistory($node['node_id'], $history_data);
+						
+						
+						if ($json != 'JSON_ERROR_NONE'){
+							$this->load->library('hobotix/TelegramSender');
+							$telegramSender = new hobotix\TelegramSender;
+							
+							$message = '';
+							$message = 'https://e-apteka.com.ua/error.jpg' . PHP_EOL;
+							$message .= '<b>Господа, у нас ошибка обмена!</b>' . PHP_EOL;
+							$message .= '<b>Скрипт:</b> ' . basename(__FILE__) . PHP_EOL;
+							$message .= '<b>Узел:</b> ' . $node['node_name'] . PHP_EOL;
+							$message .= '<b>URI:</b> ' . $this->address . PHP_EOL;
+							$message .= '<b>Ошибка:</b> ' . $json . '' . PHP_EOL;
+							$message .= '<b>Код ответа:</b> ' . $this->httpcode . PHP_EOL;
+							$message .= '<b>Данные:</b> ' . substr($this->exchange_data,0,500) . '' . PHP_EOL;
+							$message .= '<b>Данные RAW:</b> ' . $this->raw_data . '' . PHP_EOL;
+							
+							$telegramSender->SendMessage($message);
+						}
+						
+						$this->fixBuggyJSON();						
+						die('Не удалось разобрать JSON: ' . $json . PHP_EOL);						
+					}
+
+					if (!$this->product_uuid_array){
+						$this->initCatalog();
+					}
+
+					echoLine("[i] Разбираем товары", 's');
+					$i = 1;
+					$cnt = count($json);
+					
+					if (!$cnt || $json == 'JSON_ERROR_NONE') {
+						$this->model_setting_nodes->setNodeLastUpdateStatus($node['node_id'], 'JSON_ERROR_NONE');
+						$this->model_setting_nodes->setNodeLastUpdateStatusError($node['node_id']);
+						
+						$history_data = array(
+						'status' => 'JSON_ERROR_NONE',
+						'type'   => 'preorder',
+						'json'   => $this->exchange_data,
+						'is_error' => 1
+						);
+						
+						$this->model_setting_nodes->addNodeExchangeHistory($node['node_id'], $history_data);
+						die('Нет зарегистрированных изменений' . PHP_EOL);
+					}
+
+					$this->db->query("UPDATE oc_product SET is_preorder = 0 WHERE 1");	
+					foreach ($json as $preorder){						
+						echo "$i / $cnt" . PHP_EOL;
+						$i++;
+
+						if ($product_id = $this->findProduct($preorder['GUID'])){							
+							echoLine(" Нашли товар " . $product_id . " - " . $preorder['GUID'], 's');	
+							} else {							
+							echoLine("Не нашли товар " . $product_id . " - " . $preorder['GUID'], 'e');								
+						}
+
+						if ($product_id && !empty($preorder['PRICE'])){
+							$this->db->query("UPDATE oc_product SET is_preorder = 1, quantity = 10, price = '" . (float)$preorder['PRICE'] . "' WHERE product_id = '" . (int)$product_id . "'");					
+						} elseif ($product_id){
+							$this->db->query("UPDATE oc_product SET is_preorder = 0, quantity = 0, price = '0' WHERE product_id = '" . (int)$product_id . "'");
+						}
+
+						$this->elasticSearch->reindexproduct($product_id);
+					}
+
+					$this->db->query("UPDATE oc_product p SET quantity = 
+					(SELECT SUM(quantity) FROM oc_stocks s WHERE 
+					s.product_id = p.product_id
+					AND location_id IN (SELECT location_id FROM oc_location WHERE temprorary_closed = 0)
+					GROUP BY s.product_id) WHERE p.is_preorder = 0");	
+
+					$this->model_setting_nodes->setNodeLastUpdateStatus($node['node_id'], 'NODE_EXCHANGE_SUCCESS');
+					$this->model_setting_nodes->setNodeLastUpdateStatusSuccess($node['node_id']);
+					
+					$history_data = array(
+					'status' => 'NODE_EXCHANGE_SUCCESS',
+					'type'   => 'preorder',
+					'json'   => '',
+					'is_error' => 0
+					);
+					
+					$this->model_setting_nodes->addNodeExchangeHistory($node['node_id'], $history_data);
+
+				}
+			} else {
+				
+				echo '[i] Не найдено узлов для синхронизации каталога' . PHP_EOL;
+				
+			}
+		}
 	}							
