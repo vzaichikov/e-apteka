@@ -94,6 +94,8 @@
 	$_['text_full_analogs'] = 'Аналоги';
 	$_['text_similar_pharmaceutic'] = 'Со схожим терапевтическим действием';
 
+	$_['text_available_in_drugstores']    	= 'Доступно %s шт. в %s аптеках';
+
 	$_['text_bought_for_month']    = 'Этот товар купили %s раз за последнюю неделю';
 
 	$_['tab_same']                              = 'Формы выпуска';

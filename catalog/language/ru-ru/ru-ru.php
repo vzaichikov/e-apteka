@@ -132,6 +132,12 @@
 	
 	$_['text_alert_no_locations_1'] = 'Товары доступны в разных аптеках, разделите заказ';
 
+	$_['text_available_on_preorder']    	= 'Доступно под заказ, сроки доставки до 4 дней';
+	$_['text_available_on_preorder_short']    = 'Под заказ, до 4 дней';
+
+	$_['text_we_can_deliver_in_2_days']    = 'Доставим, до 2 дней';
+	$_['text_we_can_deliver_in_4_days']    = 'Доставим, до 4 дней';
+
 	
 	// Error
 	$_['error_exception']       = 'Ошибка кода(%s): %s в %s на строке %s';

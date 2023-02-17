@@ -66,7 +66,7 @@ $_['no_drugstores_one'] 		= 'Не всі товари доступні в апт
 
 $_['products_available_now'] 		= 'можна забрати сьогодні до %s';
 $_['products_available_tomorrow'] 	= 'можна забрати зранку';
-$_['products_available_later'] 		= 'замовлення буде готове %s';
+$_['products_available_later'] 		= 'замовлення буде готове до %s';
 
 $_['text_choosetime'] 		= 'Оберіть час доставки';
 $_['text_time_1'] 			= 'Вдень (10.00 - 14.00)';

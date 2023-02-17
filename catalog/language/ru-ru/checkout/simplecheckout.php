@@ -64,7 +64,7 @@
 
 	$_['products_available_now'] 		= 'можно забрать сегодня до %s';
 	$_['products_available_tomorrow'] 	= 'можно забрать утром';
-	$_['products_available_later'] 		= 'заказ будет готов %s';
+	$_['products_available_later'] 		= 'заказ будет готов до %s';
 
 	$_['no_drugstores_one'] 	= 'Не все товары доступны в аптеке';
 	
