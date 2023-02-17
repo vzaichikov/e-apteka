@@ -783,7 +783,7 @@
 			
 			$this->db->query("INSERT INTO oc_product_attribute (`product_id`,`attribute_id`,`language_id`,`text`) SELECT product_id, 30, 3, isbn FROM oc_product WHERE LENGTH(isbn)>1 ON DUPLICATE KEY UPDATE `text` = (SELECT isbn FROM oc_product WHERE product_id = oc_product_attribute.product_id) ");
 			
-			$this->db->query("INSERT INTO oc_product_attribute (`product_id`,`attribute_id`,`language_id`,`text`) SELECT product_id, 30, 4, isbn FROM oc_product WHERE LENGTH(isbn)>1 ON DUPLICATE KEY UPDATE `text` = (SELECT isbn FROM oc_product WHERE product_id = oc_product_attribute.product_id) ");
+		//	$this->db->query("INSERT INTO oc_product_attribute (`product_id`,`attribute_id`,`language_id`,`text`) SELECT product_id, 30, 4, isbn FROM oc_product WHERE LENGTH(isbn)>1 ON DUPLICATE KEY UPDATE `text` = (SELECT isbn FROM oc_product WHERE product_id = oc_product_attribute.product_id) ");
 			
 			echo '[i] Пост-обработка.. Чистка пустых записей' . PHP_EOL;
 			$this->db->query("DELETE FROM oc_product_to_category WHERE category_id NOT IN (SELECT category_id FROM oc_category WHERE 1)");
@@ -796,57 +796,57 @@
 			$this->db->query("UPDATE oc_category SET top = 0 WHERE parent_id > 0");
 			$this->db->query("UPDATE oc_category SET top = 1 WHERE parent_id = 0");
 			
-			echo '[i] Пост-обработка.. Обнуляем наличие' . PHP_EOL;
-			$this->db->query("UPDATE oc_product SET quantity = 0 WHERE 1");
+			// echo '[i] Пост-обработка.. Обнуляем наличие' . PHP_EOL;
+			// $this->db->query("UPDATE oc_product SET quantity = 0 WHERE is_preorder = 0");
 			
-			echo '[i] Пост-обработка.. Установка цен и наличия' . PHP_EOL;
-			$this->db->query("UPDATE oc_product p SET quantity = 
-				(SELECT SUM(quantity) FROM oc_stocks s WHERE 
-					s.product_id = p.product_id 
-					AND location_id IN (SELECT location_id FROM oc_location WHERE temprorary_closed = 0)
-					GROUP BY s.product_id) WHERE 1");
-			$this->db->query("UPDATE oc_product p SET quantity = 0 WHERE quantity < 0");
-			$this->db->query("UPDATE oc_product p SET is_onstock = 0 WHERE quantity <= 0");
-			$this->db->query("UPDATE oc_stocks SET  quantity = 0 WHERE quantity < 0");
-			$this->db->query("UPDATE oc_product p SET is_onstock = 1 WHERE quantity > 0");			
+			// echo '[i] Пост-обработка.. Установка цен и наличия' . PHP_EOL;
+			// $this->db->query("UPDATE oc_product p SET quantity = 
+			// 		(SELECT SUM(quantity) FROM oc_stocks s WHERE 
+			// 		s.product_id = p.product_id
+			// 		AND location_id IN (SELECT location_id FROM oc_location WHERE temprorary_closed = 0)
+			// 		GROUP BY s.product_id) WHERE p.is_preorder = 0");
+			// $this->db->query("UPDATE oc_product p SET quantity = 0 WHERE quantity < 0");
+			// $this->db->query("UPDATE oc_product p SET is_onstock = 0 WHERE quantity <= 0");
+			// $this->db->query("UPDATE oc_stocks SET  quantity = 0 WHERE quantity < 0");
+			// $this->db->query("UPDATE oc_product p SET is_onstock = 1 WHERE quantity > 0");			
 			
 			
-			$this->db->query("UPDATE
-			oc_product p
-			LEFT JOIN oc_stocks s ON
-			p.product_id = s.product_id AND s.location_id =(
-			SELECT	
-			l.location_id
-			FROM
-			oc_location l
-			WHERE
-			l.default_price = 1
-			LIMIT 1
-			)
-			SET
-			p.price = IF(
-			s.quantity > 0 AND s.price > 0,
-			s.price,
-			(
-			SELECT
-			MAX(s2.price)
-			FROM
-			oc_stocks s2	
-			WHERE
-			s2.product_id = p.product_id AND s2.price > 0 AND s2.quantity > 0
-			GROUP BY
-			s2.product_id
-			)
-			)
-			WHERE is_onstock = 1	
-			"
-			);
+			// $this->db->query("UPDATE
+			// oc_product p
+			// LEFT JOIN oc_stocks s ON
+			// p.product_id = s.product_id AND s.location_id =(
+			// SELECT	
+			// l.location_id
+			// FROM
+			// oc_location l
+			// WHERE
+			// l.default_price = 1
+			// LIMIT 1
+			// )
+			// SET
+			// p.price = IF(
+			// s.quantity > 0 AND s.price > 0,
+			// s.price,
+			// (
+			// SELECT
+			// MAX(s2.price)
+			// FROM
+			// oc_stocks s2	
+			// WHERE
+			// s2.product_id = p.product_id AND s2.price > 0 AND s2.quantity > 0
+			// GROUP BY
+			// s2.product_id
+			// )
+			// )
+			// WHERE is_onstock = 1	
+			// "
+			// );
 			
-			$this->db->query("DROP TABLE IF EXISTS oc_temp_stocks");
-			$this->db->query("CREATE TEMPORARY TABLE IF NOT EXISTS oc_temp_stocks AS (SELECT * FROM oc_stocks)");
-			$this->db->query("UPDATE oc_stocks os SET price = (SELECT MAX(price) FROM oc_temp_stocks os2 WHERE os2.product_id = os.product_id LIMIT 1)  WHERE product_id IN (SELECT DISTINCT product_id FROM oc_product WHERE is_preorder = 1)");
-			$this->db->query("UPDATE oc_stocks os SET quantity = (SELECT MAX(quantity) FROM oc_temp_stocks os2 WHERE os2.product_id = os.product_id LIMIT 1)  WHERE product_id IN (SELECT DISTINCT product_id FROM oc_product WHERE is_preorder = 1)");
-			$this->db->query("DROP TABLE IF EXISTS oc_temp_stocks");
+			// $this->db->query("DROP TABLE IF EXISTS oc_temp_stocks");
+			// $this->db->query("CREATE TEMPORARY TABLE IF NOT EXISTS oc_temp_stocks AS (SELECT * FROM oc_stocks)");
+			// $this->db->query("UPDATE oc_stocks os SET price = (SELECT MAX(price) FROM oc_temp_stocks os2 WHERE os2.product_id = os.product_id LIMIT 1)  WHERE product_id IN (SELECT DISTINCT product_id FROM oc_product WHERE is_preorder = 1)");
+			// $this->db->query("UPDATE oc_stocks os SET quantity = (SELECT MAX(quantity) FROM oc_temp_stocks os2 WHERE os2.product_id = os.product_id LIMIT 1)  WHERE product_id IN (SELECT DISTINCT product_id FROM oc_product WHERE is_preorder = 1)");
+			// $this->db->query("DROP TABLE IF EXISTS oc_temp_stocks");
 			
 			//Проставить параметр поиска is_searched
 			/*
@@ -2364,23 +2364,38 @@
 							}
 						}
 
-						if ($real_product && empty($real_product['reg_atx_1']) && !empty($product['КлассификаторАТХ_ua'])){
+						if (!empty($product['КлассификаторАТХ_ua'])){
 							$exploded = explode(' ', $product['КлассификаторАТХ_ua']);
 							$reg_atx_1 = '';
 							if (count($exploded) >= 3){
-								$reg_atx_1 = trim($exploded[0]) . trim($exploded[1]);
+								if (mb_strlen(trim($exploded[0])) <= 5 && ((mb_strlen(trim($exploded[1])) <= 3 && mb_strlen(trim($exploded[1])) != 'ВСІ') || strpos(trim($exploded[1]), '*') !== false)){
+									$reg_atx_1 = trim($exploded[0]) . trim($exploded[1]);
+								} else {
+									$reg_atx_1 = trim($exploded[0]);
+								}
 							} elseif (count($exploded) == 2){
 								$reg_atx_1 = trim($exploded[0]);
 							}
 
-
 							$cyrillic = ['А', 'а', 'В', 'в', 'Е', 'е', 'К', 'к', 'М', 'м', 'Н', 'о', 'Р', 'р', 'С', 'с', 'Т', 'т', 'У', 'Х', 'х'];
-   							$latin = [ 'A', 'a', 'B', 'b', 'E', 'e', 'K', 'k', 'M', 'm', 'H', 'o', 'P', 'p', 'C', 'c', 'T', 't', 'Y', 'X', 'x' ];
-   							$reg_atx_1 = str_replace($cyrillic, $latin, $reg_atx_1);
+							$latin = [ 'A', 'a', 'B', 'b', 'E', 'e', 'K', 'k', 'M', 'm', 'H', 'o', 'P', 'p', 'C', 'c', 'T', 't', 'Y', 'X', 'x' ];
+							$reg_atx_1 = str_replace($cyrillic, $latin, $reg_atx_1);
 
-							if ($reg_atx_1){
-								echo '[i] REG_ATX_1 FOUND: ' . $reg_atx_1 . PHP_EOL;
+							if ($reg_atx_1){	
+								echoLine('REG_ATX_1 FOUND, ADDING TO TREE:' . $reg_atx_1 . ',' . $product['КлассификаторАТХ_ua'], 'i');
 
+								$this->db->query("INSERT INTO atx_tree_eapteka SET 
+									code 		= '" . $this->db->escape($reg_atx_1) . "',
+									name_ua 	= '" . $this->db->escape(trim($product['КлассификаторАТХ_ua'])) . "',
+									name_ru 	= '" . $this->db->escape(trim($product['КлассификаторАТХ_ru'])) . "'  									
+									ON DUPLICATE KEY UPDATE
+									name_ua 	= '" . $this->db->escape(trim($product['КлассификаторАТХ_ua'])) . "',
+									name_ru 	= '" . $this->db->escape(trim($product['КлассификаторАТХ_ru'])) . "'");
+							}
+						}
+
+						if ($real_product && empty($real_product['reg_atx_1']) && $reg_atx_1 && !empty($product['КлассификаторАТХ_ua'])){						
+							if ($reg_atx_1){							
 								$this->db->query("UPDATE " . DB_PREFIX . "product SET reg_atx_1 = '" . $this->db->escape($reg_atx_1) . "' WHERE product_id = '" . (int)$real_product['product_id'] . "'");
 							}
 						}						
