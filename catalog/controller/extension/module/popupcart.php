@@ -78,7 +78,7 @@ class ControllerExtensionModulePopupCart extends Controller {
 				'option'   		=> $option_data,
 				'recurring'		=> ($product['recurring'] ? $product['recurring']['name'] : ''),
 				'manufacturer'	=> $product['manufacturer'],
-				'quantity'  	=> $product['quantity'],
+				'quantity'  	=> $product['quantity'],				
 				'stock'   	 	=> $this->config->get('config_stock_checkout'),
 				'minimum'    	=> $product['minimum'],
 				'maximum'    	=> $product['maximum'],
@@ -90,10 +90,7 @@ class ControllerExtensionModulePopupCart extends Controller {
 		
 		
 		
-		$this->response->setOutput($this->load->view('structured/ecommerce_checkout', $data));
-		
-		
-		
+		$this->response->setOutput($this->load->view('structured/ecommerce_checkout', $data));		
 	}
 
 	public function index() {
@@ -134,18 +131,7 @@ class ControllerExtensionModulePopupCart extends Controller {
 		$data['left1'] = $this->language->get('text_left1');
 		$data['just'] = $this->language->get('text_just');
 		$data['pcs'] = $this->language->get('text_pcs');	
-	/*	
-		if (file_exists('catalog/view/theme/'.$this->config->get($this->config->get('config_theme') . '_directory').'/stylesheet/popupcart.css')) {
-			$this->document->addStyle('catalog/view/theme/'.$this->config->get($this->config->get('config_theme') . '_directory').'/stylesheet/popupcart.css');
-		} else {
-			$this->document->addStyle('catalog/view/theme/default/stylesheet/popupcart.css');		
-		}
-		
-		$this->document->addScript('catalog/view/javascript/popupcart.js');
-	*/
 
-
-		// Totals
 		$this->load->model('extension/extension');
 
 		$total_data = array();
@@ -198,12 +184,13 @@ class ControllerExtensionModulePopupCart extends Controller {
 			);
 		}
 		
-		$data['text_empty'] = $this->language->get('text_empty');
-		$data['text_cart'] = $this->language->get('text_cart');
-		$data['text_checkout'] = $this->language->get('text_checkout');
-		$data['text_recurring'] = $this->language->get('text_recurring');
-		$data['text_items'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $currency));
-		$data['text_loading'] = $this->language->get('text_loading');
+		$data['text_empty'] 				= $this->language->get('text_empty');
+		$data['text_cart'] 					= $this->language->get('text_cart');
+		$data['text_checkout'] 				= $this->language->get('text_checkout');
+		$data['text_recurring'] 			= $this->language->get('text_recurring');
+		$data['text_items'] 				= sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $currency));
+		$data['text_loading'] 				= $this->language->get('text_loading');
+		$data['text_available_on_preorder'] = $this->language->get('text_available_on_preorder');
 
 		$data['button_remove'] = $this->language->get('button_remove');
 		
@@ -268,7 +255,8 @@ class ControllerExtensionModulePopupCart extends Controller {
 				'model'     	=> $product['model'],
 				'option'   		=> $option_data,
 				'recurring'		=> ($product['recurring'] ? $product['recurring']['name'] : ''),
-				'manufacturer'	=> $product['manufacturer'],
+				'manufacturer'	=> $real_product['manufacturer'],
+				'is_preorder'  	=> $real_product['is_preorder'],
 				'quantity'  	=> $product['quantity'],
 				'stock'   	 	=> $this->config->get('config_stock_checkout'),
 				'minimum'    	=> $product['minimum'],

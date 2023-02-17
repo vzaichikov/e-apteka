@@ -294,17 +294,19 @@
 					}
 					
 					$data['product'] = array (
-					'thumb'     => $image,
-					'name'      => $product['name'],
-					'model'     => $product['model'],
-					'option'    => $option_data,
-					'quantity'  => $product['quantity'],
-					'maximum'	=> $product['total_in_stock'],
+					'thumb'     	=> $image,
+					'name'      	=> $product['name'],
+					'model'     	=> $product['model'],
+					'manufacturer'  => $product['manufacturer'],
+					'option'    	=> $option_data,
+					'is_preorder'  	=> $product['is_preorder'],
+					'quantity'  	=> $product['quantity'],
+					'maximum'		=> $product['total_in_stock'],
 					'price'     	=> $price,
 					'numeric_price' => $numeric_price,
-					'special'   => $special,
-					'total'     => $total,
-					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+					'special'   	=> $special,
+					'total'     	=> $total,
+					'href'      	=> $this->url->link('product/product', 'product_id=' . $product['product_id'])
 					);
 					
 					$data['product']['is_receipt'] = ($product['no_payment'] || $product['is_receipt']);
@@ -324,6 +326,7 @@
 					$data['text_reserve3'] = $this->language->get('text_reserve3');
 					$data['text_reserve4'] = $this->language->get('text_reserve4');
 					$data['text_reserve5'] = $this->language->get('text_reserve5');
+					$data['text_available_on_preorder'] = $this->language->get('text_available_on_preorder');
 
 					if (!empty($this->request->post['oneclick_location_id'])){
 						if ($location = $this->model_catalog_product->getProductStock($this->request->post['product_id'], $this->request->post['oneclick_location_id'])){
