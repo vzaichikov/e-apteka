@@ -603,7 +603,7 @@
 				
 				unset($row);
 				foreach ($tmp as $row){
-					if ($alternate_names = $this->parseAlternateName($row['alternate_name'])){											
+					if (!empty($row['alternate_name']) && $alternate_names = $this->parseAlternateName($row['alternate_name'])){											
 						if (empty($results[$row['name']])){
 							$results[$row['name']] = $alternate_names;
 							} else {
@@ -950,9 +950,7 @@
 					return;
 				}
 				
-				echoLine('[EaptekaElastic] Товар ' . $product_id);
-				$i++;
-				
+				echoLine('[EaptekaElastic] Товар ' . $product_id);				
 				$params = [];
 				$params['index'] 	= 'products';
 				$params['id'] 		= $product_id;				
@@ -960,7 +958,7 @@
 				$params['body']['priority'] = self::CATEGORY_PRIORITY;
 				
 				$params['body']['manufacturer_id'] 	= $product['manufacturer_id'];
-				$params['body']['collection_id'] 	= $product['collection_id'];
+				$params['body']['collection_id'] 	= !empty($product['collection_id'])?$product['collection_id']:0;
 				$params['body']['manufacturer'] 	= $product['manufacturer'];
 				$params['body']['product_id'] 		= $product['product_id'];
 				$params['body']['stock_status_id'] 	= $product['stock_status_id'];
