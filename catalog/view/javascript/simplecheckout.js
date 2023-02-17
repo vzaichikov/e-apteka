@@ -1995,8 +1995,12 @@
             }
 
             self.timerId = window.setTimeout(function() {
-                self.reloadAll(() => window.location.reload());
-            }, 300); 
+                 self.reloadAll();
+             }, 300); 
+
+            // self.timerId = window.setTimeout(function() {
+            //     self.reloadAll(() => window.location.reload());
+            // }, 300); 
         }
 
         this.validate = function(silent) {
