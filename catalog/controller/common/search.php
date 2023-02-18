@@ -4,7 +4,13 @@ class ControllerCommonSearch extends Controller {
 		$this->load->language('product/search');
 
 		$data['search_link'] 				= $this->url->link('product/search');
-		$data['text_search_field'] 			= $this->language->get('text_search_field');		
+
+		$detect = new Mobile_Detect;			
+		if (!$detect->isMobile()){
+			$data['text_search_field'] 			= $this->language->get('text_search_field');		
+		} else {
+			$data['text_search_field'] = '';
+		}
 
 		$data['search_show_all_results'] 	= $this->language->get('search_show_all_results');					
 		$data['text_empty'] 				= $this->language->get('text_empty');
