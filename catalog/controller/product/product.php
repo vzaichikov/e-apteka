@@ -134,33 +134,25 @@
 					$stock_text = $result['quantity'] . ' шт.';
 					$stock_icon = 'fa-check';
 
-				} elseif ($result['quantity'] > 0){
-					
+				} elseif ($result['quantity'] > 0){					
 					$text_class = 'text-warning';
 					$stock_text = $result['quantity'] . ' шт.';
 					$stock_icon = 'fa-check';
-
 				} elseif ($result['is_pko'] && $result['quantity'] == 0) {
-
 					$text_class = 'text-danger';
 					$stock_text = $result['quantity'] . ' шт.';
 					$stock_icon = 'fa-times';
 					$can_not_deliver = true;
-
 				} else {
-
 					$text_class = 'text-warning';
 					$stock_text = $this->language->get('text_we_can_deliver_in_2_days');
 					$stock_icon = 'fa-clock-o';
-
 				}
 
 				if ($result['is_preorder']){
-
 					$text_class = 'text-warning';
 					$stock_text = $this->language->get('text_we_can_deliver_in_4_days');
 					$stock_icon = 'fa-clock-o';
-
 				}
 
 				$data['stocks'][] = array(
@@ -216,7 +208,28 @@
 				$this->response->redirect($this->url->link('product/product', 'product_id=' . $product_id), 301);	
 			}							
 
-			$data['instruction'] = html_entity_decode($this->model_catalog_product->getProductInstruction($product_id), ENT_QUOTES, 'UTF-8');
+			if ($instruction = $this->model_catalog_product->getProductInstruction($product_id)){		
+
+				if ($instruction['from'] == 'db'){
+					$data['instruction'] = html_entity_decode($instruction['instruction'], ENT_QUOTES, 'UTF-8');
+					$data['type']		 = 'inline';
+				} elseif ($instruction['from'] == 'file'){
+					if ($instruction['type'] == 'pdf'){
+						$data['type']		 = 'embed';
+						$data['extension']	 = 'pdf';
+						$data['instruction'] = HTTPS_SERVER . 'catalog/instructions/' . $instruction['instruction'];
+					}
+
+					if ($instruction['type'] == 'mht'){
+						$data['type']		 = 'embed';
+						$data['extension']	 = 'mht';
+						$data['instruction'] = $this->db->escape(file_get_contents(DIR_APPLICATION . 'instructions/' . $instruction['instruction']));
+					}
+				}			
+
+			} else {
+				$data['instruction'] = '';
+			}			
 			
 			$this->response->setOutput($this->load->view('product/structured/instruction', $data));			
 		}	

@@ -80,13 +80,28 @@
 		}
 
 		public function getProductInstruction($product_id){
-			$query = $this->db->query("SELECT instruction FROM " . DB_PREFIX . "product_description WHERE product_id = '" . (int)$product_id . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");
+			$query = $this->db->query("SELECT reg_instruction FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "'");
+
+			if (!empty($query->row['reg_instruction']) && file_exists(DIR_APPLICATION . 'instructions/' . $query->row['reg_instruction'])){
+				if (pathinfo($query->row['reg_instruction'], PATHINFO_EXTENSION) == 'pdf'){
+					return [
+						'from' 			=> 'file',
+						'type' 			=> 'pdf', 		
+						'instruction' 	=> $query->row['reg_instruction']
+					];
+				}
+			}			
+
+			$query = $this->db->query("SELECT instruction FROM " . DB_PREFIX . "product_description WHERE product_id = '" . (int)$product_id . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");			
 
 			if ($query->num_rows){
-				return $query->row['instruction'];
-			}
+				return [
+					'from' 			=> 'db',
+					'instruction' 	=> $query->row['instruction']
+				];
+			}			
 
-			return '';
+			return false;
 		}	
 
 		public function getProductLikReestr($product_id){
@@ -249,6 +264,7 @@
 				
 				(SELECT date_end FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special_date_end,
 				
+				(SELECT SUM(quantity) FROM " . DB_PREFIX . "stocks s WHERE s.product_id = p.product_id) AS stocks, 
 				
 				(SELECT points FROM " . DB_PREFIX . "product_reward pr WHERE pr.product_id = p.product_id AND pr.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "') AS reward, 
 				
@@ -522,6 +538,9 @@
 						}
 					}
 					
+					if ($query->row['stocks'] > 0){
+						$query->row['is_preorder'] = 0;
+					}
 					
 					
 					$return = array(
@@ -536,6 +555,7 @@
                     'reg_trade_name'         => $query->row['reg_trade_name'],
                     'reg_unpatented_name'    => $query->row['reg_unpatented_name'],                   
                     'reg_atx_1'    	   => $query->row['reg_atx_1'],
+                    'reg_instruction'  => $query->row['reg_instruction'],
 					'backlight' 	   => ($query->row['backlight']!='#000000')?$query->row['backlight']:'',
 					'no_shipping'      => $query->row['no_shipping'],
 					'no_payment'       => $query->row['no_payment'],
@@ -1031,7 +1051,7 @@
 		
 		
 		public function getProductStocks($product_id, $cached = false, $in_stock = false){
-			$sql = "SELECT s.*, ld.*, l.gmaps_link, l.information_id, p.tax_class_id, p.is_preorder, p.is_pko FROM " . DB_PREFIX . "stocks s 
+			$sql = "SELECT s.*, ld.*, l.gmaps_link, l.information_id, p.tax_class_id, p.is_preorder, p.is_pko FROM " . DB_PREFIX . "stocks s
 			LEFT JOIN " . DB_PREFIX . "location l ON s.location_id = l.location_id 
 			LEFT JOIN " . DB_PREFIX . "location_description ld ON l.location_id = ld.location_id 
 			LEFT JOIN " . DB_PREFIX . "product p ON p.product_id = s.product_id

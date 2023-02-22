@@ -564,6 +564,21 @@
 
 			return $query->rows;
 		}
+
+		private function saveProductInstructionFromLikReestr($product_id, $data){
+			if (!empty($data['URL інструкції'])){
+				if ($content = file_get_contents($data['URL інструкції'])){	
+					echoLine($data['Торгівельне найменування'] . ', скачали инструкцию', 's');
+					$filename = ('instruction.' .  $product_id . '.' .  pathinfo($data['URL інструкції'], PATHINFO_EXTENSION));
+					file_put_contents(DIR_CATALOG . 'instructions/' . $filename, $content);
+
+					return $filename;
+				}
+			}
+
+			echoLine($data['Торгівельне найменування'] . ', нет инструкции', 'e');
+			return false;
+		}
 		
 		public function updateProductByRegistryNumber($product_id, $data) {			
 			$query = $this->db->query("UPDATE " . DB_PREFIX . "product SET reg_json = '" . $this->db->escape(json_encode($data)) . "' WHERE product_id = '" . (int)$product_id . "'");	
@@ -574,7 +589,8 @@
 				reg_save_terms 			= '" . $this->db->escape($data['Термін придатності']) . "',
 				reg_atx_1 				= '" . $this->db->escape($data['Код АТС 1']) . "',
 				reg_atx_2 				= '" . $this->db->escape($data['Код АТС 2']) . "',
-				reg_atx_3 				= '" . $this->db->escape($data['Код АТС 3']) . "'
+				reg_atx_3 				= '" . $this->db->escape($data['Код АТС 3']) . "',
+				reg_instruction			= '" . $this->db->escape($this->saveProductInstructionFromLikReestr($product_id, $data)) . "'
 				WHERE product_id 		= '" . (int)$product_id . "'");
 		}
 		
