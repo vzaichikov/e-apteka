@@ -17,7 +17,153 @@
 	.text-danger a{
 	cursor: pointer;
 	}
+
+
+	#tab-analog .product-item {
+	    display: grid;
+	    grid-template-columns: 40% 1fr;
+	    grid-column-gap: 10px;
+	    padding: 15px 10px;
+        border: 1px solid #e4e4e4;
+    	box-shadow: 1px 1px 5px #ddd;
+	}
+
+	#tab-analog .product-item .product-layout__image {
+	    grid-column-start: 1;
+	    grid-column-end: 1;
+	    grid-row-start: 1;
+	    grid-row-end: 3;
+	    margin: auto;
+	    display: flex;
+	    flex-direction: column;
+	    justify-content: space-between;
+	    height: auto;
+	    margin-bottom: 5px !important;
+	}
+
+	#tab-analog .product-item .product-layout__caption .product-layout__name__wrap {
+	    height: 60px;
+	}
+	#tab-analog .product-item .button-group .product-layout__btn-compare,
+	#tab-analog .product-item .button-group .product-layout__btn-wishlist{
+		position: initial;
+	}
+	#tab-analog .product-item .button-group{
+		display: flex;
+	}
+	#tab-analog .product-item .product-layout__name{
+	    max-height: 4em;
+        display: -webkit-box;
+	    -webkit-line-clamp: 3;
+	    -webkit-box-orient: vertical;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	}
+	#tab-analog .product-category-list {
+	    display: grid;
+	    grid-template-columns: repeat(auto-fill,minmax(270px,1fr));
+	    grid-gap: 15px;
+	    margin-top: 25px;
+	    margin-bottom: 20px;
+	}
 	@media screen and (max-width: 556px) {
+
+
+		#tab-analog .product-category-list{
+			gap: 10px;
+		    display: grid;
+		    grid-template-columns: 1fr 1fr !important;
+		}
+		#tab-analog .product-category-list .product-item{
+		    padding: 10px;
+		    display: flex;
+		    flex-direction: column;
+		}
+		#tab-analog .product-category-list .product-item .product-layout__image{
+			margin: 0;
+		}
+		#tab-analog .product-category-list .product-item .price_group{
+			margin-top: auto;
+		}
+		#tab-analog .product-category-list .product-item .rating{
+			display: block !important;
+		}
+		#tab-analog .product-category-list .product-item .product-layout__caption .product-layout__name a{
+		    font-size: 12px;
+		    line-height: 14px;
+		    display: -webkit-box;
+		    -webkit-line-clamp: 3;
+		    -webkit-box-orient: vertical;
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		    max-height: 100%;
+		}
+		#tab-analog .product-category-list .product-item .product-layout__caption .product-layout__name__wrap {
+		    height: 65px;
+		    overflow: hidden;
+		    margin-bottom: 5px;
+		}
+		#tab-analog .product-category-list .product-item .price_group .price {
+		    font-size: 17px;
+		    line-height: 16px;
+		    justify-content: space-between;
+		}
+		#tab-analog .product-category-list .product-item .price_group .price.no_price_of_part{
+			justify-content: center;
+		}
+		#tab-analog .product-category-list small.product-layout__name__manufacturer {
+		    font-size: 9px;
+		    line-height: 9px;
+		    display: -webkit-box;
+		    -webkit-line-clamp: 2;
+		    -webkit-box-orient: vertical;
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		    margin-top: 5px;
+		}
+		#tab-analog .product-category-list .product-item .price_group>div button {
+		    width: 35px;
+		    height: 35px;
+		    padding: 0;
+		}
+		#tab-analog .product-category-list .product-item .button-group .product-layout__btn-compare svg, 
+		#tab-analog .product-category-list .product-item .button-group .product-layout__btn-wishlist svg {
+		    width: 25px;
+		    height: 25px;
+		    display: flex;
+		}
+		#tab-analog .product-item .button-group .product-layout__btn-compare, 
+		#tab-analog .product-item .button-group .product-layout__btn-wishlist{
+			position: absolute;
+		    background: #ffffffd1;
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		}
+		#tab-analog .product-item .button-group .product-layout__btn-compare{
+			top: 10px;
+		}
+		#tab-analog .product-item .button-group .product-layout__btn-wishlist{
+			top: 50px;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	    .product__order-wrap-main{
 	        height: 85px !important;
@@ -667,12 +813,14 @@
 					<?php } ?>
 
 					<?php if ( isset($instruction) && !empty($instruction) ) { ?>
-						<div class="tab-pane information-text-style" id="tab-instruction" style="max-height:500px; overflow-y:scroll;">							
+						<div class="tab-pane information-text-style" id="tab-instruction" style="max-height:1000px; overflow-y:scroll;">	
+							<div class="text-center" style="padding-top:100px;"><i class="fa fa-spinner fa-spin" style="font-size:32px; color:#1CACDC;"></i></div>						
 						</div>
 					<?php } ?>
 
-					<?php if ( !empty($likreestr) ) { ?>
-						<div class="tab-pane information-text-style" id="tab-likreestr" style="max-height:500px; overflow-y:scroll;">							
+					<?php if ( !empty($likreestr) ) { ?>						
+						<div class="tab-pane information-text-style" id="tab-likreestr" style="max-height:1000px; overflow-y:scroll;">
+							<div class="text-center" style="padding-top:100px;"><i class="fa fa-spinner fa-spin" style="font-size:32px; color:#1CACDC;"></i></div>						
 						</div>
 					<?php } ?>
 					
@@ -740,7 +888,7 @@
 								<h3><?php echo $text_full_analogs; ?> для <?php echo $heading_title; ?></h3>
 								<div class="product-category-list">
 									<?php foreach ($same as $product) { ?>
-										<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single.tpl'); ?>
+										<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single_analogue.tpl'); ?>
 									<?php } ?>
 								</div>
 							<?php } ?>
@@ -749,7 +897,7 @@
 								<h3><?php echo $text_similar_pharmaceutic; ?></h3>
 								<div class="product-category-list">
 									<?php foreach ($analogs as $product) { ?>
-										<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single.tpl'); ?>
+										<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single_analogue.tpl'); ?>
 									<?php } ?>
 								</div>
 							<?php } ?>

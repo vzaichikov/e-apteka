@@ -1,6 +1,6 @@
 <div class="swiper-slide product-item product-single <?php if($product['quantity'] == 0) { ?>product-item-not-in-stock<? } ?>" data-product-id="<?php echo $product['product_id']; ?>" 
 data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => $ecommerceValue) { ?>"<?php echo $ecommerceKey; ?>": "<?php echo $ecommerceValue; ?>",<?php } ?> "url": "<?php echo $product['href']; ?>"}' <?php if ($product['backlight']) { ?>style="background-color:<?php echo $product['backlight']; ?>"<? } ?>>
-	<div class="product-layout__image 1">
+	<div class="product-layout__image 2">
 		
 		<?php if (!empty($product['product_xdstickers'])) { ?>
 			<div class="xdstickers_wrapper<?php echo $xdstickers_position ?>">
@@ -15,35 +15,26 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 		<a href="<?php echo $product['href']; ?>" title="<?php echo $product['name']; ?>" >
 			<img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" width="200" height="200" class="img-responsive swiper-lazy" loading="lazy">
 		</a>
-		<?php if ($is_mobile) { ?>
-			<?php if ($product['rating']) { ?>
-				<div class="rating">
-					<?php for ($i = 1; $i <= 5; $i++) { ?>
-						<?php if ($product['rating'] < $i) { ?>
-							<svg class="icon rating__icon"><use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#star"></use></svg>
-							<?php } else { ?>
-							<svg class="icon rating__icon is-active"><use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#star"></use></svg>
-						<?php } ?>
+		<?php if ($product['rating']) { ?>
+			<div class="rating">
+				<?php for ($i = 1; $i <= 5; $i++) { ?>
+					<?php if ($product['rating'] < $i) { ?>
+						<svg class="icon rating__icon"><use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#star"></use></svg>
+						<?php } else { ?>
+						<svg class="icon rating__icon is-active"><use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#star"></use></svg>
 					<?php } ?>
-				</div>
-			<?php } ?>
+				<?php } ?>
+			</div>
 		<?php } ?>
+		
+		<div class="button-group">
+			<button class="bbtn bbtn--transparent product-layout__btn-compare" type="button" data-toggle="tooltip" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $product['product_id']; ?>');"><svg class="icon featured__compare-icon"><use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#balance"></use></svg></button>
+			
+			<button class="bbtn bbtn--transparent product-layout__btn-wishlist" type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $product['product_id']; ?>');"><svg class="icon featured__wishlist-icon"><use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#heart"></use></svg></button>							
+		</div>
 	</div>
 	
 	<div class="product-layout__caption">
-		<?php if (!$is_mobile) { ?>
-			<?php if ($product['rating']) { ?>
-				<div class="rating">
-					<?php for ($i = 1; $i <= 5; $i++) { ?>
-						<?php if ($product['rating'] < $i) { ?>
-							<svg class="icon rating__icon"><use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#star"></use></svg>
-							<?php } else { ?>
-							<svg class="icon rating__icon is-active"><use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#star"></use></svg>
-						<?php } ?>
-					<?php } ?>
-				</div>
-			<?php } ?>
-		<?php } ?>
 		<div class="product-layout__name__wrap">
 			<h4 class="product-layout__name"><a href="<?php echo $product['href']; ?>" title="<?php echo $product['name']; ?>"><?php echo $product['name']; ?></a></h4>
 			<?php if ($product['manufacturer']) { ?>
@@ -51,6 +42,7 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 			<?php } ?>
 		</div>
 	</div>
+
 
 	<div class="price_group">
 		<div>
@@ -107,11 +99,6 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 		<?php } ?>
 	</div>
 	
-	<div class="button-group">
-		<button class="bbtn bbtn--transparent product-layout__btn-compare" type="button" data-toggle="tooltip" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $product['product_id']; ?>');"><svg class="icon featured__compare-icon"><use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#balance"></use></svg></button>
-		
-		<button class="bbtn bbtn--transparent product-layout__btn-wishlist" type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $product['product_id']; ?>');"><svg class="icon featured__wishlist-icon"><use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#heart"></use></svg></button>							
-	</div>
 	<?php if (!empty($product['seo'])) { ?>
 		<?php echo $product['seo']; ?>
 	<?php } ?>
