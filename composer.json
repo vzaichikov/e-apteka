@@ -24,6 +24,7 @@
         "wapmorgan/morphos": "^3.2",
         "kwn/number-to-words": "^2.5",
         "google/auth": "^1.23",
-        "shuchkin/simplexlsx": "^1.0"
+        "shuchkin/simplexlsx": "^1.0",
+        "mpdf/mpdf": "^8.1"
     }
 }
