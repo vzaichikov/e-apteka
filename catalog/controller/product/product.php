@@ -205,15 +205,18 @@
 			$ajaxrequest = (!empty($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 			
 			if (!$ajaxrequest){
-				$this->response->redirect($this->url->link('product/product', 'product_id=' . $product_id), 301);	
+			//	$this->response->redirect($this->url->link('product/product', 'product_id=' . $product_id), 301);	
 			}							
 
 			if ($instruction = $this->model_catalog_product->getProductInstruction($product_id)){		
 
 				if ($instruction['from'] == 'db'){
-					$data['instruction'] = html_entity_decode($instruction['instruction'], ENT_QUOTES, 'UTF-8');
+
 					$data['type']		 = 'inline';
+					$data['instruction'] = html_entity_decode($instruction['instruction'], ENT_QUOTES, 'UTF-8');
+
 				} elseif ($instruction['from'] == 'file'){
+
 					if ($instruction['type'] == 'pdf'){
 						$data['type']		 = 'embed';
 						$data['extension']	 = 'pdf';
@@ -221,9 +224,9 @@
 					}
 
 					if ($instruction['type'] == 'mht'){
-						$data['type']		 = 'embed';
+						$data['type']		 = 'inline';
 						$data['extension']	 = 'mht';
-						$data['instruction'] = $this->db->escape(file_get_contents(DIR_APPLICATION . 'instructions/' . $instruction['instruction']));
+						$data['instruction'] = html_entity_decode($instruction['instruction'], ENT_QUOTES, 'UTF-8');
 					}
 				}			
 
@@ -706,7 +709,7 @@
 				$data['reward'] = $product_info['reward'];
 				$data['points'] = $product_info['points'];
 				$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
-				$data['instruction'] = html_entity_decode($product_info['instruction'], ENT_QUOTES, 'UTF-8');
+				$data['instruction'] = html_entity_decode($product_info['instruction'], ENT_QUOTES, 'UTF-8') || $product_info['reg_instruction'];
 				$data['likreestr'] 	 = json_decode($product_info['reg_json'])?json_decode($product_info['reg_json'], true):false;
 				
 				$data['config_free_shipping'] = $this->config->get('config_free_shipping');

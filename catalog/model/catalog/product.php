@@ -90,6 +90,20 @@
 						'instruction' 	=> $query->row['reg_instruction']
 					];
 				}
+
+				if (pathinfo($query->row['reg_instruction'], PATHINFO_EXTENSION) == 'mht'){
+					$this->load->library('hobotix/MHTParser');
+					$MHTParser = new \hobotix\MHTParser(DIR_APPLICATION . 'instructions/' . $query->row['reg_instruction']);
+					$MHTParser->parse();
+
+					if ($html = $MHTParser->get_html()){
+						return [
+							'from' 			=> 'file',
+							'type' 			=> 'mht', 		
+							'instruction' 	=> $html
+						];
+					}
+				}
 			}			
 
 			$query = $this->db->query("SELECT instruction FROM " . DB_PREFIX . "product_description WHERE product_id = '" . (int)$product_id . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");			
