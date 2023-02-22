@@ -717,13 +717,18 @@
 						if ($product_id = $this->findProduct($preorder['GUID'])){							
 							echoLine(" Нашли товар " . $product_id . " - " . $preorder['GUID'], 's');	
 							} else {							
-							echoLine("Не нашли товар " . $product_id . " - " . $preorder['GUID'], 'e');								
+							echoLine(" Не нашли товар " . $product_id . " - " . $preorder['GUID'], 'e');								
 						}
 
-						if ($product_id && !empty($preorder['PRICE'])){
+						//Проверяем, есть ли товар на остатках
+						$stocks = $this->db->query("SELECT SUM(quantity) as stocks FROM " . DB_PREFIX . "stocks s WHERE s.product_id = '" . (int)$product_id . "'")->row['stocks'];
+
+						if ($product_id && !empty($preorder['PRICE']) && (int)$stocks == 0){
 							$this->db->query("UPDATE oc_product SET is_preorder = 1, quantity = 10, price = '" . (float)$preorder['PRICE'] . "' WHERE product_id = '" . (int)$product_id . "'");					
-						} elseif ($product_id){
+						} elseif ($product_id && (int)$stocks == 0){
 							$this->db->query("UPDATE oc_product SET is_preorder = 0, quantity = 0, price = '0' WHERE product_id = '" . (int)$product_id . "'");
+						} else {
+							//?
 						}
 
 						$this->elasticSearch->reindexproduct($product_id);
