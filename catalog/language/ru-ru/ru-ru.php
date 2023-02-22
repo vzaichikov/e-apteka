@@ -45,7 +45,7 @@
 	
 	$_['please_select_street'] = 'Выберите улицу Киева';
 	
-	$_['text_we_work_while_no_light'] = '<i class="fa fa-lightbulb-o" aria-hidden="true"></i> Работаем даже без света';
+	$_['text_we_work_while_no_light'] = '<i class="fa fa-lightbulb-o" aria-hidden="true"></i> Работаем без света';
 
 	// Buttons
 	$_['button_address_add']		= 'Добавить адрес';
@@ -132,12 +132,19 @@
 	
 	$_['text_alert_no_locations_1'] = 'Товары доступны в разных аптеках, разделите заказ';
 
-	$_['text_available_on_preorder']    	= 'Доступно под заказ, сроки доставки до 4 дней';
-	$_['text_available_on_preorder_short']    = 'Под заказ, до 4 дней';
+	if (date("N") == 5 || date("N") == 6){
+		$_['text_available_on_preorder']    	= 'Доступно под заказ, сроки доставки до 4 дней';
+		$_['text_available_on_preorder_short']  = 'Под заказ, до 4 дней';
+		$_['text_we_can_deliver_in_4_days']     = 'Доставим, до 4 дней';
+	} else {
+		$_['text_available_on_preorder']    	= 'Доступно под заказ, сроки доставки до 3 дней';
+		$_['text_available_on_preorder_short']  = 'Под заказ, до 3 дней';
+		$_['text_we_can_deliver_in_4_days']     = 'Доставим, до 3 дней';
+	}
+
+
 
 	$_['text_we_can_deliver_in_2_days']    = 'Доставим, до 2 дней';
-	$_['text_we_can_deliver_in_4_days']    = 'Доставим, до 4 дней';
-
 	
 	// Error
 	$_['error_exception']       = 'Ошибка кода(%s): %s в %s на строке %s';
