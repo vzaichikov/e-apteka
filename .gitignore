@@ -26,6 +26,8 @@
 /image.*/*
 /img/*
 /img.*/*
+/catalog/instructions
+/catalog/instructions/*
 
 #Статика минификатора
 /min/
