@@ -2,8 +2,7 @@
 	class ControllerExtensionModuleCategory extends Controller {
 		public function index() {
 			
-			$detect = new \Mobile_Detect();
-			if ($detect->isMobile()){
+			if ($this->mobileDetect->isMobile()){
 				return '';
 			}			
 			

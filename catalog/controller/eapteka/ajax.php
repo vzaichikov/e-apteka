@@ -179,7 +179,12 @@
 			$likreestr = $this->model_catalog_product->getProductLikReestr($product_id);
 			$data['likreestr'] = json_decode($likreestr)?json_decode($likreestr, true):false;
 			
-			$this->response->setOutput($this->load->view('product/structured/likreestr', $data));			
+			if ($this->mobileDetect->isMobile()){
+				$this->response->setOutput($this->load->view('product/structured/likreestr_mobile', $data));
+			} else {
+				$this->response->setOutput($this->load->view('product/structured/likreestr', $data));
+			}			
+						
 		}	
 		
 	}

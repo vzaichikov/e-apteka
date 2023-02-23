@@ -204,9 +204,8 @@
 				
 				
 				$data['categories'] = array();
-				
-				$detect = new \Mobile_Detect();
-				if ($detect->isMobile() && $page == 1 && !$category_info['show_subcats']){
+								
+				if ($this->mobileDetect->isMobile() && $page == 1 && !$category_info['show_subcats']){
 					$results = $this->model_catalog_category->getCategories($category_id);
 					
 					foreach ($results as $result) {

@@ -4,9 +4,8 @@ class ControllerCommonSearch extends Controller {
 		$this->load->language('product/search');
 
 		$data['search_link'] 				= $this->url->link('product/search');
-
-		$detect = new Mobile_Detect;			
-		if (!$detect->isMobile()){
+			
+		if (!$this->mobileDetect->isMobile()){
 			$data['text_search_field'] 			= $this->language->get('text_search_field');		
 		} else {
 			$data['text_search_field'] = '';

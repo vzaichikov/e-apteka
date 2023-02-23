@@ -167,10 +167,8 @@
 				} else {
 				$data['push_customer_info'] = false;
 			}
-			
-			$detect = new Mobile_Detect;
-			$data['is_mobile'] = $detect->isMobile();
-			
+						
+			$data['is_mobile'] = $this->mobileDetect->isMobile();			
 			$data['tip_state_unsubscribed'] = $this->language->get('tip_state_unsubscribed');
 			$data['tip_state_subscribed'] = $this->language->get('tip_state_subscribed');
 			$data['tip_state_blocked'] = $this->language->get('tip_state_blocked');

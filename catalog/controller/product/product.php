@@ -914,9 +914,8 @@
 
 					array_shift($data['atx_tree']);
 				}
-				
-				$detect = new \Mobile_Detect();
-				$data['disable_map'] = $data['is_mobile'] = $detect->isMobile();
+								
+				$data['disable_map'] = $data['is_mobile'] = $this->mobileDetect->isMobile();
 				
 				$data['stocks'] 	= array();
 				$data['geocode'] 	= $this->config->get('config_geocode');
