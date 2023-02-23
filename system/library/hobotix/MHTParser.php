@@ -10,11 +10,10 @@ class MHTParser {
 
 	public function __construct($mht_file_path) {
 		$this->mht_content = file_get_contents($mht_file_path);
-		$this->parts = array();
+		$this->parts = [];
 	}
 
 	public function parse() {
-      // Split the MHT content into parts using the boundary string
 		$parts = preg_split("/------=_NextPart_/", $this->mht_content);
 
       // Loop through each part and extract its content and headers
@@ -24,15 +23,16 @@ class MHTParser {
 				$content_type 	= $matches[1];
 				$charset 		= preg_match('/charset=(.+?)(\s|$)/i', $content_type, $charset_matches) ? $charset_matches[1] : null;
 				$headers 		= $matches[2];
-				$content 		= $matches[3];			
+				$content 		= $matches[3];		
 
+				$charset = trim($charset, '"');
 				$content = $this->convert_to_utf8($content, $charset);
           
 				$this->parts[] = array(
-					'content_type' => $content_type,
-					'charset'	=> $charset,
-					'headers' => $headers,
-					'content' => $content
+					'content_type' 	=> $content_type,
+					'charset'		=> $charset,
+					'headers' 		=> $headers,
+					'content' 		=> $content
 				);
 			}
 		}
@@ -54,12 +54,7 @@ class MHTParser {
 		return isset($this->parts[$index]['content']) ? $this->parts[$index]['content'] : null;
 	}
 
-	public function remove_inline_styles($html) {
-		
-	}
-
-	private function convert_to_utf8($content, $charset) {
-    // URL decode the content if necessary
+	private function convert_to_utf8($content, $charset) {    
 		$content = urldecode($content);
 		$content = str_ireplace('=3D', '=', $content);
 		$content = str_ireplace('3D"', '"', $content);
@@ -72,10 +67,10 @@ class MHTParser {
         $content = preg_replace('/ style=[^>]*>/', '>', $content);         
     	$content = preg_replace('/<style\b[^>]*>(.*?)<\/style>/s', '', $content);		
         $content = str_ireplace(['<>','</>'], '', $content);
-
-    // Convert to UTF-8 if necessary
+    
 		if ($charset && !mb_check_encoding($content, 'UTF-8')) {
 			$content = mb_convert_encoding($content, 'UTF-8', $charset);
+			$content = str_replace('charset=' . $charset, 'charset=utf-8', $content);
 		}
 
 		return $content;
