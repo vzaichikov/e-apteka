@@ -192,72 +192,7 @@
 
 		}
 
-		public function instruction() {
-			$this->load->language('product/product');
-			$this->load->model('catalog/product');		
-			
-			if (isset($this->request->get['product_id'])) {
-				$product_id = (int)$this->request->get['product_id'];
-				} else {
-				$product_id = 0;
-			}
-			
-			$ajaxrequest = (!empty($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
-			
-			if (!$ajaxrequest){
-			//	$this->response->redirect($this->url->link('product/product', 'product_id=' . $product_id), 301);	
-			}							
-
-			if ($instruction = $this->model_catalog_product->getProductInstruction($product_id)){		
-
-				if ($instruction['from'] == 'db'){
-
-					$data['type']		 = 'inline';
-					$data['instruction'] = html_entity_decode($instruction['instruction'], ENT_QUOTES, 'UTF-8');
-
-				} elseif ($instruction['from'] == 'file'){
-
-					if ($instruction['type'] == 'pdf'){
-						$data['type']		 = 'embed';
-						$data['extension']	 = 'pdf';
-						$data['instruction'] = HTTPS_SERVER . 'catalog/instructions/' . $instruction['instruction'];
-					}
-
-					if ($instruction['type'] == 'mht'){
-						$data['type']		 = 'inline';
-						$data['extension']	 = 'mht';
-						$data['instruction'] = html_entity_decode($instruction['instruction'], ENT_QUOTES, 'UTF-8');
-					}
-				}			
-
-			} else {
-				$data['instruction'] = '';
-			}			
-			
-			$this->response->setOutput($this->load->view('product/structured/instruction', $data));			
-		}	
-
-		public function likreestr() {
-			$this->load->language('product/product');
-			$this->load->model('catalog/product');		
-			
-			if (isset($this->request->get['product_id'])) {
-				$product_id = (int)$this->request->get['product_id'];
-				} else {
-				$product_id = 0;
-			}
-			
-			$ajaxrequest = (!empty($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
-			
-			if (!$ajaxrequest){
-				$this->response->redirect($this->url->link('product/product', 'product_id=' . $product_id), 301);	
-			}							
-
-			$likreestr = $this->model_catalog_product->getProductLikReestr($product_id);
-			$data['likreestr'] = json_decode($likreestr)?json_decode($likreestr, true):false;
-			
-			$this->response->setOutput($this->load->view('product/structured/likreestr', $data));			
-		}	
+		
 
 		public function delivery_pay(){
 			$this->load->language('product/delivery_pay');
@@ -312,18 +247,23 @@
 		}
 				
 		public function index($tab = false) {
-			$devMode = $data['devMode'] = ($this->customer->getEmail() == 'dev@e-apteka.com.ua');
-			
+			$devMode = $data['devMode'] = ($this->customer->getEmail() == 'dev@e-apteka.com.ua');						
+
 			$this->load->language('product/product');
+			
+			$this->load->model('tool/tool');
+			$this->load->model('catalog/category');
+			$this->load->model('catalog/review');
+			$this->load->model('catalog/product');
+			$this->load->model('extension/module/recently_viewed');
+			$this->load->model('simple_blog/article');
 			
 			$data['breadcrumbs'] = array();
 			
 			$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('breadcrumb_home'),
 			'href' => $this->url->link('common/home')
-			);
-			
-			$this->load->model('catalog/category');
+			);					
 			
 			if (isset($this->request->get['path'])) {
 				$path = '';
@@ -348,8 +288,7 @@
 						);
 					}
 				}
-				
-				// Set the last category breadcrumb
+								
 				$category_info = $this->model_catalog_category->getCategory($category_id);
 				
 				if ($category_info) {
@@ -464,14 +403,12 @@
 				$product_id = (int)$this->request->get['product_id'];
 				} else {
 				$product_id = 0;
-			}
-			// die('+++'.$product_id); 
-			$this->load->model('catalog/product');
+			}			
 			
-			$product_info_tmp = $this->model_catalog_product->getProduct($product_id);
-			$product_info = $product_info_tmp;
-			$product_info['previous'] = $product_info_tmp;
-			$product_info['next'] = $product_info_tmp;
+			$product_info_tmp 			= $this->model_catalog_product->getProduct($product_id);
+			$product_info 				= $product_info_tmp;
+			$product_info['previous'] 	= $product_info_tmp;
+			$product_info['next'] 		= $product_info_tmp;
 			
 			if(isset($product_info_tmp['special_date_end']) AND $product_info_tmp['special_date_end']){
 				$data['special_date_end'] = $product_info_tmp['special_date_end'];
@@ -524,11 +461,7 @@
 						
 						$data['seo'] = str_replace('"offers"',$text."\n".'"offers"', $data['seo']);
 					}
-				
-
-
-				$this->load->model('extension/module/recently_viewed');
-
+							
 				if ($this->customer->isLogged()){
 					$this->model_extension_module_recently_viewed->setRecentlyViewedProducts($this->customer->getId(), $product_info['product_id']);
 				}
@@ -636,10 +569,6 @@
 				
 				$this->document->addScript('catalog/view/javascript/jquery/magnific/jquery.magnific-popup.min.js');
 				$this->document->addStyle('catalog/view/javascript/jquery/magnific/magnific-popup.css');
-				/*	$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment.js');
-					$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
-					$this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
-				*/
 				
 				$data['heading_title'] = $product_info['name'];
 				
@@ -680,9 +609,7 @@
 				$data['button_wishlist'] = $this->language->get('button_wishlist');
 				$data['button_compare'] = $this->language->get('button_compare');
 				$data['button_upload'] = $this->language->get('button_upload');
-				$data['button_continue'] = $this->language->get('button_continue');
-				
-				$this->load->model('catalog/review');
+				$data['button_continue'] = $this->language->get('button_continue');								
 				
 				$data['text_delivery_pay'] = $this->language->get('text_delivery_pay');
 				$data['text_avaliable_in_drugstores'] = $this->language->get('text_avaliable_in_drugstores');
@@ -694,6 +621,7 @@
 				$data['tab_analogs'] = $this->language->get('tab_analogs');
 				$data['tab_same'] = $this->language->get('tab_same');
 				$data['tab_attribute'] = $this->language->get('tab_attribute');
+				$data['text_get_instruction'] = $this->language->get('text_get_instruction');
 				$data['tab_review'] = sprintf($this->language->get('tab_review'), $product_info['reviews']);
 				
 				$data['product_id'] = (int)$this->request->get['product_id'];
@@ -708,22 +636,23 @@
 				$data['text_preorder'] = $this->language->get('text_preorder');
 				$data['reward'] = $product_info['reward'];
 				$data['points'] = $product_info['points'];
-				$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
-				$data['instruction'] = html_entity_decode($product_info['instruction'], ENT_QUOTES, 'UTF-8') || $product_info['reg_instruction'];
+				$data['description'] 			= html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
+				$data['instruction'] 			= html_entity_decode($product_info['instruction'], ENT_QUOTES, 'UTF-8') || $product_info['reg_instruction'];
+				
+				if ($product_info['reg_instruction'] && file_exists(DIR_INSTRUCTIONS . $product_info['reg_instruction'])){
+					$data['reg_instruction'] = $product_info['reg_instruction'];
+				}				
+
+				if ($data['reg_instruction']){
+					$data['reg_instruction_pdf_href'] = $this->url->link('eapteka/ajax/downloadinstruction', 'x=' . $product_info['product_id'] . '&dpath=' . base64_encode($data['reg_instruction']));
+				}		
+
 				$data['likreestr'] 	 = json_decode($product_info['reg_json'])?json_decode($product_info['reg_json'], true):false;
 				
-				$data['config_free_shipping'] = $this->config->get('config_free_shipping');
-				
-				$this->load->model('tool/tool');
-				$data['instruction'] = $data['instruction'];//$this->model_tool_tool->clear_tags($data['instruction']);
-				$data['description'] = $data['description'];//$this->model_tool_tool->clear_tags($data['description']);
-				
+				$data['config_free_shipping'] = $this->config->get('config_free_shipping');												
 				$data['title_primenenie'] = $this->language->get('title_primenenie');
 				$data['title_tags'] = $this->language->get('title_tags');
-				
-				
-				$this->load->model('simple_blog/article');
-				
+																
 				$data['product_primenenie'] = array();
 				$data['product_tags'] = array();
 
@@ -762,7 +691,8 @@
 			*/
 				
 				
-				$data['instruction_print'] = $this->url->link('product/product/instruction', 'product_id=' . $product_info['product_id']);
+				$data['get_instruction_ajax'] 	= $this->url->link('eapteka/ajax/instruction', 'x=' . $product_info['product_id']);
+				$data['get_likreestr_ajax'] 	= $this->url->link('eapteka/ajax/likreestr', 'x=' . $product_info['product_id']);
 				
 				if ($product_info['quantity'] <= 0) {
 					$data['stock'] = $product_info['stock_status'];
