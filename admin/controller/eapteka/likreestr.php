@@ -76,12 +76,16 @@ class ControllerEaptekaLikReestr extends Controller {
 		$data = $this->parseCSV();			
 		foreach ($data as $line){				
 			$registryNumber = $line['Номер Реєстраційного посвідчення'];				
-			if ($registryNumber && $product = $this->model_catalog_product->getProductByRegistryNumber($registryNumber)){				
+			if ($registryNumber && $product = $this->model_catalog_product->getProductByRegistryNumber($registryNumber)){
 				echoLine('Нашли товар c регистрационным номером ' . $registryNumber . ': ' . $product['name']);
+				$product_id = $product['product_id'];	
 				$this->model_catalog_product->updateProductByRegistryNumber($product['product_id'], $line);					
-			} else {				
+			} else {		
+				$product_id = 0;		
 				echoLine('Не нашли товар c регистрационным номером ' . $registryNumber);				
 			}
+
+			$this->model_catalog_product->insertDataToLikReestr($registryNumber, $line, $product_id);
 		}
 
 		$this->db->query("INSERT IGNORE INTO oc_product_to_category (product_id, category_id, main_category) SELECT product_id, (SELECT category_id FROM oc_category WHERE atx_code = oc_product.reg_atx_1) as category_id, 0 FROM oc_product WHERE reg_atx_1 <> ''");			
