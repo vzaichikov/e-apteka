@@ -98,7 +98,8 @@
 					if (file_exists(DIR_INSTRUCTIONS . $query->row['reg_instruction'])){
 						return [
 							'from' 			=> 'file',
-							'type' 			=> 'html', 		
+							'type' 			=> 'html', 
+							'file' 			=> $query->row['reg_instruction'],
 							'instruction' 	=> file_get_contents(DIR_INSTRUCTIONS . $query->row['reg_instruction'])
 						];
 					}

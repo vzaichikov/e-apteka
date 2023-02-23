@@ -81,6 +81,7 @@
 				if ($extension == 'pdf'){
 
 					header('Content-Type: application/pdf');
+					header('Content-Disposition: inline; filename="' . $outfile . '"');	
 					header('X-Instruction: from-likreestr');				
 					header('Cache-Control: public, max-age=0');
 					readfile(DIR_INSTRUCTIONS . $filepath);
@@ -88,7 +89,8 @@
 				} elseif ($extension == 'html'){
 					if (file_exists(DIR_INSTRUCTIONS . str_ireplace('.html', '.pdf', $filepath))){
 
-						header('Content-Type: application/pdf');						
+						header('Content-Type: application/pdf');
+						header('Content-Disposition: inline; filename="' . $outfile . '"');						
 						header('X-Instruction: from-file');				
 						header('Cache-Control: public, max-age=0');
 						readfile(DIR_INSTRUCTIONS . str_ireplace('.html', '.pdf', $filepath));
@@ -114,6 +116,7 @@
 		public function instruction() {
 			$this->load->language('product/product');
 			$this->load->model('catalog/product');		
+			$data['text_get_instruction'] = $this->language->get('text_get_instruction');
 			
 			if (isset($this->request->get['x'])) {
 				$product_id = (int)$this->request->get['x'];
@@ -138,13 +141,14 @@
 
 					if ($instruction['type'] == 'pdf'){
 						$data['type']		 = 'embed';
-						$data['extension']	 = 'pdf';
+						$data['extension']	 = 'pdf';					
 						$data['instruction'] = HTTPS_IMG_SERVER . 'instruction/' . $instruction['instruction'];
 					}
 
 					if ($instruction['type'] == 'html'){
 						$data['type']		 = 'inline';
 						$data['extension']	 = 'html';
+						$data['reg_instruction_pdf_href'] = $this->url->link('eapteka/ajax/downloadinstruction', 'x=' . $product_id . '&dpath=' . base64_encode($instruction['file']));
 						$data['instruction'] = html_entity_decode($instruction['instruction'], ENT_QUOTES, 'UTF-8');
 					}
 				}			
