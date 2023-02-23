@@ -10,9 +10,7 @@
 		<tr style="border-bottom:0px;">
 			<td class="hidden-xs">
 				<i class="fa <?php echo $stock['stock_icon']; ?> <?php echo $stock['text_class']; ?>" aria-hidden="true"></i>
-			</td>
-
-			
+			</td>			
 			<td>
 				<?php echo $stock['address']; ?>
 				<?php if (empty($stock['can_not_deliver'])) { ?>

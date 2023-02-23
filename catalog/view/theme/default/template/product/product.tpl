@@ -788,6 +788,48 @@
 										</table>
 									</div>
 								<?php } ?>
+							<?php } else { ?>
+								<style>
+									.attributes-mobile{
+										font-size:14px;
+									}
+									.attributes-mobile .panel{
+										margin-bottom:10px;
+									}
+									.attributes-mobile .panel-heading{
+										padding:5px 15px;
+									}
+									.attributes-mobile .panel-body{
+										padding:5px 15px;
+									}
+									.attributes-mobile .panel-title{
+										font-size:15px;
+									}
+								</style>
+
+								<div class="row attributes-mobile">
+									<div class="col-xs-12">		
+										<?php if ($atx_tree) { ?>
+											<div class="panel panel-info">
+												<div class="panel-heading">
+													<span class="panel-title">ATX</span>
+												</div>
+												<div class="panel-body">
+													<?php foreach ($atx_tree as $atx) { ?>
+														<?php if ($atx['atx_code'] == $reg_atx_1) { ?>
+															<b><?php echo $atx['atx_code']; ?></b>
+														<?php } else { ?>
+															<?php echo $atx['atx_code']; ?>
+														<?php } ?>
+														<a href="<?php echo $atx['href']?>" title="<?php echo $atx['name']; ?>"><?php echo $atx['name']; ?></a><br />
+													<?php } ?>
+													
+												</div>
+											</div>	
+										<?php } ?>
+
+									</div>
+								</div>
 							<?php } ?>
 	
 						</div>
@@ -842,50 +884,11 @@
 					
 					<?php if ($attribute_groups) { ?>
 						<div class="tab-pane information-text-style" id="tab-specification">
-							<table class="table table-striped table-bordered">
-								<tbody>	
-									<?php if ($manufacturer) { ?>
-										<tr>
-											<td><?php echo $text_manufacturer; ?></td>
-											<td><a href="<?php echo $manufacturers; ?>" title="<?php echo $manufacturer; ?>"><?php echo $manufacturer; ?></a></td>
-										</tr>
-									<?php } ?>
-
-									<?php foreach ($attribute_groups as $attribute_group) { ?>
-										<?php foreach ($attribute_group['attribute'] as $attribute) { ?>
-											<?php if ($attribute['text']) { ?>
-												<tr>
-													<td><?php echo $attribute['name']; ?></td>
-													<td><?php echo $attribute['text']; ?></td>
-												</tr>
-											<?php } ?>
-										<?php } ?>												
-									<?php } ?>
-
-									<?php if ($attribute_group['attribute_group_id'] == 8 && $gtin) { ?>
-										<tr>
-											<td>EAN</td>
-											<td><?php echo $gtin; ?></td>
-										</tr>
-									<?php } ?>
-
-									<?php if ($attribute_group['attribute_group_id'] == 8 && $atx_tree) { ?>
-										<tr>
-											<td>ATX</td>
-											<td>
-												<?php foreach ($atx_tree as $atx) { ?>
-													<?php if ($atx['atx_code'] == $reg_atx_1) { ?>
-														<b><?php echo $atx['atx_code']; ?></b>
-													<?php } else { ?>
-														<?php echo $atx['atx_code']; ?>
-													<?php } ?>
-													<a href="<?php echo $atx['href']?>" title="<?php echo $atx['name']; ?>"><?php echo $atx['name']; ?></a><br />
-												<?php } ?>
-											</td>
-										</tr>
-									<?php } ?>
-								</tbody>
-							</table>
+							<?php if ($is_mobile) { ?>
+								<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/attributes_mobile.tpl'); ?>
+							<?php } else { ?>
+								<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/attributes.tpl'); ?>
+							<?php } ?>
 						</div>
 					<?php } ?>
 					
