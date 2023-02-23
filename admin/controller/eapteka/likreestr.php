@@ -70,7 +70,9 @@ class ControllerEaptekaLikReestr extends Controller {
 	}
 
 	public function index(){
-		$this->load->model('catalog/product');					
+		$this->load->model('catalog/product');	
+		$this->load->library('hobotix/MHTParser');
+
 		$data = $this->parseCSV();			
 		foreach ($data as $line){				
 			$registryNumber = $line['Номер Реєстраційного посвідчення'];				
