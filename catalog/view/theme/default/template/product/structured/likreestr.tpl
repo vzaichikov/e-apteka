@@ -1,4 +1,5 @@
-<table class="table table-striped table-bordered">
+<div class="table">
+<table class="table-striped table-bordered">
 	<?php if (!empty($likreestr)) { ?>										
 		<?php foreach ($likreestr as $key => $value) {  ?>											
 			<tr>
@@ -12,3 +13,4 @@
 		<?php } ?>										
 	<?php } ?>
 </table>
+</div>

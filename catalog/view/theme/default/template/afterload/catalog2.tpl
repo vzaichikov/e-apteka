@@ -150,7 +150,7 @@
 
 	
 	<div class="catalog__heding js-catalog-btn"><svg class="icon catalog__heding__icon"><use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#burger"></use></svg><?php echo $text_catalog; ?></span></div>
-	<div class="catalog__list-wrap">
+	<nav class="catalog__list-wrap">
 		<ul class="catalog__list" itemscope="" itemtype="http://schema.org/SiteNavigationElement">
 		<meta itemprop="name" content="Меню">
 			<?php foreach ($categories as $category) { ?>
@@ -163,7 +163,7 @@
 				?>
 				<?php if ($category['children']) { ?>
 
-					<li class="catalog__list-item has-children level_1"><a itemprop="url" href="<?php echo $category['href']; ?>" title="<?php echo $category['name']; ?>" class="catalog__list-link has-children"><?php echo $category_icon; ?><span itemprop="name"><?php echo $category['name']; ?></span></a>
+					<li class="catalog__list-item has-children level_1" itemprop="name"><a itemprop="url" href="<?php echo $category['href']; ?>" title="<?php echo $category['name']; ?>" class="catalog__list-link has-children"><?php echo $category_icon; ?><span><?php echo $category['name']; ?></span></a>
 						<div class="topmenu">
 							<?php if ( $category['icon'] === "medication-guide" ) { ?>
 								<ul class="catalog__list-2 catalog__list-2--2col">
@@ -173,17 +173,17 @@
 									<?php foreach ($category['children'] as $child) { ?>
 
 										<?php if ($child['children']) { ?>
-											<li class="catalog__list-item has-children level_2"><a itemprop="url" href="<?php echo $child['href']; ?>" class="catalog__list-link has-children"><span itemprop="name"><?php echo $child['name'] ?></span><?php echo $category_has_children_arrow; ?></a>
+											<li class="catalog__list-item has-children level_2"  itemprop="name"><a itemprop="url" href="<?php echo $child['href']; ?>" class="catalog__list-link has-children"><span><?php echo $child['name'] ?></span><?php echo $category_has_children_arrow; ?></a>
 
 												<ul class="catalog__list-3">
 													<?php foreach ($child['children'] as $ch) { ?>
-														<li class="catalog__list-item"><a itemprop="url" href="<?php echo $ch['href']; ?>" title="<?php echo $ch['name']; ?>" class="catalog__list-link"><span itemprop="name"><?php echo $ch['name']; ?></span></a></li>
+														<li class="catalog__list-item"  itemprop="name"><a itemprop="url" href="<?php echo $ch['href']; ?>" title="<?php echo $ch['name']; ?>" class="catalog__list-link"><span><?php echo $ch['name']; ?></span></a></li>
 													<?php } ?>
 												</ul>
 
 											</li>
 										<?php } else { ?>
-											<li class="catalog__list-item level_2"><a itemprop="url" href="<?php echo $child['href']; ?>" title="<?php echo $child['name']; ?>" class="catalog__list-link"><span itemprop="name"><?php echo $child['name']; ?></span></a></li>
+											<li class="catalog__list-item level_2"  itemprop="name"><a itemprop="url" href="<?php echo $child['href']; ?>" title="<?php echo $child['name']; ?>" class="catalog__list-link"><span><?php echo $child['name']; ?></span></a></li>
 										<?php } ?>
 
 									<?php } ?>
@@ -191,11 +191,11 @@
 							</div>	
 						</li>
 					<?php } else { ?>
-						<li class="catalog__list-item"><a itemprop="url" href="<?php echo $category['href']; ?>" title="<?php echo $category['name']; ?>" class="catalog__list-link"><?php echo $category_icon; ?><span itemprop="name"><?php echo $category['name']; ?></span></a></li>
+						<li class="catalog__list-item"  itemprop="name"><a itemprop="url" href="<?php echo $category['href']; ?>" title="<?php echo $category['name']; ?>" class="catalog__list-link"><?php echo $category_icon; ?><span><?php echo $category['name']; ?></span></a></li>
 					<?php } ?>
 				<?php } ?>
 			</ul>
-		</div>
+		</nav>
 
 		<script src="/catalog/view/theme/default/template/afterload/js/jquery.menu-aim.js"></script>
 

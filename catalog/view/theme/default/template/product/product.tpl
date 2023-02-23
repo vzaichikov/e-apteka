@@ -626,14 +626,22 @@
 													<span class="product__price"><?php echo $text_not_in_stock; ?></span>
 												</div>
 											<? } ?>
-											
-											<?php if ($quantity_stock > 0) { ?>
-												
-												<div id="product">
-													<?php if ($minimum > 1) { ?>
-														<div class="alert alert-info" style="padding:5px 0px;"><i class="fa fa-info-circle"></i> <?php echo $text_minimum; ?></div>
-													<?php } ?>
+
+											<?php if (!empty($reg_instruction_pdf_href)) { ?>
+												<div style="padding:5px 0px 35px;">
+													<style>
+														.btn-download{box-shadow:none;color:#fff;background-color:#1CACDC;border: 1px solid #1CACDC;}
+														.btn-download:hover{color:#fff;}
+														.btn-download:visited{color:#fff;}
+													</style>
+													<a class="btn btn-download col-xs-12 col-lg-7 col-md-12" href="<?php echo $reg_instruction_pdf_href;?>" target="_blank" rel="noindex nofollow"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> <?php echo $text_get_instruction; ?></a>
 												</div>
+											<?php } ?>
+											
+											<?php if ($quantity_stock > 0) { ?>												
+												<?php if ($minimum > 1) { ?>
+													<div class="alert alert-info" style="padding:5px 0px;"><i class="fa fa-info-circle"></i> <?php echo $text_minimum; ?></div>
+												<?php } ?>												
 
 												<?php if (!empty($text_available_in_drugstores)) { ?>
 													<div class="text-info" style="padding:5px 0px 5px;">
@@ -1100,10 +1108,6 @@
 		let quantity=$('#input-quantity-main').val();
 		cart.add('<?php echo $product_id; ?>', quantity, false, true);
 	});
-	// $('body').on('click', '#main-add-cart-button-stock-logic', function(){
-	// 	let quantity=$('#input-quantity-main').val();
-	// 	cart.add('<?php echo $product_id; ?>', quantity);
-	// });
 </script>
 <script type="text/javascript"><!--
 
@@ -1209,22 +1213,7 @@
 		});
 	});
 //--></script>
-<script type="text/javascript"><!--
-	<? /*
-		$('.date').datetimepicker({
-		pickTime: false
-		});
-		
-		$('.datetime').datetimepicker({
-		pickDate: true,
-		pickTime: true
-		});
-		
-		$('.time').datetimepicker({
-		pickDate: false
-		});
-	*/ ?>
-	
+<script type="text/javascript"><!--	
 	$('button[id^=\'button-upload\']').on('click', function() {
 		var node = this;
 		
@@ -1381,28 +1370,6 @@
 			<?php } ?>
 		}
 	<?php } ?>
-	
-	<? /*
-		$(document).ready(function() {
-		$('.thumbnails').magnificPopup({
-		delegate: 'a.popup-image',
-		type: 'image',
-		tLoading: 'Loading image #%curr%...',
-		mainClass: 'mfp-with-zoom',
-		gallery: {
-		enabled: true,
-		navigateByImgClick: true,
-		preload: [0,1] // Will preload 0 - before current, and 1 after the current image
-		},
-		image: {
-		tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
-		titleSrc: function(item) {
-		return item.el.attr('title');
-		}
-		}
-		});
-		});
-	*/ ?>
 //--></script>
 
 <script>
@@ -1412,7 +1379,7 @@
 		$('a[href="#tab-instruction"]').on('shown.bs.tab', function (event) {
 			if (!instruction_shown){
 				console.log('Fired loading instruction');
-				$('#tab-instruction').load('index.php?route=product/product/instruction&product_id=<?php echo $product_id; ?>', function(){ instruction_shown = true; });				
+				$('#tab-instruction').load('<?php echo $get_instruction_ajax; ?>', function(){ instruction_shown = true; });				
 			}
 		});
 
@@ -1420,7 +1387,7 @@
 		$('a[href="#tab-likreestr"]').on('shown.bs.tab', function (event) {
 			if (!likreestr_shown){
 				console.log('Fired loading likreestr');
-				$('#tab-likreestr').load('index.php?route=product/product/likreestr&product_id=<?php echo $product_id; ?>', function(){ likreestr_shown = true; });				
+				$('#tab-likreestr').load('<?php echo $get_likreestr_ajax; ?>', function(){ likreestr_shown = true; });				
 			}
 		});
 
@@ -1428,7 +1395,7 @@
 		$('a[href="#tab-delivery-pay1"]').on('shown.bs.tab', function (event) {
 			if (!delivery_pay_shown){
 				console.log('Fired loading delivery_pay');
-				$('#tab-instruction').load('index.php?route=product/product/instruction&product_id=<?php echo $product_id; ?>', function(){ delivery_pay_shown = true; });
+			//	$('#tab-instruction').load('index.php?route=product/product/instruction&product_id=<?php echo $product_id; ?>', function(){ delivery_pay_shown = true; });
 			}
 		});
 	});
@@ -1456,10 +1423,6 @@
 	      this.value = val;
 	    }
   	});
-
-
-
-
 
 	$('.product-tabs ul.nav-pills li:first-child a').click();
 	
@@ -1517,13 +1480,6 @@
 			})
 		},100)
 	}
-	
-	
-	
-	
-	
-	
-	
 </script>
 
 <?php echo $footer; ?>
