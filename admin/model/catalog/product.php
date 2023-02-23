@@ -567,12 +567,68 @@
 
 		private function saveProductInstructionFromLikReestr($product_id, $data){
 			if (!empty($data['URL інструкції'])){
-				if ($content = file_get_contents($data['URL інструкції'])){	
-					echoLine($data['Торгівельне найменування'] . ', скачали инструкцию', 's');
-					$filename = ('instruction.' .  $product_id . '.' .  pathinfo($data['URL інструкції'], PATHINFO_EXTENSION));
-					file_put_contents(DIR_CATALOG . 'instructions/' . $filename, $content);
 
-					return $filename;
+				$filestring = md5($data['Номер Реєстраційного посвідчення'] . '-eapteka.com.ua');
+				$extension 	=  pathinfo($data['URL інструкції'], PATHINFO_EXTENSION);
+				$filename 	=  $filestring . '.' . $extension;
+				$filename_html 	= $filestring . '.html';
+				$filename_pdf 	= $filestring . '.pdf';
+
+				$instructionDir = DIR_INSTRUCTIONS;
+				$cachePath 		= 	$filestring[0] . $filestring[1] . '/';  
+				$cachePath 		.= 	$filestring[2] . $filestring[3] . '/';
+				$instructionDir .= $cachePath;
+
+				$file = ($instructionDir . $filename);
+
+				if (file_exists($file) && (time() - filemtime($file) <= 345600)) {
+					if ($extension == 'pdf'){
+						echoLine('Инструкция в PDF, не старше двух дней, файл ' . ($cachePath . $filename), 's');
+						return $cachePath . $filename;
+					}
+
+					if ($extension == 'mht'){
+						if (file_exists($instructionDir . $filename_html) && file_exists($instructionDir . $filename_pdf)){
+							echoLine('HTML + PDF существуют, не старше двух дней, файл ' . ($cachePath . $filename_html), 's');							
+							return $cachePath . $filename_html;
+						}
+					}
+				}
+
+				if ($content = file_get_contents($data['URL інструкції'])){									
+					if (!is_dir($instructionDir)){
+						mkdir($instructionDir, 0775, true);
+						echoLine('Создаем директорию ' . $cachePath, 'i');
+					}		
+					
+					echoLine($data['Торгівельне найменування'] . ', скачали инструкцию ' . $filename, 's');					
+					file_put_contents($file, $content);
+
+					if ($extension == 'pdf'){
+						echoLine('Инструкция в PDF, не преобразовываем, файл ' . ($cachePath . $filename), 'w');
+						return $cachePath . $filename;
+					}
+
+					if ($extension == 'mht'){
+						echoLine('Инструкция в MHT, преобразовываем, файл ' . ($cachePath . $filename), 'w');						
+						$MHTParser = new \hobotix\MHTParser($instructionDir . $filename);
+						$MHTParser->parse();
+						if ($html = $MHTParser->get_html()){
+							echoLine('Преобразовали в HTML ' . ($cachePath . $filename_html), 'w');
+							file_put_contents(($instructionDir . $filename_html), $html);
+
+							try {
+								$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8']);
+								$mpdf->WriteHTML($html);
+								$mpdf->Output(($instructionDir . $filename_pdf), \Mpdf\Output\Destination::FILE);
+								echoLine('Преобразовали в PDF ' . ($cachePath . $filename_pdf), 'w');
+							} catch (\Mpdf\MpdfException $e){
+								echoLine('Ошибка преобразования в PDF ' . $e->getMessage(), 'e');
+							}
+						}
+
+						return $cachePath . $filename_html;
+					}
 				}
 			}
 
@@ -590,7 +646,7 @@
 				reg_atx_1 				= '" . $this->db->escape($data['Код АТС 1']) . "',
 				reg_atx_2 				= '" . $this->db->escape($data['Код АТС 2']) . "',
 				reg_atx_3 				= '" . $this->db->escape($data['Код АТС 3']) . "',
-				reg_instruction			= '" . $this->db->escape($this->saveProductInstructionFromLikReestr($product_id, $data)) . "'
+				reg_instruction			= '" . $this->db->escape($this->saveProductInstructionFromLikReestr($product_id, $data)) . "'				
 				WHERE product_id 		= '" . (int)$product_id . "'");
 		}
 		
