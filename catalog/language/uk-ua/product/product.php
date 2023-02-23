@@ -93,6 +93,8 @@
 	$_['tab_attribute'] = 'Характеристики';
 	$_['tab_analogs']                           = 'Аналоги i замінники';
 
+	$_['text_get_instruction']                  = 'Завантажити інструкцію в PDF';
+
 	$_['text_full_analogs']    = 'Аналоги';
 	$_['text_similar_pharmaceutic']    = 'Зі схожою терапевтичною дією';
 
