@@ -72,6 +72,7 @@
 	}
 
 	$registry->set('crawlerDetect', new \Jaybizzle\CrawlerDetect\CrawlerDetect);
+	$registry->set('mobileDetect', new \Detection\MobileDetect);
 	
 	// Session
 	$session = new Session('native', $registry);
