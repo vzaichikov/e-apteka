@@ -774,6 +774,15 @@
 				$data['reg_atx_1']				= $product_info['reg_atx_1'];
 				$data['reg_atx_2']				= $product_info['reg_atx_2'];
 				$data['reg_atx_3']				= $product_info['reg_atx_3'];
+				$data['reg_instruction']		= $product_info['reg_instruction'];
+
+				if (file_exists(DIR_INSTRUCTIONS . $product_info['reg_instruction'])){
+					$data['reg_instruction_html'] 	= HTTPS_CATALOG . 'instructions/' . $product_info['reg_instruction'];
+				}
+
+				if (file_exists(DIR_INSTRUCTIONS . str_replace('.html', '.pdf', $product_info['reg_instruction']))){
+					$data['reg_instruction_pdf'] 	= HTTPS_CATALOG . 'instructions/' . str_replace('.html', '.pdf', $product_info['reg_instruction']);
+				}						
 			}
 			
 			$data['token'] = $this->session->data['token'];

@@ -77,6 +77,27 @@
 										<div class="form-group">
 											<label class="col-sm-2 control-label" for="input-instruction<?php echo $language['language_id']; ?>">Инструкция</label>
 											<div class="col-sm-10">
+
+												<?php if (!empty($reg_instruction)) { ?>
+													<div class="well">
+													<div class="alert alert-danger">
+														Инструкция загружена из реестра, нет необходимости ее заполнять!
+													</div>
+
+													<?php if (!empty($reg_instruction_html)) { ?>
+														<div class="text-success">
+															<i class="fa fa-check-circle"></i> <a href="<?php echo $reg_instruction_html; ?>" target="_blank">Инструкция в HTML существует, скачать</a>
+														</div>
+													<? } ?>
+													<?php if (!empty($reg_instruction_pdf)) { ?>
+														<div class="text-success">
+															<i class="fa fa-check-circle"></i> <a href="<?php echo $reg_instruction_pdf; ?>" target="_blank">Инструкция в PDF существует, скачать</a>
+														</div>
+													<? } ?>
+												</div>
+												<? } ?>
+
+
 												<textarea name="product_description[<?php echo $language['language_id']; ?>][instruction]" placeholder="Инструкция" id="input-description<?php echo $language['language_id']; ?>" class="form-control summernote"><?php echo isset($product_description[$language['language_id']]) ? $product_description[$language['language_id']]['instruction'] : ''; ?></textarea>
 											</div>
 										</div>
@@ -147,6 +168,24 @@
 								<label class="col-sm-2 control-label" for="input-reg_atx_3">Код АТС 3</label>
 								<div class="col-sm-10">
 									<input type="text" name="reg_atx_3" value="<?php echo $reg_atx_3; ?>" class="form-control" />											
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-reg_instruction">Инструкция</label>
+								<div class="col-sm-10">
+									<input type="text" name="reg_instruction" value="<?php echo $reg_instruction; ?>" class="form-control" />	
+
+									<?php if (!empty($reg_instruction_html)) { ?>
+										<div class="text-success">
+											<i class="fa fa-check-circle"></i> <a href="<?php echo $reg_instruction_html; ?>" target="_blank">Инструкция в HTML существует, скачать</a>
+										</div>
+									<? } ?>
+									<?php if (!empty($reg_instruction_pdf)) { ?>
+										<div class="text-success">
+											<i class="fa fa-check-circle"></i> <a href="<?php echo $reg_instruction_pdf; ?>" target="_blank">Инструкция в PDF существует, скачать</a>
+										</div>
+									<? } ?>
+
 								</div>
 							</div>
 							<div class="form-group">
