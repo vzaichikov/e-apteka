@@ -82,25 +82,24 @@
 		public function getProductInstruction($product_id){
 			$query = $this->db->query("SELECT reg_instruction FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "'");
 
-			if (!empty($query->row['reg_instruction']) && file_exists(DIR_APPLICATION . 'instructions/' . $query->row['reg_instruction'])){
-				if (pathinfo($query->row['reg_instruction'], PATHINFO_EXTENSION) == 'pdf'){
+			if (!empty($query->row['reg_instruction']) && file_exists(DIR_INSTRUCTIONS . $query->row['reg_instruction'])){
+				$extension 	= pathinfo($query->row['reg_instruction'], PATHINFO_EXTENSION);
+				$filename 	= pathinfo($query->row['reg_instruction'], PATHINFO_FILENAME);
+
+				if ($extension == 'pdf'){
 					return [
 						'from' 			=> 'file',
-						'type' 			=> 'pdf', 		
+						'type' 			=> 'pdf',		
 						'instruction' 	=> $query->row['reg_instruction']
 					];
 				}
 
-				if (pathinfo($query->row['reg_instruction'], PATHINFO_EXTENSION) == 'mht'){
-					$this->load->library('hobotix/MHTParser');
-					$MHTParser = new \hobotix\MHTParser(DIR_APPLICATION . 'instructions/' . $query->row['reg_instruction']);
-					$MHTParser->parse();
-
-					if ($html = $MHTParser->get_html()){
+				if ($extension == 'html'){
+					if (file_exists(DIR_INSTRUCTIONS . $query->row['reg_instruction'])){
 						return [
 							'from' 			=> 'file',
-							'type' 			=> 'mht', 		
-							'instruction' 	=> $html
+							'type' 			=> 'html', 		
+							'instruction' 	=> file_get_contents(DIR_INSTRUCTIONS . $query->row['reg_instruction'])
 						];
 					}
 				}
