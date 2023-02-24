@@ -1,19 +1,26 @@
-<style>
-	ul.product-delivery-info__ul > li {line-height:28px;}
-	.product-delivery-info > * {display:block}
-	h3.product-delivery-info__h3{margin-bottom:10px;}
-	h3.product-delivery-info__h3:not(:first-child){margin-top:10px;}
-</style>
-
-<div class="content-style">
-
-	<div class="product-delivery-info">
-		<div class="product-delivery-info__list">
-
-			<?php if ($pickup) { ?>
-				
-			<?php } ?>
-
+<?php if (!empty($delivery_text_ukraine)) { ?>
+	<div class="panel panel-success">
+		<div class="panel-heading">
+			<span class="panel-title"><h3><?php echo $delivery_title_ukraine; ?></h3></span>
 		</div>
-	</div>
-</div>
+		<div class="panel-body"><?php echo $delivery_text_ukraine; ?></div>
+	</div>	
+<? } ?>
+
+<?php if (!empty($delivery_text_kyiv)) { ?>
+	<div class="panel panel-success">
+		<div class="panel-heading">
+			<span class="panel-title"><h3><?php echo $delivery_title_kyiv; ?></h3></span>
+		</div>
+		<div class="panel-body"><?php echo $delivery_text_kyiv; ?></div>
+	</div>	
+<? } ?>
+
+<?php if (!empty($delivery_text_payment)) { ?>
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<span class="panel-title"><h3><?php echo $delivery_title_payment; ?></h3></span>
+		</div>
+		<div class="panel-body"><?php echo $delivery_text_payment; ?></div>
+	</div>	
+<? } ?>
