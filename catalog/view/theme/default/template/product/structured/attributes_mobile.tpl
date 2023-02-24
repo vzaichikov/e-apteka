@@ -23,7 +23,7 @@
 		<?php } ?>												
 		<?php } ?>	
 
-		<?php if ($attribute_group['attribute_group_id'] == 8 && $gtin) { ?>
+		<?php if ($gtin) { ?>
 		<div class="panel panel-info">
 			<div class="panel-heading">
 				<span class="panel-title">EAN</span>
@@ -32,7 +32,7 @@
 		</div>	
 		<?php } ?>
 
-		<?php if ($attribute_group['attribute_group_id'] == 8 && $atx_tree) { ?>
+		<?php if ($atx_tree) { ?>
 		<div class="panel panel-info">
 			<div class="panel-heading">
 				<span class="panel-title">ATX</span>
