@@ -108,7 +108,7 @@
 	$_['free_price']					= 'Бесплатно';
 	$_['zero_price_order']				= 'Под заказ';
 
-	$_['text_make_route']				= '<i class="fa fa-map-marker"></i> проложить маршрут';
+	$_['text_make_route']				= '<i class="fa fa-map-marker"></i> маршрут';
 	
 	
 	$_['text_yourprice']               = 'Ваша цена';
@@ -135,16 +135,16 @@
 	if (date("N") == 5 || date("N") == 6){
 		$_['text_available_on_preorder']    	= 'Доступно под заказ, сроки доставки до 4 дней';
 		$_['text_available_on_preorder_short']  = 'Под заказ, до 4 дней';
-		$_['text_we_can_deliver_in_4_days']     = 'Доставим, до 4 дней';
+		$_['text_we_can_deliver_in_4_days']     = 'Доставим<br />до 4 дней';
 	} else {
 		$_['text_available_on_preorder']    	= 'Доступно под заказ, сроки доставки до 3 дней';
 		$_['text_available_on_preorder_short']  = 'Под заказ, до 3 дней';
-		$_['text_we_can_deliver_in_4_days']     = 'Доставим, до 3 дней';
+		$_['text_we_can_deliver_in_4_days']     = 'Доставим<br />до 3 дней';
 	}
 
 
 
-	$_['text_we_can_deliver_in_2_days']    = 'Доставим, до 2 дней';
+	$_['text_we_can_deliver_in_2_days']    = 'Доставим<br />до 2 дней';
 	
 	// Error
 	$_['error_exception']       = 'Ошибка кода(%s): %s в %s на строке %s';

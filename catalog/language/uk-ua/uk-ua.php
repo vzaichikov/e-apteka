@@ -33,7 +33,7 @@ $_['text_no_results'] = 'Немає даних!';
 $_['text_full_pack']                         = 'Упаковка (%s шт.)';
 $_['text_part_pack']                         = 'Частина упаковки';
 
-$_['text_make_route']				= '<i class="fa fa-map-marker"></i> прокласти маршрут';
+$_['text_make_route']				= '<i class="fa fa-map-marker"></i> маршрут';
 
 $_['text_search_field'] 		= '';
 $_['text_search_total_product'] = 'всього %s товарів';
@@ -131,14 +131,14 @@ $_['text_alert_no_locations_1'] = 'Товари доступні в різних
 if (date("N") == 5 || date("N") == 6){
 	$_['text_available_on_preorder']    = 'Доступно під замовлення, строк доставки до 4 діб';
 	$_['text_available_on_preorder_short']    = 'Під замовлення, до 4 діб';
-	$_['text_we_can_deliver_in_4_days']    = 'Доставимо, до 4 діб';
+	$_['text_we_can_deliver_in_4_days']    = 'Доставимо<br />до 4 діб';
 } else {
 	$_['text_available_on_preorder']    = 'Доступно під замовлення, строк доставки до 3 діб';
 	$_['text_available_on_preorder_short']    = 'Під замовлення, до 3 діб';
-	$_['text_we_can_deliver_in_4_days']    = 'Доставимо, до 3 діб';
+	$_['text_we_can_deliver_in_4_days']    = 'Доставимо<br />до 3 діб';
 }
 
-$_['text_we_can_deliver_in_2_days']    = 'Доставимо, до 2 діб';
+$_['text_we_can_deliver_in_2_days']    = 'Доставимо<br />до 2 діб';
 
 	// Error
 $_['error_exception'] = 'Помилка коду(%s): %s у %s у рядку %s';
