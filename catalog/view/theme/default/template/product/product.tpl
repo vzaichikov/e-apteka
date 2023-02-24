@@ -762,16 +762,16 @@
 													<?php } ?>												
 												<?php } ?>
 
-												<?php if ($attribute_group['attribute_group_id'] == 8 && $gtin) { ?>
+												<?php if ($gtin) { ?>
 													<tr>
 														<td>EAN</td>
 														<td><?php echo $gtin; ?></td>
 													</tr>
 												<?php } ?>
 
-												<?php if ($attribute_group['attribute_group_id'] == 8 && $atx_tree) { ?>
+												<?php if ($atx_tree) { ?>
 													<tr>
-														<td>ATX</td>
+														<td><?php echo $atx_classifier; ?></td>
 														<td>
 															<?php foreach ($atx_tree as $atx) { ?>
 																<?php if ($atx['atx_code'] == $reg_atx_1) { ?>
@@ -823,7 +823,7 @@
 														<?php } ?>
 														<a href="<?php echo $atx['href']?>" title="<?php echo $atx['name']; ?>"><?php echo $atx['name']; ?></a><br />
 													<?php } ?>
-													
+
 												</div>
 											</div>	
 										<?php } ?>
@@ -838,12 +838,21 @@
 							<div class="col-md-4 col-lg-5 col-sm-12" >
 								<style>
 									.big-spinner{margin-bottom: 10px;}
-									.big-spinner i {font-size: 32px; }
-								</style>
-								<h3 class="product-delivery-info__h3"><?php echo $text_is_in_stock_in_drugstores; ?></h3>
-								<div id="stocks-in-product" class="ajax-module-reloadable" data-modpath="product/product/stocks" data-x="<?php echo $product_id; ?>">
-									<div class="row text-center big-spinner"><div class="col-sm-12"><i class="fa fa-spinner fa-spin"></i></div></div>
-								</div>
+								</style>			
+								<div class="panel panel-info">
+									<div class="panel-heading">
+										<span class="panel-title"><h3><?php echo $text_is_in_stock_in_drugstores; ?></h3></span>
+									</div>
+									<div id="stocks-in-product" class="panel-body">
+										<i class="fa fa-spinner fa-spin" style="font-size:32px; color:#1CACDC;"></i>
+									</div>
+								</div>				
+
+								<?php if ($is_mobile) { ?>
+									<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/delivery_pay_mobile.tpl'); ?>
+								<?php } else { ?>
+									<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/delivery_pay.tpl'); ?>
+								<?php } ?>
 
 								<?php echo $content_top; ?>
 							</div>
@@ -1378,6 +1387,9 @@
 <script>
 
 	$(document).ready(function(){
+		console.log('Fired loading stocks');
+		$('#stocks-in-product').load('<?php echo $get_stocks_ajax; ?>');
+
 		var instruction_shown = false;
 		$('a[href="#tab-instruction"]').on('shown.bs.tab', function (event) {
 			if (!instruction_shown){
