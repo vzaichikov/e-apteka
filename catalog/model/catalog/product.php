@@ -892,8 +892,8 @@
 			
 			$product_data = array();
 			
-			if ($_SERVER['REMOTE_ADDR'] == '185.41.249.201'){
-				//	var_dump($sql);			
+			if ($_SERVER['REMOTE_ADDR'] == '31.43.104.37'){
+				//var_dump($sql);			
 			}
 			
 			$query = $this->db->ecquery($sql);

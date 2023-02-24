@@ -2,198 +2,6 @@
 	class ControllerProductProduct extends Controller {
 		private $error = array();		
 
-		public function stocks(){
-			$this->load->model('catalog/product');		
-			$this->load->model('localisation/location');
-
-			$this->load->language('product/product');
-
-			if (isset($this->request->get['x'])) {
-				$product_id = (int)$this->request->get['x'];
-			} else {
-				$product_id = 0;
-			}
-
-			$results = $this->model_catalog_product->getProductStocks($product_id);
-			$multilang_fields = array(
-				'open',
-				'address',
-				'name',
-				'comment'		
-			);
-
-
-			$data['text_is_in_stock_in_drugstores'] = $this->language->get('text_is_in_stock_in_drugstores');
-			$data['text_make_route'] 				= $this->language->get('text_make_route');
-			$data['text_make_reserve'] 				= $this->language->get('text_make_reserve');
-
-			$data['text_we_work_while_no_light'] 	= $this->language->get('text_we_work_while_no_light');
-			$data['text_we_can_deliver_in_2_days'] 	= $this->language->get('text_we_can_deliver_in_2_days');
-			$data['text_we_can_deliver_in_4_days'] 	= $this->language->get('text_we_can_deliver_in_4_days');
-
-			foreach ($results as $result) {
-
-				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], 100, 100);
-				} else {
-					$image = false;
-				}
-
-				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$price = false;
-				}
-
-				$open = '';
-				$mcolor = 'red';
-				$is_open_now = false;					
-				if ($result['open_struct']){
-					date_default_timezone_set('Europe/Kiev');
-
-					$_r = trim($result['open_struct']);
-
-					if ($_r == '∞'){
-						$open = $this->language->get('text_open_alltime');
-						$open_text = $this->language->get('text_open_alltime');
-						$is_open_now = true;
-					} else {
-						$a = explode(PHP_EOL, $result['open_struct']);													
-						$d = array();
-						foreach ($a as $k => &$v){
-							$v = trim($v);
-							$c = explode('/', $v);
-							$z = explode('-', $c[1]);
-							$d[$c[0]] = array(
-								's' => $z[0],
-								'f' => $z[1]								
-							);
-						}
-
-						$day = date('N');
-						$nday = date('N', strtotime('+1 day'));
-
-						if (!isset($d[$day])){
-							$open .= $this->language->get('text_closed_today');
-							$open_text .= $this->language->get('text_closed_today');
-							$is_open_now = false;
-						} else {
-
-							$date_now = DateTime::createFromFormat('H:i', date('H:i'));
-							$date_open = DateTime::createFromFormat('H:i', $d[$day]['s']);					
-							$date_close = DateTime::createFromFormat('H:i', $d[$day]['f']);
-
-							if ($date_now > $date_open && $date_now < $date_close){
-								$is_open_now = true;
-								$to_close_h = date_diff($date_now, $date_close)->format('%h');
-								$to_close_m = date_diff($date_now, $date_close)->format('%i');
-								$open_text = sprintf($this->language->get('text_opened_now'), $to_close_h, $to_close_m);
-								$open = sprintf($this->language->get('text_opened_now'), $to_close_h, $to_close_m);
-							}
-
-							if ($date_now > $date_close || $date_now < $date_open){
-								$is_open_now = false;
-								$to_close = date_diff($date_now, $date_open)->format('%h');
-								$open_text = $this->language->get('text_closed_now');
-								$open = $this->language->get('text_closed_now');
-							}
-						}
-
-					}									
-				}
-
-				if ($is_open_now){
-					$faclass = 'text-success';
-				} else {
-					$faclass = 'text-danger1';
-				}
-
-				if ($is_open_now && $result['quantity'] && $price){
-					$mcolor = 'green';
-					$tdclass = 'bg-success';
-				}
-
-				if (!$is_open_now || !$result['quantity'] || !$price){
-					$mcolor = 'red';
-					$tdclass = 'bg-danger';					
-				}
-
-				if (!$is_open_now && $result['quantity'] && $price){
-					$mcolor = 'yellow';
-					$tdclass = 'bg-warning';
-				}
-
-				$text_class 		= 'text-success';
-				$stock_text 		= $result['quantity'] . ' шт.';
-				$stock_icon 		= 'fa-clock-o';
-				$can_not_deliver 	= false;
-
-				if ($result['quantity'] >= 3){
-					
-					$text_class = 'text-success';
-					$stock_text = $result['quantity'] . ' шт.';
-					$stock_icon = 'fa-check';
-
-				} elseif ($result['quantity'] > 0){					
-					$text_class = 'text-warning';
-					$stock_text = $result['quantity'] . ' шт.';
-					$stock_icon = 'fa-check';
-				} elseif ($result['is_pko'] && $result['quantity'] == 0) {
-					$text_class = 'text-danger';
-					$stock_text = $result['quantity'] . ' шт.';
-					$stock_icon = 'fa-times';
-					$can_not_deliver = true;
-				} else {
-					$text_class = 'text-warning';
-					$stock_text = $this->language->get('text_we_can_deliver_in_2_days');
-					$stock_icon = 'fa-clock-o';
-				}
-
-				if ($result['is_preorder']){
-					$text_class = 'text-warning';
-					$stock_text = $this->language->get('text_we_can_deliver_in_4_days');
-					$stock_icon = 'fa-clock-o';
-				}
-
-				$data['stocks'][] = array(
-					'name'			=> $result['name'],
-					'address'		=> $result['address'],
-					'location_id'	=> $result['location_id'],
-					'image' 		=> $image,
-					'is_preorder' 	=> $result['is_preorder'],
-					'text_class' 	=> $text_class,
-					'stock_text'	=> $stock_text,
-					'stock_icon'	=> $stock_icon,
-					'can_not_deliver' => $can_not_deliver,
-					'stock' 		=> $result['quantity'],
-					'geocode' 		=> $result['geocode'],
-					'gmaps_link' 	=> $result['gmaps_link'],
-					'open_text' 	=> $open_text,
-					'open'			=> $result['open'],
-					'tdclass' 		=> $tdclass,
-					'faclass' 		=> $faclass,
-					'icon' 	    	=> HTTPS_SERVER . 'image/gmarkers/source/marker_' . $mcolor . '.png',
-					'price' 		=> ($result['quantity'] && $price)?$price:$this->language->get('text_preorder'),					
-				);									
-			}		
-
-			$tmp_stocks = [];
-			foreach ($data['stocks'] as $stock){
-				if ($stock['stock'] > 0){
-					array_unshift($tmp_stocks, $stock);
-				} else {
-					array_push($tmp_stocks, $stock);
-				}
-			}
-
-			//	$data['stocks'] = $tmp_stocks
-
-			$this->response->setOutput($this->load->view('product/structured/stocks', $data));		
-
-		}
-
-		
-
 		public function delivery_pay(){
 			$this->load->language('product/delivery_pay');
 			$this->load->model('catalog/product');
@@ -693,6 +501,7 @@
 				
 				$data['get_instruction_ajax'] 	= $this->url->link('eapteka/ajax/instruction', 'x=' . $product_info['product_id']);
 				$data['get_likreestr_ajax'] 	= $this->url->link('eapteka/ajax/likreestr', 'x=' . $product_info['product_id']);
+				$data['get_stocks_ajax'] 	= $this->url->link('eapteka/ajax/stocks', 'x=' . $product_info['product_id']);
 				
 				if ($product_info['quantity'] <= 0) {
 					$data['stock'] = $product_info['stock_status'];
@@ -884,6 +693,8 @@
 				$data['share'] = $this->url->link('product/product', 'product_id=' . (int)$this->request->get['product_id']);				
 				$data['attribute_groups'] = $this->model_catalog_product->getProductAttributes($this->request->get['product_id']);
 
+				$data['atx_classifier'] = $this->language->get('atx_classifier');
+
 				$data['atx_tree'] = [];
 				if ($product_info['reg_atx_1']){
 					$data['reg_atx_1'] = $product_info['reg_atx_1'];
@@ -916,6 +727,24 @@
 				}
 								
 				$data['disable_map'] = $data['is_mobile'] = $this->mobileDetect->isMobile();
+
+				//DELIVERY && PAYMENT
+				$data['delivery_title_kyiv'] = $this->language->get('delivery_title_kyiv');
+				$data['delivery_title_ukraine'] = $this->language->get('delivery_title_ukraine');
+				$data['delivery_title_payment'] = $this->language->get('delivery_title_payment');
+
+				$data['delivery_text_kyiv'] = $this->language->get('delivery_text_kyiv');
+				$data['delivery_text_payment'] = $this->language->get('delivery_text_payment');
+
+				if (!$product_info['no_shipping'] && !$product_info['no_payment']){
+					$data['delivery_text_ukraine'] = $this->language->get('delivery_text_ukraine');					
+				} else {
+					$data['delivery_text_kyiv'] = $this->language->get('delivery_text_kyiv_receipt');
+					$data['delivery_text_payment'] = $this->language->get('delivery_text_payment_receipt');
+				}
+
+
+
 				
 				$data['stocks'] 	= array();
 				$data['geocode'] 	= $this->config->get('config_geocode');
