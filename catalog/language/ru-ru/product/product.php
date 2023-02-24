@@ -92,6 +92,8 @@
 
 	$_['text_get_instruction']                  = 'Скачать инструкцию в PDF';
 
+	$_['atx_classifier']                  = 'Классификация ATX';
+
 
 	$_['text_full_analogs'] = 'Аналоги';
 	$_['text_similar_pharmaceutic'] = 'Со схожим терапевтическим действием';
@@ -111,3 +113,36 @@
 	$_['error_rating']                            = 'Пожалуйста, выберите оценку!';
 	$_['error_email']                             = 'Email должен быть заполнен!';
 	$_['error_captcha']                           = 'Код, указанный на картинке, введен неверно!';
+
+
+	$_['delivery_title_kyiv'] = 'Доставка по Киеву';
+	$_['delivery_title_ukraine'] = 'Доставка по Украине';
+	$_['delivery_title_payment'] = 'Оплата';
+
+	$_['delivery_text_ukraine'] = '<ul class="list-unstyled product-delivery-info__ul">
+					<li><b>Новой почтой в отделение.</b> по тарифам почтового оператора.</li>
+					<li><b>Новой почтой в почтомат.</b> по тарифам почтового оператора.</li>
+					<li><b>УкрПоштой в отделение.</b> по тарифам почтового оператора.</li>
+					<li><b>УкрПоштой по адресу.</b> В любую точку Украины. по тарифам почтового оператора.</li>
+				</ul>';
+
+	$_['delivery_text_kyiv'] = '<ul class="list-unstyled product-delivery-info__ul">
+							<li><b>Самовывоз из аптеки</b>. Бесплатно.</li>
+							<li><b>Доставка курьером аптеки.</b>
+							Стоимость доставки составляет 90₴. Доставка бесплатная при заказе на сумму более 2500 ₴
+							Стоимость доставки лекарств, требующих особых условий транспортировки - 150 ₴</li>
+						</ul>';
+
+	$_['delivery_text_kyiv_receipt'] = '<ul class="list-unstyled product-delivery-info__ul">
+							<li><b>Самовывоз из аптеки</b>. Бесплатно.</li>							
+							</ul>';
+
+	$_['delivery_text_payment'] = '<ul class="list-unstyled product-delivery-info__ul">
+					<li><b>Оплата при оформлении заказа через систему iPay</b></li>
+					<li>Наличными или картами при получении</li>
+					<li>Для юридических лиц возможна оплата безналичным счетом</li>
+				</ul>';
+
+	$_['delivery_text_payment_receipt'] = '<ul class="list-unstyled product-delivery-info__ul">
+					<li>Наличными или картами при получении</li>					
+				</ul>';

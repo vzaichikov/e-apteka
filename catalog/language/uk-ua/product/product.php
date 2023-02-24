@@ -70,13 +70,11 @@
 	$_['entry_captcha'] = 'Введіть код, зазначений на картинці:';
 	
 	$_['entry_view_else']          = '<i class="fa fa-random" aria-hidden="true"></i> Цей товар доступний тільки під замовлення. Подивіться, будь ласка, інші форми та дозування, чи аналогічні.';
-	
-	
+		
 	$_['text_is_receipt'] = 'Будьте уважні, для придбання цього препарату Вам необхідний рецепт від лікаря';
 	$_['text_is_receipt2'] = 'Доставка здійснюється тільки за наявності електронного рецепту';	
 	
 	$_['text_is_receipt_2'] = "Для придбання цього препарату Вам необхідний рецепт від лікаря. Однак, якщо у Вас немає рецепту, то Ви можете побачити нижче <a onclick=\"$('html, body').animate({ scrollTop: ($('#proposal').offset().top - 200) }, 1000); return false;\"> безрецептурні препарати з подібною фармацевтичною дією </a>.";
-	
 	
 	$_['proposal_text_same_expensive'] = '<i class="fa fa-random text-info" aria-hidden="true"></i> Можливо, вам підійде';
 	$_['proposal_text_same_fornotinstock'] = '<i class="fa fa-random text-info" aria-hidden="true"></i> Аналоги в наявності';
@@ -95,6 +93,8 @@
 
 	$_['text_get_instruction']                  = 'Завантажити інструкцію в PDF';
 
+	$_['atx_classifier']                  = 'Класифікація ATX';
+
 	$_['text_full_analogs']    = 'Аналоги';
 	$_['text_similar_pharmaceutic']    = 'Зі схожою терапевтичною дією';
 
@@ -112,3 +112,35 @@
 	$_['error_rating'] = 'Будь ласка, виберіть оцінку!';
 	$_['error_captcha'] = 'Код, зазначений на картинці, введено невірно!';
 	$_['error_email'] = 'Email повинен бути заповнений!';
+
+	$_['delivery_title_kyiv'] = 'Доставка по Києву';
+	$_['delivery_title_ukraine'] = 'Доставка по Україні';
+	$_['delivery_title_payment'] = 'Оплата';
+
+	$_['delivery_text_ukraine'] = '<ul class="list-unstyled product-delivery-info__ul">
+						<li><b>Новою Поштою у відділення.</b> за тарифами поштового оператора.</li>
+						<li><b>Новою Поштою у поштомат.</b> за тарифами поштового оператора.</li>
+						<li><b>УкрПоштою у відділення.</b> за тарифами поштового оператора.</li>
+						<li><b>УкрПоштою на адресу.</b> У будь-яку точку України. за тарифами поштового оператора.</li>
+					</ul>';
+
+	$_['delivery_text_kyiv'] = '<ul class="list-unstyled product-delivery-info__ul">
+				<li><b>Самовивіз з аптеки</b>. Безкоштовно.</li>
+					<li><b>Доставка кур\'єром аптеки.</b>
+					Вартість доставки складає 90 ₴. Доставка безкоштовна при замовленні на суму більш ніж 2500 ₴
+					Вартість доставки ліків, що потребують особливих умов транспортування - 150 ₴</li>				
+				</ul>';
+
+	$_['delivery_text_kyiv_receipt'] = '<ul class="list-unstyled product-delivery-info__ul">
+				<li><b>Самовивіз з аптеки</b>. Безкоштовно.</li>						
+				</ul>';
+
+	$_['delivery_text_payment'] = '<ul class="list-unstyled product-delivery-info__ul">
+				<li><b>Оплата при оформленні замовлення через систему iPay</b></li>
+				<li>Готівкою, або карткою при отриманні</li>
+				<li>Для юридичних осіб можлива оплата безготівковим рахунком</li>
+			</ul>';
+
+	$_['delivery_text_payment_receipt'] = '<ul class="list-unstyled product-delivery-info__ul">
+				<li><b>Оплата при оформленні замовлення через систему iPay</b></li>
+			</ul>';
