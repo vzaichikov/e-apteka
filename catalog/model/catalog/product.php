@@ -315,8 +315,7 @@
 				}
 				
 				//Проверка скидочной модели
-				if ($query->num_rows){
-					
+				if ($query->num_rows){					
 					$general_price = false;
 					$has_pricegroup_discount = false;
 					
@@ -907,7 +906,10 @@
 		}
 		
 		public function getPriceGroupDiscountForCustomerGroup($pricegroup_id){
-			
+			if (!$this->config->get('handling_status')){
+				return false;
+			}
+
 			$query = $this->db->query("SELECT plus, percent FROM " . DB_PREFIX . "price_group_to_customer_group WHERE pricegroup_id = '" . (int)$pricegroup_id . "' AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' LIMIT 1");
 			
 			if ($query->num_rows){
@@ -917,10 +919,8 @@
 				);
 				} else {
 				
-				return false;
-				
-			}
-			
+				return false;			
+			}			
 		}
 		
 		public function getProductSpecials($data = array()) {
