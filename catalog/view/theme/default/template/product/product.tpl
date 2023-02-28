@@ -147,24 +147,6 @@
 			top: 50px;
 		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	    .product__order-wrap-main{
 	        height: 85px !important;
 	        flex-wrap: wrap;
@@ -302,13 +284,15 @@
 							</li>
 						<?php } ?>						
 
+						<?php if ( !empty($delivery_pay_FAKE)) { ?>
 						<li>
 							<a href="#tab-delivery-pay" data-toggle="tab"><?php echo $text_delivery_pay; ?>
 								<!-- <svg class="product-tabs__nav-icon">
 									<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#edit"></use>
 								</svg> -->
 							</a>
-						</li>												
+						</li>		
+						<?php } ?>										
 						
 						<?php if ( !empty($hobofaq)) { ?>
 							<li>
@@ -468,11 +452,11 @@
 														var timeinterval = setInterval(updateClock, 1000);
 													}
 												</script>
+						
 												<div class="product-action-price">
 													<?php if ($price && $special) { ?>
 														<div class="product-action-price__discount discount">
-															<?php $discount = round(100 - ( floatval($special)*100/floatval($price))); ?>
-															<div class="discount__text">скидка</div>
+															<?php $discount = round(100 - ( floatval($special)*100/floatval($price))); ?>															
 															<div class="discount__value">-<?php echo $discount."%"; ?></div>
 														</div>
 													<?php } ?>
@@ -508,7 +492,6 @@
 											
 											<?php if ($quantity_stock > 0) { ?>
 												<?php if ($price) { ?>
-													
 													<div class="product__order-wrap-main <?php if ($special) { ?>is-special-bg<?php } ?> <?php if (!$options) { ?>not_options<?php } ?>">
 														<div class="product__order-wrap">
 															<?php if (!$special) { ?>
@@ -638,7 +621,12 @@
 												</div>
 											<?php } ?>
 											
-											<?php if ($quantity_stock > 0) { ?>												
+											<?php if ($quantity_stock > 0) { ?>		
+												<div class="text text-danger" style="padding:5px 0px 5px;">
+													<i class="fa fa-info-circle"></i> <?php echo $text_price_actual_only_from_site; ?>
+												</div>
+
+
 												<?php if ($minimum > 1) { ?>
 													<div class="alert alert-info" style="padding:5px 0px;"><i class="fa fa-info-circle"></i> <?php echo $text_minimum; ?></div>
 												<?php } ?>												
