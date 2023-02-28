@@ -523,65 +523,63 @@
 					$this->db->query("UPDATE `oc_product` SET quantity = 0 WHERE price <= 0");
 					
 					$this->db->query("UPDATE
-					oc_product p
-					LEFT JOIN oc_stocks s ON
-					p.product_id = s.product_id AND s.location_id =(
-					SELECT	
-					l.location_id
-					FROM
-					oc_location l
-					WHERE
-					l.default_price = 1
-					LIMIT 1
-					)
-					SET
-					p.price_retail = IF(
-					s.quantity > 0 AND s.price_retail > 0,
-					s.price_retail,
-					(
-					SELECT
-					MAX(s2.price_retail)
-					FROM
-					oc_stocks s2	
-					WHERE
-					s2.product_id = p.product_id AND s2.price_retail > 0 AND s2.quantity > 0
-					GROUP BY
-					s2.product_id
-					)
-					)
-					WHERE is_onstock = 1		
-					"
+						oc_product p
+						LEFT JOIN oc_stocks s ON
+						p.product_id = s.product_id AND s.location_id =(
+							SELECT	
+							l.location_id
+							FROM
+							oc_location l
+							WHERE
+							l.default_price = 1
+							LIMIT 1
+							)
+						SET
+						p.price_retail = IF(
+							s.quantity > 0 AND s.price_retail > 0,
+							s.price_retail,
+							(
+								SELECT
+								MAX(s2.price_retail)
+								FROM
+								oc_stocks s2	
+								WHERE
+								s2.product_id = p.product_id AND s2.price_retail > 0 AND s2.quantity > 0
+								GROUP BY
+								s2.product_id
+								)
+							)
+						WHERE is_onstock = 1"
 					);
 					
 					$this->db->query("UPDATE
-					oc_product p
-					LEFT JOIN oc_stocks s ON
-					p.product_id = s.product_id AND s.location_id =(
-					SELECT	
-					l.location_id
-					FROM
-					oc_location l
-					WHERE
-					l.default_price = 1
-					LIMIT 1
-					)
-					SET
-					p.price = IF(
-					s.quantity > 0 AND s.price > 0,
-					s.price,
-					(
-					SELECT
-					MAX(s2.price)
-					FROM
-					oc_stocks s2	
-					WHERE
-					s2.product_id = p.product_id AND s2.price > 0 AND s2.quantity > 0
-					GROUP BY
-					s2.product_id
-					)
-					)
-					WHERE is_onstock = 1		
-					"
+						oc_product p
+						LEFT JOIN oc_stocks s ON
+						p.product_id = s.product_id AND s.location_id =(
+							SELECT	
+							l.location_id
+							FROM
+							oc_location l
+							WHERE
+							l.default_price = 1
+							LIMIT 1
+							)
+						SET
+						p.price = IF(
+							s.quantity > 0 AND s.price > 0,
+							s.price,
+							(
+								SELECT
+								MAX(s2.price)
+								FROM
+								oc_stocks s2	
+								WHERE
+								s2.product_id = p.product_id AND s2.price > 0 AND s2.quantity > 0
+								GROUP BY
+								s2.product_id
+								)
+							)
+						WHERE is_onstock = 1"
 					);
 					
 					$this->db->query("UPDATE oc_product_option_value oopv LEFT JOIN oc_product p ON (p.product_id = oopv.product_id AND option_id = 2 AND option_value_id = 2) SET oopv.quantity = (p.quantity * p.count_of_parts), oopv.price = ROUND(p.price / p.count_of_parts, 2) WHERE oopv.product_id = p.product_id AND option_id = 2 AND option_value_id = 2");
@@ -740,6 +738,10 @@
 					s.product_id = p.product_id
 					AND location_id IN (SELECT location_id FROM oc_location WHERE temprorary_closed = 0)
 					GROUP BY s.product_id) WHERE p.is_preorder = 0");	
+
+					$this->db->query("UPDATE oc_product_option_value oopv LEFT JOIN oc_product p ON (p.product_id = oopv.product_id AND option_id = 2 AND option_value_id = 2) SET oopv.quantity = (p.quantity * p.count_of_parts), oopv.price = ROUND(p.price / p.count_of_parts, 2) WHERE oopv.product_id = p.product_id AND option_id = 2 AND option_value_id = 2");
+
+					$this->db->query("UPDATE oc_product p SET p.price_of_part = ROUND(p.price / p.count_of_parts, 2) WHERE p.count_of_parts > 0");
 
 					$this->model_setting_nodes->setNodeLastUpdateStatus($node['node_id'], 'NODE_EXCHANGE_SUCCESS');
 					$this->model_setting_nodes->setNodeLastUpdateStatusSuccess($node['node_id']);

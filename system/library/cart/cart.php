@@ -54,8 +54,7 @@
 				$data[] = (int)$product['product_id'];
 			}
 			
-			return $data;
-			
+			return $data;		
 		}
 		
 		public function destroyCurrentLocationID(){
@@ -282,8 +281,7 @@
 					
 					//PriceGroup Discounts
 					$has_pricegroup_discount = 0;
-					if (!$product_special_query->num_rows) {
-						
+					if (!$product_special_query->num_rows && $this->config->get('handling_status')) {						
 						$pricegroup_query = $this->db->query("SELECT pgtcg.plus, pgtcg.percent FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "price_group_to_customer_group pgtcg ON pgtcg.pricegroup_id = p.pricegroup_id WHERE p.product_id = '" . (int)$cart['product_id'] . "' AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' LIMIT 1");
 						
 						if ($pricegroup_query->num_rows){
