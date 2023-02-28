@@ -9,6 +9,7 @@
 		private $last_update 	= "";
 		private $full_update 	= false;
 		private $json_file 		= DIR_CATALOG . "../cron/data/stocks_test.json";
+		private $file 			= 'stocks.json';
 		private $exchange_data 	= "";
 		private $raw_data 		= "";
 		private $httpcode 		= "";
@@ -38,6 +39,10 @@
 
 		private function setMethod($method){
 			$this->method = $method;
+		}
+
+		private function setFile($file){
+			$this->file = $file;
 		}
 		
 		private function parseDate($date){						
@@ -254,7 +259,7 @@
 			echo '[i] END CURL DEBUG' . PHP_EOL;
 			echo PHP_EOL;
 			
-			file_put_contents(DIR_CATALOG . '/stocks.json', $data);
+			file_put_contents(DIR_CATALOG . '/' . $this->file, $data);
 			
 			$data = trim($data);
 			$bom = pack('H*','EFBBBF');
@@ -317,8 +322,7 @@
 			$this->setMethod('PUT');
 			if ($this->nodes){
 				
-				foreach ($this->nodes as $node){
-					//Ставим что все оке с нодой
+				foreach ($this->nodes as $node){					
 					$this->model_setting_nodes->setNodeLastUpdateStatusSuccess($node['node_id']);
 					
 					$this->address = $node['node_url'];
@@ -427,19 +431,16 @@
 						
 						if ($product_id = $this->findProduct($_stock['OuterSystemSkuRef'])){
 							
-							echo ">> Нашли товар " . $product_id . " - " . $_stock['OuterSystemSkuRef'] . PHP_EOL;	
+							echoLine("Нашли товар " . $product_id . " - " . $_stock['OuterSystemSkuRef'] , 's');	
 							
 							if ($location_id = $this->findLocation($_stock['StoreRef'])){
-								echo ">> Нашли аптеку " . $location_id . " - " . $_stock['StoreRef'] . PHP_EOL;	
-								
+								echoLine("Нашли аптеку " . $location_id . " - " . $_stock['StoreRef'] , 's');										
 								} else {
-								echo ">> Не нашли аптеку " . $_stock['StoreRef'] . PHP_EOL;								
+								echoLine("Не нашли аптеку " . $_stock['StoreRef'] , 'e');								
 							}
 							
 							} else {
-							
-							echo ">> Не нашли товар " . $_stock['OuterSystemSkuRef'] . PHP_EOL;	
-							
+							echoLine("Не нашли товар " . $_stock['OuterSystemSkuRef'] , 'e');														
 						}
 						
 						if ($product_id && $location_id){
@@ -451,22 +452,22 @@
 							if (!empty($_stock['PriceSait']) && (float)$_stock['PriceSait'] > 0){
 								$price = (float)$_stock['PriceSait'];
 								
-								echo '>> Найдена цена сайта ' . (float)$_stock['PriceSait'] . ', обычная цена ' . (float)$_stock['Price'] . ' устанавливаем!' . PHP_EOL;	
+								echoLine('Найдена цена сайта ' . (float)$_stock['PriceSait'] . ', обычная цена ' . (float)$_stock['Price'] . ' устанавливаем!', 'i');	
 							}
 
 							if (empty($this->ocfilter_location_mapping[$location_id])){
-								echo '>> Нету маппинга аптеки ' . $location_id . PHP_EOL;
+								echoLine('Нету маппинга аптеки ' . $location_id, 'e');
 							} else {
-								echo '>> Есть маппинг аптеки ' . $location_id . ' > ' . $this->ocfilter_location_mapping[$location_id] . PHP_EOL;
+								echoLine('Есть маппинг аптеки ' . $location_id . ' > ' . $this->ocfilter_location_mapping[$location_id], 's');								
 							}
 							
 							$data = array(
 							'product_id' 		=> $product_id,
 							'location_id' 		=> $location_id,
 							'quantity' 			=> ((int)$_stock['Counts'] - (int)$_stock['Reserve']),
-							'price' 			=> (float)$_stock['Price'],
+						//	'price' 			=> (float)$_stock['Price'],
 							'price_retail' 		=> (float)$_stock['Price'],
-						//	'price' 	=> $price,
+							'price' 			=> $price,
 							'price_of_part' 	=> 0,
 							'quantity_of_parts' => 0,
 							'count' 			=> (int)$_stock['Counts'],
@@ -474,7 +475,7 @@
 							'ocfilter_value_id' => !empty($this->ocfilter_location_mapping[$location_id])?(int)$this->ocfilter_location_mapping[$location_id]:0
 							);
 							
-							//                            echo 'product_id-'.$product_id.' location_id-'.$location_id. ' quantity-'.(int)$_stock['Counts'] - (int)$_stock['Reserve'].' price-'.(float)$_stock['Price'].' count-'.(int)$_stock['Counts'].' reserve-'.(int)$_stock['Reserve'];
+							//echo 'product_id-'.$product_id.' location_id-'.$location_id. ' quantity-'.(int)$_stock['Counts'] - (int)$_stock['Reserve'].' price-'.(float)$_stock['Price'].' count-'.(int)$_stock['Counts'].' reserve-'.(int)$_stock['Reserve'];
 							
                             $this->model_catalog_product->updateProductStocks($data);
 							
@@ -585,8 +586,7 @@
 					
 					$this->db->query("UPDATE oc_product_option_value oopv LEFT JOIN oc_product p ON (p.product_id = oopv.product_id AND option_id = 2 AND option_value_id = 2) SET oopv.quantity = (p.quantity * p.count_of_parts), oopv.price = ROUND(p.price / p.count_of_parts, 2) WHERE oopv.product_id = p.product_id AND option_id = 2 AND option_value_id = 2");
 					
-					$this->db->query("UPDATE oc_stocks os LEFT JOIN oc_product p ON (p.product_id = os.product_id) SET os.quantity_of_parts = (os.quantity * p.count_of_parts), os.price_of_part = ROUND(os.price / p.count_of_parts, 2)");
-					
+					$this->db->query("UPDATE oc_stocks os LEFT JOIN oc_product p ON (p.product_id = os.product_id) SET os.quantity_of_parts = (os.quantity * p.count_of_parts), os.price_of_part = ROUND(os.price / p.count_of_parts, 2)");					
 					$this->db->query("UPDATE oc_product p SET p.price_of_part = ROUND(p.price / p.count_of_parts, 2) WHERE p.count_of_parts > 0");
 					
 					$this->model_setting_nodes->setNodeLastUpdateStatus($node['node_id'], 'NODE_EXCHANGE_SUCCESS');
@@ -647,6 +647,7 @@
 					echo '[i] Начинаем синхронизацию с узлом ' . $node['node_name'] . PHP_EOL;
 					$this->model_setting_nodes->setNodeLastUpdateStatus($node['node_id'], 'NODE_EXCHANGE_START_PROCESS');
 
+					$this->setFile('preorder.json');
 					$json = $this->getJSON();
 									
 
