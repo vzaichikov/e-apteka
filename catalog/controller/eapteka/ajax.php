@@ -44,11 +44,18 @@
 
 			$this->load->language('product/product');
 
+
 			if (isset($this->request->get['x'])) {
 				$product_id = (int)$this->request->get['x'];
 			} else {
 				$product_id = 0;
 			}
+
+			$ajaxrequest = (!empty($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+			
+			if (!$ajaxrequest){
+				$this->response->redirect($this->url->link('product/product', 'product_id=' . $product_id), 301);	
+			}	
 
 			$results = $this->model_catalog_product->getProductStocks($product_id);
 			$multilang_fields = array(
@@ -301,8 +308,7 @@
 					}
 				}			
 			}
-		}
-		
+		}		
 
 		public function instruction() {
 			$this->load->language('product/product');
