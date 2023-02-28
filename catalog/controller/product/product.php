@@ -556,6 +556,12 @@
 					} else {
 					$data['special'] = false;
 				}
+
+				if ($data['special']){
+					$data['text_price_actual_only_from_site'] = sprintf($this->language->get('text_price_actual_only_from_site'), $data['special']);
+				} else {
+					$data['text_price_actual_only_from_site'] = sprintf($this->language->get('text_price_actual_only_from_site'), $data['price']);
+				}
 				
 				$multiflat = $this->config->get('multiflat')[0];
 				$main_category_id = $this->model_catalog_product->getMainCategory($this->request->get['product_id']);
