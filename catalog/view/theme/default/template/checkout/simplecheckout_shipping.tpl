@@ -137,6 +137,12 @@
 					<?php } ?>
 					<?php if ($quote['code'] == 'pickup.pickup') { ?>
 						<input id="shipping_location_id" type="hidden" value="<?php echo $shipping_location_id; ?>" />
+						<script>
+							if ($('input[name="shipping[location_id]"]:checked').length > 0){
+								console.log('Location id is set, resetting it');
+								$('#shipping_location_id').val($('input[name="shipping[location_id]"]:checked').val());
+							}
+						</script>
 					<?php } ?>
 				<?php } ?>
 			<?php } else { ?>
