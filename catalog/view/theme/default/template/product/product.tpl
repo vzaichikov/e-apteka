@@ -411,7 +411,7 @@
 									
 									<div class="product__info product-info">
 										<div class="product-info__col-content">
-											<?php if ( isset($special_date_end) ){ ?>
+											<?php if ( isset($special_date_end) && !empty($special) ){ ?>
 												<script>
 													function getTimeRemaining(endtime) {
 														var t = Date.parse(endtime) - Date.parse(new Date());
@@ -547,9 +547,15 @@
 															<?php foreach ($options as $option) { ?>
 																<?php foreach ($option['product_option_value'] as $option_value) { ?>
 																	<div class="product__order-wrap">
-																		<?php if ($option_value['price']) { ?>
+																		<?php if (!$option_value['special']) { ?>
 																			<div class="product__price-wrap">
 																				<span class="product__price"><?php echo $option_value['price']; ?></span>
+																				<?php if (mb_strlen($price) > 9) {?><style>.product__price{--price-font : 20px;} </style><?}?>
+																			</div>
+																		<?php } else { ?>
+																			<div class="product__price-wrap is-special">
+																				<span class="product__price"><?php echo $option_value['special']; ?></span>
+																				<span class="product__old-price"><?php echo $option_value['price']; ?></span>
 																			</div>
 																		<?php } ?>
 																		

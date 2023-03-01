@@ -89,12 +89,16 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 		</div>
 		<?php if($product['quantity'] > 0 && $product['price_of_part'] && $product['pov_part_id']) { ?>
 			<div>
-				<p class="price">	
-					<?php if ($product['price_of_part']) { ?>
-						<span><?php echo $product['price_of_part']; ?></span>
-					<?php } ?>
+				<div class="price">	
+					<?php if (!$product['price_of_part_special']) { ?>
+							<span><?php echo $product['price_of_part']; ?></span>
+						<?php } else { ?>
+							<div class="group_price">
+								<span class="price-new"><?php echo $product['price_of_part_special']; ?></span> <span class="price-old"><?php echo $product['price_of_part']; ?></span>
+							</div>							
+						<?php } ?>
 					<small><?php echo $product['text_part_pack']; ?></small>
-				</p>
+				</div>
 				<span id="option_<?php echo $product['product_id']; ?>" style="display:none;"><input type='hidden' name="option[<?php echo $product['pov_part_id']['product_option_id']; ?>]" value="<?php echo $product['pov_part_id']['product_option_value_id']; ?>" /></span>
 				<button class="bbtn bbtn-primary product-layout__btn-cart" type="button" onclick="cart.add('<?php echo $product['product_id']; ?>', 1, false, false);">
 					<svg width="20" height="20" viewBox="0 0 26 25" fill="none" xmlns="https://www.w3.org/2000/svg">
