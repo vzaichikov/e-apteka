@@ -5282,6 +5282,9 @@ h2.cat-header:before {
 #price_mob {
     display: none;
 }
+#boc_order #product-total-popup{
+    white-space: nowrap;
+}
 
 @media screen and (max-width: 456px) {
     .product__button-group .input-count{display: none;}
@@ -5309,6 +5312,15 @@ h2.cat-header:before {
         justify-content: center;
         box-shadow: 0 -1px 8px #223a4661;
     }*/
+    .product__order-wrap-main .product__price-wrap{
+        height: 35px;
+    }
+    .product__order-wrap-main .product__price {
+        font-size: 15px;
+    }
+    .product__order-wrap-main .product__old-price {
+        font-size: 11px;
+    }
     .product__order-wrap-main.not_options {
         justify-content: center;
     }

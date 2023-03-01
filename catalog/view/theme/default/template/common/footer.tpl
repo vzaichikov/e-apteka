@@ -394,21 +394,23 @@ $(document).ready(function() {
 				</div>
 				
 				<div class="col-sm-3">	
+					<div class="footer-info">
 					<div class="footer-info__title">
 						<?php echo $text_applications; ?>
 					</div>				
-					<div class="row">
-						
-						<div class="col-lg-8 col-md-8 col-xs-6" style="margin-bottom:10px;" id="footer_app_google_play">
-							<a href="https://play.google.com/store/apps/details?id=ua.com.eapteka.twa" target="_blank" noindex nofollow rel="nofollow" title="Google Play Store">
-								<img src="/catalog/view/image/store-play.svg" width="100%" />
-							</a>
-						</div>
+					<div class="footer-info__list">
+						<div class="row">
+							<div class="col-lg-8 col-md-8 col-xs-6" style="margin-bottom:10px;" id="footer_app_google_play">
+								<a href="https://play.google.com/store/apps/details?id=ua.com.eapteka.twa" target="_blank" noindex nofollow rel="nofollow" title="Google Play Store">
+									<img src="/catalog/view/image/store-play.svg" width="100%" />
+								</a>
+							</div>
 
-						<div class="col-lg-8 col-md-8 col-xs-6" id="footer_app_button" style="margin-bottom:10px; display: none; cursor: pointer;">
-							<img src="/catalog/view/image/pwa_ua.svg" width="100%" />
+							<div class="col-lg-8 col-md-8 col-xs-6" id="footer_app_button" style="margin-bottom:10px; display: none; cursor: pointer;">
+								<img src="/catalog/view/image/pwa_ua.svg" width="100%" />
+							</div>
 						</div>
-					</ul>
+					</div>
 				</div>
 			</div>
 
