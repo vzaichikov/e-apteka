@@ -315,7 +315,7 @@
 									if(item['price']){
 										html += '	<div class="media-right"><div class="box-price">';
 										if (item['special']) {
-											html += '<span class="price-old" style="text-decoration:line-through;">' + item['price'] + '</span><span class="price-new">' + item['special'] + '</span>';
+											html += '<span class="price price-new">' + item['special'] + '</span> <span class="price price-old" style="text-decoration:line-through;">' + item['price'] + '</span>';
 										} else {
 
 											if (item['count_of_parts'] && item['count_of_parts']!=1 && item['price_of_part']){
