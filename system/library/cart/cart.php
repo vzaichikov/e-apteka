@@ -246,25 +246,25 @@
 					$general_price = false;
 					
 					//Overload Location Price
-					if (isset($this->session->data['shipping_method']) && $this->session->data['shipping_method']['code'] == 'pickup.pickup' && ($cart['location_id'] || !empty($this->session->data['pickup_location_id']))){
+					// if (isset($this->session->data['shipping_method']) && $this->session->data['shipping_method']['code'] == 'pickup.pickup' && ($cart['location_id'] || !empty($this->session->data['pickup_location_id']))){
 						
-						$_location_id = $cart['location_id'];
-						if (!$_location_id){
-							$_location_id = $this->session->data['pickup_location_id'];
-						}
+					// 	$_location_id = $cart['location_id'];
+					// 	if (!$_location_id){
+					// 		$_location_id = $this->session->data['pickup_location_id'];
+					// 	}
 						
-						$product_location_price_query = $this->db->query("SELECT price, price_of_part, quantity FROM " . DB_PREFIX . "stocks WHERE product_id = '" . (int)$cart['product_id'] . "' AND location_id = '" . (int)$_location_id . "'");
+					// 	$product_location_price_query = $this->db->query("SELECT price, price_of_part, quantity FROM " . DB_PREFIX . "stocks WHERE product_id = '" . (int)$cart['product_id'] . "' AND location_id = '" . (int)$_location_id . "'");
 						
-						if (!empty($option_price)){
-							if ((float)$product_location_price_query->row['price_of_part'] > 0){
-								$price = $product_location_price_query->row['price_of_part'];							
-							}
-						} else {
-							if ((float)$product_location_price_query->row['price'] > 0){
-								$price = $product_location_price_query->row['price'];
-							}
-						}
-					}										
+					// 	if (!empty($option_price)){
+					// 		if ((float)$product_location_price_query->row['price_of_part'] > 0){
+					// 			$price = $product_location_price_query->row['price_of_part'];							
+					// 		}
+					// 	} else {
+					// 		if ((float)$product_location_price_query->row['price'] > 0){
+					// 			$price = $product_location_price_query->row['price'];
+					// 		}
+					// 	}
+					// }										
 					
 					
 					// Product Discounts
