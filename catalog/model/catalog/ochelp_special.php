@@ -24,7 +24,7 @@ class ModelCatalogOchelpSpecial extends Model {
 		}
 
 	public function getSpecials($data) {
-		$sql = "SELECT *, s.image as oneimage, s.banner as onebanner  FROM " . DB_PREFIX . "special s LEFT JOIN " . DB_PREFIX . "special_description sd ON (s.special_id = sd.special_id) LEFT JOIN " . DB_PREFIX . "special_to_store s2s ON (s.special_id = s2s.special_id) WHERE sd.language_id = '" . (int) $this->config->get('config_language_id') . "' AND s2s.store_id = '" . (int) $this->config->get('config_store_id') . "' AND s.status = '1' AND (date_end = '0000-00-00' OR date_end >= DATE(NOW()))";
+		$sql = "SELECT *, s.image as oneimage, s.banner as onebanner  FROM " . DB_PREFIX . "special s LEFT JOIN " . DB_PREFIX . "special_description sd ON (s.special_id = sd.special_id) LEFT JOIN " . DB_PREFIX . "special_to_store s2s ON (s.special_id = s2s.special_id) WHERE sd.language_id = '" . (int) $this->config->get('config_language_id') . "' AND s2s.store_id = '" . (int) $this->config->get('config_store_id') . "' AND s.status = '1' AND (date_end = '0000-00-00' OR date_end > DATE(NOW()))";
 		
 		if (!empty($data['exclude'])){
 			$sql .= " AND s.special_id <> '" . (int)$data['exclude'] . "'";
@@ -65,7 +65,7 @@ class ModelCatalogOchelpSpecial extends Model {
 	}
 	
 	public function getSpecialsArchive($data) {
-		$sql = "SELECT *, s.image as oneimage, s.banner as onebanner  FROM " . DB_PREFIX . "special s LEFT JOIN " . DB_PREFIX . "special_description sd ON (s.special_id = sd.special_id) LEFT JOIN " . DB_PREFIX . "special_to_store s2s ON (s.special_id = s2s.special_id) WHERE sd.language_id = '" . (int) $this->config->get('config_language_id') . "' AND s2s.store_id = '" . (int) $this->config->get('config_store_id') . "' AND s.status = '1' AND date_end < DATE(NOW())";
+		$sql = "SELECT *, s.image as oneimage, s.banner as onebanner  FROM " . DB_PREFIX . "special s LEFT JOIN " . DB_PREFIX . "special_description sd ON (s.special_id = sd.special_id) LEFT JOIN " . DB_PREFIX . "special_to_store s2s ON (s.special_id = s2s.special_id) WHERE sd.language_id = '" . (int) $this->config->get('config_language_id') . "' AND s2s.store_id = '" . (int) $this->config->get('config_store_id') . "' AND s.status = '1' AND date_end <= DATE(NOW())";
 
 		$sort_data = array(
 			'sd.title',
