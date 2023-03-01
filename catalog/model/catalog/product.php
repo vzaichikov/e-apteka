@@ -33,6 +33,12 @@
 					} else {
 					$special = false;
 				}
+
+				if ((float)$result['price_of_part_special']) {
+					$price_of_part_special = $this->currency->format($this->tax->calculate($result['price_of_part_special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+					} else {
+					$price_of_part_special = false;
+				}
 				
 				if ($this->config->get('config_tax')) {
 					$tax = $this->currency->format((float)$result['special'] ? $result['special'] : $result['price'], $this->session->data['currency']);
@@ -59,7 +65,8 @@
 				'quantity'    		=> $result['quantity'],
 				'count_of_parts' 	=> $result['count_of_parts'],
 				'pov_part_id' 		=> $result['pov_part_id'],
-				'price_of_part' 	=> $price_of_part,
+				'price_of_part' 			=> $price_of_part,
+				'price_of_part_special' 	=> $price_of_part_special,
 				'text_full_pack'    => sprintf($this->language->get('text_full_pack'), $result['count_of_parts']),
 				'text_part_pack'	=> $this->language->get('text_part_pack'),
 				'special'     		=> $special,
@@ -272,9 +279,11 @@
 				
 				} else {
 
-				$sql = "SELECT DISTINCT *, p.is_preorder, p.no_advert, no_payment, no_shipping, count_of_parts, price_of_part, pd.name AS name, p.image, (SELECT md.name FROM " . DB_PREFIX . "manufacturer_description md WHERE md.manufacturer_id = p.manufacturer_id AND md.language_id = '" . (int)$this->config->get('config_language_id') . "') AS manufacturer, (SELECT price FROM " . DB_PREFIX . "product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) AS discount,
+				$sql = "SELECT DISTINCT *, p.is_preorder, p.no_advert, p.no_payment, p.no_shipping, p.count_of_parts, p.price_of_part, pd.name AS name, p.image, (SELECT md.name FROM " . DB_PREFIX . "manufacturer_description md WHERE md.manufacturer_id = p.manufacturer_id AND md.language_id = '" . (int)$this->config->get('config_language_id') . "') AS manufacturer, (SELECT price FROM " . DB_PREFIX . "product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) AS discount,
 				
-				(SELECT IF(type = '%', (p.price - p.price/100*price), price) FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special,
+				(SELECT price FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special,
+
+				(SELECT type FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special_type,
 				
 				(SELECT date_end FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special_date_end,
 				
@@ -299,6 +308,37 @@
 				}
 				
 				$query = $this->db->query($sql);
+
+				$query->row['price'] 				= (float)$query->row['price'];
+				$query->row['price_retail'] 		= (float)$query->row['price_retail'];
+				$query->row['price_of_part'] 		= (float)$query->row['price_of_part'];
+				$query->row['price_of_part_retail'] = (float)$query->row['price_of_part_retail'];
+				$query->row['special'] 				= (float)$query->row['special'];
+
+				if ($query->num_rows){
+					$query->row['price_of_part_special'] = false;
+
+					if (!empty($query->row['special'])){
+						$query->row['price'] 			= $query->row['price_retail'];
+						$query->row['price_of_part'] 	= $query->row['price_of_part_retail'];
+					}									
+
+					if (!empty($query->row['special']) && $query->row['special_type'] == '%'){
+						if ($query->row['count_of_parts']){
+							$query->row['price_of_part_special'] 	= $query->row['price_of_part'] - (($query->row['price_of_part']/100)*$query->row['special']);
+						}
+
+						$query->row['special'] 					= $query->row['price'] - (($query->row['price']/100)*$query->row['special']);
+					} elseif (!empty($query->row['special']) && $query->row['special_type'] == '=') {
+						if ($query->row['count_of_parts']){
+							$query->row['price_of_part_special'] = round($query->row['special']/$query->row['count_of_parts'], 2);
+						}
+					}
+
+					if ($query->row['special'] >= $query->row['price']){
+						$query->row['special'] = 0;
+					}
+				}
 				
 				if ($query->num_rows){
 					if (!$query->row['is_onstock']){
@@ -321,8 +361,7 @@
 					
 					//Если у нас уже есть скидка, то мы не считаем эту вот самую
 					if (!$query->row['special']) {
-						if ($query->row['pricegroup_id']){
-							
+						if ($query->row['pricegroup_id']){							
 							$pricegroup_discount = $this->getPriceGroupDiscountForCustomerGroup($query->row['pricegroup_id']);
 							
 							if ($pricegroup_discount && is_array($pricegroup_discount) && $pricegroup_discount['percent']){
@@ -331,27 +370,21 @@
 								$has_pricegroup_discount = true;
 								
 								if ($pricegroup_discount['plus']){
-									$query->row['price'] = $query->row['price'] + ($query->row['price'] / 100 * $pricegroup_discount['percent'] );
-									$query->row['price_of_part'] = $query->row['price_of_part'] + ($query->row['price_of_part'] / 100 * $pricegroup_discount['percent'] );
+									$query->row['price'] 			= $query->row['price'] + ($query->row['price'] / 100 * $pricegroup_discount['percent'] );
+									$query->row['price_of_part'] 	= $query->row['price_of_part'] + ($query->row['price_of_part'] / 100 * $pricegroup_discount['percent'] );
 									} else {
-									$query->row['price'] = $query->row['price'] - ($query->row['price'] / 100 * $pricegroup_discount['percent'] );
-									$query->row['price_of_part'] = $query->row['price_of_part'] - ($query->row['price_of_part'] / 100 * $pricegroup_discount['percent'] );
+									$query->row['price'] 			= $query->row['price'] - ($query->row['price'] / 100 * $pricegroup_discount['percent'] );
+									$query->row['price_of_part'] 	= $query->row['price_of_part'] - ($query->row['price_of_part'] / 100 * $pricegroup_discount['percent'] );
 								}
-							}
-							
+							}						
 						}
 					}
-				}
+				}				
 				
-				
-				if ($query->num_rows) {
-					
-					$seo = $this->cache->get('product.seo.' . $query->row['product_id'] . (int)$this->config->get('config_language_id'));
-					
-					if(!$seo){
-						
-						$this->load->model("tool/image");
-																		
+				if ($query->num_rows) {					
+					$seo = $this->cache->get('product.seo.' . $query->row['product_id'] . (int)$this->config->get('config_language_id'));					
+					if(!$seo){						
+						$this->load->model("tool/image");																		
 						$ratingCount = $query->row['reviews'];
 						
 						if ($query->row['image']) {
@@ -604,7 +637,10 @@
 					'name_of_part'     => $query->row['name_of_part'],
 					'pov_part_id'	   => $this->getProductFastPartOption($query->row['product_id']),
                     'price'            => ($query->row['discount'] ? $query->row['discount'] : $query->row['price']),
-					'price_of_part'    => $query->row['price_of_part'],
+					'price_of_part'    		=> $query->row['price_of_part'],
+					'price_of_part_special' => $query->row['price_of_part_special'],
+					'price_retail'     		=> $query->row['price_retail'],
+					'price_of_part_retail' 	=> $query->row['price_of_part_retail'],
                     'general_price'    => $general_price,
                     'has_pricegroup_discount' => $has_pricegroup_discount,
                     'special'          => $query->row['special'],
@@ -642,14 +678,13 @@
 			
 			}
 			
-			public function getProductUUID($product_id) {
+		public function getProductUUID($product_id) {
 			$query = $this->db->query("SELECT uuid FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "'");
 			
 			return $query->row['uuid'];
 		}
 		
 		public function setIndexes(){
-			
 		}
 		
 		public function getProducts($data = array(), $prevnext = false, $product_ids = array()) {		
@@ -926,8 +961,7 @@
 		public function getProductSpecials($data = array()) {
 			$sql = "SELECT DISTINCT ps.product_id, ps.date_end, p.price,
 			(SELECT AVG(rating) AS total FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = ps.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating ";
-			
-			
+						
 			if (!empty($data['filter_category_id'])) {
 				$sql .= " FROM " . DB_PREFIX . "product_to_category p2c			
 				LEFT JOIN " . DB_PREFIX . "product_special ps ON (p2c.product_id = ps.product_id)
@@ -1014,9 +1048,7 @@
 				$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
 				$product_data[$result['product_id']]['date_end'] = $result['date_end'];
 			}
-			
-			
-			
+									
 			return $product_data;
 		}
 		
@@ -1061,8 +1093,7 @@
 				'quantity' 	 => $query_total->row['total'],
 				'drugstores' => $query_drugstores->row['total'],
 			];
-		}
-		
+		}		
 		
 		public function getProductStocks($product_id, $cached = false, $in_stock = false){
 			$sql = "SELECT s.*, ld.*, l.gmaps_link, l.information_id, p.tax_class_id, p.is_preorder, p.is_pko FROM " . DB_PREFIX . "stocks s
@@ -1142,8 +1173,6 @@
 			$query = $this->db->ncquery($sql);
 			
 			return $query->rows;
-
-
 		}
 		
 		public function getSupplementalFeedProducts(){
@@ -1153,8 +1182,7 @@
 			
 			$query = $this->db->ncquery($sql);
 			
-			return $query->rows;
-			
+			return $query->rows;		
 		}
 
 		public function getJustProductAttributeValues($product_id, $attribute_ids = []) {
@@ -1221,12 +1249,9 @@
 				$product_option_value_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option_value pov LEFT JOIN " . DB_PREFIX . "option_value ov ON (pov.option_value_id = ov.option_value_id) LEFT JOIN " . DB_PREFIX . "option_value_description ovd ON (ov.option_value_id = ovd.option_value_id) WHERE pov.product_id = '" . (int)$product_id . "' AND pov.product_option_id = '" . (int)$product_option['product_option_id'] . "' AND ovd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY ov.sort_order");
 				
 				
-				foreach ($product_option_value_query->rows as $product_option_value) {
-					
+				foreach ($product_option_value_query->rows as $product_option_value) {					
 					$general_price = false;
 					$has_pricegroup_discount = false;
-					
-					//Если у нас уже есть скидка, то мы не считаем эту вот самую
 					if (!$product['special']){
 						if ($product['pricegroup_id']){
 							$pricegroup_discount = $this->getPriceGroupDiscountForCustomerGroup($product['pricegroup_id']);
@@ -1240,9 +1265,14 @@
 									} else {
 									$product_option_value['price'] = $product_option_value['price'] - ($product_option_value['price'] / 100 * $pricegroup_discount['percent'] );
 								}
-							}
-							
+							}							
 						}
+					}
+
+					$option_special = false;
+					if (!empty($product['special'])){					
+						$option_special =  round($product['special'] / $product['count_of_parts'], 2);
+						$product_option_value['price'] = $product_option_value['price_retail'];
 					}
 					
 					$product_option_value_data[] = array(
@@ -1253,6 +1283,8 @@
                     'quantity'                => $product_option_value['quantity'],
                     'subtract'                => $product_option_value['subtract'],
                     'price'                   => $product_option_value['price'],
+                    'special'                 => $option_special,
+                    'price_retail'            => $product_option_value['price_retail'],
                     'price_prefix'            => $product_option_value['price_prefix'],
                     'weight'                  => $product_option_value['weight'],
                     'weight_prefix'           => $product_option_value['weight_prefix']
