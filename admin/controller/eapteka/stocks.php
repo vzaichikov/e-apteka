@@ -443,15 +443,13 @@
 							echoLine("Не нашли товар " . $_stock['OuterSystemSkuRef'] , 'e');														
 						}
 						
-						if ($product_id && $location_id){
-							
+						if ($product_id && $location_id){														
 							$quantity = ((int)$_stock['Counts'] - (int)$_stock['Reserve']);
 							if ($quantity < 0){ $quantity = 0; }
 							
 							$price = (float)$_stock['Price'];
 							if (!empty($_stock['PriceSait']) && (float)$_stock['PriceSait'] > 0){
-								$price = (float)$_stock['PriceSait'];
-								
+								$price = (float)$_stock['PriceSait'];								
 								echoLine('Найдена цена сайта ' . (float)$_stock['PriceSait'] . ', обычная цена ' . (float)$_stock['Price'] . ' устанавливаем!', 'i');	
 							}
 
@@ -469,6 +467,7 @@
 							'price_retail' 		=> (float)$_stock['Price'],
 							'price' 			=> $price,
 							'price_of_part' 	=> 0,
+							'price_of_part_retail' => 0,
 							'quantity_of_parts' => 0,
 							'count' 			=> (int)$_stock['Counts'],
 							'reserve' 			=> (int)$_stock['Reserve'],
@@ -583,9 +582,14 @@
 					);
 					
 					$this->db->query("UPDATE oc_product_option_value oopv LEFT JOIN oc_product p ON (p.product_id = oopv.product_id AND option_id = 2 AND option_value_id = 2) SET oopv.quantity = (p.quantity * p.count_of_parts), oopv.price = ROUND(p.price / p.count_of_parts, 2) WHERE oopv.product_id = p.product_id AND option_id = 2 AND option_value_id = 2");
+
+					$this->db->query("UPDATE oc_product_option_value oopv LEFT JOIN oc_product p ON (p.product_id = oopv.product_id AND option_id = 2 AND option_value_id = 2) SET oopv.quantity = (p.quantity * p.count_of_parts), oopv.price_retail = ROUND(p.price_retail / p.count_of_parts, 2) WHERE oopv.product_id = p.product_id AND option_id = 2 AND option_value_id = 2");
 					
 					$this->db->query("UPDATE oc_stocks os LEFT JOIN oc_product p ON (p.product_id = os.product_id) SET os.quantity_of_parts = (os.quantity * p.count_of_parts), os.price_of_part = ROUND(os.price / p.count_of_parts, 2)");					
 					$this->db->query("UPDATE oc_product p SET p.price_of_part = ROUND(p.price / p.count_of_parts, 2) WHERE p.count_of_parts > 0");
+
+					$this->db->query("UPDATE oc_stocks os LEFT JOIN oc_product p ON (p.product_id = os.product_id) SET os.quantity_of_parts = (os.quantity * p.count_of_parts), os.price_of_part_retail = ROUND(os.price_retail / p.count_of_parts, 2)");
+					$this->db->query("UPDATE oc_product p SET p.price_of_part_retail = ROUND(p.price_retail / p.count_of_parts, 2) WHERE p.count_of_parts > 0");
 					
 					$this->model_setting_nodes->setNodeLastUpdateStatus($node['node_id'], 'NODE_EXCHANGE_SUCCESS');
 					$this->model_setting_nodes->setNodeLastUpdateStatusSuccess($node['node_id']);
