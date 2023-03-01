@@ -54,8 +54,7 @@
 				
 			}
 			
-			return $_data['specials'];
-			
+			return $_data['specials'];			
 		}
 		
 		public function index() {
