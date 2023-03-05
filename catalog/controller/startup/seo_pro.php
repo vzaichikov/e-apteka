@@ -162,6 +162,14 @@
 					if (strpos($ampRoute, "amp/") !== FALSE ) {
 						$this->request->get['route'] = 'product/amp_product';						
 					}
+
+					if (isset($this->request->get['product-display']) && $this->request->get['product-display'] == 'analog'){
+						$this->request->get['route'] = 'product/product/analog';									
+					}
+
+					if (isset($this->request->get['product-display']) && $this->request->get['product-display'] == 'instruction'){
+						$this->request->get['route'] = 'product/product/instruction';									
+					}
 					
 					if (!isset($this->request->get['path'])) {
 						$path = $this->getPathByProduct($this->request->get['product_id']);
@@ -268,13 +276,35 @@
 					if (isset($tmp['hello'])) {
 						$data['hello'] = $tmp['hello'];
 					}
+					if (isset($tmp['product-display'])) {
+						$data['product-display'] = $tmp['product-display'];
+					}
 					if (isset($tmp['search'])) {
 						$data['search'] = $tmp['search'];
 					}
 					if (isset($tmp['gclid'])) {
 						$data['gclid'] = $tmp['gclid'];
-					}
-					
+					}					
+				}
+				break;
+
+				case 'product/product/analog':
+				$data['product-display'] = 'analog';
+				if ($this->config->get('config_seo_url_include_path')) {
+					$data['path'] = $this->getPathByProduct($tmp['product_id']);
+					if (!$data['path']) return $link;
+				} else {
+					unset($data['path']);
+				}
+				break;
+
+				case 'product/product/instruction':
+				$data['product-display'] = 'instruction';
+				if ($this->config->get('config_seo_url_include_path')) {
+					$data['path'] = $this->getPathByProduct($tmp['product_id']);
+					if (!$data['path']) return $link;
+				} else {
+					unset($data['path']);
 				}
 				break;
 				
@@ -352,8 +382,7 @@
 						break;
 						
 						case 'newsblog_article_id':
-						case 'newsblog_category_id':
-						case 'product_id':												
+						case 'newsblog_category_id':															
 						case 'category_id':
 						case 'information_id':
 						case 'order_id':
@@ -361,9 +390,19 @@
 						unset($data[$key]);
 						$postfix = 1;
 						break;
+
+						case 'product_id':	
+						$queries[] = $key . '=' . $value;
+						if (isset($data['product-display'])){
+							$queries[] = 'product-display' . '=' . $data['product-display'];	
+							unset($data['product-display']);
+						}
+						unset($data[$key]);
+						$postfix = 1;
+						break;		
 						
 						case 'manufacturer_id':
-						$queries[] = 'product/manufacturer';
+						$queries[] = 'product/manufacturer';						
 						$queries[] = $key . '=' . $value;
 						unset($data[$key]);						
 						break;
