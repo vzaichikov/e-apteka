@@ -50,7 +50,15 @@
 					$rating = (int)$result['rating'];
 					} else {
 					$rating = false;
-				}									
+				}						
+
+				$href 				= $this->url->link('product/product', 'product_id=' . $result['product_id']);
+				$href_analog 		= $this->url->link('product/product', 'product_id=' . $result['product_id'] . '&product-display=analog');
+				$href_instruction 	= $this->url->link('product/product', 'product_id=' . $result['product_id'] . '&product-display=instruction');	
+
+				if ($result['has_analogues']){
+					$href = $href_analog;
+				}					
 				
 				$return[$result['product_id']] = array(
 				'product_id'  		=> $result['product_id'],
@@ -78,9 +86,12 @@
 				'no_payment'  		=> $result['no_payment'],
 				'is_receipt'  		=> $result['is_receipt'],
 				'is_thermolabel'  	=> $result['is_thermolabel'],
+				'has_analogues'		=> $result['has_analogues'],
 				'product_xdstickers' => $result['product_xdstickers'],
 				'minimum'     		=> $result['minimum'] > 0 ? $result['minimum'] : 1,
-				'href'        		=> $this->url->link('product/product', 'product_id=' . $result['product_id'])
+				'href'        		=> $href,
+				'href_analog'		=> $href_analog,
+				'href_instruction'	=> $href_instruction,
 				);
 			}
 			return $return;
@@ -587,6 +598,14 @@
 					if ($query->row['stocks'] > 0){
 						$query->row['is_preorder'] = 0;
 					}
+
+					$has_analogues = 0;
+					if (!$query->row['quantity'] && $query->row['reg_atx_1']){
+						$same_results 	= $this->getProductSame($product_id, ['product_id' => $product_id, 'reg_atx_1' => $query->row['reg_atx_1']], 20, true);
+						$analog_results = $this->getProductAnalog($product_id, ['product_id' => $product_id, 'reg_atx_1' => $query->row['reg_atx_1']], array_keys($same_results), 20, true);						
+
+						$has_analogues = (count($same_results) + count($analog_results));
+					}	
 					
 					
 					$return = array(
@@ -611,6 +630,7 @@
 					'no_advert'        => $query->row['no_advert'],
 					'is_pko'        	=> $query->row['is_pko'],
 					'is_drug'        	=> $query->row['is_drug'],
+					'has_analogues'		=> $has_analogues,
                     'meta_title'       => removequotes($query->row['meta_title']),
                     'meta_description' => removequotes($query->row['meta_description']),
                     'meta_keyword'     => removequotes($query->row['meta_keyword']),
@@ -1440,10 +1460,9 @@
 			return $product_data;
 		}
 		
-		public function getProductAnalog($product_id, $product_info = [], $same = []) {
+		public function getProductAnalog($product_id, $product_info = [], $same = [], $limit = 20, $count = false) {
 			$product_data = array();
 			
-			//This is set by hands
 			$sql = "SELECT * FROM " . DB_PREFIX . "product_analog pr LEFT JOIN " . DB_PREFIX . "product p ON (pr.analog_id = p.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.quantity > 0 AND p.date_available <= NOW() ORDER BY (p.quantity > 0) DESC, p.price DESC";
 			
 			$query = $this->db->query($sql);
@@ -1460,7 +1479,7 @@
 					AND p.product_id <> '" . (int)$product_id . "'
 					AND p.date_available <= NOW() 
 					AND p.quantity > 0				
-					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT 20";
+					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT ". (int)$limit;
 				} else {
 					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
 					p.reg_atx_1 LIKE '" . $this->db->escape(mb_substr($product_info['reg_atx_1'], 0, 5)) . "%' 
@@ -1468,14 +1487,18 @@
 					AND p.product_id <> '" . (int)$product_id . "'
 					AND p.date_available <= NOW() 
 					AND p.quantity > 0				
-					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT 20";
+					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT " . (int)$limit;
 				}
 
 				$query = $this->db->query($sql);
 
 				foreach ($query->rows as $result) {
 					if (empty($product_data[$result['product_id']]) && !in_array($result['product_id'], $same)){
-						$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
+						if (!$count){
+							$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
+						} else {
+							$product_data[$result['product_id']] = $result['product_id'];
+						}						
 					}
 				}
 			}
@@ -1483,7 +1506,7 @@
 			return $product_data;
 		}
 		
-		public function getProductSame($product_id, $product_info = []) {
+		public function getProductSame($product_id, $product_info = [], $limit = 20, $count = false) {
 			$product_data = array();
 			
 			//This is set by hands
@@ -1501,7 +1524,6 @@
 				$product_data[$result['same_id']] = $this->getProduct($result['same_id']);
 			}
 
-			//This is a full analog
 			if (!empty($product_info['reg_atx_1'])){
 				if (mb_strlen($product_info['reg_atx_1']) == 7){
 					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
@@ -1510,7 +1532,7 @@
 					AND p.product_id <> '" . (int)$product_id . "'
 					AND p.date_available <= NOW() 
 					AND p.quantity > 0				
-					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT 20";						
+					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT " . (int)$limit;						
 				} elseif (mb_strlen($product_info['reg_atx_1']) < 7 && $product_info['reg_unpatented_name'] && $product_info['reg_unpatented_name'] <> 'Comb drug'){
 					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
 					p.reg_unpatented_name = '" . $this->db->escape($product_info['reg_unpatented_name']) . "' 
@@ -1518,15 +1540,19 @@
 					AND p.product_id <> '" . (int)$product_id . "'
 					AND p.date_available <= NOW() 	
 					AND p.quantity > 0				
-					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT 20";					
+					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT " . (int)$limit;					
 				}
 
 
 				$query = $this->db->query($sql);
 
 				foreach ($query->rows as $result) {
-					if (empty($product_data[$result['product_id']])){
-						$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
+					if (empty($product_data[$result['product_id']]) && !in_array($result['product_id'], $same)){
+						if (!$count){
+							$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
+						} else {
+							$product_data[$result['product_id']] = $result['product_id'];
+						}						
 					}
 				}
 			}
