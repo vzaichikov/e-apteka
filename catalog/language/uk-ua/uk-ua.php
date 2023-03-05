@@ -111,6 +111,8 @@ $_['zero_price_order']				= 'Під замовлення';
 $_['text_yourprice']               = 'Ваша ціна';
 $_['text_genprice']            	   = 'Звичайна ціна';
 $_['text_not_in_stock']            = 'Немає в наявності';
+$_['text_is_analog']            	= 'Є аналог:';
+$_['text_has_analogs']            	= 'Є аналоги, ';
 $_['text_in_stock']            		= 'В наявності';
 
 $_['text_product_no_shipping']     = 'Цей товар можна отримати тільки при самовивозі';

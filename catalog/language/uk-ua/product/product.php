@@ -142,5 +142,5 @@
 			</ul>';
 
 	$_['delivery_text_payment_receipt'] = '<ul class="list-unstyled product-delivery-info__ul">
-				<li><b>Оплата при оформленні замовлення через систему iPay</b></li>
+				<li><b>Готівкою, або карткою при отриманні</b></li>
 			</ul>';

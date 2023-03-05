@@ -114,6 +114,9 @@
 	$_['text_yourprice']               = 'Ваша цена';
 	$_['text_genprice']            	   = 'Обычная цена';
 	$_['text_not_in_stock']            = 'Нет в наличии';
+	$_['text_has_analogs']            	= 'Есть аналоги, ';
+	$_['text_is_analog']            	= 'Есть аналог:';
+
 	$_['text_in_stock']            		= 'В наличии';
 	$_['text_product_no_shipping']     = 'Этот товар можно получить только при самовывозе';
 	$_['text_product_no_payment']      = 'Этот товар можно оплатить только при получении';	
