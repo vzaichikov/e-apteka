@@ -306,7 +306,10 @@
 			return $location_id;
 		}
 		
-		public function updateStocksFull(){			
+		public function updateStocksFull(){		
+			$this->load->library('hobotix/ElasticSearch');
+			$this->elasticSearch = new hobotix\ElasticSearch($this->registry);
+
 			$this->full_update = true;			
 			$this->updateStocks();
 			$this->updatePreorder();		
@@ -477,6 +480,8 @@
 							//echo 'product_id-'.$product_id.' location_id-'.$location_id. ' quantity-'.(int)$_stock['Counts'] - (int)$_stock['Reserve'].' price-'.(float)$_stock['Price'].' count-'.(int)$_stock['Counts'].' reserve-'.(int)$_stock['Reserve'];
 							
                             $this->model_catalog_product->updateProductStocks($data);
+
+                    //        $this->elasticSearch->reindexproduct($product_id);
 							
 						}												
 					}
@@ -502,8 +507,7 @@
 					
 					//Уведомление о косяках				
 					$query = $this->db->query("SELECT p.*, pd.name FROM `oc_product` p LEFT JOIN `oc_product_description` pd ON (pd.product_id = p.product_id AND language_id = 2) WHERE quantity > 0 AND price <= 0");
-					
-					
+										
 					if ($query->num_rows){
 						$this->load->library('hobotix/TelegramSender');
 						$telegramSender = new hobotix\TelegramSender;
@@ -616,12 +620,6 @@
 				}
 
 				$this->db->query("INSERT IGNORE INTO oc_ocfilter_option_value_to_product (product_id, option_id, value_id, slide_value_min, slide_value_max) SELECT product_id, '" . (int)$this->ocfilter_option_id . "', ocfilter_value_id, 0, 0 FROM oc_stocks WHERE quantity > 0 AND ocfilter_value_id > 0");
-
-
-				
-				//	$this->cache->flush();
-				
-				//end ifnodes
 				} else {
 				
 				echo '[i] Не найдено узлов для синхронизации каталога' . PHP_EOL;
@@ -630,9 +628,6 @@
 		}
 		
 		public function updatePreorder(){
-
-			$this->load->library('hobotix/ElasticSearch');
-			$this->elasticSearch = new hobotix\ElasticSearch($this->registry);
 
 			$this->initPreorderNodes();
 			$this->setMethod('GET');
@@ -726,15 +721,15 @@
 						//Проверяем, есть ли товар на остатках
 						$stocks = $this->db->query("SELECT SUM(quantity) as stocks FROM " . DB_PREFIX . "stocks s WHERE s.product_id = '" . (int)$product_id . "'")->row['stocks'];
 
-						if ($product_id && !empty($preorder['PRICE']) && (int)$stocks == 0){
+						if ($product_id && !empty($preorder['PRICE']) && (float)$preorder['PRICE'] > 0 && (int)$stocks == 0){
 							$this->db->query("UPDATE oc_product SET is_preorder = 1, quantity = 10, price = '" . (float)$preorder['PRICE'] . "' WHERE product_id = '" . (int)$product_id . "'");					
-						} elseif ($product_id && (int)$stocks == 0){
+						} elseif ($product_id && (empty($preorder['PRICE']) || (float)$preorder['PRICE'] == 0) && (int)$stocks == 0){
 							$this->db->query("UPDATE oc_product SET is_preorder = 0, quantity = 0, price = '0' WHERE product_id = '" . (int)$product_id . "'");
 						} else {
 							//?
 						}
 
-						$this->elasticSearch->reindexproduct($product_id);
+					//	$this->elasticSearch->reindexproduct($product_id);
 					}
 
 					$this->db->query("UPDATE oc_product p SET quantity = 
