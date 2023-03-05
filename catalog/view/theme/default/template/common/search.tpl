@@ -306,13 +306,17 @@
 									html += '<li class="media" title="' + item['name'] + '" onClick="window.location.href='+'\''+ item['href'] +'\''+'">';					
 
 									html += '<div class="media-body">';
-									html += '<a href="' + item['href'] + '"><span>' + item['name'] + '</span></a>';
+									if(parseInt(item['stock']) > 0 && item['price']){
+										html += '<a href="' + item['href'] + '"><span>' + item['name'] + '</span></a>';
+									} else {
+										html += '<a href="' + item['href'] + '" style="color:grey;"><span>' + item['name'] + '</span></a>';
+									}
 									if (item['tip']){
 										html += '<br />';
 										html += '<span class="label label-success">' + item['tip'] + '</span>';
 									}
 									html += '</div>';
-									if(item['price']){
+									if(parseInt(item['stock']) > 0 && item['price']){
 										html += '	<div class="media-right"><div class="box-price">';
 										if (item['special']) {
 											html += '<span class="price price-new">' + item['special'] + '</span> <span class="price price-old" style="text-decoration:line-through;">' + item['price'] + '</span>';
@@ -327,8 +331,38 @@
 											}
 										}							
 										html += '	</div></div>';
+									} else {
+										html += '	<div class="media-right"><div class="box-price" style="color:grey;">';
+										html += '<?php echo $text_not_in_stock; ?>';
+										html += '	</div></div>';										
 									}
 									html += '</li>';
+
+									if (item['analog']){
+										$.each(item['analog'], function(k, analog){
+												html += '<li class="media" title="' + analog['name'] + '" onClick="window.location.href='+'\''+ analog['href'] +'\''+'">';	
+												html += '<div class="media-body text-success">';
+												html += '<a href="' + analog['href'] + '" class="text-success">✔️ <?php echo $text_is_analog; ?> <b>' + analog['name'] + '</b></a>';
+												html += '</div>';
+
+												html += '	<div class="media-right"><div class="box-price">';
+												if (item['special']) {
+														html += '<span class="price price-new text-success">' + analog['special'] + '</span> <span class="price price-old" style="text-decoration:line-through;">' + item['price'] + '</span>';
+													} else {
+
+													if (item['count_of_parts'] && analog['count_of_parts']!=1 && analog['price_of_part']){
+														html += '<span class="price price-full"><i>'+ analog['text_full_pack'] + '</i>'+ analog['price'] +'</span>';
+														html += '<span class="price price-part"><i>' + analog['text_part_pack'] + '</i>'+ analog['price_of_part'] +'</span>';
+													} else {
+														html += '<span class="price" style="color:#3c763d!important;">'+analog['price']+'</span>';
+													}
+												}							
+												html += '	</div></div>';
+												html += '</li>';			
+										});
+									}
+
+
 									html += '<li class="clearfix"></li>';
 								});
 							}

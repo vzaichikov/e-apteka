@@ -12,8 +12,8 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 			</div>
 		<?php } ?>
 		
-		<a href="<?php echo $product['href']; ?>" title="<?php echo $product['name']; ?>" >
-			<img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" width="200" height="200" class="img-responsive swiper-lazy" loading="lazy">
+		<a href="<?php echo $product['href']; ?>" title="<?php echo strip_tags($product['name']); ?>" >
+			<img src="<?php echo $product['thumb']; ?>" alt="<?php echo strip_tags($product['name']); ?>" title="<?php echo strip_tags($product['name']); ?>" width="200" height="200" class="img-responsive swiper-lazy" loading="lazy">
 		</a>
 		<?php if ($is_mobile) { ?>
 			<?php if ($product['rating']) { ?>
@@ -45,7 +45,7 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 			<?php } ?>
 		<?php } ?>
 		<div class="product-layout__name__wrap">
-			<h4 class="product-layout__name"><a href="<?php echo $product['href']; ?>" title="<?php echo $product['name']; ?>"><?php echo $product['name']; ?></a></h4>
+			<h4 class="product-layout__name"><a href="<?php echo $product['href']; ?>" title="<?php echo strip_tags($product['name']); ?>"><?php echo $product['name']; ?></a></h4>
 			<?php if ($product['manufacturer']) { ?>
 				<small class='product-layout__name__manufacturer text-muted'><?php echo $product['manufacturer']; ?></small>
 			<?php } ?>
@@ -76,7 +76,13 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 
 				<?php } ?>
 				<?php } else { ?>
-				<p class="price price-not-in-stock"><?php echo $text_not_in_stock; ?></p>
+			
+				<?php if ($product['has_analogues']) { ?>
+					<div class="price price-has-analogues" onclick="window.location.href='<?php echo $product['href']; ?>'"><?php echo $text_has_analogs; ?> <?php echo $product['has_analogues']; ?> шт.</div>
+				<?php } else { ?>
+					<div class="price price-not-in-stock"><?php echo $text_not_in_stock; ?></div>
+				<?php } ?>
+
 			<?php } ?>
 			<?php if($product['quantity'] > 0) { ?>
 				<button class="bbtn bbtn-primary product-layout__btn-cart" type="button" onclick="cart.add('<?php echo $product['product_id']; ?>', 1, false, true);">

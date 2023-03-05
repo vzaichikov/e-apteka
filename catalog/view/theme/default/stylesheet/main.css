@@ -9217,12 +9217,13 @@ label.el-checkbox {
     border-radius: 20px;
 }
 
-.product-item.product-item-not-in-stock {
+.product-item .price_group .price.price-not-in-stock {
     color: #7d7d7d;
 }
 
-.product-item.product-item-not-in-stock .price_group .price{
-     color: #7d7d7d;
+.product-item .price_group .price.price-has-analogues {
+    border-bottom: 1px dashed #0385c1;
+    cursor: pointer;
 }
 
 .product-item.product-item-not-in-stock .product-layout__image img{

@@ -226,12 +226,12 @@
 				<div class="js-dragscroll-wrap2">
 					<ul class="nav nav-pills js-dragscroll2">
 						
-						<li class="active">
-							<a href="#tab-about-prod" data-toggle="tab"><?php echo $text_all_about_product; ?>
-								<!-- <svg class="product-tabs__nav-icon">
-									<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#edit"></use>
-								</svg> -->
-							</a>
+						<li <?php if ($selected_tab == 'tab-about-prod') { ?>class="active"<?php } ?>>
+							<?php if ($selected_tab != 'tab-about-prod') { ?>
+								<a href="<?php echo $main_tab_href; ?>"><?php echo $text_all_about_product; ?></a>
+							<?php } else { ?>
+								<a href="#tab-about-prod" data-toggle="tab"><?php echo $text_all_about_product; ?></a>
+							<?php } ?>
 						</li>
 
 						<?php if ( $is_mobile && isset($description) && !empty(trim(strip_tags($description)))) { ?>
@@ -275,8 +275,8 @@
 						<?php } ?>
 						
 						<?php if ( !empty($analogs) || !empty($same) ) { ?>
-							<li>
-								<a href="#tab-analog" data-toggle="tab"><?php echo $tab_analogs;?>
+							<li <?php if ($selected_tab == 'tab-analog') { ?>class="active"<?php } ?>>
+								<a href="<?php echo $analog_tab_href; ?>" data-href="<?php echo $analog_tab_href; ?>"><?php echo $tab_analogs;?>
 									<!-- <svg class="product-tabs__nav-icon">
 										<use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#plus"></use>
 									</svg> -->
@@ -316,7 +316,7 @@
 					</ul>
 				</div>
 				<div class="tab-content" id="product">
-					<div class="tab-pane active" id="tab-about-prod">
+					<div class="tab-pane <?php if ($selected_tab == 'tab-about-prod') { ?>active<?php } ?>" id="tab-about-prod">
 						<div class="<?php if ($quantity_stock > 0) { ?>col-md-8 col-lg-7<?php } else { ?>col-md-12<?php } ?> col-sm-12">
 							<div class="row">
 								<div class="<?php if ($quantity_stock > 0) { ?>col-sm-4<?php } else { ?>col-sm-2<?php } ?>">
@@ -330,14 +330,14 @@
 														<?php $i = 1;
 															if ($thumb) { ?>
 															<div class="swiper-slide">
-																<img src="<?php echo $thumb; ?>" alt="<?php echo $heading_title; ?>" title="<?php echo $heading_title; ?>" width="370" height="370"/>
+																<img src="<?php echo $thumb; ?>" alt="<?php echo $product_name; ?>" title="<?php echo $product_name; ?>" width="370" height="370"/>
 															</div>
 														<?php } ?>
 														<?php foreach ($images as $image) { ?>
 															<?php if (isset($image['thumb'])) { ?>
 																<div class="swiper-slide 2">
 																	<img src="<?php echo $image['thumb']; ?>"
-																	alt="<?php echo $heading_title; ?>" title="<?php echo $heading_title; ?>" width="370" height="370">
+																	alt="<?php echo $product_name; ?>" title="<?php echo $product_name; ?>" width="370" height="370">
 																</div>
 															<?php } ?>
 														<?php $i++; } ?>
@@ -377,14 +377,14 @@
 													<!--swiper-slide-->
 													<?php if ($thumb || $images) { ?>
 														<div class="swiper-slide">
-															<img src="<?php echo $thumb; ?>" alt="<?php echo $heading_title; ?>" width="370" height="370">
+															<img src="<?php echo $thumb; ?>" alt="<?php echo $product_name; ?>" width="370" height="370">
 														</div>
 														
 														<?php $i = 1; if ($images) { ?>
 															<?php foreach ($images as $image) { ?>
 																<?php if (isset($image['thumb'])) { ?>
 																	<div class="swiper-slide">
-																		<img src="<?php echo $image['popup']; ?>" alt="<?php echo $heading_title; ?>" width="100" height="100">
+																		<img src="<?php echo $image['popup']; ?>" alt="<?php echo $product_name; ?>" width="100" height="100">
 																	</div>
 																<?php } ?>
 															<?php $i++; } ?>
@@ -527,7 +527,7 @@
 																	</button>
 																	
 																	<?php if (!$no_fast_order) { ?>	
-																		<button type="button" id="main-fastorder-button" class="btn btn-block boc_order_btn" data-target="#boc_order_all" data-product="<?php echo $heading_title; ?>" data-product_id="<?php echo $product_id; ?>" title="<?php echo $buyoneclick_name; ?>"><?php echo $buyoneclick_name; ?></button>
+																		<button type="button" id="main-fastorder-button" class="btn btn-block boc_order_btn" data-target="#boc_order_all" data-product="<?php echo $product_name; ?>" data-product_id="<?php echo $product_id; ?>" title="<?php echo $buyoneclick_name; ?>"><?php echo $buyoneclick_name; ?></button>
 																	<?php } ?>
 																	
 																	
@@ -576,7 +576,7 @@
 																				</button>
 																				
 																				<?php if (!$no_fast_order) { ?>
-																					<button type="button" id="main-fastorder-button-stock-logic" data-loading-text="<?php echo $buyoneclick_text_loading; ?>" class="btn btn-block boc_order_btn" data-target="#boc_order" data-product="<?php echo $heading_title; ?>" data-product_id="<?php echo $product_id; ?>" title="<?php echo $buyoneclick_name; ?>"><?php echo $buyoneclick_name; ?></button>
+																					<button type="button" id="main-fastorder-button-stock-logic" data-loading-text="<?php echo $buyoneclick_text_loading; ?>" class="btn btn-block boc_order_btn" data-target="#boc_order" data-product="<?php echo $product_name; ?>" data-product_id="<?php echo $product_id; ?>" title="<?php echo $buyoneclick_name; ?>"><?php echo $buyoneclick_name; ?></button>
 																				<?php } ?>
 																				
 																				<?php if ($text_part_pack) { ?>
@@ -896,23 +896,35 @@
 					<?php } ?>
 					
 					<?php if ( !empty($analogs) || !empty($same) ) { ?>
-						<div class="tab-pane" id="tab-analog">
+						<div class="tab-pane <?php if ($selected_tab == 'tab-analog') { ?>active<?php } ?>" id="tab-analog">
 
 							<?php if ( !empty($same) ) { ?>
-								<h3><?php echo $text_full_analogs; ?> для <?php echo $heading_title; ?></h3>
-								<div class="product-category-list">
-									<?php foreach ($same as $product) { ?>
-										<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single_analogue.tpl'); ?>
-									<?php } ?>
-								</div>
+								<div class="panel panel-success">
+									<div class="panel-heading">
+										<span class="panel-title"><h3><i class="fa fa-check-circle"></i> <?php echo $text_full_analogs; ?> для <?php echo $product_name; ?></h3></span>
+									</div>
+									<div class="panel-body">
+										<div class="product-category-list">
+											<?php foreach ($same as $product) { ?>
+												<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single_analogue.tpl'); ?>
+											<?php } ?>
+										</div>							
+									</div>
+								</div>													
 							<?php } ?>
 
 							<?php if ( !empty($analogs) ) { ?>
-								<h3><?php echo $text_similar_pharmaceutic; ?></h3>
-								<div class="product-category-list">
-									<?php foreach ($analogs as $product) { ?>
-										<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single_analogue.tpl'); ?>
-									<?php } ?>
+								<div class="panel panel-info">
+									<div class="panel-heading">
+										<span class="panel-title"><h3><i class="fa fa-refresh"></i> <?php echo $text_similar_pharmaceutic; ?></h3></span>
+									</div>
+									<div class="panel-body">
+										<div class="product-category-list">
+											<?php foreach ($analogs as $product) { ?>
+												<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single_analogue.tpl'); ?>
+											<?php } ?>
+										</div>							
+									</div>
 								</div>
 							<?php } ?>
 						</div>
@@ -1013,12 +1025,12 @@
 		<div class="addTo-cart-container">
 			<div class="addTo-cart-image">
 				<?php if ($thumb) { ?>
-					<img src="<?php echo $thumb; ?>" alt="<?php echo $heading_title; ?>" width="60" height="60"/>
+					<img src="<?php echo $thumb; ?>" alt="<?php echo $product_name; ?>" width="60" height="60"/>
 				<?php } ?>
 			</div>
 			<div class="addTo-cart-details">
 				<h3>
-					<?php echo $heading_title; ?>
+					<?php echo $product_name; ?>
 				</h3>
 				<?php if ($quantity_stock > 0) { ?>
 					<div class="addTo-cart-details-price">
@@ -1039,7 +1051,7 @@
 				<div class="addTo-cart-qty">
 					
 					<?php if(!$no_fast_order) {?>
-						<button type="button" class="btn btn-block boc_order_btn" onclick="$('#main-fastorder-button').trigger('click');" data-target="#boc_order_all" data-product="<?php echo $heading_title; ?>" data-product_id="<?php echo $product_id; ?>" title="<?php echo $buyoneclick_name; ?>"><?php echo $buyoneclick_name; ?></button>
+						<button type="button" class="btn btn-block boc_order_btn" onclick="$('#main-fastorder-button').trigger('click');" data-target="#boc_order_all" data-product="<?php echo $product_name; ?>" data-product_id="<?php echo $product_id; ?>" title="<?php echo $buyoneclick_name; ?>"><?php echo $buyoneclick_name; ?></button>
 					<?php } ?>	
 				</div>
 			<?php } ?>
@@ -1433,7 +1445,7 @@
 	    }
   	});
 
-	$('.product-tabs ul.nav-pills li:first-child a').click();
+	//$('.product-tabs ul.nav-pills li:first-child a').click();
 	
 	// New mobile Tabs
 	let M2 = document.querySelector(".js-dragscroll-wrap2");
