@@ -15,7 +15,7 @@
 			$ajaxrequest = (!empty($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
 			if (!$ajaxrequest){
-			//	$this->response->redirect($this->url->link('product/product', 'product_id=' . $product_id), 301);	
+				$this->response->redirect($this->url->link('product/product', 'product_id=' . $product_id), 301);	
 			}
 
 			$results = $this->model_catalog_product->getProductStocks($product_id);
@@ -52,6 +52,14 @@
 			}			
 			
 			$this->response->setOutput(json_encode($json));
+		}
+
+		public function analog(){
+			$this->index('analog');			
+		}
+
+		public function instruction(){
+			$this->index('instruction');			
 		}
 				
 		public function index($tab = false) {
@@ -366,8 +374,7 @@
 				$this->document->setTitle($product_info['meta_title']);
 				$this->document->setDescription($product_info['meta_description']);
 				$this->document->setKeywords($product_info['meta_keyword']);
-				$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');
-				
+				$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');				
 				
 				$this->document->addLink($this->url->link('product/amp_product', 'product_id=' . $this->request->get['product_id']), 'amphtml');
 				if (isset($this->request->get['add'])) {
@@ -375,30 +382,31 @@
 					$this->response->redirect($this->url->link('checkout/cart'));
 				}
 				
-				$this->document->addScript('catalog/view/javascript/jquery/magnific/jquery.magnific-popup.min.js');
-				$this->document->addStyle('catalog/view/javascript/jquery/magnific/magnific-popup.css');
+			//	$this->document->addScript('catalog/view/javascript/jquery/magnific/jquery.magnific-popup.min.js');
+			//	$this->document->addStyle('catalog/view/javascript/jquery/magnific/magnific-popup.css');
 				
 				$data['heading_title'] = $product_info['name'];
 				
-				$data['text_select'] = $this->language->get('text_select');
-				$data['text_manufacturer'] = $this->language->get('text_manufacturer');
-				$data['text_model'] = $this->language->get('text_model');
-				$data['text_reward'] = $this->language->get('text_reward');
-				$data['text_points'] = $this->language->get('text_points');
-				$data['text_stock'] = $this->language->get('text_stock');
-				$data['text_discount'] = $this->language->get('text_discount');
-				$data['text_tax'] = $this->language->get('text_tax');
-				$data['text_option'] = $this->language->get('text_option');
-				$data['text_minimum'] = sprintf($this->language->get('text_minimum'), $product_info['minimum']);
-				$data['text_write'] = $this->language->get('text_write');
-				$data['text_login'] = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
-				$data['text_note'] = $this->language->get('text_note');
-				$data['text_tags'] = $this->language->get('text_tags');
-				$data['text_related'] = $this->language->get('text_related');
+				$data['text_select'] 			= $this->language->get('text_select');
+				$data['text_manufacturer'] 		= $this->language->get('text_manufacturer');
+				$data['text_model'] 			= $this->language->get('text_model');
+				$data['text_reward'] 			= $this->language->get('text_reward');
+				$data['text_points'] 			= $this->language->get('text_points');
+				$data['text_stock'] 			= $this->language->get('text_stock');
+				$data['text_discount'] 			= $this->language->get('text_discount');
+				$data['text_tax'] 				= $this->language->get('text_tax');
+				$data['text_option'] 			= $this->language->get('text_option');
+				$data['text_minimum'] 			= sprintf($this->language->get('text_minimum'), $product_info['minimum']);
+				$data['text_write'] 			= $this->language->get('text_write');
+				$data['text_login'] 			= sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
+				$data['text_note'] 				= $this->language->get('text_note');
+				$data['text_tags'] 				= $this->language->get('text_tags');
+				$data['text_related'] 			= $this->language->get('text_related');
 				$data['text_payment_recurring'] = $this->language->get('text_payment_recurring');
-				$data['text_loading'] = $this->language->get('text_loading');
-				$data['text_wherebuy'] = $this->language->get('text_wherebuy');
-				$data['text_not_in_stock'] = $this->language->get('text_not_in_stock');
+				$data['text_loading'] 			= $this->language->get('text_loading');
+				$data['text_wherebuy'] 			= $this->language->get('text_wherebuy');
+				$data['text_not_in_stock'] 		= $this->language->get('text_not_in_stock');
+				$data['text_has_analogs'] 		= $this->language->get('text_has_analogs');
 				$data['text_is_in_stock_in_drugstores'] = $this->language->get('text_is_in_stock_in_drugstores');
 				
 				$data['text_yourprice'] = $this->language->get('text_yourprice');
@@ -453,7 +461,8 @@
 
 				if ($data['reg_instruction']){
 					$data['reg_instruction_pdf_href'] = $this->url->link('eapteka/ajax/downloadinstruction', 'x=' . $product_info['product_id'] . '&dpath=' . base64_encode($data['reg_instruction']));
-				}		
+				}
+							
 
 				$data['likreestr'] 	 = json_decode($product_info['reg_json'])?json_decode($product_info['reg_json'], true):false;
 				
@@ -498,10 +507,24 @@
 				}
 			*/
 				
-				
+				$data['main_tab_href'] 			= $this->url->link('product/product', 'product_id=' . $product_info['product_id']);	
+				$data['analog_tab_href'] 		= $this->url->link('product/product', 'product_id=' . $product_info['product_id'] . '&product-display=analog');
+				$data['instruction_tab_href'] 	= $this->url->link('product/product', 'product_id=' . $product_info['product_id'] . '&product-display=instruction');	
 				$data['get_instruction_ajax'] 	= $this->url->link('eapteka/ajax/instruction', 'x=' . $product_info['product_id']);
 				$data['get_likreestr_ajax'] 	= $this->url->link('eapteka/ajax/likreestr', 'x=' . $product_info['product_id']);
-				$data['get_stocks_ajax'] 	= $this->url->link('eapteka/ajax/stocks', 'x=' . $product_info['product_id']);
+				$data['get_stocks_ajax'] 		= $this->url->link('eapteka/ajax/stocks', 'x=' . $product_info['product_id']);
+
+				$data['selected_tab'] = 'tab-about-prod';
+				$data['product_name'] = $data['heading_title'];
+				if (!empty($this->request->get['product-display'])){
+					if ($this->request->get['product-display'] == 'analog'){
+						$data['selected_tab'] = 'tab-analog';
+						$data['heading_title'] = $this->language->get('text_full_analogs') . ' для ' . $data['heading_title'];
+						$this->document->setTitle($this->language->get('text_full_analogs') .' | '. $product_info['meta_title']);
+						$this->document->setDescription($this->language->get('text_full_analogs') .' | '. $product_info['meta_description']);
+					}
+				}
+
 				
 				if ($product_info['quantity'] <= 0) {
 					$data['stock'] = $product_info['stock_status'];
@@ -509,8 +532,7 @@
 					$data['stock'] = $product_info['quantity'];
 					} else {
 					$data['stock'] = $this->language->get('text_instock');
-				}
-				
+				}				
 				
 				$this->load->model('tool/image');
 				
@@ -567,13 +589,12 @@
 				$main_category_id = $this->model_catalog_product->getMainCategory($this->request->get['product_id']);
 				$result_price = (float)$product_info['special']?(float)$product_info['special']:(float)$product_info['price'];
 				
-				$data['free_shipping_kyiv'] = false;
-				$data['free_shipping_ukraine'] = false;
-				$data['delivery_to_ukraine_unavailable'] = false;
-				$data['text_free_shipping_kyiv'] = $this->language->get('text_free_shipping_kyiv');
-				$data['text_free_shipping_ukraine'] = $this->language->get('text_free_shipping_ukraine');
-				
-				//Новая Почта
+				$data['free_shipping_kyiv'] 				= false;
+				$data['free_shipping_ukraine'] 				= false;
+				$data['delivery_to_ukraine_unavailable'] 	= false;
+				$data['text_free_shipping_kyiv'] 			= $this->language->get('text_free_shipping_kyiv');
+				$data['text_free_shipping_ukraine'] 		= $this->language->get('text_free_shipping_ukraine');
+								
 				$config_novaposhta = $this->settings = $this->config->get('novaposhta');
 				$unavailable_novaposhta = (int)$config_novaposhta['shipping_methods']['warehouse']['minimum_order_amount'];
 				
@@ -623,8 +644,7 @@
 					);
 				}
 				
-				$data['options'] = array();
-				
+				$data['options'] = array();				
 				foreach ($this->model_catalog_product->getProductOptions($this->request->get['product_id']) as $option) {
 					$product_option_value_data = array();
 					
@@ -696,7 +716,6 @@
 				$data['reviews'] = sprintf($this->language->get('text_reviews'), (int)$product_info['reviews']);
 				$data['rating'] = (int)$product_info['rating'];
 				
-				// Captcha
 				if ($this->config->get($this->config->get('config_captcha') . '_status') && in_array('review', (array)$this->config->get('config_captcha_page'))) {
 					$data['captcha'] = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha'));
 					} else {
@@ -755,8 +774,6 @@
 					$data['delivery_text_kyiv'] = $this->language->get('delivery_text_kyiv_receipt');
 					$data['delivery_text_payment'] = $this->language->get('delivery_text_payment_receipt');
 				}
-
-
 
 				
 				$data['stocks'] 	= array();

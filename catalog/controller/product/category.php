@@ -129,18 +129,19 @@
 				
 				$data['heading_title'] = trim($category_info['seo_name'])?$category_info['seo_name']:$category_info['name'];
 				
-				$data['text_refine'] = $this->language->get('text_refine');
-				$data['text_empty'] = $this->language->get('text_empty');
-				$data['text_quantity'] = $this->language->get('text_quantity');
-				$data['text_manufacturer'] = $this->language->get('text_manufacturer');
-				$data['text_model'] = $this->language->get('text_model');
-				$data['text_price'] = $this->language->get('text_price');
-				$data['text_tax'] = $this->language->get('text_tax');
-				$data['text_points'] = $this->language->get('text_points');
-				$data['text_compare'] = sprintf($this->language->get('text_compare'), (isset($this->session->data['compare']) ? count($this->session->data['compare']) : 0));
-				$data['text_sort'] = $this->language->get('text_sort');
-				$data['text_limit'] = $this->language->get('text_limit');
-				$data['text_not_in_stock'] = $this->language->get('text_not_in_stock');
+				$data['text_refine'] 		= $this->language->get('text_refine');
+				$data['text_empty'] 		= $this->language->get('text_empty');
+				$data['text_quantity'] 		= $this->language->get('text_quantity');
+				$data['text_manufacturer'] 	= $this->language->get('text_manufacturer');
+				$data['text_model'] 		= $this->language->get('text_model');
+				$data['text_price'] 		= $this->language->get('text_price');
+				$data['text_tax'] 			= $this->language->get('text_tax');
+				$data['text_points'] 		= $this->language->get('text_points');
+				$data['text_compare'] 		= sprintf($this->language->get('text_compare'), (isset($this->session->data['compare']) ? count($this->session->data['compare']) : 0));
+				$data['text_sort'] 			= $this->language->get('text_sort');
+				$data['text_limit'] 		= $this->language->get('text_limit');
+				$data['text_not_in_stock'] 	= $this->language->get('text_not_in_stock');
+				$data['text_has_analogs'] 	= $this->language->get('text_has_analogs');
 				
 				$data['text_name_order_count_asc'] = $this->language->get('text_name_order_count_asc');
 				$data['text_name_order_count_desc'] = $this->language->get('text_name_order_count_desc');

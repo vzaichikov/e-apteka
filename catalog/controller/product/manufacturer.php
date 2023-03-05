@@ -189,6 +189,7 @@
 				$data['button_list'] = $this->language->get('button_list');
 				$data['button_grid'] = $this->language->get('button_grid');
 				$data['text_not_in_stock'] = $this->language->get('text_not_in_stock');
+				$data['text_has_analogs'] 	= $this->language->get('text_has_analogs');
 				
 				$data['compare'] = $this->url->link('product/compare');
 				

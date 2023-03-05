@@ -407,6 +407,7 @@
 			$data['entry_description'] = $this->language->get('entry_description');
 			
 			$data['text_not_in_stock'] = $this->language->get('text_not_in_stock');
+			$data['text_has_analogs'] 	= $this->language->get('text_has_analogs');
 
 			$data['button_search'] = $this->language->get('button_search');
 			$data['button_cart'] = $this->language->get('button_cart');
