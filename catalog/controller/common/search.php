@@ -14,6 +14,9 @@ class ControllerCommonSearch extends Controller {
 		$data['search_show_all_results'] 	= $this->language->get('search_show_all_results');					
 		$data['text_empty'] 				= $this->language->get('text_empty');
 
+		$data['text_not_in_stock'] 				= $this->language->get('text_not_in_stock');
+		$data['text_is_analog'] 				= $this->language->get('text_is_analog');
+
 		$data['text_popular_histories'] =  $this->language->get('text_popular_histories');
 		$data['text_my_search_history'] =  $this->language->get('text_my_search_history');
 

@@ -19,11 +19,14 @@
 		
 		private function createData($hit, $field, $exact, $suggestLogic, $query, &$data){
 			$href 		= '';
+			$href_analog = '';
 			$id 		= '';
 			$idtype 	= '';
 			$type 		= '';
 			$price 		= '';
 			$special 	= '';
+			$atx 		= '';
+			$stock	    = '';
 			$image		= '';
 			
 			$name = $hit['_source'][$field];
@@ -32,13 +35,15 @@
 				$name = $hit['highlight'][$field][0];
 			}
 			
-			if (!empty($hit['_source']['product_id'])){
-				
-				$href 			= $this->url->link('product/product', 'product_id=' . $hit['_source']['product_id']);					
+			if (!empty($hit['_source']['product_id'])){								
+				$href 			= $this->url->link('product/product', 'product_id=' . $hit['_source']['product_id']);	
+				$href_analog 	= $this->url->link('product/product', 'product_id=' . $hit['_source']['product_id'] . '&product-display=analog');				
 				$id 			= $hit['_source']['product_id'];
 				$idtype 		= 'p' . $hit['_source']['product_id'];
 				$type 			= 'p';	
 				$price 			= $hit['_source']['price'];
+				$stock 			= $hit['_source']['stock'];
+				$atx 			= $hit['_source']['atx'];
 				$special 		= $hit['_source']['special'];
 				
 				} elseif ($hit['_source']['category_id'] && $hit['_source']['ocfilter_filter'] && $hit['_source']['ocfilter_page_id']) {
@@ -88,11 +93,14 @@
 			$data[] = array(
 			'name' 		=> $name,
 			'href' 		=> $href,
+			'href_analog' => $href_analog,
 			'id'   		=> $id,
 			'idtype'   	=> $idtype,	
 			'type' 		=> $type,
 			'price'		=> $price,
 			'special'	=> $special,
+			'stock'		=> $stock,
+			'atx'		=> $atx,
 			'image'		=> $image
 			);		
 		}
@@ -117,12 +125,49 @@
 			
 			$parsedData = ['p' => [], 'c' => [], 'ocfp' => [], 's' => [] ];
 			
-			foreach ($data as $result){
-				if ($result['type'] == 'p'){											
+			foreach ($data as $result){				
+				if ($result['type'] == 'p'){
+					$analogues = [];
+					if (!$result['stock'] && $result['atx']){
+						if ($same_results = $this->model_catalog_product->getProductSame($result['id'], ['product_id' => $result['id'], 'reg_atx_1' => $result['atx']], 2)){
+							foreach ($same_results as $same){
+							$analogues[$same['product_id']] = [
+								'id' 			=> $same['product_id'],
+								'href' 			=> $this->url->link('product/product', 'product_id=' . $same['product_id']),
+								'name' 			=> $same['name'],
+								'stock'			=> ($same['quantity'] > 0),
+								'price' 		=> $this->currency->format($same['price'], $this->session->data['currency']),
+								'special' 		=> $same['special']?$this->currency->format($same['special'], $this->session->data['currency']):false	
+								];
+							}							
+						}
+
+
+						if (!$same_results && $analog_results = $this->model_catalog_product->getProductAnalog($result['id'], ['product_id' => $result['id'], 'reg_atx_1' => $result['atx']], array_keys($same_results['same']), 2)){
+							foreach ($analog_results as $analog){
+							$analogues[$analog['product_id']] = [
+								'id' 			=> $analog['product_id'],
+								'href' 			=> $this->url->link('product/product', 'product_id=' . $analog['product_id']),
+								'name' 			=> $analog['name'],
+								'stock'			=> ($analog['quantity'] > 0),
+								'price' 		=> $this->currency->format($analog['price'], $this->session->data['currency']),
+								'special' 		=> $analog['special']?$this->currency->format($analog['special'], $this->session->data['currency']):false	
+								];
+							}
+						}
+
+						if ($analogues){
+							$result['href'] = $result['href_analog'];
+						}
+					}					
+
 					$parsedData['p'][$result['id']] = array(
 						'id' 			=> $result['id'],
 						'href' 			=> $result['href'],
-						'name' 			=> $result['name'],						
+						'name' 			=> $result['name'],
+						'stock'			=> $result['stock'],					
+						'atx'			=> $result['atx'],
+						'analog'		=> $analogues,
 						'price' 		=> $this->currency->format($result['price'], $this->session->data['currency']),						
 						'special' 		=> $result['special']?$this->currency->format($result['special'], $this->session->data['currency']):false,
 					);
@@ -242,32 +287,42 @@
 							$highlight = $this->elasticSearch->buildField('name');
 							$field2 = 'names';
 
+							$resultsP0 = [];
+							$resultsP0 = $this->elasticSearch->fuzzyProductsSimple('products', $query, $field1, $field2);
 							$resultsP = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2);								
-						}
+						}						
 
-						$r2 = $this->prepareResults($resultsP, $highlight, true, $query);
-					}
-					
+						$r20 	= $this->prepareResults($resultsP0, $highlight, true, $query);
+						$r2 	= $this->prepareResults($resultsP, $highlight, true, $query);
+					}					
 				}
 				
 				if (empty($r1['results'])){
 					$r1['results'] = [];
 				}
+
+				if (empty($r20['results'])){
+					$r20['results'] = [];
+				}
 				
 				if (empty($r2['results'])){
 					$r2['results'] = [];
-				}
+				}				
 				} catch ( Exception $e ) {
 
-				print_r($e->getMessage());
-				
-			}
+				print_r($e->getMessage());				
+			}			
 			
 			$data['results'] = [];
 			$data['results']['p'] = $data['results']['c'] = $data['results']['co'] = $data['results']['ocfp'] = $data['results']['s'] = [];
 			
 			foreach (['p', 'c', 'co', 'ocfp', 's'] as $idx){
 				foreach ($r1[$idx] as $itr){
+					$data['results'][$idx][] = $itr;
+				}
+
+				unset($itr);
+				foreach ($r20[$idx] as $itr){
 					$data['results'][$idx][] = $itr;
 				}
 				
@@ -283,6 +338,13 @@
 			if (count($data['results']['c']) + count($data['results']['co']) + count($data['results']['ocpf']) > 0){
 				$data['results']['s'] = [];
 			}
+
+			$tmp = [];
+			foreach ($data['results']['p'] as $result){
+				$tmp[$result['id']] = $result;
+			}
+
+			$data['results']['p'] = $tmp;
 			
 			$data['results']['total'] = count($data['results']['p']) + count($data['results']['c']) + count($data['results']['co']) + count($data['results']['ocpf'])  + count($data['results']['s']);
 
