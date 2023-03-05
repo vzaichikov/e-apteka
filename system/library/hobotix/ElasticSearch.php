@@ -219,6 +219,50 @@
 
 
 		/* fuzzy search functions */
+		public function fuzzyProductsSimple($index, $query, $field1, $field2, $data = array()){
+
+			$fuzziness = 1;
+			if (!empty($data['fuzziness'])){
+				$fuzziness = (int)$data['fuzziness'];
+			}		
+			
+			if (empty($data['limit'])){
+				$data['limit'] = 2;
+			}
+			
+			if (empty($data['start'])){
+				$data['start'] = 0;
+			}
+
+			$params = [
+			'index' => $index,
+			'body'  	=> [
+			'from' 		=> $data['start'],
+			'size'		=> $data['limit'],
+			'sort' => [	
+			[ '_score' => 'desc' ],
+			[ 'stock' => 'desc' ]			
+			],							
+			'query' 	=> [
+			'bool' 		=>  [
+			'must' 		=>  [ 'multi_match' => [ 'fields' => [$field1.'^8', $field2.'^10', 'identifier^10', 'atx^12'], 'query' => $query, 'type' => 'best_fields', 'fuzziness' => $fuzziness, 'prefix_length' => 2, 'max_expansions' => 10, 'operator' => 'AND' ]	],
+			'filter' 	=> [ 
+			[ 'term'  => [ 'status' 	=> '1' ] ], 					
+			],
+			'minimum_should_match' => 0	],
+			],
+			'highlight' => [ 
+			'pre_tags' => [ '<b>' ], 'post_tags' => [ '</b>' ], 
+			'fields' => [ 
+			$field1 => [ 'require_field_match' => 'false', 'fragment_size' => 400,  'number_of_fragments' => 1 ],  
+			$field2 => [ 'require_field_match' => 'false', 'fragment_size' => 400,  'number_of_fragments' => 1 ],
+			] ],
+			] ];
+
+			return $this->elastic->search($params);
+		}
+
+		/* fuzzy search functions */
 		public function fuzzyProducts($index, $query, $field1, $field2, $data = array()){
 			
 			$fuzziness = 1;
@@ -241,8 +285,8 @@
 			'from' 		=> $data['start'],
 			'size'		=> $data['limit'],
 			'sort' => [	
-			[ 'stock' => 'desc' ],
 			[ '_score' => 'desc' ],
+			[ 'stock' => 'desc' ],			
 			],							
 			'query' 	=> [
 			'bool' 		=>  [
@@ -252,7 +296,7 @@
 			],
 			'filter' 	=> [ 
 			[ 'term'  => [ 'status' 	=> '1' ] ], 		
-			[ 'range' => [ 'price' 		=> [ 'gte' => 1 ] ] ],
+		//	[ 'range' => [ 'price' 		=> [ 'gte' => 1 ] ] ],
 			],
 			'minimum_should_match' => 0	],
 			],
@@ -376,8 +420,7 @@
 			return false;
 		}
 		
-		public function validateCountResult($results){
-			
+		public function validateCountResult($results){			
 			if (!empty($results['count'])){
 				return $results['count'];
 			}
@@ -853,6 +896,7 @@
 			'special'			=> [ 'type' => 'float', 'index' => 'true' ],
 			'status'			=> [ 'type' => 'integer', 'index' => 'true' ],			
 			'is_receipt'		=> [ 'type' => 'integer', 'index' => 'true' ],
+			'has_analogues'		=> [ 'type' => 'integer', 'index' => 'true' ],
 			'name_ru' 			=> [ 'type' => 'text', 'analyzer' => 'russian', 'index' => 'true' ], 
 			'name_ua' 			=> [ 'type' => 'text', 'analyzer' => 'ukrainian', 'index' => 'true' ],  
 			'names' 			=> [ 'type' => 'text', 'analyzer' => 'names', 'index' => 'true' ],
@@ -965,6 +1009,12 @@
 				$params['body']['quantity'] 		= $product['quantity'];
 				$params['body']['stock'] 			= (int)($product['quantity'] > 0);
 				$params['body']['status'] 			= $product['status'];
+
+				if (!empty($product['has_analogues'])){
+					$params['body']['has_analogues'] 	= (int)$product['has_analogues'];
+				} else {
+					$params['body']['has_analogues'] 	= 0;
+				}		
 				
 				$params['body']['sort_order']  		= $product['sort_order'];
 				$params['body']['viewed']  			= $product['viewed'];
