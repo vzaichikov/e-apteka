@@ -225,20 +225,12 @@
 			if (!empty($data['fuzziness'])){
 				$fuzziness = (int)$data['fuzziness'];
 			}		
-			
-			if (empty($data['limit'])){
-				$data['limit'] = 2;
-			}
-			
-			if (empty($data['start'])){
-				$data['start'] = 0;
-			}
 
 			$params = [
 			'index' => $index,
 			'body'  	=> [
-			'from' 		=> $data['start'],
-			'size'		=> $data['limit'],
+			'from' 		=> 0,
+			'size'		=> 2,
 			'sort' => [	
 			[ '_score' => 'desc' ],
 			[ 'stock' => 'desc' ]			
@@ -278,16 +270,24 @@
 				$data['start'] = 0;
 			}
 			
+			if (!empty($data['stock'])){
+				$sort = [	
+					[ 'stock' => 'desc' ],
+					[ '_score' => 'desc' ],							
+				];
+			} else {
+				$sort = [	
+					[ '_score' => 'desc' ],	
+					[ 'stock' => 'desc' ],						
+				];
+			}
 			
 			$params = [
 			'index' => $index,
 			'body'  	=> [
 			'from' 		=> $data['start'],
 			'size'		=> $data['limit'],
-			'sort' => [	
-			[ '_score' => 'desc' ],
-			[ 'stock' => 'desc' ],			
-			],							
+			'sort' 		=> $sort,							
 			'query' 	=> [
 			'bool' 		=>  [
 			'must' 		=>  [ 'multi_match' => [ 'fields' => [$field1.'^8', $field2.'^10', 'medical_data^8', 'identifier^10', 'atx^12'], 'query' => $query, 'type' => 'best_fields', 'fuzziness' => $fuzziness, 'prefix_length' => 2, 'max_expansions' => 10, 'operator' => 'AND' ]	],

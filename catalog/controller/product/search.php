@@ -69,16 +69,12 @@
 				
 				if (!empty($hit['highlight'][$field]) && $hit['highlight'][$field]){
 					$name = $hit['highlight'][$field][0];
-				}
-				
-				//$product_data[$hit['_source']['product_id']] = $product;
-				//$product_data[$hit['_source']['product_id']]['name'] = $name;
+				}				
 				
 				if ($product = $this->model_catalog_product->getProduct($hit['_source']['product_id'])){
 					$product_data[$hit['_source']['product_id']] = $product;
 					$product_data[$hit['_source']['product_id']]['name'] = $name;
-					} else {
-					//Товар не найден, нужно его удалить из индекса))
+					} else {					
 					$this->elasticSearch->deleteUnexistentProduct($hit['_source']['product_id']);
 				}
 			}
@@ -437,27 +433,39 @@
 						$field1 = $this->elasticSearch->buildField('name');
 						$field2 = 'names';
 						$suggest = $this->elasticSearch->buildField('suggest');
-
-							//TRY TO FIND BY SKU										
+										
 						if (hobotix\ElasticSearch::validateResult($resultSKU = $this->elasticSearch->sku($query)) == 1){				
 							if ($productFoundBySKU = $this->elasticSingleProductResult($resultSKU)){
 								$this->response->redirect($this->url->link('product/product', 'product_id=' . $productFoundBySKU['product_id'] . '&search=' .  urlencode(html_entity_decode($this->request->get['search'], ENT_QUOTES, 'UTF-8'))));
 							}
 						}
-
 												
-						$product_total = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2, ['getTotal' => true, 'filter_manufacturer_id' => $filter_manufacturer_id, 'filter_category_id' => $filter_category_id]);							
+						$product_total = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2, ['getTotal' => true, 'filter_manufacturer_id' => $filter_manufacturer_id, 'filter_category_id' => $filter_category_id]);												
+						if ($page == 1){
+							$resultsP0 = $this->elasticSearch->fuzzyProductsSimple('products', $query, $field1, $field2);
+						} else {
+							$resultsP0 = [];
+						}
+
+						$resultsE = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2, ['start' => (($page - 1) * $limit), 'limit' => $limit, 'filter_manufacturer_id' => $filter_manufacturer_id, 'filter_category_id' => $filter_category_id, 'sort' => $sort, 'order' => $order, 'stock' => true]);
 						
-						$resultsE = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2, ['start' => (($page - 1) * $limit), 'limit' => $limit, 'filter_manufacturer_id' => $filter_manufacturer_id, 'filter_category_id' => $filter_category_id, 'sort' => $sort, 'order' => $order]);
-						
+						if ($resultsP0){
+							$resultsP = $this->elasticResults($resultsP0, $field1);
+						}
+
 						$results = $this->elasticResults($resultsE, $field1);
+
+						$resultsP['product_data'] = array_reverse($resultsP['product_data']);
+						foreach ($resultsP['product_data'] as $key => $resultP){							
+							if (!empty($results['product_data'][$key])){
+								unset($results[$key]);
+							}
+							array_unshift($results['product_data'], $resultP);
+						}
 						
-						$resultAggregations = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2, ['count' => true]);
-						//var_dump($resultAggregations);
+						$resultAggregations = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2, ['count' => true]);						
 						$data['intersections'] = $this->prepareCategories($this->elasticSearch->validateAggregationResult($resultAggregations, 'categories'));
-						
-						//Поиск категорий, брендов и связок
-						//Самый первый запрос, просто поиск по названию, надеюсь в большинстве случаев его достаточно
+												
 						$exact = true;
 						$resultsCMA = $this->elasticSearch->fuzzyCategories('categories', $query, $field2, $field1, $suggest, ['limit' => 10]);								
 						$data['top_found_cmas'] = $this->elasticResultsCMA($resultsCMA, $field1, $exact);
@@ -473,15 +481,11 @@
 				
 				$data['products'] = $this->model_catalog_product->prepareProductArray($results['product_data']);
 								
-				if (($total_results = ($product_total + count($this->data['intersections2']) + count($this->data['top_found_cmas']))) == 0){
-					//NOTHING FOUND
-					$this->data['nothing_found'] = true;
-					
+				if (($total_results = ($product_total + count($this->data['intersections2']) + count($this->data['top_found_cmas']))) == 0){					
+					$this->data['nothing_found'] = true;					
 					} else {
-					//FOUND
 					$this->load->model('hobotix/search');
-					$this->model_hobotix_search->writeSearchHistory($query, $total_results);
-					
+					$this->model_hobotix_search->writeSearchHistory($query, $total_results);					
 				}
 				
 				$url = '';

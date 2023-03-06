@@ -286,10 +286,9 @@
 							$field1 = $this->elasticSearch->buildField('name');
 							$highlight = $this->elasticSearch->buildField('name');
 							$field2 = 'names';
-
-							$resultsP0 = [];
+							
 							$resultsP0 = $this->elasticSearch->fuzzyProductsSimple('products', $query, $field1, $field2);
-							$resultsP = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2);								
+							$resultsP = $this->elasticSearch->fuzzyProducts('products', $query, $field1, $field2, ['stock' => true]);								
 						}						
 
 						$r20 	= $this->prepareResults($resultsP0, $highlight, true, $query);
