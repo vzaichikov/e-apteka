@@ -365,12 +365,15 @@
 				if (isset($this->request->get['limit'])) {
 					$url .= '&limit=' . $this->request->get['limit'];
 				}
-				/*	
+				
+				if (!empty($this->request->get['product-display'])){	
 					$data['breadcrumbs'][] = array(
-					'text' => $product_info['name'],
-					'href' => $this->url->link('product/product', $url . '&product_id=' . $this->request->get['product_id'])
+						'text' => $product_info['name'],
+						'href' => $this->url->link('product/product', $url . '&product_id=' . $this->request->get['product_id'])
 					);
-				*/	
+				}
+
+
 				$this->document->setTitle($product_info['meta_title']);
 				$this->document->setDescription($product_info['meta_description']);
 				$this->document->setKeywords($product_info['meta_keyword']);
