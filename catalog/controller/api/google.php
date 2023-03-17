@@ -34,7 +34,7 @@ class ControllerAPIGoogle extends Controller {
 			'social_id' 	=> $JWTPayload['sub']
 		);
                 
-        $customer_query = $this->db->query("SELECT * FROM oc_customer WHERE social_id = '" . (string)$this->db->escape($customer['social_id']) . "'");                
+        $customer_query = $this->db->ncquery("SELECT * FROM oc_customer WHERE social_id = '" . (string)$this->db->escape($customer['social_id']) . "'");                
         $customer_info 	= $customer_query->row;
 
         if ($customer_info) {
@@ -55,7 +55,7 @@ class ControllerAPIGoogle extends Controller {
         			$result = ['status' => true, 'message' => 'Logged you by email as ' . $customer['email']];                            
         		} else {
         			$customer_id = $this->model_account_customer->addCustomer($customer);
-        			$this->db->query("UPDATE oc_customer SET social_id = '" . (string)$this->db->escape($customer['social_id']) . "' WHERE customer_id = '" . (int)$customer_id . "'");
+        			$this->db->ncquery("UPDATE oc_customer SET social_id = '" . (string)$this->db->escape($customer['social_id']) . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
         			if($customer_id){                            
         				$customer_info = $this->model_account_customer->getCustomer($customer_id);
