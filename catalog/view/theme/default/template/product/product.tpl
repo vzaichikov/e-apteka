@@ -688,15 +688,7 @@
 														</span>
 													</div>
 													<hr>
-												<?php } ?>
-												
-												<?php if ($brand) { ?>
-													<div class="product__text-row product__manufacturer row">																									
-														<div class="col-sm-12">
-															<?php echo $text_brand; ?> <?php echo $brand; ?>
-														</div>													
-													</div>
-												<?php } ?>
+												<?php } ?>											
 												
 												<?php if ($collection) { ?>
 													<div class="product__text-row product__manufacturer">
