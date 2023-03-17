@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "db1d303d556ea70a6214260d7c721033",
+    "content-hash": "34417860cc82158fad887ff7f482f5cb",
     "packages": [
         {
             "name": "cijic/phpmorphy",
