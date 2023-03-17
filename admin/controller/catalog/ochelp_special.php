@@ -252,7 +252,8 @@
 			}
 			
 			$data['sort_title'] = $this->url->link('catalog/ochelp_special', 'token=' . $this->session->data['token'] . '&sort=nd.title' . $url, 'SSL');
-			$data['sort_date_added'] = $this->url->link('catalog/ochelp_special', 'token=' . $this->session->data['token'] . '&sort=n.date_added' . $url, 'SSL');
+			$data['sort_date_added'] = $this->url->link('catalog/ochelp_special', 'token=' . $this->session->data['token'] . '&sort=s.date_added' . $url, 'SSL');
+			$data['sort_date_end'] = $this->url->link('catalog/ochelp_special', 'token=' . $this->session->data['token'] . '&sort=s.date_end' . $url, 'SSL');
 			
 			$url = '';
 			
