@@ -139,6 +139,11 @@
 			$data['text_button_loading'] = $this->language->get('text_button_loading');
 			
 			$data['powered'] = sprintf($this->language->get('text_powered'), $this->config->get('config_name'), date('Y', time()));
+
+			$data['google_auth_nonce'] 			= md5($this->session->getID() . 'google_auth_nonce' . $this->config->get('config_encryption'));
+			$data['customer_is_logged'] 		= $this->customer->isLogged();
+			$data['social_auth_google_app_id'] 	= $this->config->get('social_auth_google_app_id');
+			$data['google_auth_callback']		= $this->url->link('api/google/login', '', true);
 			
 			if ($this->customer->isLogged()){
 				$this->load->model('account/address');
