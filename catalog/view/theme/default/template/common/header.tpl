@@ -680,7 +680,7 @@
 						<div class="container">
 							<div class="header__middle-inner">								
 								<div class="header__col-lic hidden-md hidden-xs">
-									<a href="https://pharmacy.dls.gov.ua/check?EDRPOU=22974151" target="_blank" rel="nofollow noindex" noindex nofollow><img src="<?php echo $licence_logo; ?>" alt="Перевірити ліцензію" /></a>
+									<a href="<?php echo $licence_href; ?>" target="_blank" rel="nofollow noindex" noindex nofollow><img src="<?php echo $licence_logo; ?>" alt="Перевірити ліцензію" /></a>
 								</div>
 								<div class="header__col-logo">									
 									<div class="header__logo logo">

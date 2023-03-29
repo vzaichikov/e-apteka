@@ -44,6 +44,7 @@
 			
 			$this->load->model('tool/image');
 			$data['licence_logo'] = $this->model_tool_image->resize('licence-logo.png', 140, 70);
+			$data['licence_href'] = $this->url->link('information/contact/dls');
 			
 			$data['name'] = $this->config->get('config_name');
 			
