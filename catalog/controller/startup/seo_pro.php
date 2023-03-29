@@ -73,7 +73,7 @@
 					}
 				}
 			}						
-			
+
 			// Decode URL
 			if (!isset($this->request->get['_route_'])) {
 				$this->validate();
@@ -224,7 +224,7 @@
 			$route = $data['route'];
 			unset($data['route']);
 			
-			switch ($route) {
+			switch ($route) {				
 				case 'product/amp_product':
 				if (isset($data['product_id'])) {
 					$tmp = $data;
