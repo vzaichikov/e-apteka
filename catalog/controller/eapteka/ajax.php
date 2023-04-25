@@ -185,6 +185,11 @@
 					$stock_text = $result['quantity'] . ' шт.';
 					$stock_icon = 'fa-times';
 					$can_not_deliver = true;
+				} elseif ($result['is_drug'] && $result['can_sell_drugs'] == 0) {
+					$text_class = 'text-danger';
+					$stock_text = $result['quantity'] . ' шт.';
+					$stock_icon = 'fa-times';
+					$can_not_deliver = true;				
 				} else {
 					$text_class = 'text-warning';
 					$stock_text = $this->language->get('text_we_can_deliver_in_2_days');
