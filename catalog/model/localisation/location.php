@@ -8,10 +8,21 @@
 			return $query->row;
 		}
 
-		public function getLocationsGood() {
-			$query = $this->db->query("SELECT l.*, l.name as main_name, ld.name as name, l.address as main_address, ld.address as address FROM " . DB_PREFIX . "location l
+		public function getLocationsGood($filter_data = []) {
+			$sql = "SELECT l.*, 
+			l.name as main_name, 
+			ld.name as name, 
+			l.address as main_address, 
+			ld.address as address 
+			FROM " . DB_PREFIX . "location l
 			LEFT JOIN " . DB_PREFIX . "location_description ld ON (l.location_id = ld.location_id)
-			WHERE l.temprorary_closed = '0' AND ld.language_id = '" . (int)$this->config->get('config_language_id') . "'");
+			WHERE l.temprorary_closed = '0' AND ld.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+
+			if (!empty($filter_data['filter_can_sell_drugs'])){
+				$sql .= " AND can_sell_drugs = 1";
+			}
+
+			$query = $this->db->query($sql);
 			
 			return $query->rows;
 		}
