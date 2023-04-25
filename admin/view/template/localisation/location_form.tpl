@@ -94,6 +94,21 @@
 									</select>
 								</div>
 							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-is_stock">Эта аптека может продавать наркотики</label>
+								<div class="col-sm-10">
+									<select name="can_sell_drugs" id="input-can_sell_drugs" class="form-control">
+										<?php if ($can_sell_drugs) { ?>
+											<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+											<option value="0"><?php echo $text_disabled; ?></option>
+											<?php } else { ?>
+											<option value="1"><?php echo $text_enabled; ?></option>
+											<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+										<?php } ?>
+									</select>
+								</div>
+							</div>
 							
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-default_price">Цена по умолчанию</label>

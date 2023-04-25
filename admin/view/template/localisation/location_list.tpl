@@ -50,6 +50,7 @@
                   <td class="text-left">GM Код</td>
                   <td class="text-left">1C UUID</td>
                   <td class="text-left">Остатки</td>
+                  <td class="text-left">Наркотики</td>
                   <td class="text-left">Основн. цена</td>
                   <td class="text-left">Время доставки</td>
                   <td class="text-left">Открыто</td>
@@ -100,6 +101,15 @@
                            <span class="btn btn-danger"><i class="fa fa-minus"></i></span>
                          <? } ?>
                        </td>
+
+                       <td class="text-left">
+                         <?php if ($locations['can_sell_drugs']) { ?>
+                           <span class="btn btn-success"><i class="fa fa-plus"></i></span>
+                         <? } else { ?>           
+                           <span class="btn btn-danger"><i class="fa fa-minus"></i></span>
+                         <? } ?>
+                       </td>
+                       
                        <td class="text-left">
                          <?php if ($locations['default_price']) { ?>
                            <span class="btn btn-success"><i class="fa fa-plus"></i></span>
