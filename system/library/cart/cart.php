@@ -380,6 +380,7 @@
 					'cart_id'         => $cart['cart_id'],
 					'product_id'      => $product_query->row['product_id'],
 					'no_shipping'     => $product_query->row['no_shipping'],
+					'is_drug'     	  => $product_query->row['is_drug'],
 					'no_payment'      => $product_query->row['no_payment'],
 					'is_receipt'      => $product_query->row['is_receipt'],
 					'is_thermolabel'  => $product_query->row['is_thermolabel'],
@@ -471,7 +472,6 @@
 		}
 
 		public function getIfOneLocationIsCurrentlyAvailableForPickup($location_id, $overloadLogicToDeliverFromAny = false){
-
 			if ($this->enableLogicDeliverFromAny && $overloadLogicToDeliverFromAny){
 				return true;
 			}
@@ -486,15 +486,26 @@
 			$available_locations = array();
 			$first_time = true;
 			
-			foreach ($this->getProducts() as $value) {
+			foreach ($this->getProducts() as $value) {				
 				$product_available_locations = array();
-				$location_query = $this->db->query("SELECT s.location_id, s.price
+
+				$sql = "SELECT s.location_id, s.price, l.can_sell_drugs, p.is_drug, p.is_pko
 				FROM " . DB_PREFIX . "stocks s 
-				JOIN " . DB_PREFIX . "location l ON s.location_id = l.location_id						
-				WHERE l.is_stock = 1 AND l.temprorary_closed = 0 AND product_id = '" . (int)$value['product_id'] . "' AND s.quantity >= '" . $value['quantity'] . "'");
+				JOIN " . DB_PREFIX . "location l ON s.location_id = l.location_id
+				LEFT JOIN " . DB_PREFIX . "product p ON s.product_id = p.product_id				
+				WHERE 
+				l.is_stock = 1 
+				AND l.temprorary_closed = 0 
+				AND s.product_id = '" . (int)$value['product_id'] . "' 
+				AND s.quantity >= '" . $value['quantity'] . "'";
+
+				$location_query = $this->db->query($sql);	
 
 				if ($location_query->num_rows){
 					foreach ($location_query->rows as $location){
+						if ($location['is_drug'] && !$location['can_sell_drugs']){
+							continue;
+						}
 						$product_available_locations[] = $location['location_id'];
 					}
 				}									
@@ -519,6 +530,18 @@
 			}
 			
 			return $available_locations;
+		}
+
+		public function getIfCartHasNarcoticDrugs(){
+			$products = $this->getProducts();
+			
+			foreach ($products as $value){
+				if (!empty($value['is_drug'])){
+					return true;
+				}
+			}
+			
+			return false;
 		}
 		
 		public function getIfCartHasDrugs(){
