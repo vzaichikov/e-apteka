@@ -344,10 +344,16 @@
 			public function getCurrentLocationsAvailableForPickup(){
 				$values = [];
 				$this->load->model('localisation/location');
+				
+				$available_locations 		= $this->cart->getCurrentLocationsAvailableForPickup();
+				$cart_has_narcotic_drugs 	= $this->cart->getIfCartHasNarcoticDrugs();
+				$cart_has_preorder 			= $this->cart->getIfCartHasPreorder();
 
-				$all_locations 			= $this->model_localisation_location->getLocationsGood();
-				$available_locations 	= $this->cart->getCurrentLocationsAvailableForPickup();
-				$cart_has_preorder 		= $this->cart->getIfCartHasPreorder();
+				if ($cart_has_narcotic_drugs){
+					$all_locations 				= $this->model_localisation_location->getLocationsGood(['filter_can_sell_drugs' => true]);
+				} else {
+					$all_locations 				= $this->model_localisation_location->getLocationsGood();
+				}				
 
 				$stock_locations = $not_stock_locations = [];
 				foreach ($all_locations as $location){
