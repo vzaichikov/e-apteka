@@ -177,25 +177,26 @@ class ControllerLocalisationLocation extends Controller {
 
 		foreach ($results as $result) {
 			$data['location'][] =   array(
-				'location_id' => $result['location_id'],
-				'name'        => $result['name'],
-				'node'        => $this->model_setting_nodes->getNodeName($result['node_id']),
-				'last_sync'   => date($this->language->get('datetime_format'), strtotime($result['last_sync'])),
-				'address'     => $result['address'],
-				'telephone'   => $result['telephone'],
-				'geocode'     => $result['geocode'],
-				'gmaps_link'     => $result['gmaps_link'],
+				'location_id' 		=> $result['location_id'],
+				'name'        		=> $result['name'],
+				'node'        		=> $this->model_setting_nodes->getNodeName($result['node_id']),
+				'last_sync'   		=> date($this->language->get('datetime_format'), strtotime($result['last_sync'])),
+				'address'     		=> $result['address'],
+				'telephone'   		=> $result['telephone'],
+				'geocode'     		=> $result['geocode'],
+				'gmaps_link'     	=> $result['gmaps_link'],
 				'default_price'     => $result['default_price'],
 				'is_stock'    		=> $result['is_stock'],
+				'can_sell_drugs'    => $result['can_sell_drugs'],
 				'temprorary_closed' => $result['temprorary_closed'],
 				'information_id'    => $result['information_id'],
-				'information' => $result['information_id']?$this->model_catalog_information->getInformationDescriptions($result['information_id'])[$this->config->get('config_language_id')]['title']:'',
-				'open'    	  => $result['open'],
-				'open_struct' => nl2br($result['open_struct']),
-				'sort_order'  => $result['sort_order'],
+				'information' 		=> $result['information_id']?$this->model_catalog_information->getInformationDescriptions($result['information_id'])[$this->config->get('config_language_id')]['title']:'',
+				'open'    	  		=> $result['open'],
+				'open_struct' 		=> nl2br($result['open_struct']),
+				'sort_order'  		=> $result['sort_order'],
 				'delivery_times'    => nl2br($result['delivery_times']),
-				'uuid'        => $result['uuid'],
-				'edit'        => $this->url->link('localisation/location/edit', 'token=' . $this->session->data['token'] . '&location_id=' . $result['location_id'] . $url, true)
+				'uuid'        		=> $result['uuid'],
+				'edit'        		=> $this->url->link('localisation/location/edit', 'token=' . $this->session->data['token'] . '&location_id=' . $result['location_id'] . $url, true)
 			);
 		}
 
@@ -513,6 +514,14 @@ class ControllerLocalisationLocation extends Controller {
 			$data['is_stock'] = $location_info['is_stock'];
 		} else {
 			$data['is_stock'] = 0;
+		}
+
+		if (isset($this->request->post['can_sell_drugs'])) {
+			$data['can_sell_drugs'] = $this->request->post['can_sell_drugs'];
+		} elseif (!empty($location_info)) {
+			$data['can_sell_drugs'] = $location_info['can_sell_drugs'];
+		} else {
+			$data['can_sell_drugs'] = 0;
 		}
 
 		if (isset($this->request->post['temprorary_closed'])) {
