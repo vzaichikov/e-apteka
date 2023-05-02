@@ -25,6 +25,8 @@
         "google/auth": "^1.23",
         "shuchkin/simplexlsx": "^1.0",
         "mpdf/mpdf": "^8.1",
-        "mobiledetect/mobiledetectlib": "^3.74"
+        "mobiledetect/mobiledetectlib": "^3.74",
+        "slim/slim": "4.*",
+        "sapphirecat/slim4-http-interop-adapter": "^1.1"
     }
 }
