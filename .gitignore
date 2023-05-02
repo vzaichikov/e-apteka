@@ -33,6 +33,7 @@
 /min/
 /dls/
 /dls-data/
+/rest-api/queue/*
 
 #Кэш системного пользователя
 /.cache/
