@@ -537,6 +537,14 @@
                 } else {
                 $data['atx_code'] = '';
             }
+
+            if (isset($this->request->post['substance'])) {
+                $data['substance'] = $this->request->post['substance'];
+                } elseif (!empty($category_info)) {
+                $data['substance'] = $category_info['substance'];
+                } else {
+                $data['substance'] = '';
+            }
             
             if (isset($this->request->post['keyword'])) {
                 $data['keyword'] = $this->request->post['keyword'];

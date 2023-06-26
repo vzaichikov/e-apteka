@@ -1,7 +1,8 @@
 <?php
 ini_set('memory_limit', '-1');
 class ControllerEaptekaATX extends Controller {
-	private $atx_main_category = 543;
+	private $atx_main_category 		= 543;
+	private $substances_category_id = 6660;
 
 	private function prepareCategory($row){
 		$data = array(
@@ -210,5 +211,4 @@ class ControllerEaptekaATX extends Controller {
 			$this->decodeLevelRecursive($level_data);
 		}
 	}
-
 }
