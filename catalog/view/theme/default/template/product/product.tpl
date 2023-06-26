@@ -742,7 +742,13 @@
 														<?php if ($attribute['text']) { ?>
 															<tr>
 																<td><?php echo $attribute['name']; ?></td>
-																<td><?php echo $attribute['text']; ?></td>
+																<td>
+																	<?php if ($attribute['attribute_id'] == 40 && !empty($substance_path)) {?>
+																		<a href="<?php echo $substance_path; ?>" title="<?php echo $attribute['text']; ?>"><?php echo $attribute['text']; ?></a>
+																	<?php } else { ?>
+																		<?php echo $attribute['text']; ?>																		
+																	<?php } ?>
+																</td>
 															</tr>
 														<?php } ?>
 													<?php } ?>												
@@ -813,7 +819,6 @@
 												</div>
 											</div>	
 										<?php } ?>
-
 									</div>
 								</div>
 							<?php } ?>
