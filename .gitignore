@@ -55,5 +55,8 @@
 /system/temp
 /system/pids
 
+/rest-api/orders/*
+/rest-api/queue/*
+
 #Директории IDE
 .idea
