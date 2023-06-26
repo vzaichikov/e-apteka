@@ -130,7 +130,7 @@
 
 
 
-<?php if (!$is_mobile) { ?>
+<?php if (false) { ?>
 	<script>
 		(function(w,d,u){
 			var s=d.createElement('script');s.async=true;s.src=u+'?'+(Date.now()/60000|0);
