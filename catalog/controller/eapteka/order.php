@@ -20,6 +20,15 @@
 		
 		public function index()
 		{ }
+
+
+		public function test(){			
+			error_reporting(true);
+			ini_set('display_errors', true);
+
+			$this->load->model('eapteka/order');
+			$this->model_eapteka_order->writeOrderToRestAPI(166428);
+		}
 			
 		
 		private function getCustomFieldValue($custom_field_id, $custom_field_value_id){
@@ -56,11 +65,10 @@
 			$this->order_id = $order_id;
 		}
 		
-		private function simpleCustomFieldsToValues($custom_field, $customer_field_value){
-			
+		private function simpleCustomFieldsToValues($custom_field, $customer_field_value){			
 			if ($custom_field == 'time') {
 				$r = array(
-                '2' =>     'з 10:00 до 14:00',
+                '2' =>    'з 10:00 до 14:00',
                 '3' =>    'з 14:00 до 18:00',
                 '4' =>    'з 19:00 до 23:59'
 				);
@@ -86,8 +94,7 @@
 			}
 		}
 		
-		private function customFieldsToValues($custom_field_id, $customer_field_value_id){
-			
+		private function customFieldsToValues($custom_field_id, $customer_field_value_id){			
 			if ($custom_field_id == 2) {
 				$r = array(
                 4 =>     'з 10:00 до 14:00',
@@ -496,8 +503,7 @@
 						$message .= '<b>Ответочка:</b> ' . substr(serialize($result),0,500) . '';
 						
 						$telegramSender->SendMessage($message);
-					}
-					
+					}					
 				}
 			}
 			
@@ -640,6 +646,10 @@
 				$order_products = $this->model_checkout_order->getOrderProducts($order_id);
 
 				if ($order_info && $order_products) {
+					$this->load->model('eapteka/order');
+					$this->model_eapteka_order->writeOrderToRestAPI($order_id);
+
+
 					$this->db->query("INSERT INTO  `" . DB_PREFIX . "order_queue` SET order_id = '" . (int)$order_id . "', date_added = NOW()");
 				}
 
@@ -665,11 +675,11 @@
 			$this->setCurrentOrderID($order_id);
 			echo '[EAPTEKA SYNC] Начали работу с заказом ' . $order_id . PHP_EOL;
 			
-			$order_info = $this->model_checkout_order->getOrder($order_id);
-			$order_products = $this->model_checkout_order->getOrderProducts($order_id);
-			$customer_info = $this->model_account_customer->getCustomer($order_info['customer_id']);
-			$customInfo = $this->model_tool_simplecustom->getCustomFields('order', $order_info['order_id'], $order_info['language_code'], false);
-			$customInfoValues = $this->model_tool_simplecustom->getCustomFields('order', $order_info['order_id'], $order_info['language_code'], false);
+			$order_info 		= $this->model_checkout_order->getOrder($order_id);
+			$order_products 	= $this->model_checkout_order->getOrderProducts($order_id);
+			$customer_info 		= $this->model_account_customer->getCustomer($order_info['customer_id']);
+			$customInfo 		= $this->model_tool_simplecustom->getCustomFields('order', $order_info['order_id'], $order_info['language_code'], false);
+			$customInfoValues 	= $this->model_tool_simplecustom->getCustomFields('order', $order_info['order_id'], $order_info['language_code'], false);
 			
 			$result_json = array();
 			
@@ -682,8 +692,7 @@
 					$real_product 	= $this->model_catalog_product->getProduct($product['product_id']);
 					$options 		= $this->model_checkout_order->getOrderOptions($order_id, $product['order_product_id']);
 					
-					$product['quantity_parts'] = $product['quantity'];
-					
+					$product['quantity_parts'] = $product['quantity'];					
 					if ($real_product['count_of_parts'] && $options && !empty($options[0]) && $options[0]['option_id'] == 2){
 						$product['quantity'] = round(((round((1 / $real_product['count_of_parts']), 3)) * $product['quantity']), 3);
 					}
