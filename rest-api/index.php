@@ -18,11 +18,14 @@ const languages = [
     'ua' => 3
 ];
 
+define('SELF_REST_PATH', dirname(__FILE__));
+
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config.php';
 require_once DIR_SYSTEM . '/library/db/mysqli_rest.php';
+require_once DIR_SYSTEM . '/helper/general.php';
+require_once DIR_SYSTEM . '/helper/json.php';
 
-require_once __DIR__ . '/httpCodesExtender.php';
 require_once __DIR__ . '/models/hoboModel.php';
 require_once __DIR__ . '/models/hoboModelProduct.php';
 require_once __DIR__ . '/models/hoboModelStocks.php';
@@ -59,6 +62,9 @@ $customErrorHandler = function (
     } elseif ($exception instanceof HttpNotFoundException) {
         $statusCode = 404;       
         $message = 'Not Found';
+    } elseif ($exception instanceof HttpNotImplementedException) {
+        $statusCode = 500;       
+        $message = 'Not Implemented';
     }
 
     if ($exception->getMessage()){
@@ -82,6 +88,8 @@ $errorMiddleware->setDefaultErrorHandler($customErrorHandler);
 $restApp->add(function (Request $request, RequestHandler $handler) use ($restApp) {
     $apiKey = $request->getHeaderLine('X-API-KEY');
 
+    return $handler->handle($request);
+    
     if ($apiKey == REST_API_TOKEN) {
         return $handler->handle($request);
     } else {
@@ -94,12 +102,18 @@ $restApp->add(function (Request $request, RequestHandler $handler) use ($restApp
 });
 
 
+/*************************************************************************************
+ * 
+ * PRODUCTS
+ * 
+ /*********************************************************************************/
+
 /*
     Point to get product by uuid
 */
 $restApp->get('/product-id/{uuid}', function (Request $request, Response $response, array $args) use ($modelProduct) {
     if ($product_id = $modelProduct->getProductIdByUUID($args['uuid'])){
-        $payload = ['success' => true, 'product_id' => $product_id];
+        $payload = ['success' => true, 'productID' => $product_id];
         $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
         return $response->withHeader('Content-Type', 'application/json');
     } else {
@@ -110,7 +124,7 @@ $restApp->get('/product-id/{uuid}', function (Request $request, Response $respon
 });
 
 /*
-    Point to get products by uuids ['uuid1', 'uuid2']
+    Point to get product ids by uuids ['uuid1', 'uuid2']
 */
 $restApp->post('/products-ids/', function (Request $request, Response $response, array $args) use ($modelProduct) {
     $body = $request->getBody()->getContents();
@@ -131,21 +145,35 @@ $restApp->post('/products-ids/', function (Request $request, Response $response,
 });
 
 /*
+    Point to get full products id - uuid table
+*/
+$restApp->get('/products/', function (Request $request, Response $response, array $args) use ($modelProduct) {
+    if ($products = $modelProduct->getAllIdToUUIDTable()){
+        $payload = ['success' => true, 'data' => $products];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotFoundException($request, 'No products available');
+    }   
+
+    return $response;
+});
+
+/*
     Point to get full product data by id
 */
-foreach (languages as $code => $key) {
-    $restApp->get('/products/{id}/' . $code, function (Request $request, Response $response, array $args) use ($modelProduct, $key) {
-        if ($product = $modelProduct->getProductByID($args['id'], $key)){
-            $payload = ['success' => true, 'data' => $product];
-            $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
-            return $response->withHeader('Content-Type', 'application/json');
-        } else {
-            throw new HttpNotFoundException($request, 'Product not found with id ' . $args['id']);
-        }   
+$restApp->get('/products/{id}', function (Request $request, Response $response, array $args) use ($modelProduct) {
+    if ($product = $modelProduct->getProductByID($args['id'])){
+        $payload = ['success' => true, 'data' => $product];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotFoundException($request, 'Product not found with id ' . $args['id']);
+    }   
 
-        return $response;
-    });
-}
+    return $response;
+});
+
 
 /*
     Point to add or modify some product data (this adds product to queue)
@@ -168,22 +196,314 @@ $restApp->post('/products/', function (Request $request, Response $response, arr
 });
 
 
+/*************************************************************************************
+ * 
+ * DRUGSTORES
+ * 
+ /*********************************************************************************/
+
+/*
+    Point to get all drugstore list
+*/
+$restApp->get('/drugstores/', function (Request $request, Response $response, array $args) use ($modelDrugstore) {
+    if ($drugstores = $modelDrugstore->getDrugStores()){
+        $payload = ['success' => true, 'data' => $drugstores];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotFoundException($request, 'No drugstores available now');
+    }   
+
+    return $response;
+});
+
+$restApp->get('/drugstores/{id}', function (Request $request, Response $response, array $args) use ($modelDrugstore) {        
+    if ($drugstore = $modelDrugstore->getDrugStore($args['id'])){
+        $payload = ['success' => true, 'data' => $drugstore];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotFoundException($request, 'No drugstores available now');
+    }   
+
+    return $response;
+});
+
+$restApp->post('/drugstores/', function (Request $request, Response $response, array $args) use ($modelDrugstore) {
+    $body = $request->getBody()->getContents();
+    $data = json_decode($body, true);
+    if (!is_array($data)) {
+        throw new HttpBadRequestException($request, "Invalid JSON body");
+    }       
+
+    $fields = [
+        'drugstoreClosed', 
+        'drugstoreName_RU', 
+        'drugstoreName_UA', 
+        'drugstoreAddress_RU', 
+        'drugstoreAddress_UA', 
+        'drugstoreTelephone', 
+        'drugstoreFax', 
+        'drugstoreGeoCode', 
+        'drugstoreUUID', 
+        'drugstoreGmapsLink', 
+        'drugstoreOpen', 
+        'drugstoreOpenStruct', 
+        'drugstoreSortOrder', 
+        'drugstoreCanSellDrugs'
+    ];
+
+    foreach ($fields as $field){
+        if (!isset($data[$field])){
+             throw new HttpBadRequestException($request, "No $field field provided");
+        }
+    }
+
+    if ($drugstore = $modelDrugstore->addDrugstore($data)){
+        $payload = ['success' => true, 'data' => $drugstore];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotImplementedException($request, "Drugstore not added");
+    }
+});
+
+$restApp->patch('/drugstores/{id}', function (Request $request, Response $response, array $args) use ($modelDrugstore) {
+    $body = $request->getBody()->getContents();
+    $data = json_decode($body, true);
+    if (!is_array($data)) {
+        throw new HttpBadRequestException($request, "Invalid JSON body");
+    }       
+
+    $fields = [
+        'drugstoreClosed', 
+        'drugstoreName_RU', 
+        'drugstoreName_UA', 
+        'drugstoreAddress_RU', 
+        'drugstoreAddress_UA', 
+        'drugstoreTelephone', 
+        'drugstoreFax', 
+        'drugstoreGeoCode',         
+        'drugstoreGmapsLink', 
+        'drugstoreOpen', 
+        'drugstoreOpenStruct', 
+        'drugstoreSortOrder', 
+        'drugstoreCanSellDrugs'
+    ];
+
+    foreach ($fields as $field){
+        if (!isset($data[$field])){
+             throw new HttpBadRequestException($request, "No $field field provided");
+        }
+    }
+
+    if ($drugstore = $modelDrugstore->editDrugstore($args['id'], $data)){
+        $payload = ['success' => true, 'data' => $drugstore];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotImplementedException($request, "Drugstore not exist");
+    }
+});
+
+$restApp->delete('/drugstores/{id}', function (Request $request, Response $response, array $args) use ($modelDrugstore) {
+    if ($drugstore = $modelDrugstore->deleteDrugstore($args['id'])){
+        $payload = ['success' => true, 'data' => $drugstore];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotImplementedException($request, "Drugstore not deleted");
+    }
+});
+
+
+/*************************************************************************************
+ * 
+ * STOCKS
+ * 
+ /*********************************************************************************/
+/*
+    Point to get stocks for product
+*/
+
+$restApp->get('/stocks/{id}', function (Request $request, Response $response, array $args) use ($modelStocks) {
+    if ($product_stocks = $modelStocks->getProductStocks($args['id'])){
+         $payload = ['success' => true, 'data' => $product_stocks];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotFoundException($request, 'No product ' . $args['id'] . ' stocks available now');
+    }   
+
+    return $response;
+});
+
+ /*********************************************************************************/
+/*
+    Point to set stocks for any
+*/
+$restApp->put('/stocks/', function (Request $request, Response $response, array $args) use ($modelStocks) {
+    $body = $request->getBody()->getContents();
+    $data = json_decode($body, true);
+    if (!is_array($data)) {
+        throw new HttpBadRequestException($request, "Invalid JSON body");
+    }
+
+    if ($stocks = $modelStocks->updateStocks($data)){        
+        $payload = ['success' => true, 'data' => $stocks];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+    } else {
+        throw new HttpNotFoundException($request, 'Product ' . $args['id'] . ' not found');
+    }
+
+    return $response;
+});
+
+ /*********************************************************************************/
+/*
+    Point to set stocks for product
+*/
+$restApp->put('/stocks/{id}', function (Request $request, Response $response, array $args) use ($modelStocks) {
+    $body = $request->getBody()->getContents();
+    $data = json_decode($body, true);
+    if (!is_array($data)) {
+        throw new HttpBadRequestException($request, "Invalid JSON body");
+    }
+
+    if ($stocks = $modelStocks->updateProductStocks($args['id'], $data)){        
+        $payload = ['success' => true, 'data' => $stocks];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+    } else {
+        throw new HttpNotFoundException($request, 'Product ' . $args['id'] . ' not found');
+    }
+
+    return $response;
+});
 
 
 
-foreach (languages as $code => $key) {
-    $restApp->get('/drugstores/' . $code, function (Request $request, Response $response, array $args) use ($modelDrugstore, $key) {
-        if ($drugstores = $modelDrugstore->getDrugStores($key)){
-            $payload = ['success' => true, 'data' => $drugstores];
+/*************************************************************************************
+ * 
+ * ORDER STATUSES
+ * 
+ /*********************************************************************************/
+
+/*
+    Point to get order status list
+*/
+$restApp->get('/order-statuses/', function (Request $request, Response $response, array $args) use ($modelOrder) {
+    if ($order_statuses = $modelOrder->getOrderStatuses()){
+        $payload = ['success' => true, 'data' => $order_statuses];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotFoundException($request, 'No order statuses available now');
+    }   
+
+    return $response;
+});
+
+
+/*************************************************************************************
+ * 
+ * ORDERS 
+ * 
+ /*********************************************************************************/
+
+/*
+    Point to get unpassed or modified orders
+*/
+$restApp->get('/orders/{location_uuid}', function (Request $request, Response $response, array $args) use ($modelOrder) {
+    if ($orders = $modelOrder->getOrders($args['location_uuid'])){
+        $payload = ['success' => true, 'data' => $orders];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotFoundException($request, 'No orders available now');
+    }   
+
+    return $response;
+});
+
+
+/*
+    Point to add order
+*/
+$restApp->post('/orders/', function (Request $request, Response $response, array $args) use ($modelOrder) {
+    
+});
+
+/*
+    Point to modify order
+*/
+$restApp->patch('/orders/{order_id}', function (Request $request, Response $response, array $args) use ($modelOrder) {
+   
+});
+
+/*
+    Point to add any order history
+*/
+$restApp->patch('/orders/{order_id}/history', function (Request $request, Response $response, array $args) use ($modelOrder) {
+    $body = $request->getBody()->getContents();
+    $data = json_decode($body, true);
+    if (!is_array($data)) {
+        throw new HttpBadRequestException($request, "Invalid JSON body");
+    }
+
+    if ($order = $modelOrder->getOrder($args['order_id'])){
+        if (empty($data['orderStatusID'])){
+            throw new HttpBadRequestException($request, "No orderUUID field provided");
+        }    
+
+        $updated_order = $modelOrder->addOrderHistory($args['order_id'], $data);
+
+        if ($updated_order){
+            $payload = ['success' => true, 'data' => $updated_order];
             $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
-            return $response->withHeader('Content-Type', 'application/json');
         } else {
-            throw new HttpNotFoundException($request, 'No drugstores available now');
-        }   
+            throw new HttpException($request, "Nothing updated");
+        }
+    } else {
+        throw new HttpNotFoundException($request, 'Order with ID ' . $args['order_id'] . ' not found');
+    }
 
-        return $response;
-    });
-}
+    return $response;
+});
+
+/*
+    Point to confirm of getting order
+*/
+$restApp->patch('/orders/{order_id}/confirm', function (Request $request, Response $response, array $args) use ($modelOrder) {
+    $body = $request->getBody()->getContents();
+    $data = json_decode($body, true);
+    if (!is_array($data)) {
+        throw new HttpBadRequestException($request, "Invalid JSON body");
+    }
+
+    if ($order = $modelOrder->getOrder($args['order_id'])){
+        if (empty($data['orderUUID'])){
+            throw new HttpBadRequestException($request, "No orderUUID field provided");
+        }
+
+        if (empty($data['orderMSID'])){
+            throw new HttpBadRequestException($request, "No orderMSID field provided");
+        }
+
+        $updated_order = $modelOrder->confirmOrder($args['order_id'], $data);
+
+        if ($updated_order){
+            $payload = ['success' => true, 'data' => $updated_order];
+            $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        } else {
+            throw new HttpException($request, "Nothing updated");
+        }
+    } else {
+        throw new HttpNotFoundException($request, 'Order with ID ' . $args['order_id'] . ' not found');
+    }
+
+    return $response;
+});
+
 
 $restApp->run();
 
