@@ -127,6 +127,13 @@
 									<input type="text" name="atx_code" value="<?php echo $atx_code; ?>" placeholder="atx_code" id="input-atx_code" class="form-control" />
 								</div>
 							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-uuid">Действующее вещество</label>
+								<div class="col-sm-10">
+									<input type="text" name="substance" value="<?php echo $substance; ?>" placeholder="substance" id="input-substance" class="form-control" />
+								</div>
+							</div>
 							
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-no_payment">Не разрешать оплату</label>

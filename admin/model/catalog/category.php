@@ -1,7 +1,7 @@
 <?php
 	class ModelCatalogCategory extends Model {
 		public function addCategory($data) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "', date_modified = NOW(), date_added = NOW()");
+			$this->db->query("INSERT INTO " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "', substance = '" . $this->db->escape($data['substance']) . "', date_modified = NOW(), date_added = NOW()");
 			
 			$category_id = $this->db->getLastId();
 			
@@ -90,7 +90,7 @@
 		
 		public function editCategory($category_id, $data) {
 			
-			$this->db->query("UPDATE " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "', date_modified = NOW() WHERE category_id = '" . (int)$category_id . "'");
+			$this->db->query("UPDATE " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "',  substance = '" . $this->db->escape($data['substance']) . "', date_modified = NOW() WHERE category_id = '" . (int)$category_id . "'");
 			
 			if (isset($data['image'])) {
 				$this->db->query("UPDATE " . DB_PREFIX . "category SET image = '" . $this->db->escape($data['image']) . "' WHERE category_id = '" . (int)$category_id . "'");
