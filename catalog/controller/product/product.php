@@ -728,6 +728,13 @@
 				$data['share'] = $this->url->link('product/product', 'product_id=' . (int)$this->request->get['product_id']);				
 				$data['attribute_groups'] = $this->model_catalog_product->getProductAttributes($this->request->get['product_id']);
 
+				$substance_path = $this->model_catalog_category->getCategorySubstanceLink($this->request->get['product_id']);
+				if ($substance_path){
+					$data['substance_path'] = $this->url->link('product/category', 'path=' . $substance_path);
+				}
+
+
+
 				$data['atx_classifier'] = $this->language->get('atx_classifier');
 
 				$data['atx_tree'] = [];

@@ -204,8 +204,7 @@
 				
 				
 				
-				$data['categories'] = array();
-								
+				$data['categories'] = array();								
 				if ($this->mobileDetect->isMobile() && $page == 1 && !$category_info['show_subcats']){
 					$results = $this->model_catalog_category->getCategories($category_id);
 					
@@ -498,6 +497,10 @@
 				$data['sort'] = $sort;
 				$data['order'] = $order;
 				$data['limit'] = $limit;
+
+				if ($category_id == CATEGORY_SUBSTANCES){
+					$this->data['display_small_subcategories'] = 1;
+				}
 				
 				// OCFilter Start
 				if (isset($this->request->get['filter_ocfilter'])) {
