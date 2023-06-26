@@ -8,9 +8,76 @@
 		$input = preg_replace('/[\x00-\x1F]/', '', $input);
 		$input = preg_replace("/^$bom/", '', $input);
 		
-		return $input;
-		
+		return $input;		
 	}	
+
+	function addToJSONCachedFile($file, $json, $field){	
+		if (!file_exists($file)){
+			touch($file);
+		}
+
+		$handler = fopen($file, 'a+');		
+		for ($i = 1; $i <= 10; $i++){
+			if (flock($handler,  LOCK_EX)){
+				$content = fread($handler, filesize($file));			
+				$content = json_decode($content, true);
+
+				if ($content && is_array($content) && !empty($content['data'])){
+					$result = ['success' => true, 'data' => []];
+
+					foreach ($content['data'] as $item){							
+						if ($item[$field] != $json[$field]){
+							$result['data'][] = $item;
+						}
+					}
+
+					$result['data'][] = $json;
+				} else {
+					$result = ['success' => true, 'data' => [$json]];
+				}
+
+				fseek($handler, 0);
+				ftruncate($handler, 0);
+				fwrite($handler, json_encode($result));
+				fclose($handler);
+
+				break;
+			}
+		}		
+	}
+
+	function removeFromJSONCachedFile($file, $json, $field){
+		if (!file_exists($file)){
+			touch($file);
+		}
+
+		$handler = fopen($file, 'a+');		
+		for ($i = 1; $i <= 10; $i++){
+			if (flock($handler,  LOCK_EX)){
+				$content = fread($handler, filesize($file));			
+				$content = json_decode($content, true);
+
+				if ($content && is_array($content) && !empty($content['data'])){
+					$result = ['success' => true, 'data' => []];
+
+					foreach ($content['data'] as $item){							
+						if ($item[$field] != $json[$field]){
+							$result['data'][] = $item;
+						}
+					}
+				} else {
+					$result = ['success' => true, 'data' => []];
+				}
+
+				fseek($handler, 0);
+				ftruncate($handler, 0);
+				fwrite($handler, json_encode($result));
+				fclose($handler);
+
+				break;
+			}
+		}	
+	}
 	
 	if (!function_exists('json_encode')) {
 		function json_encode($data) {
