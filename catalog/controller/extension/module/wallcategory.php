@@ -79,8 +79,12 @@
 				);
 			}
 			
-			if ($category_id){			
-				$return = $this->load->view('extension/module/wallcategory_category', $data);
+			if ($category_id){
+				if ($category_id == CATEGORY_SUBSTANCES){
+					$return = $this->load->view('extension/module/wallcategory_category2', $data);
+				} else {
+					$return = $this->load->view('extension/module/wallcategory_category', $data);
+				}
 				} else {
 				$return = $this->load->view('extension/module/wallcategory', $data);
 			}
