@@ -212,7 +212,7 @@
 			}
 			// BuyOneClickEnd
 			
-						
+			$data['tawkto'] = $this->load->controller('extension/module/tawkto');
 			
 			if (!empty($this->request->get['route']) && $this->request->get['route'] == 'checkout/simplecheckout'){
 				
