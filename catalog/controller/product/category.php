@@ -250,13 +250,13 @@
 				
 				$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
 				$product_total_info = $this->model_catalog_product->getTotalProductsInfo($filter_data);
-				$data['seo'] = array(
-                'name' => $category_info['name'],
-                'offerCount' => $product_total_info['total'],
-                'highPrice' => $product_total_info['max_price'],
-                'lowPrice' => $product_total_info['min_price'],
-                'priceCurrency' => $this->session->data['currency'],
-				);
+				$data['seo'] = [
+                	'name' 			=> $category_info['name'],
+                	'offerCount' 	=> $product_total_info['total'],
+                	'highPrice' 	=> $product_total_info['max_price'],
+                	'lowPrice' 		=> $product_total_info['min_price'],
+                	'priceCurrency' => $this->session->data['currency'],
+				];
 				
 				$data['show_subcats'] = $category_info['show_subcats'];
 				

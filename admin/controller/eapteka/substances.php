@@ -2,29 +2,48 @@
 ini_set('memory_limit', '-1');
 class ControllerEaptekaSubstances extends Controller {	
 	private $substances_category_id = 6660;
+	private $names_final = [
+		'2' => 'Препараты с веществом',
+		'3' => 'Препарати з речовиною',
+	];
+	private $names_parent = [
+		'2' => 'Действующие вещества на',
+		'3' => 'Діючі речовини на',
+	];
 	private $attribute_id = 40;
 
 
-	private function prepareCategory($row){
+	private function prepareCategory($row, $type = 'final'){
+
+		if ($type == 'final'){
+			$name_ru 	= $this->names_final['2'];
+			$name_ua 	= $this->names_final['3'];
+			$parent_id 	= $this->substances_category_id;
+		} elseif ($type == 'parent'){
+			$name_ru 	= $this->names_parent['2'];
+			$name_ua 	= $this->names_parent['3'];
+			$parent_id 	= $row['parent_id'];
+		}
+
 		$data = array(
 					'category_description' => array(
 						"2" => array(
 							'name' 				=> $row['name_ru'],
 							'alternate_name'	=> '',
-							'seo_name' 			=> 'Препараты с веществом ' . $row['name_ru'],
+							'seo_name' 			=> $name_ru . ' ' . $row['name_ru'],
 							'faq_name' 			=> '',
 							'description'		=> '',
-							'meta_title'        => 'Препараты с веществом ' . $row['name_ru'],
+							'meta_title'        => $name_ru . ' ' . $row['name_ru'],
 							'meta_description'  => '',
 							'meta_keyword'      => '',
 						),
 						"3" => array(
 							'name' 				=> $row['name_ua'],
 							'alternate_name'	=> '',
-							'seo_name' 			=> 'Препарати з речовиною ' . $row['name_ua'],
+							'seo_name' 			=> $name_ua . ' ' . $row['name_ua'],
 							'faq_name' 			=> '',
 							'description'		=> '',
-							'meta_title'        => 'Препарати з речовиною ' . $row['name_ua'],
+							'meta_title'        => $name_ua . ' ' . $row['name_ua'],
 							'meta_description'  => '',
 							'meta_keyword'      => '',
 						)
@@ -33,7 +52,7 @@ class ControllerEaptekaSubstances extends Controller {
 						'0'
 					),
 					'image'     	 => '',
-					'parent_id'      => $this->substances_category_id,
+					'parent_id'      => $parent_id,
 					'show_subcats'   => 0,
 					'sort_order'	 => 0,
 					'top' 			 =>	0,
@@ -50,7 +69,6 @@ class ControllerEaptekaSubstances extends Controller {
 
 		return $data;
 	}
-
 
 
 	public function buildAndLink(){
@@ -86,6 +104,9 @@ class ControllerEaptekaSubstances extends Controller {
 		}
 
 		foreach($substances_tmp as $name_ru => $name_ua){
+			//searching for parent
+			$prefix = mb_strtoupper(mb_substr($name_ua, 0, 1));
+
 			$query = $this->db->query("SELECT category_id FROM oc_category WHERE substance = '" . $this->db->escape($name_ru) . "'");
 
 			if (!$query->num_rows){
@@ -104,7 +125,11 @@ class ControllerEaptekaSubstances extends Controller {
 			if ($query->row['category_id']){
 				echoLine('Filling category ' . $query->row['category_id'] . ' (' . $name_ru . ')', 'i');
 				$this->db->query("INSERT IGNORE INTO oc_product_to_category (product_id, category_id) SELECT product_id, " . (int)$query->row['category_id'] . " FROM oc_product_attribute WHERE LOWER(text) = '" . $this->db->escape(mb_strtolower($name_ru)) . "' AND language_id = 2");
+
+				$this->db->query("UPDATE oc_category SET product_count = (SELECT COUNT(product_id) FROM oc_product_to_category WHERE category_id = '" . (int)$query->row['category_id'] . "') WHERE category_id = '" . (int)$query->row['category_id'] . "'");
 			}
+
+
 		}
 
 
