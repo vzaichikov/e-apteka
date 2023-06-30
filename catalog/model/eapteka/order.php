@@ -1,6 +1,66 @@
 <?php
 class ModelEaptekaOrder extends Model
 {
+	private function simpleCustomFieldsToValues($custom_field, $customer_field_value){			
+			if ($custom_field == 'time') {
+				$r = array(
+                '2' =>    'з 10:00 до 14:00',
+                '3' =>    'з 14:00 до 18:00',
+                '4' =>    'з 19:00 до 23:59'
+				);
+				
+				return isset($r[$customer_field_value]) ? $r[$customer_field_value] : false;
+			}
+			
+			if ($custom_field == 'day') {
+				
+				if ($customer_field_value == '7') {
+					return date('Ymd');
+				}
+				
+				if ($customer_field_value == '8') {
+					return date('Ymd', strtotime("+1 day"));
+				}
+				
+				if ($customer_field_value == '9') {
+					return date('Ymd', strtotime("+2 day"));
+				}
+				
+				return false;
+			}
+		}
+		
+		private function customFieldsToValues($custom_field_id, $customer_field_value_id){			
+			if ($custom_field_id == 2) {
+				$r = array(
+                4 =>     'з 10:00 до 14:00',
+                10 =>    'з 14:00 до 18:00',
+                11 =>    'з 19:00 до 23:59'
+				);
+				
+				return isset($r[$customer_field_value_id]) ? $r[$customer_field_value_id] : false;
+			}
+			
+			if ($custom_field_id == 3) {
+				
+				if ($customer_field_value_id == 7) {
+					return date('Ymd');
+				}
+				
+				if ($customer_field_value_id == 8) {
+					return date('Ymd', strtotime("+1 day"));
+				}
+				
+				if ($customer_field_value_id == 9) {
+					return date('Ymd', strtotime("+2 day"));
+				}
+				
+				return false;
+			}
+		}
+
+
+	
 	public function writeOrderToRestAPI($order_id){
 
 		$orders_query = $this->db->ncquery("SELECT *,  
