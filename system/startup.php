@@ -94,6 +94,12 @@ if (is_file(DIR_SYSTEM . '../vendor/autoload.php')) {
 	require_once(DIR_SYSTEM . '../vendor/autoload.php');
 }
 
+$CrawlerDetect = new \Jaybizzle\CrawlerDetect\CrawlerDetect;
+if (!$CrawlerDetect->isCrawler()){
+	$html = file_get_contents(dirname(__FILE__) . '/../index.html');
+	//echo ($html); exit();
+}
+
 function library($class) {
 	$file = DIR_SYSTEM . 'library/' . str_replace('\\', '/', strtolower($class)) . '.php';
 
