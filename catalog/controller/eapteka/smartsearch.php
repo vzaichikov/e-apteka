@@ -124,8 +124,8 @@
 			}	
 			
 			$parsedData = ['p' => [], 'c' => [], 'ocfp' => [], 's' => [] ];
-			
-			foreach ($data as $result){				
+						
+			foreach ($data as $result){		
 				if ($result['type'] == 'p'){
 					$analogues = [];
 					if (!$result['stock'] && $result['atx']){
@@ -161,7 +161,7 @@
 						}
 					}					
 
-					$parsedData['p'][$result['id']] = array(
+					$parsedData['p'][$result['id']] = [
 						'id' 			=> $result['id'],
 						'href' 			=> $result['href'],
 						'name' 			=> $result['name'],
@@ -170,7 +170,7 @@
 						'analog'		=> $analogues,
 						'price' 		=> $this->currency->format($result['price'], $this->session->data['currency']),						
 						'special' 		=> $result['special']?$this->currency->format($result['special'], $this->session->data['currency']):false,
-					);
+					];
 				}
 				
 				if ($result['type'] == 'c'){
@@ -344,6 +344,19 @@
 			}
 
 			$data['results']['p'] = $tmp;
+
+			foreach ($data['results']['p'] as $index => &$product) {
+    			$product['original_index'] = $index;
+			}
+
+			usort($data['results']['p'], function ($a, $b) {    
+				$stockComparison = $b['stock'] - $a['stock'];    
+				if ($stockComparison !== 0) {
+					return $stockComparison;
+				} else {
+					return $a['original_index'] - $b['original_index'];
+				}
+			});
 			
 			$data['results']['total'] = count($data['results']['p']) + count($data['results']['c']) + count($data['results']['co']) + count($data['results']['ocpf'])  + count($data['results']['s']);
 
