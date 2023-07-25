@@ -769,6 +769,28 @@
 									<span class="help"><i class="fa fa-info-circle"></i> UUID основного товара социальной программы</span>
 								</div>
 							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-has_dl_price">Участник "Доступні ліки"</label>
+								<div class="col-sm-10">
+									<select name="input-has_dl_price" id="input-has_dl_price" class="form-control">
+										<?php if ($has_dl_price) { ?>
+											<option value="1" selected="selected"><?php echo $text_yes; ?></option>
+											<option value="0"><?php echo $text_no; ?></option>
+											<?php } else { ?>
+											<option value="1"><?php echo $text_yes; ?></option>
+											<option value="0" selected="selected"><?php echo $text_no; ?></option>
+										<?php } ?>
+									</select>									
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-social_parent_uuid">Ціна "Доступні ліки"</label>
+								<div class="col-sm-10">
+									<input type="text" name="dl_price" value="<?php echo $dl_price; ?>" placeholder="Ціна Доступні ліки" id="input-dl_price" class="form-control" />							
+								</div>
+							</div>
 							
 						</div>
 						<div class="tab-pane" id="tab-links">

@@ -950,6 +950,22 @@
 					
 				}
 			}
+
+			if (isset($this->request->post['has_dl_price'])) {
+				$data['has_dl_price'] = $this->request->post['has_dl_price'];
+				} elseif (!empty($product_info)) {
+				$data['has_dl_price'] = $product_info['has_dl_price'];
+				} else {
+				$data['has_dl_price'] = 0;
+			}
+
+			if (isset($this->request->post['dl_price'])) {
+				$data['dl_price'] = $this->request->post['dl_price'];
+				} elseif (!empty($product_info)) {
+				$data['dl_price'] = $product_info['dl_price'];
+				} else {
+				$data['dl_price'] = 0;
+			}
 			
 			$stocks = $this->model_catalog_product->getProductStocks($this->request->get['product_id']);		
 			$data['stocks'] = array();
