@@ -5,13 +5,14 @@
 			
 			$this->db->query("INSERT INTO " . DB_PREFIX . "nodes 
 			SET 
-			node_name = '" . $this->db->escape($data['node_name']) . "', 
-			is_main = '" . (int)$data['is_main'] . "', 
-			is_stock = '" . (int)$data['is_stock'] . "', 
-			is_catalog = '" . (int)$data['is_catalog'] . "', 
+			node_name 	= '" . $this->db->escape($data['node_name']) . "', 
+			is_main 	= '" . (int)$data['is_main'] . "', 
+			is_stock 	= '" . (int)$data['is_stock'] . "', 
+			is_catalog 	= '" . (int)$data['is_catalog'] . "', 
 			is_customer = '" . (int)$data['is_customer'] . "', 	
-			is_cards = '" . (int)$data['is_cards'] . "',
+			is_cards 	= '" . (int)$data['is_cards'] . "',
 			is_preorder = '" . (int)$data['is_preorder'] . "',
+			is_dl = '" . (int)$data['is_dl'] . "',
 			node_url = '" . $this->db->escape($data['node_url']) . "', 			
 			node_auth = '" . $this->db->escape($data['node_auth']) . "', 
 			node_password = '" . $this->db->escape($data['node_password']) . "'");
@@ -25,15 +26,16 @@
 			
 			$this->db->query("UPDATE " . DB_PREFIX . "nodes 
 			SET 
-			node_name = '" . $this->db->escape($data['node_name']) . "', 
-			is_main = '" . (int)$data['is_main'] . "', 
-			is_stock = '" . (int)$data['is_stock'] . "', 
-			is_catalog = '" . (int)$data['is_catalog'] . "', 
+			node_name 	= '" . $this->db->escape($data['node_name']) . "', 
+			is_main 	= '" . (int)$data['is_main'] . "', 
+			is_stock 	= '" . (int)$data['is_stock'] . "', 
+			is_catalog 	= '" . (int)$data['is_catalog'] . "', 
 			is_customer = '" . (int)$data['is_customer'] . "',
- 			is_cards = '" . (int)$data['is_cards'] . "',
+ 			is_cards 	= '" . (int)$data['is_cards'] . "',
  			is_preorder = '" . (int)$data['is_preorder'] . "',
-			node_url = '" . $this->db->escape($data['node_url']) . "', 			
-			node_auth = '" . $this->db->escape($data['node_auth']) . "', 
+ 			is_dl 		= '" . (int)$data['is_dl'] . "',
+			node_url 	= '" . $this->db->escape($data['node_url']) . "', 			
+			node_auth 	= '" . $this->db->escape($data['node_auth']) . "', 
 			node_password = '" . $this->db->escape($data['node_password']) . "'
 			WHERE node_id = '" . (int)$node_id . "'");
 			
@@ -145,6 +147,17 @@
 		public function getNodesForPreorderUpdate() {
 			
 			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "nodes WHERE is_preorder = 1");
+			
+			if ($query->num_rows) {
+				return $query->rows;			
+				} else {
+				return false;
+			}
+		}
+
+		public function getNodesForDLUpdate() {
+			
+			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "nodes WHERE is_dl = 1");
 			
 			if ($query->num_rows) {
 				return $query->rows;			

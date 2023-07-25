@@ -213,6 +213,7 @@
 			'is_customer',
 			'is_cards',
 			'is_preorder',
+			'is_dl'
 			);
 			
 			foreach ($txt_fields as $_field){
@@ -289,6 +290,7 @@
 				'is_customer'      		=> $result['is_customer'],
 				'is_cards'      		=> $result['is_cards'],
 				'is_preorder'      		=> $result['is_preorder'],
+				'is_dl'      			=> $result['is_dl'],
 				'node_url'      		=> $result['node_url'],
 				'node_auth'      		=> $result['node_auth'],			
 				'node_last_update'      => date($this->language->get('datetime_format'), strtotime($result['node_last_update'])),

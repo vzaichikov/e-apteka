@@ -111,10 +111,25 @@
 					</div>
 
 					<div class="form-group">
-						<label class="col-sm-2 control-label" for="input-is_cards">Синхронизация товаров под заказ</label>
+						<label class="col-sm-2 control-label" for="input-is_preorder">Синхронизация товаров под заказ</label>
 						<div class="col-sm-10">
 							<select name="is_preorder" id="input-is_preorder" class="form-control">
 								<?php if ($is_preorder) { ?>
+									<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+									<option value="0"><?php echo $text_disabled; ?></option>
+									<?php } else { ?>
+									<option value="1"><?php echo $text_enabled; ?></option>
+									<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+								<?php } ?>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="input-is_dl">Синхронизация Доступні Ліки</label>
+						<div class="col-sm-10">
+							<select name="is_dl" id="input-is_dl" class="form-control">
+								<?php if ($is_dl) { ?>
 									<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
 									<option value="0"><?php echo $text_disabled; ?></option>
 									<?php } else { ?>
