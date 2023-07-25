@@ -37,6 +37,11 @@
 			$this->nodes = $this->model_setting_nodes->getNodesForPreorderUpdate();						
 		}
 
+		private function initDLNodes(){			
+			$this->load->model('setting/nodes');
+			$this->nodes = $this->model_setting_nodes->getNodesForDLUpdate();						
+		}
+
 		private function setMethod($method){
 			$this->method = $method;
 		}
@@ -311,8 +316,15 @@
 			$this->elasticSearch = new hobotix\ElasticSearch($this->registry);
 
 			$this->full_update = true;			
-			$this->updateStocks();
-			$this->updatePreorder();		
+			$this->updateStocks();				
+		}
+
+		public function updatePreorderAndDL(){	
+			$this->load->library('hobotix/ElasticSearch');
+			$this->elasticSearch = new hobotix\ElasticSearch($this->registry);
+
+			$this->updateDL();
+			$this->updatePreorder();
 		}
 		
 		public function updateStocks(){
@@ -625,6 +637,103 @@
 				echo '[i] Не найдено узлов для синхронизации каталога' . PHP_EOL;
 				
 			}						
+		}
+
+		public function updateDL(){
+			$this->initDLNodes();
+			$this->setMethod('GET');
+			if ($this->nodes){				
+				foreach ($this->nodes as $node){					
+					$this->model_setting_nodes->setNodeLastUpdateStatusSuccess($node['node_id']);
+
+					$this->address 			= $node['node_url'];
+					$this->login 			= $node['node_auth'];
+					$this->password 		= $node['node_password'];
+					$this->last_update 		= $node['node_last_update'];
+					$this->last_registered 	= $node['node_last_registered'];
+					
+					echo '[i] Начинаем синхронизацию с узлом ' . $node['node_name'] . PHP_EOL;
+					$this->model_setting_nodes->setNodeLastUpdateStatus($node['node_id'], 'NODE_EXCHANGE_START_PROCESS');
+
+					$this->setFile('dl.json');
+					$json = $this->getJSON();
+
+					if (!$json || !is_array($json)){
+						$this->model_setting_nodes->setNodeLastUpdateStatus($node['node_id'], $json);						
+						$this->model_setting_nodes->setNodeLastUpdateStatusError($node['node_id']);
+						
+						$history_data = array(
+						'status' 	=> $json,
+						'type'   	=> 'dl',
+						'json'   	=> $this->exchange_data,
+						'is_error' 	=> 1
+						);
+						
+						$this->model_setting_nodes->addNodeExchangeHistory($node['node_id'], $history_data);						
+						
+						if ($json != 'JSON_ERROR_NONE'){
+							$this->load->library('hobotix/TelegramSender');
+							$telegramSender = new hobotix\TelegramSender;
+							
+							$message = '';
+							$message = 'https://e-apteka.com.ua/error.jpg' . PHP_EOL;
+							$message .= '<b>Господа, у нас ошибка обмена!</b>' . PHP_EOL;
+							$message .= '<b>Скрипт:</b> ' . basename(__FILE__) . PHP_EOL;
+							$message .= '<b>Узел:</b> ' . $node['node_name'] . PHP_EOL;
+							$message .= '<b>URI:</b> ' . $this->address . PHP_EOL;
+							$message .= '<b>Ошибка:</b> ' . $json . '' . PHP_EOL;
+							$message .= '<b>Код ответа:</b> ' . $this->httpcode . PHP_EOL;
+							$message .= '<b>Данные:</b> ' . substr($this->exchange_data,0,500) . '' . PHP_EOL;
+							$message .= '<b>Данные RAW:</b> ' . $this->raw_data . '' . PHP_EOL;
+							
+							$telegramSender->SendMessage($message);
+						}
+						
+						$this->fixBuggyJSON();						
+						die('Не удалось разобрать JSON: ' . $json . PHP_EOL);						
+					}
+
+					if (!$this->product_uuid_array){
+						$this->initCatalog();
+					}
+
+					echoLine("[i] Разбираем товары", 's');
+					$i = 1;
+					$cnt = count($json);
+					
+					if (!$cnt || $json == 'JSON_ERROR_NONE') {
+						$this->model_setting_nodes->setNodeLastUpdateStatus($node['node_id'], 'JSON_ERROR_NONE');
+						$this->model_setting_nodes->setNodeLastUpdateStatusError($node['node_id']);
+						
+						$history_data = array(
+						'status' 	=> 'JSON_ERROR_NONE',
+						'type'   	=> 'dl',
+						'json'   	=> $this->exchange_data,
+						'is_error' 	=> 1
+						);
+						
+						$this->model_setting_nodes->addNodeExchangeHistory($node['node_id'], $history_data);
+						die('Нет зарегистрированных изменений' . PHP_EOL);
+					}
+
+					$this->db->query("UPDATE oc_product SET has_dl_price = 0, dl_price = 0 WHERE 1");	
+					foreach ($json as $dl){						
+						echo "$i / $cnt" . PHP_EOL;
+						$i++;
+
+						if ($product_id = $this->findProduct($dl['GUID'])){							
+							echoLine(" Нашли товар " . $product_id . " - " . $dl['GUID'], 's');	
+							} else {							
+							echoLine(" Не нашли товар " . $product_id . " - " . $dl['GUID'], 'e');								
+						}
+
+						if ($product_id && !empty((float)$dl['PriceDL'])){
+							//var_dump("UPDATE oc_product SET has_dl_price = 1, dl_price = '" . (float)$dl['PriceDL'] . "' WHERE product_id = '" . (int)$product_id . "'");
+							$this->db->query("UPDATE oc_product SET has_dl_price = 1, dl_price = '" . (float)$dl['PriceDL'] . "' WHERE product_id = '" . (int)$product_id . "'");					
+						}					
+					}
+				}
+			}
 		}
 		
 		public function updatePreorder(){
