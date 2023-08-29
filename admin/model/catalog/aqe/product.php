@@ -93,6 +93,7 @@ class ModelCatalogAqeProduct extends Model {
 			'subtract'          => 'p.subtract',
 			'id'                => 'p.product_id',
 			'status'            => 'p.status',
+			'has_dl_price'     	=> 'p.has_dl_price',
 			'requires_shipping' => 'p.shipping',
 		);
 
@@ -124,6 +125,7 @@ class ModelCatalogAqeProduct extends Model {
 			'height'    => 'p.height',
 			'weight'    => 'p.weight',
 			'price'     => 'p.price',
+			'dl_price'  => 'p.dl_price',
 		);
 
 		foreach ($float_interval_filters as $key => $value) {
@@ -178,9 +180,9 @@ class ModelCatalogAqeProduct extends Model {
 		foreach ($anywhere_filters as $key => $value) {
 			if (!empty($data["filter_$key"])) {
 				if ($this->config->get('aqe_match_anywhere')) {
-					$where[] = "$value LIKE '%" . $this->db->escape($data["filter_$key"]) . "%'";
+					$where[] = "LCASE($value) LIKE '%" . $this->db->escape(mb_strtolower($data["filter_$key"])) . "%'";
 				} else {
-					$where[] = "$value LIKE '" . $this->db->escape($data["filter_$key"]) . "%'";
+					$where[] = "LCASE($value) LIKE '" . $this->db->escape(mb_strtolower($data["filter_$key"])) . "%'";
 				}
 			}
 		}

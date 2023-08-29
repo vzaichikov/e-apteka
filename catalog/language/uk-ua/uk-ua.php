@@ -144,6 +144,8 @@ $_['text_we_can_deliver_in_2_days']    = 'Доставимо<br />до 2 діб'
 
 $_['text_price_actual_only_from_site']    = 'Ціна %s є актуальною тільки при замовленні на сайті. Ціна в аптеках може відрізнятись.';
 
+$_['text_dl_receipt']    = 'Ціна за рецептом: ';
+
 	// Error
 $_['error_exception'] = 'Помилка коду(%s): %s у %s у рядку %s';
 $_['error_upload_1'] = 'Попередження: Розмір файлу перевищує значення upload_max_filesize в php.ini!';

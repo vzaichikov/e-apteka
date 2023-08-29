@@ -484,14 +484,17 @@ class ControllerCatalogAqeProduct extends Controller {
 				'selected'   => isset($this->request->post['selected']) && in_array($result['product_id'], $this->request->post['selected']),
 				'action'     => $_buttons
 			);
+
+			$row['has_dl_price_real'] 	= $result['has_dl_price'];
 			if (!is_array($columns)) {
-				$row['name'] = $result['name'];
-				$row['model'] = $result['model'];
-				$row['price'] = $result['price'];
-				$row['special'] = $special;
-				$row['image'] = $result['image'];
-				$row['status'] = ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'));
-				$row['quantity'] = $result['quantity'];
+				$row['name'] 				= $result['name'];
+				$row['model'] 				= $result['model'];
+				$row['price'] 				= $result['price'];
+				$row['special'] 			= $special;
+				$row['image'] 				= $result['image'];
+				$row['status'] 				= ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'));
+				$row['has_dl_price'] 		= ($result['has_dl_price'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'));
+				$row['quantity'] 			= $result['quantity'];
 			} else {
 				foreach ($columns as $column => $attr) {
 					if ($column == 'image') {
@@ -547,6 +550,12 @@ class ControllerCatalogAqeProduct extends Controller {
 						} else {
 							$row[$column] = ((int)$result['status'] ? $this->language->get('text_enabled') : '<span style="color:#FF0000;">' . $this->language->get('text_disabled') . '</span>');
 						}
+					} else if ($column == 'has_dl_price') {
+						if ((int)$result['has_dl_price'] || !$this->config->get('aqe_highlight_status')) {
+							$row[$column] = ((int)$result['has_dl_price'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'));
+						} else {
+							$row[$column] = ((int)$result['has_dl_price'] ? $this->language->get('text_enabled') : '<span style="color:#FF0000;">' . $this->language->get('text_disabled') . '</span>');
+						}					
 					} else if ($column == 'quantity') {
 						if ((int)$result['quantity'] < 0) {
 							$row[$column] = '<span style="color:#FF0000;">' . $result['quantity'] . '</span>';
@@ -596,11 +605,20 @@ class ControllerCatalogAqeProduct extends Controller {
 				}
 			}
 			
-			$row['is_pko'] = $result['is_pko'];
-			$row['is_drug'] = $result['is_drug'];
-			$row['is_receipt'] = $result['is_receipt'];
-			$row['original_name'] = $result['original_name'];
-			$row['dnup'] = $result['dnup'];
+			$row['is_pko'] 			= $result['is_pko'];
+			$row['is_drug'] 		= $result['is_drug'];
+			$row['is_receipt'] 		= $result['is_receipt'];
+			$row['original_name'] 	= $result['original_name'];
+			$row['dnup'] 			= $result['dnup'];
+
+			if ($result['ehealth_id']){
+				$this->load->model('catalog/ehealth');
+				$row['ehealth_info'] = $this->model_catalog_ehealth->getEhealthProduct($result['ehealth_id']);
+
+				if (!empty($row['ehealth_info']['trade_name'])){
+					$row['ehealth'] = $row['ehealth_info']['trade_name'];
+				}
+			}
 			
 			$data['products'][] = $row;
 		}

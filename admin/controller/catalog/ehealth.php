@@ -31,6 +31,23 @@
 			$this->response->redirect($this->url->link('catalog/ehealth', 'token=' . $this->session->data['token'], true));
 		}
 
+		public function upload_simple(){			
+			$this->load->model('catalog/ehealth');
+
+			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+				try {
+					$file = $_FILES['file'];
+					$this->model_catalog_ehealth->parseXLSXSimple($file);
+					$this->session->data['success'] =  'Загрузили файл ' . $file['name'];
+				} catch (Exception $e) {
+					$this->session->data['error'] = 'Error: ' . $e->getMessage();
+				}
+			}
+
+
+			$this->response->redirect($this->url->link('catalog/ehealth', 'token=' . $this->session->data['token'], true));
+		}
+
 
 		protected function getList() {
 			if (isset($this->request->get['sort'])) {
@@ -111,7 +128,7 @@
 				if ($product){
 					$product['pack_number'] = $this->model_catalog_ehealth->getNumberFromName($product['name']);
 					$product['dosage'] 		= $this->model_catalog_ehealth->getMGFromNameAGP($product['name']);
-					$product['dosage2'] 		= $this->model_catalog_ehealth->getMLFromNameAGP($product['name']);
+					$product['dosage2'] 	= $this->model_catalog_ehealth->getMLFromNameAGP($product['name']);					
 				}
 
 				$parse_info = json_decode($result['parse_info'], true);
@@ -126,7 +143,6 @@
 
 							$possible_products[] = $possible_product;
 						}
-
 					}
 				}
 
@@ -150,7 +166,6 @@
 					'parse_info' 				=> $parse_info,
 					'possible' 					=> $possible_products, 	
 					'product' 					=> $product,
-
 					'morion_exists' 			=> $morion_exists,
 					'regnumber_exists' 			=> $regnumber_exists
 				];
@@ -191,10 +206,12 @@
 			$data['order'] = $order;
 
 			$data['upload'] = $this->url->link('catalog/ehealth/upload', 'token=' . $this->session->data['token'], true);
+			$data['upload_simple'] = $this->url->link('catalog/ehealth/upload_simple', 'token=' . $this->session->data['token'], true);
 			
 			$data['canonical'] 					= $this->url->link('catalog/ehealth', 'token=' . $this->session->data['token'], true);
 			$data['filter_morion_not_found'] 	= $this->url->link('catalog/ehealth', 'filter=morion_not_found&token=' . $this->session->data['token'], true);
 			$data['filter_regnumber_not_found'] = $this->url->link('catalog/ehealth', 'filter=regnumber_not_found&token=' . $this->session->data['token'], true);
+			$data['filter_dostupni_liki'] 		= $this->url->link('catalog/ehealth', 'filter=filter_dostupni_liki&token=' . $this->session->data['token'], true);
 
 			$data['filter_many_products_found'] = $this->url->link('catalog/ehealth', 'filter=many_products_found&token=' . $this->session->data['token'], true);
 
@@ -211,6 +228,42 @@
 			$data['footer'] = $this->load->controller('common/footer');
 			
 			$this->response->setOutput($this->load->view('catalog/ehealth', $data));
+		}
+
+
+		public function autocomplete() {
+			$json = array();
+
+			if (isset($this->request->get['filter_name'])) {
+				$this->load->model('catalog/ehealth');
+
+				$filter_data = array(
+					'filter_name' => $this->request->get['filter_name'],
+					'start'       => 0,
+					'limit'       => 20
+				);
+
+				$results = $this->model_catalog_ehealth->getEhealth($filter_data);
+
+				foreach ($results as $result) {
+					$json[] = array(
+						'ehealth_id' 			=> $result['ehealth_id'],
+						'program_id' 			=> $result['program_id'],
+						'trade_name'            => strip_tags(html_entity_decode($result['trade_name'], ENT_QUOTES, 'UTF-8')) . ' [ ' . mb_strtoupper($result['program_name']) . ' ]' . ' ' . '[ ' . $result['ehealth_id'] . ' ]'
+					);
+				}
+			}
+
+			$sort_order = array();
+
+			foreach ($json as $key => $value) {
+				$sort_order[$key] = $value['name'];
+			}
+
+			array_multisort($sort_order, SORT_ASC, $json);
+
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
 		}
 
 

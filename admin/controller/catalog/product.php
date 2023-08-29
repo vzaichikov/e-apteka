@@ -7,7 +7,7 @@
 			
 			$this->document->setTitle($this->language->get('heading_title'));
 			
-			$this->load->model('catalog/product');
+			$this->load->model('catalog/product');			
 			
 			$this->getList();
 		}
@@ -678,6 +678,8 @@
 			$data['tab_reward'] = $this->language->get('tab_reward');
 			$data['tab_design'] = $this->language->get('tab_design');
 			$data['tab_openbay'] = $this->language->get('tab_openbay');
+
+			$this->load->model('catalog/ehealth');
 			
 			if (isset($this->error['warning'])) {
 				$data['error_warning'] = $this->error['warning'];
@@ -813,6 +815,110 @@
 				$data['uuid'] = $product_info['uuid'];
 				} else {
 				$data['uuid'] = '';
+			}
+
+			if (isset($this->request->post['ehealth_id'])) {
+				$data['ehealth_id'] = $this->request->post['ehealth_id'];
+				} elseif (!empty($product_info)) {
+				$data['ehealth_id'] = $product_info['ehealth_id'];
+				} else {
+				$data['ehealth_id'] = '';
+			}
+
+			if (isset($this->request->post['program_id'])) {
+				$data['program_id'] = $this->request->post['program_id'];
+				} elseif (!empty($product_info)) {
+				$data['program_id'] = $product_info['program_id'];
+				} else {
+				$data['program_id'] = '';
+			}
+
+			$data['ehealth'] = '';
+			if ($data['ehealth_id']){				
+				$data['ehealth_info'] = $this->model_catalog_ehealth->getEhealthProduct($data['ehealth_id'], $data['program_id']);
+
+				if (!empty($data['ehealth_info']['trade_name'])){
+					$data['ehealth'] 			= $data['ehealth_info']['trade_name'];
+					$data['ehealth_program'] 	= $data['ehealth_info']['program_name'];
+				}
+			}
+
+			if (isset($this->request->post['ehealth_id_1'])) {
+				$data['ehealth_id_1'] = $this->request->post['ehealth_id_1'];
+				} elseif (!empty($product_info)) {
+				$data['ehealth_id_1'] = $product_info['ehealth_id_1'];
+				} else {
+				$data['ehealth_id_1'] = '';
+			}
+
+			if (isset($this->request->post['program_id_1'])) {
+				$data['program_id_1'] = $this->request->post['program_id_1'];
+				} elseif (!empty($product_info)) {
+				$data['program_id_1'] = $product_info['program_id_1'];
+				} else {
+				$data['program_id_1'] = '';
+			}
+
+			$data['ehealth_1'] = '';
+			if ($data['ehealth_id_1']){
+				$data['ehealth_info_1'] = $this->model_catalog_ehealth->getEhealthProduct($data['ehealth_id_1'], $data['program_id_1']);
+
+				if (!empty($data['ehealth_info_1']['trade_name'])){
+					$data['ehealth_1'] 			= $data['ehealth_info_1']['trade_name'];
+					$data['ehealth_program_1'] 	= $data['ehealth_info_1']['program_name'];
+				}
+			}
+
+			if (isset($this->request->post['ehealth_id_2'])) {
+				$data['ehealth_id_2'] = $this->request->post['ehealth_id_2'];
+				} elseif (!empty($product_info)) {
+				$data['ehealth_id_2'] = $product_info['ehealth_id_2'];
+				} else {
+				$data['ehealth_id_2'] = '';
+			}
+
+			if (isset($this->request->post['program_id_2'])) {
+				$data['program_id_2'] = $this->request->post['program_id_2'];
+				} elseif (!empty($product_info)) {
+				$data['program_id_2'] = $product_info['program_id_2'];
+				} else {
+				$data['program_id_2'] = '';
+			}
+
+			$data['ehealth_2'] = '';
+			if ($data['ehealth_id_2']){
+				$data['ehealth_info_2'] = $this->model_catalog_ehealth->getEhealthProduct($data['ehealth_id_2'], $data['program_id_2']);
+
+				if (!empty($data['ehealth_info_2']['trade_name'])){
+					$data['ehealth_2'] 			= $data['ehealth_info_2']['trade_name'];
+					$data['ehealth_program_2'] 	= $data['ehealth_info_2']['program_name'];
+				}
+			}
+
+			if (isset($this->request->post['ehealth_id_3'])) {
+				$data['ehealth_id_3'] = $this->request->post['ehealth_id_3'];
+				} elseif (!empty($product_info)) {
+				$data['ehealth_id_3'] = $product_info['ehealth_id_3'];
+				} else {
+				$data['ehealth_id_3'] = '';
+			}
+
+			if (isset($this->request->post['program_id_3'])) {
+				$data['program_id_3'] = $this->request->post['program_id_3'];
+				} elseif (!empty($product_info)) {
+				$data['program_id_3'] = $product_info['program_id_3'];
+				} else {
+				$data['program_id_3'] = '';
+			}
+
+			$data['ehealth_3'] = '';
+			if ($data['ehealth_id_3']){
+				$data['ehealth_info_3'] = $this->model_catalog_ehealth->getEhealthProduct($data['ehealth_id_3'], $data['program_id_3']);
+
+				if (!empty($data['ehealth_info_3']['trade_name'])){
+					$data['ehealth_3'] 			= $data['ehealth_info_3']['trade_name'];
+					$data['ehealth_program_3'] 	= $data['ehealth_info_3']['program_name'];
+				}
 			}
 			
 			if (isset($this->request->post['reg_number'])) {

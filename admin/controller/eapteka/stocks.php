@@ -727,7 +727,7 @@
 							echoLine(" Не нашли товар " . $product_id . " - " . $dl['GUID'], 'e');								
 						}
 
-						if ($product_id && !empty((float)$dl['PriceDL'])){
+						if ($product_id && isset($dl['PriceDL'])){
 							//var_dump("UPDATE oc_product SET has_dl_price = 1, dl_price = '" . (float)$dl['PriceDL'] . "' WHERE product_id = '" . (int)$product_id . "'");
 							$this->db->query("UPDATE oc_product SET has_dl_price = 1, dl_price = '" . (float)$dl['PriceDL'] . "' WHERE product_id = '" . (int)$product_id . "'");					
 						}					

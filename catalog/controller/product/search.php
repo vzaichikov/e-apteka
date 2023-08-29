@@ -397,6 +397,7 @@
 			$data['text_drop_intersection'] = $this->language->get('text_drop_intersection');
 			$data['mf_text_request'] = $this->language->get('mf_text_request');
 			$data['mf_text_request_no'] = $this->language->get('mf_text_request_no');
+			$data['text_dl_receipt'] = $this->language->get('text_dl_receipt');
 			$data['mf_search'] = $this->request->get['search'];
 			
 			$data['entry_search'] = $this->language->get('entry_search');

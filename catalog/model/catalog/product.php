@@ -39,6 +39,12 @@
 					} else {
 					$price_of_part_special = false;
 				}
+
+				if ((float)$result['dl_price']) {
+					$dl_price = $this->currency->format($this->tax->calculate($result['dl_price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+					} else {
+					$dl_price = false;
+				}
 				
 				if ($this->config->get('config_tax')) {
 					$tax = $this->currency->format((float)$result['special'] ? $result['special'] : $result['price'], $this->session->data['currency']);
@@ -75,6 +81,7 @@
 				'pov_part_id' 		=> $result['pov_part_id'],
 				'price_of_part' 			=> $price_of_part,
 				'price_of_part_special' 	=> $price_of_part_special,
+				'dl_price' 			=> $dl_price,
 				'text_full_pack'    => sprintf($this->language->get('text_full_pack'), $result['count_of_parts']),
 				'text_part_pack'	=> $this->language->get('text_part_pack'),
 				'special'     		=> $special,
@@ -392,9 +399,7 @@
 					}
 				}				
 				
-				if ($query->num_rows) {					
-					$seo = $this->cache->get('product.seo.' . $query->row['product_id'] . (int)$this->config->get('config_language_id'));					
-					if(!$seo){						
+				if ($query->num_rows) {										
 						$this->load->model("tool/image");																		
 						$ratingCount = $query->row['reviews'];
 						
@@ -459,11 +464,7 @@
 						"availability": "http://schema.org/'.$in_stok.'"
 						}
 						}
-						</script>
-						';
-						
-						$this->cache->set('product.seo.' . $query->row['product_id'] . (int)$this->config->get('config_language_id'), $seo);
-					}
+						</script>';				
 					
 					//Невозможность доставки и оплаты
 					/*
@@ -661,7 +662,9 @@
 					'price_of_part_special' => $query->row['price_of_part_special'],
 					'price_retail'     		=> $query->row['price_retail'],
 					'price_of_part_retail' 	=> $query->row['price_of_part_retail'],
-                    'general_price'    => $general_price,
+					'has_dl_price' 			=> $query->row['has_dl_price'],
+					'dl_price' 			=> $query->row['dl_price'],
+                    'general_price'    		=> $general_price,
                     'has_pricegroup_discount' => $has_pricegroup_discount,
                     'special'          => $query->row['special'],
                     'reward'           => $query->row['reward'],

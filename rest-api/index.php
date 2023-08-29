@@ -88,7 +88,7 @@ $errorMiddleware->setDefaultErrorHandler($customErrorHandler);
 $restApp->add(function (Request $request, RequestHandler $handler) use ($restApp) {
     $apiKey = $request->getHeaderLine('X-API-KEY');
 
-    return $handler->handle($request);
+ //   return $handler->handle($request);
     
     if ($apiKey == REST_API_TOKEN) {
         return $handler->handle($request);

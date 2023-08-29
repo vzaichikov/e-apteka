@@ -79,6 +79,7 @@
 			$data['text_limit'] = $this->language->get('text_limit');
 			$data['text_not_in_stock'] = $this->language->get('text_not_in_stock');
 			$data['text_has_analogs'] 	= $this->language->get('text_has_analogs');
+			$data['text_dl_receipt'] = $this->language->get('text_dl_receipt');
 			
 			$data['button_cart'] = $this->language->get('button_cart');
 			$data['button_wishlist'] = $this->language->get('button_wishlist');

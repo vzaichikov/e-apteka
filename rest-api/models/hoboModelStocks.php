@@ -42,10 +42,27 @@ class hoboModelStocks extends hoboModel{
 	}
 
 	public function updateStocks($stocks){
+		$result = [];
+		
+		foreach ($stocks as $stock){
+			$updatedStock = $this->updateProductStocks($stock['ProductID'], [$stock]);
+			
+			if ($updatedStock){
+				$result[] = [
+					'ProductID' 	=> $stock['ProductID'],
+					'DrugstoreID' 	=> $stock['DrugstoreID'],
+					'Success' 		=> true
+				];
+			} else {
+				$result[] = [
+					'ProductID' 	=> $stock['ProductID'],
+					'DrugstoreID' 	=> $stock['DrugstoreID'],
+					'Success' 		=> false
+				];
+			}
+		}
 
-
-
-
+		return $result;
 	}
 
 
@@ -61,7 +78,6 @@ class hoboModelStocks extends hoboModel{
 		}
 
 		foreach ($stocks as $stock){
-
 			if (empty($stock['ProductQuanity'])){
 				$stock['ProductQuanity'] = $stock['ProductCount'] - $stock['ProductReserve'];
 			}

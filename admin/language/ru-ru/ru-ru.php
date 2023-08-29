@@ -12,8 +12,8 @@ $_['thousand_point']                = ' ';
 // Text
 $_['text_yes']                      = 'Да';
 $_['text_no']                       = 'Нет';
-$_['text_enabled']                  = 'Включено';
-$_['text_disabled']                 = 'Отключено';
+$_['text_enabled']                  = 'Вкл';
+$_['text_disabled']                 = 'Откл';
 $_['text_none']                     = ' --- Не выбрано --- ';
 $_['text_select']                   = ' --- Выберите --- ';
 $_['text_select_all']               = 'Выделить все';

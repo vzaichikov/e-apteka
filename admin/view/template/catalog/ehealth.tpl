@@ -3,11 +3,22 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right">
+        <form class="form-horizontal" method="post" enctype="multipart/form-data" action="<?php echo $upload_simple; ?>">
+          <div class="form-group">           
+            <div class="col-sm-12">
+              <input type="file" class="custom-file-input" id="file" name="file" accept=".xlsx">
+              <button class="btn btn-danger" type="submit">Загрузить реестр Ehealth/Скарб. Доступні Ліки, простой</button>
+            </div>
+          </div>
+        </form>   
+      </div>
+
+      <div class="pull-right"  style="margin-right:20px;">
         <form class="form-horizontal" method="post" enctype="multipart/form-data" action="<?php echo $upload; ?>">
           <div class="form-group">           
             <div class="col-sm-12">
               <input type="file" class="custom-file-input" id="file" name="file" accept=".xlsx">
-              <button class="btn btn-primary" type="submit" class="btn btn-default">Загрузить реестр Ehealth/Скарб</button>
+              <button class="btn btn-warning" type="submit">Загрузить реестр Ehealth/Скарб. Антибиотики, расширенный</button>
             </div>
           </div>
         </form>   
@@ -47,6 +58,12 @@
             <div class="col-sm-2">
               <div class="form-group">
                   <a class="btn btn-danger" href="<?php echo $filter_regnumber_not_found; ?>">Морион РЕГ не найден в AГП</a>
+              </div>
+            </div>
+
+            <div class="col-sm-2">
+              <div class="form-group">
+                  <a class="btn btn-warning" href="<?php echo $filter_dostupni_liki; ?>">Доступні ліки</a>
               </div>
             </div>
 
@@ -105,6 +122,9 @@
                     Название
                   </td>
                   <td class="text-left">
+                    Программа
+                  </td>
+                  <td class="text-left">
                     Морион
                   </td>
                   <td class="text-left">
@@ -152,7 +172,16 @@
                     <?php if  ($ehealth['dosage2']) { ?>
                       <span class="label label-info"><?php echo $ehealth['dosage2']; ?></span> 
                     <?php } ?> 
+
+                    <?php if  ($ehealth['ehealth_id']) { ?>
+                      <br/><span class="label label-success"><?php echo $ehealth['ehealth_id']; ?></span> 
+                    <?php } ?>
                   </td>
+
+                  <td class="left" style="width:90px;">  
+                    <?php echo $ehealth['program_name']; ?>
+                  </td> 
+
                   <td class="left" style="width:90px;">
                     <?php echo $ehealth['morion_code']; ?>
 
@@ -224,6 +253,8 @@
                       <?php if  ($ehealth['product']['dosage2']) { ?>
                         <span class="label label-info"><?php echo $ehealth['product']['dosage2']; ?></span> 
                       <?php } ?>
+
+
                     <?php } ?>
 
                      <?php if ($ehealth['possible']) { ?>

@@ -5,7 +5,13 @@
 			<div class="pull-right">
 				<button type="submit" form="form-product" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
 			<a href="<?php echo $cancel; ?>" data-toggle="tooltip" title="<?php echo $button_cancel; ?>" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
-			<h1><?php echo $heading_title; ?></h1>
+		
+			<?php if (!empty($product_description[3])) { ?>
+				<h1><?php echo $product_description[3]['name']; ?></h1>
+			<?php } else { ?>
+				<h1><?php echo $heading_title; ?></h1>
+			<?php } ?>
+
 			<ul class="breadcrumb">
 				<?php foreach ($breadcrumbs as $breadcrumb) { ?>
 					<li><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a></li>
@@ -28,7 +34,7 @@
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li>
 						<li><a href="#tab-data" data-toggle="tab"><?php echo $tab_data; ?></a></li>
-						<li><a href="#tab-likreestr" data-toggle="tab">Реестр</a></li>
+						<li><a href="#tab-likreestr" data-toggle="tab">Реестр, Ehealth</a></li>
 						<li><a href="#tab-stocks" data-toggle="tab">Цены, нал</a></li>
 						<li><a href="#tab-links" data-toggle="tab"><?php echo $tab_links; ?></a></li>
 						<li><a href="#tab-same" data-toggle="tab"><?php echo $tab_same; ?></a></li>
@@ -134,6 +140,76 @@
 						</div>
 						
 						<div class="tab-pane" id="tab-likreestr">
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-ehealth_id">Связанный товар Ehealth (Скарб)</span></label>
+								<div class="col-sm-8">
+									<input type="text" name="ehealth" value="<?php echo $ehealth; ?>" placeholder="Искать по справочнику Ehealth" id="input-ehealth_id" class="form-control" />
+									<input type="hidden" name="ehealth_id" value="<?php echo $ehealth_id; ?>" />
+									<input type="hidden" name="program_id" value="<?php echo $program_id; ?>" />
+									<span class="label label-info"><?php echo $ehealth_program; ?></span> <span class="label label-success"><?php echo $ehealth_id; ?></span>
+								</div>
+								<div class="col-sm-2">
+									<button class="btn btn-danger" onclick="$('input[name=\'ehealth\']').val(''); $('input[name=\'ehealth_id\']').val(''); $('input[name=\'program_id\']').val(''); return false;"><i class="fa fa-times"></i></button>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-ehealth_id_1">Связанный товар Ehealth (Скарб) - 1</span></label>
+								<div class="col-sm-8">
+									<input type="text" name="ehealth_1" value="<?php echo $ehealth_1; ?>" placeholder="Искать по справочнику Ehealth" id="input-ehealth_id_1" class="form-control" />
+									<input type="hidden" name="ehealth_id_1" value="<?php echo $ehealth_id_1; ?>" />
+									<input type="hidden" name="program_id_1" value="<?php echo $program_id_1; ?>" />
+									<span class="label label-info"><?php echo $ehealth_program_1; ?></span> <span class="label label-success"><?php echo $ehealth_id_1; ?></span>
+								</div>
+								<div class="col-sm-2">
+									<button class="btn btn-danger" onclick="$('input[name=\'ehealth_1\']').val(''); $('input[name=\'ehealth_id_1\']').val(''); $('input[name=\'program_id_1\']').val(''); return false;"><i class="fa fa-times"></i></button>
+								</div>
+							</div>						
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-ehealth_id_2">Связанный товар Ehealth (Скарб) - 2</span></label>
+								<div class="col-sm-8">
+									<input type="text" name="ehealth_2" value="<?php echo $ehealth_2; ?>" placeholder="Искать по справочнику Ehealth" id="input-ehealth_id_2" class="form-control" />
+									<input type="hidden" name="ehealth_id_2" value="<?php echo $ehealth_id_2; ?>" />
+									<input type="hidden" name="program_id_2" value="<?php echo $program_id_2; ?>" />
+									<span class="label label-info"><?php echo $ehealth_program_2; ?></span> <span class="label label-success"><?php echo $ehealth_id_2; ?></span>
+								</div>
+								<div class="col-sm-2">
+									<button class="btn btn-danger" onclick="$('input[name=\'ehealth_2\']').val(''); $('input[name=\'ehealth_id_2\']').val(''); $('input[name=\'program_id_2\']').val(''); return false;"><i class="fa fa-times"></i></button>
+								</div>
+							</div>	
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-ehealth_id_3">Связанный товар Ehealth (Скарб) - 3</span></label>
+								<div class="col-sm-8">
+									<input type="text" name="ehealth_3" value="<?php echo $ehealth_3; ?>" placeholder="Искать по справочнику Ehealth" id="input-ehealth_id_3" class="form-control" />
+									<input type="hidden" name="ehealth_id_3" value="<?php echo $ehealth_id_3; ?>" />
+									<input type="hidden" name="program_id_3" value="<?php echo $program_id_3; ?>" />
+									<span class="label label-info"><?php echo $ehealth_program_3; ?></span> <span class="label label-success"><?php echo $ehealth_id_3; ?></span>
+								</div>
+								<div class="col-sm-2">
+									<button class="btn btn-danger" onclick="$('input[name=\'ehealth_3\']').val(''); $('input[name=\'ehealth_id_3\']').val(''); $('input[name=\'program_id_3\']').val(''); return false;"><i class="fa fa-times"></i></button>
+								</div>
+							</div>	
+
+							<?php if (!empty($ehealth_info)) { ?>
+								<div class="form-group">
+									<table class="table table-striped table-bordered">
+										<?php foreach ($ehealth_info as $key => $value) { ?>
+											<tr>
+												<td>
+													<?php echo $key; ?>
+												</td>
+												<td>
+													<?php echo $value; ?>
+												</td>
+											</tr>		
+										<?php } ?>
+									</table>
+								</div>
+							<?php } ?>
+							<hr />
+
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-reg_trade_name">Торгівельне найменування</label>
 								<div class="col-sm-10">
@@ -773,7 +849,7 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-has_dl_price">Участник "Доступні ліки"</label>
 								<div class="col-sm-10">
-									<select name="input-has_dl_price" id="input-has_dl_price" class="form-control">
+									<select name="has_dl_price" id="has_dl_price" class="form-control">
 										<?php if ($has_dl_price) { ?>
 											<option value="1" selected="selected"><?php echo $text_yes; ?></option>
 											<option value="0"><?php echo $text_no; ?></option>
@@ -1807,6 +1883,63 @@
 				$('input[name=\'manufacturer_id\']').val(item['value']);
 			}
 		});
+
+		$('input[name=\'ehealth\']').autocomplete({
+			'source': function(request, response) {
+				$.ajax({
+					url: 'index.php?route=catalog/ehealth/autocomplete&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request),
+					dataType: 'json',
+					success: function(json) {
+						json.unshift({
+							ehealth_id: '',
+							trade_name: '<?php echo $text_none; ?>'
+						});
+						
+						response($.map(json, function(item) {
+							return {
+								label: item['trade_name'],
+								value: item['ehealth_id'] + '+' + item['program_id']
+							}
+						}));
+					}
+				});
+			},
+			'select': function(item) {
+				$('input[name=\'ehealth\']').val(item['label']);								
+				$('input[name=\'ehealth_id\']').val(item['value'].split('+')[0]);
+				$('input[name=\'program_id\']').val(item['value'].split('+')[1]);
+			}
+		});
+
+		<?php for ($i = 1; $i <= 3; $i++) { ?>
+			$('input[name=\'ehealth_<?php echo $i; ?>\']').autocomplete({
+			'source': function(request, response) {
+				$.ajax({
+					url: 'index.php?route=catalog/ehealth/autocomplete&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request),
+					dataType: 'json',
+					success: function(json) {
+						json.unshift({
+							ehealth_id: '',
+							trade_name: '<?php echo $text_none; ?>'
+						});
+						
+						response($.map(json, function(item) {
+							return {
+								label: item['trade_name'],
+								value: item['ehealth_id'] + '+' + item['program_id']
+							}
+						}));
+					}
+				});
+			},
+			'select': function(item) {
+				$('input[name=\'ehealth_<?php echo $i; ?>\']').val(item['label']);
+				$('input[name=\'ehealth_id_<?php echo $i; ?>\']').val(item['value'].split('+')[0]);
+				$('input[name=\'program_id_<?php echo $i; ?>\']').val(item['value'].split('+')[1]);
+			}
+		});
+
+		<?php } ?>
 		
 		// Category
 		$('input[name=\'category\']').autocomplete({

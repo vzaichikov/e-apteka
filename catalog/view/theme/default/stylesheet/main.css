@@ -9216,7 +9216,21 @@ label.el-checkbox {
     position: relative;
     border-radius: 20px;
 }
+.product-item  .product-layout__dl{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 20px;
+}
+.product-item  .product-layout__dl p{
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 0;
+}
 
+.product-item  .product-layout__dl b{
+    margin-left: 4px;
+}
 .product-item .price_group .price.price-not-in-stock {
     color: #7d7d7d;
 }
@@ -9631,6 +9645,21 @@ label.el-checkbox {
     }
 }
 @media screen and (max-width: 556px) {
+    .product-item  .product-layout__dl{
+        gap: 5px;
+    }
+    .product-item  .product-layout__dl img{
+        max-width: 50px;
+    }
+    .product-item  .product-layout__dl p{
+        font-size: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+    .product-item  .product-layout__dl p b{
+        margin-left: 0;
+    }
     .wrap-slider .swiper-container {
         padding: 0 15px;
     }

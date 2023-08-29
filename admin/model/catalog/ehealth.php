@@ -34,6 +34,41 @@ class ModelCatalogEhealth extends Model {
 		unlink($file['tmp_name']);
 	}
 
+
+	public function parseXLSXSimple($file){
+		if ( $xlsx = \Shuchkin\SimpleXLSX::parse($file['tmp_name'])) {
+			$i = 0;
+
+			foreach ($xlsx->rows() as $row){
+				if ($i == 0){ $i++; continue; }
+				if ($i == 1){ $i++; continue; }
+
+				$this->addEhealth(
+					[
+						'program_id' 				=> $row[0],
+						'program_name' 				=> $row[1],
+						'morion_code' 				=> $row[2],
+						'trade_name' 				=> $row[3],
+						'ehealth_id' 				=> $row[4],
+						'participant_id' 			=> $row[5],
+						'manufacturer' 				=> '',
+						'manufacturer_trade_name' 	=> $row[3],
+						'pack' 						=> '',
+						'reg_number' 				=> '',
+						'package_min_qty' 			=> 0,
+						'package_qty' 				=> 0,
+					]
+				);
+			}
+
+
+		} else {
+			throw new \Exception( \Shuchkin\SimpleXLSX::parseError() );
+		}
+
+		unlink($file['tmp_name']);
+	}
+
 	public function addEhealth($data){
 		$this->db->query("
 			INSERT INTO oc_ehealth SET
@@ -72,6 +107,10 @@ class ModelCatalogEhealth extends Model {
 			$sql .= " AND product_id = 0";
 		}
 
+		if (!empty($data['filter_name'])){
+			$sql .= " AND e.trade_name LIKE ('%" . $this->db->escape($data['filter_name']) . "%')";
+		}
+
 		if (!empty($data['filter'])){
 			if ($data['filter'] == 'morion_not_found'){
 				$sql .= " AND e.morion_code <> '' AND e.morion_code NOT IN (SELECT upc FROM oc_product WHERE upc)";
@@ -83,6 +122,10 @@ class ModelCatalogEhealth extends Model {
 
 			if ($data['filter'] == 'many_products_found'){
 				$sql .= " AND parse_info LIKE ('%REGNUMBER_FOUND_X%') OR parse_info LIKE ('%MORION_FOUND_X%')";
+			}
+
+			if ($data['filter'] == 'filter_dostupni_liki'){
+				$sql .= " AND product_id IN (SELECT product_id FROM oc_product WHERE has_dl_price = 1)";
 			}
 		}
 
@@ -97,6 +140,14 @@ class ModelCatalogEhealth extends Model {
 			$sql .= " AND e.product_id = 0";
 		}
 
+		if (!empty($data['filter_name'])){
+			$sql .= " AND e.trade_name LIKE ('%" . $this->db->escape($data['filter_name']) . "%')";
+		}
+
+		if (!empty($data['filter_program_name'])){
+			$sql .= " AND e.program_name LIKE ('%" . $this->db->escape($data['filter_program_name']) . "%')";
+		}
+
 		if (!empty($data['filter'])){
 			if ($data['filter'] == 'morion_not_found'){
 				$sql .= " AND e.morion_code <> '' AND e.morion_code NOT IN (SELECT upc FROM oc_product WHERE upc)";
@@ -108,6 +159,10 @@ class ModelCatalogEhealth extends Model {
 
 			if ($data['filter'] == 'many_products_found'){
 				$sql .= " AND parse_info LIKE ('%REGNUMBER_FOUND_X%') OR parse_info LIKE ('%MORION_FOUND_X%')";
+			}
+
+			if ($data['filter'] == 'filter_dostupni_liki'){
+				$sql .= " AND product_id IN (SELECT product_id FROM oc_product WHERE has_dl_price = 1)";
 			}
 		}
 
@@ -126,6 +181,22 @@ class ModelCatalogEhealth extends Model {
 		}			
 
 		return $this->db->query($sql)->rows;
+	}
+
+	public function getEhealthProduct($ehealth_id, $program_id = ''){
+		$sql = "SELECT * FROM oc_ehealth WHERE ehealth_id = '" . $this->db->escape($ehealth_id) . "'";
+
+		if ($program_id){
+			$sql .= " AND program_id = '" . $this->db->escape($program_id) . "'";
+		}
+
+		$query = $this->db->query($sql);
+
+		if ($query->num_rows){
+			return $query->row;	
+		}
+			
+		return false;
 	}
 
 	public function getNumberFromName($name){
@@ -235,5 +306,6 @@ class ModelCatalogEhealth extends Model {
 
 	public function linkProduct($product_id, $ehealth_id){
 		$this->db->query("UPDATE oc_ehealth SET product_id = '" . (int)$product_id . "' WHERE ehealth_id = '" . $this->db->escape($ehealth_id) . "'");
+		$this->db->query("UPDATE oc_product SET ehealth_id = '" . $this->db->escape($ehealth_id) . "' WHERE product_id = '" . (int)$product_id . "'");		
 	}
 }

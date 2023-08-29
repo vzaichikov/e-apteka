@@ -24,6 +24,9 @@ $_['column_quantity']        = 'Количество';
 $_['column_status']          = 'Статус';
 $_['column_action']          = 'Действие';
 
+$_['column_has_dl_price']      = 'Д.Ліки';
+$_['column_dl_price']          = 'Ціна ДЛ';
+
 // Entry
 $_['entry_name']             = 'Название товара';
 $_['entry_description']      = 'Описание';

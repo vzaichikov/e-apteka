@@ -410,6 +410,7 @@
 				$data['text_wherebuy'] 			= $this->language->get('text_wherebuy');
 				$data['text_not_in_stock'] 		= $this->language->get('text_not_in_stock');
 				$data['text_has_analogs'] 		= $this->language->get('text_has_analogs');
+				$data['text_dl_receipt'] = $this->language->get('text_dl_receipt');
 				$data['text_is_in_stock_in_drugstores'] = $this->language->get('text_is_in_stock_in_drugstores');
 				
 				$data['text_yourprice'] = $this->language->get('text_yourprice');

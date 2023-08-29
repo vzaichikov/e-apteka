@@ -75,22 +75,22 @@ class ModelCatalogOCFilter extends Model {
     if (isset($data['ocfilter_option_value'])) {
 			if (isset($data['ocfilter_option_value']['update'])) {
 				foreach ($data['ocfilter_option_value']['update'] as $value_id => $value) {
-	        $this->db->query("INSERT INTO " . DB_PREFIX . "ocfilter_option_value SET option_id = '" . (int)$option_id . "', value_id = '" . (string)$value_id . "', sort_order = '" . (int)$value['sort_order'] . "', `keyword` = '" . $this->db->escape($this->translit($value['language'][$this->config->get('config_language_id')]['name'])) . "', color = '" . $this->db->escape($value['color']) . "', image = '" . $this->db->escape($value['image']) . "'");
+	        $this->db->query("INSERT IGNORE INTO " . DB_PREFIX . "ocfilter_option_value SET option_id = '" . (int)$option_id . "', value_id = '" . (string)$value_id . "', sort_order = '" . (int)$value['sort_order'] . "', `keyword` = '" . $this->db->escape($this->translit($value['language'][$this->config->get('config_language_id')]['name'])) . "', color = '" . $this->db->escape($value['color']) . "', image = '" . $this->db->escape($value['image']) . "'");
 
 	        foreach ($value['language'] as $language_id => $language) {
-					  $this->db->query("INSERT INTO " . DB_PREFIX . "ocfilter_option_value_description SET value_id = '" . (string)$value_id . "', option_id = '" . (int)$option_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($language['name']) . "'");
+					  $this->db->query("INSERT IGNORE INTO " . DB_PREFIX . "ocfilter_option_value_description SET value_id = '" . (string)$value_id . "', option_id = '" . (int)$option_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($language['name']) . "'");
 					}
 				}
 			}
 
 			if (isset($data['ocfilter_option_value']['insert'])) {
 				foreach ($data['ocfilter_option_value']['insert'] as $value) {
-	        $this->db->query("INSERT INTO " . DB_PREFIX . "ocfilter_option_value SET option_id = '" . (int)$option_id . "', sort_order = '" . (int)$value['sort_order'] . "', `keyword` = '" . $this->db->escape($this->translit($value['language'][$this->config->get('config_language_id')]['name'])) . "', color = '" . $this->db->escape($value['color']) . "', image = '" . $this->db->escape($value['image']) . "'");
+	        $this->db->query("INSERT IGNORE INTO " . DB_PREFIX . "ocfilter_option_value SET option_id = '" . (int)$option_id . "', sort_order = '" . (int)$value['sort_order'] . "', `keyword` = '" . $this->db->escape($this->translit($value['language'][$this->config->get('config_language_id')]['name'])) . "', color = '" . $this->db->escape($value['color']) . "', image = '" . $this->db->escape($value['image']) . "'");
 
 					$value_id = $this->db->getLastId();
 
 	        foreach ($value['language'] as $language_id => $language) {
-					  $this->db->query("INSERT INTO " . DB_PREFIX . "ocfilter_option_value_description SET value_id = '" . (string)$value_id . "', option_id = '" . (int)$option_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($language['name']) . "'");
+					  $this->db->query("INSERT IGNORE INTO " . DB_PREFIX . "ocfilter_option_value_description SET value_id = '" . (string)$value_id . "', option_id = '" . (int)$option_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($language['name']) . "'");
 					}
 				}
 			}

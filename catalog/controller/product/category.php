@@ -142,6 +142,7 @@
 				$data['text_limit'] 		= $this->language->get('text_limit');
 				$data['text_not_in_stock'] 	= $this->language->get('text_not_in_stock');
 				$data['text_has_analogs'] 	= $this->language->get('text_has_analogs');
+				$data['text_dl_receipt'] 	= $this->language->get('text_dl_receipt');
 				
 				$data['text_name_order_count_asc'] = $this->language->get('text_name_order_count_asc');
 				$data['text_name_order_count_desc'] = $this->language->get('text_name_order_count_desc');

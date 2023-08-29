@@ -15,7 +15,7 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 		<a href="<?php echo $product['href']; ?>" title="<?php echo strip_tags($product['name']); ?>" >
 			<img src="<?php echo $product['thumb']; ?>" alt="<?php echo strip_tags($product['name']); ?>" title="<?php echo strip_tags($product['name']); ?>" width="200" height="200" class="img-responsive swiper-lazy" loading="lazy">
 		</a>
-		<?php if ($is_mobile) { ?>
+		<?php if (false /*!$is_mobile*/) { ?>
 			<?php if ($product['rating']) { ?>
 				<div class="rating">
 					<?php for ($i = 1; $i <= 5; $i++) { ?>
@@ -31,7 +31,7 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 	</div>
 	
 	<div class="product-layout__caption">
-		<?php if (!$is_mobile) { ?>
+		<?php if (false /*!$is_mobile*/) { ?>
 			<?php if ($product['rating']) { ?>
 				<div class="rating">
 					<?php for ($i = 1; $i <= 5; $i++) { ?>
@@ -51,6 +51,13 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 			<?php } ?>
 		</div>
 	</div>
+
+	<?php if ($product['dl_price']) { ?>
+		<div class="product-layout__dl">
+			<img src="/image/dl-logo.svg" width="70px"/> 
+			<p><?php echo $text_dl_receipt; ?> <b><?php echo $product['dl_price']; ?></b></p>
+		</div>
+	<?php } ?>
 
 	<div class="price_group">
 		<div>

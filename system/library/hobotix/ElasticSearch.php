@@ -849,7 +849,7 @@
 			];
 			
 			try{
-				//$response = $this->elastic->indices()->delete($deleteParams);
+			//	$response = $this->elastic->indices()->delete($deleteParams);
 			} catch (\Exception $e){
 				echoLine($e->getMessage());
 			}

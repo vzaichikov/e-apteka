@@ -149,6 +149,8 @@
 
 	$_['text_we_can_deliver_in_2_days']    = 'Доставим<br />до 2 дней';
 	$_['text_price_actual_only_from_site']    = 'Цена %s актуальна только при заказе на сайте. Цена в аптеках может отличаться.';
+
+	$_['text_dl_receipt']    = 'Цена по рецепту: ';
 	
 	// Error
 	$_['error_exception']       = 'Ошибка кода(%s): %s в %s на строке %s';

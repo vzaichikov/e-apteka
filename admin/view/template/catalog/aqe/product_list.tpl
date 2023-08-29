@@ -137,7 +137,8 @@
 									case 'selector': ?>
 								<th></th>
 									<?php break;
-									case 'status': ?>
+									case 'status':
+									case 'has_dl_price': ?>
 								<th class="<?php echo $column_info[$col]['align']; ?>">
 									<select name="filter_<?php echo $col; ?>" class="form-control input-sm search_init fltr <?php echo $col; ?>" data-column="<?php echo $col; ?>">
 										<option value=""></option>
@@ -363,8 +364,19 @@
 									<?php if ($product['dnup']) { ?>
 										<span class="label label-danger"><i class="fa fa-times" aria-hidden="true"></i> Наименование</span>
 									<?php } ?>
-								
-									
+
+									<?php if ($product['has_dl_price_real']) { ?>
+										<br /><br />										
+										<img src="https://e-apteka.com.ua/image/dl-logo.svg" width="50px" />
+									<?php } ?>
+
+									<?php if ($product['ehealth']) { ?>
+										<br /><br />
+										<span class="text-success"><i class="fa fa-check"></i> Ehealth: <?php echo $product['ehealth']?></span>
+									<?php } else { ?>
+										<br /><br />
+										<span class="text-danger"><b><i class="fa fa-exclamation-triangle"></i> Ehealth</b></span>
+									<?php } ?>
 									</td>		
 											
 											
