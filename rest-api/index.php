@@ -31,6 +31,7 @@ require_once __DIR__ . '/models/hoboModelProduct.php';
 require_once __DIR__ . '/models/hoboModelStocks.php';
 require_once __DIR__ . '/models/hoboModelOrder.php';
 require_once __DIR__ . '/models/hoboModelDrugstore.php';
+require_once __DIR__ . '/models/hoboModelPrice.php';
 
 $dbObject = new \DB\MySQLiRest(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT);
 
@@ -38,6 +39,7 @@ $modelProduct   = new \hobotix\hoboModelProduct($dbObject);
 $modelStocks    = new \hobotix\hoboModelStocks($dbObject);
 $modelOrder     = new \hobotix\hoboModelOrder($dbObject);
 $modelDrugstore = new \hobotix\hoboModelDrugstore($dbObject);
+$modelPrice = new \hobotix\hoboModelPrice($dbObject);
 
 $restApp = AppFactory::create();
 $restApp->setBasePath('/rest-api');
@@ -318,6 +320,33 @@ $restApp->delete('/drugstores/{id}', function (Request $request, Response $respo
 
 
 /*************************************************************************************
+* 
+* PRICES
+* 
+/*********************************************************************************/
+
+/*********************************************************************************/
+/*
+    Point to set prices for any
+*/
+$restApp->put('/prices/', function (Request $request, Response $response, array $args) use ($modelPrice) {
+    $body = $request->getBody()->getContents();
+    $data = json_decode($body, true);
+    if (!is_array($data)) {
+        throw new HttpBadRequestException($request, "Invalid JSON body");
+    }
+
+    if ($prices = $modelPrice->updatePrices($data)){        
+        $payload = ['success' => true, 'data' => $prices];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+    } else {
+        throw new HttpNotFoundException($request, 'Fail happened');
+    }
+
+    return $response;
+});
+
+/*************************************************************************************
  * 
  * STOCKS
  * 
@@ -353,7 +382,7 @@ $restApp->put('/stocks/', function (Request $request, Response $response, array 
         $payload = ['success' => true, 'data' => $stocks];
         $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
     } else {
-        throw new HttpNotFoundException($request, 'Product ' . $args['id'] . ' not found');
+        throw new HttpNotFoundException($request, 'Fail happened');
     }
 
     return $response;

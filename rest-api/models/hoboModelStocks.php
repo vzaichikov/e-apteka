@@ -2,23 +2,25 @@
 
 namespace hobotix;
 
-class hoboModelStocks extends hoboModel{	
+class hoboModelStocks extends hoboModel{
 
 
 	public function getProductStocks($product_id){
 		$stocks = [];
 
+		$product_id_int = $product_id;
+
 		if (!is_numeric($product_id)){
 			$query = $this->db->query("SELECT product_id FROM oc_product WHERE uuid = '" . $this->db->escape($product_id) . "' LIMIT 1");
 
 			if ($query->num_rows){
-				$product_id = $query->row['product_id'];
+				$product_id_int = $query->row['product_id'];
 			} else {
-				$product_id = 0;
+				$product_id_int = 0;
 			}
 		}
 
-		$query = $this->db->query("SELECT s.*, l.uuid FROM oc_stocks s LEFT JOIN oc_location l ON (s.location_id = l.location_id) WHERE product_id = '" . (int)$product_id . "'");
+		$query = $this->db->query("SELECT s.*, l.uuid FROM oc_stocks s LEFT JOIN oc_location l ON (s.location_id = l.location_id) WHERE product_id = '" . (int)$product_id_int . "'");
 
 		foreach ($query->rows as $row){
 			$stocks[] = [
@@ -46,8 +48,8 @@ class hoboModelStocks extends hoboModel{
 		
 		foreach ($stocks as $stock){
 			$updatedStock = $this->updateProductStocks($stock['ProductID'], [$stock]);
-			
-			if ($updatedStock){
+
+			if ($updatedStock){				
 				$result[] = [
 					'ProductID' 	=> $stock['ProductID'],
 					'DrugstoreID' 	=> $stock['DrugstoreID'],
@@ -75,6 +77,10 @@ class hoboModelStocks extends hoboModel{
 			} else {
 				$product_id = 0;
 			}
+		}
+
+		if (!$product_id){
+			return [];
 		}
 
 		foreach ($stocks as $stock){
