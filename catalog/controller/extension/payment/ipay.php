@@ -299,6 +299,8 @@
 			
 			if ((int)$iPayData['status'] == 3){
 				$order_info = $this->model_checkout_order->getOrder($iPayData['order_id']);
+
+				$this->db->query("UPDATE `" . DB_PREFIX . "order` SET paid = 1 WHERE order_id = '" . (int)$iPayData['order_id'] . "'");
 				
 				if ($order_info['order_status_id'] != $this->config->get('ipay_order_status_id')){
 					$this->model_checkout_order->addOrderHistory($iPayData['order_id'], $this->config->get('ipay_order_status_id'));					

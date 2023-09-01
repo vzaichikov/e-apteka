@@ -27,7 +27,9 @@
 			ini_set('display_errors', true);
 
 			$this->load->model('eapteka/order');
-			$this->model_eapteka_order->writeOrderToRestAPI(166428);
+			$json = $this->model_eapteka_order->writeOrderToRestAPI(171846);
+
+			$this->log->debug($json);
 		}
 			
 		
