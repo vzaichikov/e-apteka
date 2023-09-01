@@ -1,63 +1,82 @@
 <?php
 class ModelEaptekaOrder extends Model
 {
+
+	private $leftShoreRegions = array('Дарницький','Деснянський','Дніпровський');
+
+
 	private function simpleCustomFieldsToValues($custom_field, $customer_field_value){			
-			if ($custom_field == 'time') {
-				$r = array(
-                '2' =>    'з 10:00 до 14:00',
-                '3' =>    'з 14:00 до 18:00',
-                '4' =>    'з 19:00 до 23:59'
-				);
-				
-				return isset($r[$customer_field_value]) ? $r[$customer_field_value] : false;
+		if ($custom_field == 'time') {
+			$r = array(
+				'2' =>    'з 10:00 до 14:00',
+				'3' =>    'з 14:00 до 18:00',
+				'4' =>    'з 19:00 до 23:59'
+			);
+
+			return isset($r[$customer_field_value]) ? $r[$customer_field_value] : false;
+		}
+
+		if ($custom_field == 'day') {
+
+			if ($customer_field_value == '7') {
+				return date('Ymd');
 			}
-			
-			if ($custom_field == 'day') {
-				
-				if ($customer_field_value == '7') {
-					return date('Ymd');
-				}
-				
-				if ($customer_field_value == '8') {
-					return date('Ymd', strtotime("+1 day"));
-				}
-				
-				if ($customer_field_value == '9') {
-					return date('Ymd', strtotime("+2 day"));
-				}
-				
-				return false;
+
+			if ($customer_field_value == '8') {
+				return date('Ymd', strtotime("+1 day"));
+			}
+
+			if ($customer_field_value == '9') {
+				return date('Ymd', strtotime("+2 day"));
+			}
+
+			return false;
+		}
+	}
+
+	private function getIfStreetIsOnLeftSide($street_id){			
+		$query = $this->db->query("SELECT district FROM `kyiv_streets` WHERE street_id = '" . (int)$street_id . "' LIMIT 1");
+
+		$district = $query->row['district'];
+
+		foreach ($this->leftShoreRegions as $region){
+
+			if (strpos($district,$region) !== false){
+				return true;
 			}
 		}
-		
-		private function customFieldsToValues($custom_field_id, $customer_field_value_id){			
-			if ($custom_field_id == 2) {
-				$r = array(
-                4 =>     'з 10:00 до 14:00',
-                10 =>    'з 14:00 до 18:00',
-                11 =>    'з 19:00 до 23:59'
-				);
-				
-				return isset($r[$customer_field_value_id]) ? $r[$customer_field_value_id] : false;
-			}
-			
-			if ($custom_field_id == 3) {
-				
-				if ($customer_field_value_id == 7) {
-					return date('Ymd');
-				}
-				
-				if ($customer_field_value_id == 8) {
-					return date('Ymd', strtotime("+1 day"));
-				}
-				
-				if ($customer_field_value_id == 9) {
-					return date('Ymd', strtotime("+2 day"));
-				}
-				
-				return false;
-			}
+
+		return false;
+	}
+
+	private function customFieldsToValues($custom_field_id, $customer_field_value_id){			
+		if ($custom_field_id == 2) {
+			$r = array(
+				4 =>     'з 10:00 до 14:00',
+				10 =>    'з 14:00 до 18:00',
+				11 =>    'з 19:00 до 23:59'
+			);
+
+			return isset($r[$customer_field_value_id]) ? $r[$customer_field_value_id] : false;
 		}
+
+		if ($custom_field_id == 3) {
+
+			if ($customer_field_value_id == 7) {
+				return date('Ymd');
+			}
+
+			if ($customer_field_value_id == 8) {
+				return date('Ymd', strtotime("+1 day"));
+			}
+
+			if ($customer_field_value_id == 9) {
+				return date('Ymd', strtotime("+2 day"));
+			}
+
+			return false;
+		}
+	}
 
 
 	
@@ -147,15 +166,30 @@ class ModelEaptekaOrder extends Model
 					} elseif ($order['location_id']){
 						$drugstore_id = (int)$order['location_id'];
 					}
-				}
+				}			
+			}
 
-				if ($drugstore_id){
-					$drugstore_query = $this->db->query("SELECT uuid FROM oc_location WHERE location_id = '" . (int)$drugstore_id . "'");
-					if (!empty($drugstore_query->row['uuid'])){
-						$drugstore_uuid = $drugstore_query->row['uuid'];
+			if ($order['shipping_code'] == 'multiflat.multiflat0' || $order['shipping_code'] == 'multiflat.multiflat1') {
+				$drugstore_id = 7;
+
+				if (isset($customInfo['shipping_courier_street'])) {
+					if ($this->getIfStreetIsOnLeftSide($customInfo['shipping_courier_street'])) {				
+						$drugstore_id = 6;
 					}
 				}
+			}	
+
+			if (in_array($order['shipping_code'], ['novaposhta.warehouse', 'novaposhta.doors', 'ukrposhta.express_w', 'ukrposhta.express_d'])){
+				$drugstore_id = 7;
 			}
+
+			if ($drugstore_id){
+				$drugstore_query = $this->db->query("SELECT uuid FROM oc_location WHERE location_id = '" . (int)$drugstore_id . "'");
+				if (!empty($drugstore_query->row['uuid'])){
+					$drugstore_uuid = $drugstore_query->row['uuid'];
+				}
+			}
+
 
 			$json = [
 				'orderID' 		=> $order['order_id'],
@@ -163,6 +197,7 @@ class ModelEaptekaOrder extends Model
 				'orderMSID' 	=> $order['eapteka_id'],					
 				'orderStatus' 	=> $order['order_status'],
 				'orderStatusID' => $order['order_status_id'],
+				'orderPaid' 	=> $order['paid'],
 				'orderTotal' 	=> $order['total'],
 
 				'shippingInfo' 	=> [
@@ -176,6 +211,11 @@ class ModelEaptekaOrder extends Model
 					'drugstoreUUID' 	=> $drugstore_uuid
 				],
 
+				'novaPoshtaInfo' => [
+					'novaPoshtaAreaUUID' 		=> $order['novaposhta_area_guid'],
+					'novaPoshtaCityUUID' 		=> $order['novaposhta_city_guid'],
+					'novaPoshtaWarehouseUUID' 	=> $order['novaposhta_warehouse_guid']
+				],
 
 				'customerInfo' 	=> [
 					'customerID' 				=> $order['customer_id'],
@@ -196,6 +236,8 @@ class ModelEaptekaOrder extends Model
 			];
 
 			addToJSONCachedFile(DIR_REST_API_ORDERS . $drugstore_uuid, $json, 'orderID');
+
+			return $json;
 		}
 	}
 
