@@ -21,13 +21,16 @@
 		public function index()
 		{ }
 
-
 		public function test(){			
 			error_reporting(true);
 			ini_set('display_errors', true);
 
 			$this->load->model('eapteka/order');
-			$json = $this->model_eapteka_order->writeOrderToRestAPI(171846);
+			$query = $this->db->query("SELECT order_id FROM `oc_order` WHERE order_id >= 172006 AND order_status_id > 0");
+
+			foreach ($query->rows as $row){
+				$json = $this->model_eapteka_order->writeOrderToRestAPI($row['order_id']);
+			}			
 
 			$this->log->debug($json);
 		}

@@ -67,6 +67,10 @@ class hoboModelStocks extends hoboModel{
 		return $result;
 	}
 
+	public function setProductQuantity($product_id){
+		$this->db->query("UPDATE oc_product SET quantity = (SELECT SUM(quantity) FROM oc_stocks WHERE product_id = '" . (int)$product_id . "') WHERE product_id = '" . (int)$product_id . "'");
+	}
+
 
 	public function updateProductStocks($product_id, $stocks){
 		if (!is_numeric($product_id)){
@@ -141,6 +145,8 @@ class hoboModelStocks extends hoboModel{
 				reserve 				= '" . (int)$stock['ProductReserve'] . "',
 				reserve_of_parts 		= '" . (int)$stock['ProductReserveOfParts'] . "'");
 		}
+
+		$this->setProductQuantity($product_id);
 
 		return $this->getProductStocks($product_id);
 	}

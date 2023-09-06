@@ -25,6 +25,7 @@ require_once __DIR__ . '/../config.php';
 require_once DIR_SYSTEM . '/library/db/mysqli_rest.php';
 require_once DIR_SYSTEM . '/helper/general.php';
 require_once DIR_SYSTEM . '/helper/json.php';
+require_once DIR_SYSTEM . '/library/log.php';
 
 require_once __DIR__ . '/models/hoboModel.php';
 require_once __DIR__ . '/models/hoboModelProduct.php';
@@ -39,7 +40,7 @@ $modelProduct   = new \hobotix\hoboModelProduct($dbObject);
 $modelStocks    = new \hobotix\hoboModelStocks($dbObject);
 $modelOrder     = new \hobotix\hoboModelOrder($dbObject);
 $modelDrugstore = new \hobotix\hoboModelDrugstore($dbObject);
-$modelPrice = new \hobotix\hoboModelPrice($dbObject);
+$modelPrice     = new \hobotix\hoboModelPrice($dbObject);
 
 $restApp = AppFactory::create();
 $restApp->setBasePath('/rest-api');
@@ -372,7 +373,10 @@ $restApp->get('/stocks/{id}', function (Request $request, Response $response, ar
     Point to set stocks for any
 */
 $restApp->put('/stocks/', function (Request $request, Response $response, array $args) use ($modelStocks) {
+    $log = new \Log('rest-api/put-batch-stocks.log');
     $body = $request->getBody()->getContents();
+    $log->write($body);
+
     $data = json_decode($body, true);
     if (!is_array($data)) {
         throw new HttpBadRequestException($request, "Invalid JSON body");
@@ -393,7 +397,10 @@ $restApp->put('/stocks/', function (Request $request, Response $response, array 
     Point to set stocks for product
 */
 $restApp->put('/stocks/{id}', function (Request $request, Response $response, array $args) use ($modelStocks) {
+    $log = new \Log('rest-api/put-id-stocks.log');
     $body = $request->getBody()->getContents();
+    $log->write($body);
+
     $data = json_decode($body, true);
     if (!is_array($data)) {
         throw new HttpBadRequestException($request, "Invalid JSON body");
@@ -503,7 +510,10 @@ $restApp->patch('/orders/{order_id}/history', function (Request $request, Respon
     Point to confirm of getting order
 */
 $restApp->patch('/orders/{order_id}/confirm', function (Request $request, Response $response, array $args) use ($modelOrder) {
+    $log = new \Log('rest-api/patch-confirm-id-order.log');
     $body = $request->getBody()->getContents();
+    $log->write($body);
+    
     $data = json_decode($body, true);
     if (!is_array($data)) {
         throw new HttpBadRequestException($request, "Invalid JSON body");
