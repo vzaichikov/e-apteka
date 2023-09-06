@@ -25,12 +25,14 @@
 			error_reporting(true);
 			ini_set('display_errors', true);
 
-			$this->load->model('eapteka/order');
-			$query = $this->db->query("SELECT order_id FROM `oc_order` WHERE order_id >= 172006 AND order_status_id > 0");
+			 $this->load->model('eapteka/order');
+			 $query = $this->db->query("SELECT order_id FROM `oc_order` WHERE order_id >= 172006 AND order_status_id > 0");
 
-			foreach ($query->rows as $row){
-				$json = $this->model_eapteka_order->writeOrderToRestAPI($row['order_id']);
-			}			
+			 foreach ($query->rows as $row){
+			 	$json = $this->model_eapteka_order->writeOrderToRestAPI($row['order_id']);
+			 }			
+
+		//	$json = $this->model_eapteka_order->writeOrderToRestAPI(172057);
 
 			$this->log->debug($json);
 		}
@@ -198,12 +200,8 @@
 			
 		}
 		
-		private function updateOrderEaptekaID($order_id, $eapteka_id){
-			
-			$this->db->query("UPDATE `" . DB_PREFIX . "order` SET eapteka_id = '" . $this->db->escape($eapteka_id) . "' WHERE order_id = '" . (int) $order_id . "'");
-
-			$this->sendOrderAlertToBitrix($order_id);
-			
+		private function updateOrderEaptekaID($order_id, $eapteka_id){			
+			$this->db->query("UPDATE `" . DB_PREFIX . "order` SET eapteka_id = '" . $this->db->escape($eapteka_id) . "' WHERE order_id = '" . (int) $order_id . "'");						
 		}
 		
 		private function getOrderEaptekaID($order_id){

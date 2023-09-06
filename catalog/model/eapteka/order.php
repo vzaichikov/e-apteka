@@ -78,7 +78,6 @@ class ModelEaptekaOrder extends Model
 		}
 	}
 
-
 	
 	public function writeOrderToRestAPI($order_id){
 
@@ -159,6 +158,8 @@ class ModelEaptekaOrder extends Model
 
 			$drugstore_id 	= null;
 			$drugstore_uuid = REST_API_NOLOCATION_UUID;
+
+
 			if ($order['shipping_code'] == 'pickup.pickup') {
 				if ($order['location_id'] || (!empty($customInfo['location_id']))) {						
 					if (!empty($customInfo['location_id'])){
@@ -183,6 +184,10 @@ class ModelEaptekaOrder extends Model
 				$drugstore_id = 7;
 			}
 
+			if (!$order['location_id']){
+				$drugstore_id = 7;
+			}
+
 			if ($drugstore_id){
 				$drugstore_query = $this->db->query("SELECT uuid FROM oc_location WHERE location_id = '" . (int)$drugstore_id . "'");
 				if (!empty($drugstore_query->row['uuid'])){
@@ -199,16 +204,18 @@ class ModelEaptekaOrder extends Model
 				'orderStatusID' => $order['order_status_id'],
 				'orderPaid' 	=> $order['paid'],
 				'orderTotal' 	=> $order['total'],
+				'orderComment' 	=> $order['comment'],
 
 				'shippingInfo' 	=> [
 					'shippingCode' 		=> $order['shipping_code'],
 					'shippingMethod' 	=> $order['shipping_method'],
 					'shippingCity' 		=> $order['shipping_city'],
-					'shippingAddress' 	=> $order['shipping_address_1'],						
+					'shippingAddress' 	=> $order['shipping_address_1'],					
 					'shippingDate' 		=> $shipping_date,
 					'shippingTime' 		=> $shipping_time,
 					'drugstoreID' 		=> $drugstore_id,
-					'drugstoreUUID' 	=> $drugstore_uuid
+					'drugstoreUUID' 	=> $drugstore_uuid,
+					'drugstoreUnknown'  => ($order['location_id'] == '0')?true:false
 				],
 
 				'novaPoshtaInfo' => [
@@ -220,6 +227,7 @@ class ModelEaptekaOrder extends Model
 				'customerInfo' 	=> [
 					'customerID' 				=> $order['customer_id'],
 					'customerUUID' 				=> $order['customer_uuid'],
+					'customerEmail' 			=> $order['email'],
 					'recipientName' 			=> $order['firstname'],
 					'recipientLastname' 		=> !empty($order['lastname'])?$order['lastname']:null,
 					'recipientPhone'    		=> normalizePhone($order['telephone']),						

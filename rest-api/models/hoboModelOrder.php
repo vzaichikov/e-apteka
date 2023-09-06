@@ -3,6 +3,7 @@
 namespace hobotix;
 
 class hoboModelOrder extends hoboModel{	
+	private $leftShoreRegions = array('Дарницький','Деснянський','Дніпровський');
 
 
 	public function getOrderStatuses(){
@@ -112,6 +113,22 @@ class hoboModelOrder extends hoboModel{
 
 	}
 
+	private function getIfStreetIsOnLeftSide($street_id){
+
+		$query = $this->db->query("SELECT district FROM `kyiv_streets` WHERE street_id = '" . (int)$street_id . "' LIMIT 1");
+
+		$district = $query->row['district'];
+
+		foreach ($this->leftShoreRegions as $region){
+
+			if (strpos($district,$region) !== false){
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public function confirmOrder($order_id, $data){
 		$query = $this->db->query("UPDATE oc_order o SET o.uuid = '" . $this->db->escape($data['orderUUID']) . "', o.eapteka_id = '" . $this->db->escape($data['orderMSID']) . "' WHERE o.order_id = '" . (int)$order_id . "'");
 		$order = $this->getOrder($order_id);		
@@ -119,6 +136,8 @@ class hoboModelOrder extends hoboModel{
 
 		$drugstore_id 	= null;
 		$drugstore_uuid = REST_API_NOLOCATION_UUID;
+
+
 		if ($order['shipping_code'] == 'pickup.pickup') {
 			if ($order['location_id'] || (!empty($customInfo['location_id']))) {						
 				if (!empty($customInfo['location_id'])){
@@ -126,13 +145,31 @@ class hoboModelOrder extends hoboModel{
 				} elseif ($order['location_id']){
 					$drugstore_id = (int)$order['location_id'];
 				}
-			}
+			}			
+		}
 
-			if ($drugstore_id){
-				$drugstore_query = $this->db->query("SELECT uuid FROM oc_location WHERE location_id = '" . (int)$drugstore_id . "'");
-				if (!empty($drugstore_query->row['uuid'])){
-					$drugstore_uuid = $drugstore_query->row['uuid'];
+		if ($order['shipping_code'] == 'multiflat.multiflat0' || $order['shipping_code'] == 'multiflat.multiflat1') {
+			$drugstore_id = 7;
+
+			if (isset($customInfo['shipping_courier_street'])) {
+				if ($this->getIfStreetIsOnLeftSide($customInfo['shipping_courier_street'])) {				
+					$drugstore_id = 6;
 				}
+			}
+		}	
+
+		if (in_array($order['shipping_code'], ['novaposhta.warehouse', 'novaposhta.doors', 'ukrposhta.express_w', 'ukrposhta.express_d'])){
+			$drugstore_id = 7;
+		}
+
+		if (!$order['location_id']){
+			$drugstore_id = 7;
+		}
+
+		if ($drugstore_id){
+			$drugstore_query = $this->db->query("SELECT uuid FROM oc_location WHERE location_id = '" . (int)$drugstore_id . "'");
+			if (!empty($drugstore_query->row['uuid'])){
+				$drugstore_uuid = $drugstore_query->row['uuid'];
 			}
 		}
 
