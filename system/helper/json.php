@@ -29,7 +29,7 @@
 						if ($item[$field] != $json[$field]){
 							$result['data'][] = $item;
 						}
-					}
+					}					
 
 					$result['data'][] = $json;
 				} else {
@@ -42,6 +42,8 @@
 				fclose($handler);
 
 				break;
+			} else {
+				echoLine('Lock fail');
 			}
 		}		
 	}
@@ -75,6 +77,8 @@
 				fclose($handler);
 
 				break;
+			} else {
+				echoLine('Lock fail');
 			}
 		}	
 	}
