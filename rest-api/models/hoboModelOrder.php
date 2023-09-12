@@ -68,7 +68,19 @@ class hoboModelOrder extends hoboModel{
 		}
 	}
 
-	public function getOrders($location_id){
+	public function getOrders($location_uuid){
+		$orders = [];
+		$query = $this->db->query("SELECT * FROM oc_order_queue_rest WHERE drugstore_uuid = '" . $this->db->escape($location_uuid) . "'");
+
+
+		foreach ($query->rows as $row){
+			$orders[] = json_decode($row['json'], true);
+		}
+
+		return $orders;
+	}
+
+	public function getOrdersFromFiles($location_id){
 		$file = SELF_REST_PATH . '/queue/orders/' . $location_id . '/orders.json';
 
 		if (file_exists($file)){
@@ -101,6 +113,11 @@ class hoboModelOrder extends hoboModel{
 	public function addOrderHistory($order_id, $data){
 
 		$this->db->query("UPDATE oc_order SET order_status_id = '" . (int)$data['orderStatusID'] . "', date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'");
+
+		if (empty($data['orderComment'])){
+			$data['orderComment'] = '';
+		}
+
 		$this->db->query("INSERT INTO oc_order_history SET order_id = '" . (int)$order_id . "', order_status_id = '" . (int)$data['orderStatusID'] . "', notify = '" . (int)false . "', comment = '" . $this->db->escape($data['orderComment']) . "', date_added = NOW()");
 
 		$order = $this->getOrder($order_id);	
@@ -173,7 +190,7 @@ class hoboModelOrder extends hoboModel{
 			}
 		}
 
-		removeFromJSONCachedFile(DIR_REST_API_ORDERS . $drugstore_uuid, ['orderID' => $order_id], 'orderID');
+		$this->db->query("DELETE FROM oc_order_queue_rest WHERE order_id = '" . $order_id . "'");
 
 		return [
 			'orderID' 		=> $order_id,

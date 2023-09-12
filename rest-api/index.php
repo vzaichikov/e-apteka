@@ -322,6 +322,50 @@ $restApp->delete('/drugstores/{id}', function (Request $request, Response $respo
 
 /*************************************************************************************
 * 
+* PREORDER
+* 
+/*********************************************************************************/
+
+/*********************************************************************************/
+/*
+    Point to set prices for any
+*/
+$restApp->put('/preorders/', function (Request $request, Response $response, array $args) use ($modelPrice) {
+    $log = new \Log('rest-api/put-preorders.log');
+    $body = $request->getBody()->getContents();
+    $log->write($body);
+
+    $data = json_decode($body, true);
+    if (!is_array($data)) {
+        throw new HttpBadRequestException($request, "Invalid JSON body");
+    }
+
+    if ($preorders = $modelPrice->updatePreorder($data)){        
+        $payload = ['success' => true, 'data' => $preorders];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+    } else {
+        throw new HttpNotFoundException($request, 'Fail happened');
+    }
+
+    return $response;
+});
+
+
+$restApp->get('/preorders/', function (Request $request, Response $response, array $args) use ($modelPrice) {
+    if ($preorders = $modelPrice->getProductPreorders()){
+        $payload = ['success' => true, 'data' => $preorders];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotFoundException($request, 'No preorders available now');
+    }   
+
+    return $response;
+});
+
+
+/*************************************************************************************
+* 
 * PRICES
 * 
 /*********************************************************************************/
@@ -331,7 +375,10 @@ $restApp->delete('/drugstores/{id}', function (Request $request, Response $respo
     Point to set prices for any
 */
 $restApp->put('/prices/', function (Request $request, Response $response, array $args) use ($modelPrice) {
+    $log = new \Log('rest-api/put-prices.log');
     $body = $request->getBody()->getContents();
+    $log->write($body);
+
     $data = json_decode($body, true);
     if (!is_array($data)) {
         throw new HttpBadRequestException($request, "Invalid JSON body");
@@ -480,7 +527,10 @@ $restApp->patch('/orders/{order_id}', function (Request $request, Response $resp
     Point to add any order history
 */
 $restApp->patch('/orders/{order_id}/history', function (Request $request, Response $response, array $args) use ($modelOrder) {
+    $log = new \Log('rest-api/patch-order-history.log');
     $body = $request->getBody()->getContents();
+    $log->write($body);
+
     $data = json_decode($body, true);
     if (!is_array($data)) {
         throw new HttpBadRequestException($request, "Invalid JSON body");

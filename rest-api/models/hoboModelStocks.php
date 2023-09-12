@@ -68,7 +68,9 @@ class hoboModelStocks extends hoboModel{
 	}
 
 	public function setProductQuantity($product_id){
-		$this->db->query("UPDATE oc_product SET quantity = (SELECT SUM(quantity) FROM oc_stocks WHERE product_id = '" . (int)$product_id . "') WHERE product_id = '" . (int)$product_id . "'");
+	//	$this->db->query("UPDATE oc_product SET quantity = (SELECT SUM(quantity) FROM oc_stocks WHERE product_id = '" . (int)$product_id . "') WHERE product_id = '" . (int)$product_id . "'");
+
+		$this->db->query("UPDATE oc_product p SET quantity = (SELECT SUM(quantity) FROM oc_stocks s WHERE location_id IN (SELECT location_id FROM oc_location WHERE temprorary_closed = 0) AND s.product_id = '" . (int)$product_id . "') WHERE p.product_id = '" . (int)$product_id . "'");
 	}
 
 
