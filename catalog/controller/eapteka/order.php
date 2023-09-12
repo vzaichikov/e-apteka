@@ -26,13 +26,13 @@
 			ini_set('display_errors', true);
 
 			 $this->load->model('eapteka/order');
-			 $query = $this->db->query("SELECT order_id FROM `oc_order` WHERE order_id >= 172006 AND order_status_id > 0");
+			// $query = $this->db->query("SELECT order_id FROM `oc_order` WHERE order_id >= 172006 AND order_status_id > 0 AND order_status_id NOT IN (8,4)");
 
-			 foreach ($query->rows as $row){
-			 	$json = $this->model_eapteka_order->writeOrderToRestAPI($row['order_id']);
-			 }			
+			// foreach ($query->rows as $row){
+			// 	$json = $this->model_eapteka_order->writeOrderToRestAPI($row['order_id']);			 	
+			// }			
 
-		//	$json = $this->model_eapteka_order->writeOrderToRestAPI(172057);
+			$json = $this->model_eapteka_order->writeOrderToRestAPI(172375);
 
 			$this->log->debug($json);
 		}
@@ -651,9 +651,6 @@
 				if ($order_info && $order_products) {
 					$this->load->model('eapteka/order');
 					$this->model_eapteka_order->writeOrderToRestAPI($order_id);
-
-
-					$this->db->query("INSERT INTO  `" . DB_PREFIX . "order_queue` SET order_id = '" . (int)$order_id . "', date_added = NOW()");
 				}
 
 				if ($redirect){

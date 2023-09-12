@@ -89,7 +89,7 @@ class ModelEaptekaOrder extends Model
 		if ($orders_query->num_rows){
 			$order = $orders_query->row;
 			$products = [];
-			$products_query = $this->db->ncquery("SELECT op.*, p.uuid, p.count_of_parts FROM `oc_order_product` op LEFT JOIN oc_product p ON p.product_id = op.product_id  WHERE op.order_id = '" . (int)$order['order_id'] . "'");
+			$products_query = $this->db->ncquery("SELECT op.*, p.uuid, p.count_of_parts, p.price as price_full FROM `oc_order_product` op LEFT JOIN oc_product p ON p.product_id = op.product_id  WHERE op.order_id = '" . (int)$order['order_id'] . "'");
 			foreach ($products_query->rows as $product){
 				$options = $this->db->ncquery("SELECT * FROM oc_order_option WHERE order_id = '" . (int)$order['order_id'] . "' AND order_product_id = '" . (int)$product['order_product_id'] . "'")->rows;
 
@@ -104,7 +104,8 @@ class ModelEaptekaOrder extends Model
 					'productUUID' 			=> $product['uuid'],
 					'productQuantity' 		=> $product['quantity'],
 					'productQuantityParts' 	=> $product['quantity_parts'],
-					'productPrice' 			=> $product['price'],
+					'productExactPrice' 	=> $product['price'],
+					'productPrice' 			=> $product['price_full'],
 					'productTotal' 			=> $product['total'],
 				];
 			}
@@ -189,9 +190,10 @@ class ModelEaptekaOrder extends Model
 			}
 
 			if ($drugstore_id){
-				$drugstore_query = $this->db->query("SELECT uuid FROM oc_location WHERE location_id = '" . (int)$drugstore_id . "'");
+				$drugstore_query = $this->db->query("SELECT uuid, name FROM oc_location WHERE location_id = '" . (int)$drugstore_id . "'");
 				if (!empty($drugstore_query->row['uuid'])){
 					$drugstore_uuid = $drugstore_query->row['uuid'];
+					$drugstore_name = $drugstore_query->row['name'];
 				}
 			}
 
@@ -202,7 +204,7 @@ class ModelEaptekaOrder extends Model
 				'orderMSID' 	=> $order['eapteka_id'],					
 				'orderStatus' 	=> $order['order_status'],
 				'orderStatusID' => $order['order_status_id'],
-				'orderPaid' 	=> $order['paid'],
+				'orderPaid' 	=> (bool)$order['paid'],
 				'orderTotal' 	=> $order['total'],
 				'orderComment' 	=> $order['comment'],
 
@@ -243,9 +245,26 @@ class ModelEaptekaOrder extends Model
 				'productsList' 	=> $products
 			];
 
-			addToJSONCachedFile(DIR_REST_API_ORDERS . $drugstore_uuid, $json, 'orderID');
+		//	addToJSONCachedFile(DIR_REST_API_ORDERS . $drugstore_uuid, $json, 'orderID');
+		//	var_dump($json_data);
 
-			return $json;
+			$this->db->query("INSERT INTO oc_order_queue_rest SET 
+				drugstore_uuid 	= '" . $this->db->escape($drugstore_uuid) . "',
+				order_id 		= '" . (int)$order['order_id'] . "',
+				shipping_code 	= '" . $this->db->escape($order['shipping_code']) . "',
+				total 			= '" . (float)($order['total']) . "',
+				date_added 		= '" . $this->db->escape($order['date_added']) . "',
+				json 			= '" . $this->db->escape(json_encode($json)) . "'
+				ON DUPLICATE KEY UPDATE
+				shipping_code 	= '" . $this->db->escape($order['shipping_code']) . "', 
+				total 			= '" . (float)($order['total']) . "',
+				date_added 		= '" . $this->db->escape($order['date_added']) . "',
+				json 			= '" . $this->db->escape(json_encode($json)) . "'		
+				");
+
+//			echoLine('Wrote ' . $order['order_id'] . ' (' . $order['shipping_code'] . ')'. ' to ' . $drugstore_uuid . ', ' . $drugstore_name);
+
+//			return $json;
 		}
 	}
 

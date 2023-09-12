@@ -236,23 +236,25 @@
 		public function success_45ceb56eb17feeb038(){
 			
 			if (empty($this->session->data['order_id'])){
+				echo '!order_id';
 				$this->response->redirect($this->url->link('common/home'), 301);
 				return false;
 			}
 			
 			if (empty($this->request->get['key'])){
+				echo '!key';
 				$this->response->redirect($this->url->link('common/home'), 301);
 				return false;
 			}
 			
 			if (!$this->validateSuccessKey($this->request->get['key'])){
-				
+				echo '!validateSuccessKey';
 				$this->response->redirect($this->url->link('common/home'), 301);
 				return false;
 				
 				} else {
 				$this->load->model('checkout/order');				
-				$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('config_order_status_id'));
+				$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('ipay_order_status_id'));
 				$this->response->redirect($this->url->link('checkout/success'));
 			}
 			
@@ -277,16 +279,19 @@
 			$ipay_log->write($this->request);
 			
 			if (empty($this->request->post['xml'])){
+			//	echo '!emptyXML';
 				$this->response->redirect($this->url->link('common/home'), 301);
 				return false;
 			}
 			
 			if (!$data = $this->decodeiPayCallbackXML(html_entity_decode($this->request->post['xml']))){
+			//	echo '!decodeiPayCallbackXML';
 				$this->response->redirect($this->url->link('common/home'), 301);
 				return false;
 			}
 			
 			if (!$iPayData = $this->validateiPay($data)){
+			//	echo '!validateiPay';
 				$this->response->redirect($this->url->link('common/home'), 301);
 				return false;
 			}
@@ -295,12 +300,11 @@
 			ipay_id = '" . $this->db->escape($iPayData['payment_id']) . "',
 			ipay_amount = '" . $this->db->escape($iPayData['amount']) . "', 
 			ipay_xml = '" . $this->db->escape($this->request->post['xml']) . "' WHERE order_id = '" . (int)$iPayData['order_id'] . "'");
-			
-			
-			if ((int)$iPayData['status'] == 3){
+						
+			if ((int)$iPayData['status'] == 5){
 				$order_info = $this->model_checkout_order->getOrder($iPayData['order_id']);
 
-				$this->db->query("UPDATE `" . DB_PREFIX . "order` SET paid = 1 WHERE order_id = '" . (int)$iPayData['order_id'] . "'");
+				$this->db->query("UPDATE `oc_order` SET paid = 1 WHERE order_id = '" . (int)$iPayData['order_id'] . "'");
 				
 				if ($order_info['order_status_id'] != $this->config->get('ipay_order_status_id')){
 					$this->model_checkout_order->addOrderHistory($iPayData['order_id'], $this->config->get('ipay_order_status_id'));					
