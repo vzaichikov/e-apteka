@@ -35,8 +35,6 @@
 			}
 
 			$this->response->redirect($this->url->link('sale/order', 'token=' . $this->session->data['token'] . $url, true));
-
-
 		}
 		
 		public function add() {

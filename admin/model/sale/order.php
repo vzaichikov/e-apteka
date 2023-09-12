@@ -16,31 +16,21 @@
 		}	
 
 		public function addOrderToQueue($order_id) {
-
 			$this->db->query("INSERT INTO oc_order_queue (order_id) VALUES ('" . $order_id . "')");
-
 		}
 
 		public function checkIfInQueue($order_id){
-
-			$query = $this->db->query("SELECT * FROM oc_order_queue  WHERE order_id = '" . (int)$order_id . "'");
-
+			$query = $this->db->query("SELECT * FROM oc_order_queue_rest WHERE order_id = '" . (int)$order_id . "'");
 			return $query->num_rows;
-
-
 		}
 		
-		public function getDeliveryMethods(){
-			
-			
+		public function getDeliveryMethods(){						
 			$query = $this->db->query("SELECT DISTINCT(shipping_code), shipping_method FROM `" . DB_PREFIX . "order` WHERE LENGTH(shipping_code)>3 AND LENGTH(shipping_method)>3 AND DATE(date_added) >= DATE_SUB(NOW(), INTERVAL 2 YEAR) AND order_status_id > 0 GROUP BY shipping_code");
 			
-			return $query->rows;
-			
+			return $query->rows;			
 		}
 
 		public function getMysqlTimes(){
-
 			$query 	= $this->db->query("SELECT NOW() as now FROM `" . DB_PREFIX . "order` WHERE 1 LIMIT 1");
 
 			if ($this->dbCalls){
@@ -56,8 +46,6 @@
 				'local' => $query->row['now'],
 				'calls' => 'UNKNOWN'
 				);
-
-			
 		}
 		
 		
