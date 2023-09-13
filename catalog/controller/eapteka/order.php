@@ -32,7 +32,7 @@
 			// 	$json = $this->model_eapteka_order->writeOrderToRestAPI($row['order_id']);			 	
 			// }			
 
-			$json = $this->model_eapteka_order->writeOrderToRestAPI(172345);
+			$json = $this->model_eapteka_order->writeOrderToRestAPI(172460);
 
 			$this->log->debug($json);
 		}

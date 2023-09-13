@@ -3,6 +3,7 @@ class ModelEaptekaOrder extends Model
 {
 
 	private $leftShoreRegions = array('Дарницький','Деснянський','Дніпровський');
+	private $shippingUUID     = '86fc6f5d-4aee-11ee-bba8-00505601220a';
 
 
 	private function simpleCustomFieldsToValues($custom_field, $customer_field_value){			
@@ -110,7 +111,6 @@ class ModelEaptekaOrder extends Model
 				];
 			}
 
-
 			$totals = [];
 			$totals_query = $this->db->ncquery("SELECT * FROM `oc_order_total` ot WHERE ot.order_id = '" . (int)$order['order_id'] . "'");
 			foreach ($totals_query->rows as $total){
@@ -119,6 +119,19 @@ class ModelEaptekaOrder extends Model
 					'totalCode' 	=> $total['code'],
 					'totalTotal' 	=> $total['value']
 				];
+
+				if ($total['code'] == 'shipping' && (int)$product['price'] > 0){
+					$products[] = [
+						'productID' 			=> 'shipping',
+						'productName' 			=> 'shipping',
+						'productUUID' 			=> $this->shippingUUID,
+						'productQuantity' 		=> 1,
+						'productQuantityParts' 	=> 1,
+						'productExactPrice' 	=> $total['value'],
+						'productPrice' 			=> $total['value'],
+						'productTotal' 			=> $total['value'],
+					];
+				}
 			}
 
 
@@ -138,9 +151,9 @@ class ModelEaptekaOrder extends Model
 				'ipay' => [
 					'ipay_id' 			=> $order['ipay_id'],
 					'ipay_amount' 		=> $order['ipay_amount'],
-					'ipay_info'			=> ['order_id' => $order['order_id']],
-					'ipay_description'	=> 'Оплата замовлення №' . $order['order_id'],
-					'ipay_xml'			=> base64_encode($order['ipay_xml'])
+					'ipay_info'			=> ['order_id' => $order['order_id']]
+					// 'ipay_description'	=> 'Оплата замовлення №' . $order['order_id'],
+					// 'ipay_xml'			=> base64_encode($order['ipay_xml'])
 				]
 			];		
 
@@ -159,7 +172,6 @@ class ModelEaptekaOrder extends Model
 
 			$drugstore_id 	= null;
 			$drugstore_uuid = REST_API_NOLOCATION_UUID;
-
 
 			if ($order['shipping_code'] == 'pickup.pickup') {
 				if ($order['location_id'] || (!empty($customInfo['location_id']))) {						
@@ -246,7 +258,8 @@ class ModelEaptekaOrder extends Model
 			];
 
 		//	addToJSONCachedFile(DIR_REST_API_ORDERS . $drugstore_uuid, $json, 'orderID');
-		//	var_dump($json_data);
+			// var_dump(json_encode($json));
+			// die();
 
 			$this->db->query("INSERT INTO oc_order_queue_rest SET 
 				drugstore_uuid 	= '" . $this->db->escape($drugstore_uuid) . "',

@@ -512,6 +512,21 @@ $restApp->get('/orders/{location_uuid}', function (Request $request, Response $r
 
 
 /*
+    Point to get unpassed or modified orders
+*/
+$restApp->get('/order/{order_id}', function (Request $request, Response $response, array $args) use ($modelOrder) {
+    if ($order = $modelOrder->getOrderJSON($args['order_id'])){
+        $payload = ['success' => true, 'data' => $order];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        throw new HttpNotFoundException($request, 'No orders available now');
+    }   
+
+    return $response;
+});
+
+/*
     Point to add order
 */
 $restApp->post('/orders/', function (Request $request, Response $response, array $args) use ($modelOrder) {
