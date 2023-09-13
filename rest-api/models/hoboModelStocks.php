@@ -8,17 +8,7 @@ class hoboModelStocks extends hoboModel{
 	public function getProductStocks($product_id){
 		$stocks = [];
 
-		$product_id_int = $product_id;
-
-		if (!is_numeric($product_id)){
-			$query = $this->db->query("SELECT product_id FROM oc_product WHERE uuid = '" . $this->db->escape($product_id) . "' LIMIT 1");
-
-			if ($query->num_rows){
-				$product_id_int = $query->row['product_id'];
-			} else {
-				$product_id_int = 0;
-			}
-		}
+		$product_id_int = $this->getProductIdByUUID($product_id);
 
 		$query = $this->db->query("SELECT s.*, l.uuid FROM oc_stocks s LEFT JOIN oc_location l ON (s.location_id = l.location_id) WHERE product_id = '" . (int)$product_id_int . "'");
 
@@ -46,111 +36,70 @@ class hoboModelStocks extends hoboModel{
 	public function updateStocks($stocks){
 		$result = [];
 		
-		foreach ($stocks as $stock){
-			$updatedStock = $this->updateProductStocks($stock['ProductID'], [$stock]);
+		if (!empty($stocks[0]) && !empty($stocks[0]['DrugstoreID'])){
+			$DrugstoreID = (int)$stocks[0]['DrugstoreID'];				
+		}		
 
-			if ($updatedStock){				
+		$this->db->query("DELETE FROM oc_stocks_existent WHERE drugstore_id = '" . (int)$DrugstoreID . "'" );	
+
+		foreach (array_chunk($stocks, 1000) as $chunk) {
+			$sql = "INSERT INTO oc_stocks_existent (`product_uuid`, `drugstore_id`) VALUES ";
+			foreach ($chunk as $row) {
+  				$sql .= "('" . $row['ProductID'] . "', '" . $row['DrugstoreID'] . "'),"; 
+			}
+
+			$sql = rtrim($sql, ',');
+			$this->db->query($sql);
+		}
+
+		foreach ($stocks as $stock){			
+			$product_id = $this->updateProductStocks($stock['ProductID'], [$stock]);
+
+			if ($product_id){				
 				$result[] = [
 					'ProductID' 	=> $stock['ProductID'],
-					'DrugstoreID' 	=> $stock['DrugstoreID'],
+					'ProductIDInt' 	=> $product_id,
 					'Success' 		=> true
 				];
 			} else {
 				$result[] = [
 					'ProductID' 	=> $stock['ProductID'],
-					'DrugstoreID' 	=> $stock['DrugstoreID'],
 					'Success' 		=> false
 				];
 			}
 		}
 
+		$this->db->query("UPDATE oc_stocks SET quantity = 0, reserve = 0 WHERE product_uuid NOT IN (SELECT product_uuid FROM oc_stocks_existent WHERE location_id = '" . (int)$DrugstoreID . "') AND location_id = '" . (int)$DrugstoreID . "'");
+		$this->db->query("UPDATE oc_product p SET quantity = (SELECT SUM(quantity) FROM oc_stocks s WHERE s.product_id = p.product_id AND location_id IN (SELECT location_id FROM oc_location WHERE temprorary_closed = 0) GROUP BY s.product_id) WHERE p.is_preorder = 0");
+
 		return $result;
 	}
 
-	public function setProductQuantity($product_id){
-	//	$this->db->query("UPDATE oc_product SET quantity = (SELECT SUM(quantity) FROM oc_stocks WHERE product_id = '" . (int)$product_id . "') WHERE product_id = '" . (int)$product_id . "'");
+	public function updateProductStocks($product_id, $stocks){		
+		$product_id_int = $this->getProductIdByUUID($product_id);
 
-		$this->db->query("UPDATE oc_product p SET quantity = (SELECT SUM(quantity) FROM oc_stocks s WHERE location_id IN (SELECT location_id FROM oc_location WHERE temprorary_closed = 0) AND s.product_id = '" . (int)$product_id . "') WHERE p.product_id = '" . (int)$product_id . "'");
-	}
-
-
-	public function updateProductStocks($product_id, $stocks){
-		if (!is_numeric($product_id)){
-			$query = $this->db->query("SELECT product_id FROM oc_product WHERE uuid = '" . $this->db->escape($product_id) . "' LIMIT 1");
-
-			if ($query->num_rows){
-				$product_id = $query->row['product_id'];
-			} else {
-				$product_id = 0;
-			}
-		}
-
-		if (!$product_id){
-			return [];
+		if (!$product_id_int){
+			return false;
 		}
 
 		foreach ($stocks as $stock){
-			if (empty($stock['ProductQuanity'])){
-				$stock['ProductQuanity'] = $stock['ProductCount'] - $stock['ProductReserve'];
-			}
-
-			if (empty($stock['ProductQuanityParts'])){
-				$stock['ProductQuanityParts'] = $stock['ProductCount'] - $stock['ProductReserve'];
-			}
-
-			if (empty($stock['ProductPrice'])){
-				$stock['ProductPrice'] = 0;
-			}
-
-			if (empty($stock['ProductPriceRetail'])){
-				$stock['ProductPriceRetail'] = 0;
-			}
-
-			if (empty($stock['ProductPriceOfPart'])){
-				$stock['ProductPriceOfPart'] = 0;
-			}
-
-			if (empty($stock['ProductPriceOfPartRetail'])){
-				$stock['ProductPriceOfPartRetail'] = 0;
-			}
-
-			if (empty($stock['ProductCountOfParts'])){
-				$stock['ProductCountOfParts'] = 0;
-			}
-
-			if (empty($stock['ProductReserveOfParts'])){
-				$stock['ProductReserveOfParts'] = 0;
-			}
-
 			$this->db->query("INSERT INTO oc_stocks SET
-				product_id			= '" . (int)$product_id . "',
-				location_id 		= '" . (int)$stock['DrugstoreID'] . "',
-				quantity 			= '" . (int)$stock['ProductQuanity'] . "',
-				quantity_of_parts 	= '" . (int)$stock['ProductQuanityParts'] . "',
-				price 				= '" . (float)$stock['ProductPrice'] . "',
-				price_retail 		= '" . (float)$stock['ProductPriceRetail'] . "',
-				price_of_part 		= '" . (float)$stock['ProductPriceOfPart'] . "',
-				price_of_part_retail 	= '" . (float)$stock['ProductPriceOfPartRetail'] . "',
+				product_id				= '" . (int)$product_id_int . "',
+				product_uuid			= '" . $this->db->escape($product_id) . "',
+				location_id 			= '" . (int)$stock['DrugstoreID'] . "',
+				quantity 				= '" . (int)$stock['ProductQuanity'] . "',
+				quantity_of_parts 		= '" . (int)$stock['ProductQuanity'] . "',
 				count 					= '" . (int)$stock['ProductCount'] . "',
-				counts_of_parts 		= '" . (int)$stock['ProductCountOfParts'] . "',
-				reserve 				= '" . (int)$stock['ProductReserve'] . "',
-				reserve_of_parts 		= '" . (int)$stock['ProductReserveOfParts'] . "'
+				reserve 				= '" . (int)$stock['ProductReserve'] . "'
 				ON DUPLICATE KEY UPDATE
-				quantity 			= '" . (int)$stock['ProductQuanity'] . "',
-				quantity_of_parts 	= '" . (int)$stock['ProductQuanityParts'] . "',
-				price 				= '" . (float)$stock['ProductPrice'] . "',
-				price_retail 		= '" . (float)$stock['ProductPriceRetail'] . "',
-				price_of_part 		= '" . (float)$stock['ProductPriceOfPart'] . "',
-				price_of_part_retail 	= '" . (float)$stock['ProductPriceOfPartRetail'] . "',
+				product_uuid			= '" . $this->db->escape($product_id) . "',
+				quantity 				= '" . (int)$stock['ProductQuanity'] . "',
+				quantity_of_parts 		= '" . (int)$stock['ProductQuanity'] . "',				
 				count 					= '" . (int)$stock['ProductCount'] . "',
-				counts_of_parts 		= '" . (int)$stock['ProductCountOfParts'] . "',
-				reserve 				= '" . (int)$stock['ProductReserve'] . "',
-				reserve_of_parts 		= '" . (int)$stock['ProductReserveOfParts'] . "'");
+				reserve 				= '" . (int)$stock['ProductReserve'] . "'");
 		}
 
-		$this->setProductQuantity($product_id);
-
-		return $this->getProductStocks($product_id);
+		return $product_id_int;
 	}
 
 }

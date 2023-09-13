@@ -23,6 +23,7 @@ define('SELF_REST_PATH', dirname(__FILE__));
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config.php';
 require_once DIR_SYSTEM . '/library/db/mysqli_rest.php';
+require_once DIR_SYSTEM . '/library/cache/redis.php';
 require_once DIR_SYSTEM . '/helper/general.php';
 require_once DIR_SYSTEM . '/helper/json.php';
 require_once DIR_SYSTEM . '/library/log.php';
@@ -35,9 +36,10 @@ require_once __DIR__ . '/models/hoboModelDrugstore.php';
 require_once __DIR__ . '/models/hoboModelPrice.php';
 
 $dbObject = new \DB\MySQLiRest(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT);
+$cacheObject = new \Cache\Redis(3600);
 
 $modelProduct   = new \hobotix\hoboModelProduct($dbObject);
-$modelStocks    = new \hobotix\hoboModelStocks($dbObject);
+$modelStocks    = new \hobotix\hoboModelStocks($dbObject, $cacheObject);
 $modelOrder     = new \hobotix\hoboModelOrder($dbObject);
 $modelDrugstore = new \hobotix\hoboModelDrugstore($dbObject);
 $modelPrice     = new \hobotix\hoboModelPrice($dbObject);

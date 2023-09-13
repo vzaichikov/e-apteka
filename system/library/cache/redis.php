@@ -40,18 +40,12 @@
 		}
 		
 		public function get($key) {		
-		
 			return $this->rcache->get(CACHE_PREFIX . $key);
-			
 		}
 		
 		public function set($key, $value) {
-		
 			return $this->rcache->set(CACHE_PREFIX . $key, $value, Array('nx', 'ex' => $this->expire));			
-			
-		}
-		
-		
+		}				
 		
 		public function flush() {
 			$this->rcache->select(REDIS_DATABASE);
