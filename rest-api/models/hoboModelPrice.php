@@ -36,33 +36,24 @@ class hoboModelPrice extends hoboModel{
 
 	public function updateProductPrice($product_id, $price){
 		$this->db->query("UPDATE oc_product SET price = '" . (float)$price . "' WHERE product_id = '" . (int)$product_id . "'");
-		
-		$this->db->query("UPDATE oc_product_option_value oopv LEFT JOIN oc_product p ON (p.product_id = oopv.product_id AND option_id = 2 AND option_value_id = 2) SET oopv.quantity = (p.quantity * p.count_of_parts), oopv.price = ROUND(p.price / p.count_of_parts, 2) WHERE oopv.product_id = p.product_id AND option_id = 2 AND option_value_id = 2");
 
-		$this->db->query("UPDATE oc_product p SET p.price_of_part = ROUND(p.price / p.count_of_parts, 2) WHERE p.count_of_parts > 0");
+		$this->db->query("UPDATE oc_product_option_value oopv LEFT JOIN oc_product p ON (p.product_id = oopv.product_id AND option_id = 2 AND option_value_id = 2) SET oopv.quantity = (p.quantity * p.count_of_parts), oopv.price = ROUND(p.price / p.count_of_parts, 2) WHERE oopv.product_id = '" . (int)$product_id . "' AND option_id = 2 AND option_value_id = 2");
+
+		$this->db->query("UPDATE oc_product p SET p.price_of_part = ROUND(p.price / p.count_of_parts, 2) WHERE p.product_id = '" . (int)$product_id . "' AND p.count_of_parts > 0");
 	}
-
 
 	public function updatePrices($prices){
 		$result = [];
 
 		foreach ($prices as $price){
-			$product_id = $price['ProductID'];
-			$product_id_int = $product_id;
-
-			if (!is_numeric($product_id)){
-				$query = $this->db->query("SELECT product_id FROM oc_product WHERE uuid = '" . $this->db->escape($product_id) . "' LIMIT 1");
-
-				if ($query->num_rows){
-					$product_id_int = $query->row['product_id'];
-				} else {
-					$product_id_int = 0;
-				}
-			}
+			$product_id_int = $this->getProductIdByUUID($price['ProductID']);
 
 			if ($product_id_int){
 				$this->updateProductPrice($product_id_int, $price['ProductPrice']);
-				$result[] = $this->getProductPrice($product_id_int);
+				$result[] = [
+					'ProductID' => $price['ProductID'],
+					'Success' 	=> true
+				];
 			} else {
 				$result[] = [
 					'ProductID' => $price['ProductID'],
@@ -82,8 +73,6 @@ class hoboModelPrice extends hoboModel{
 /*************************************************************************************/
 	public function getProductPreorders(){
 		$preorders = [];
-
-
 		$query = $this->db->query("SELECT product_id, price, is_preorder, uuid FROM oc_product WHERE is_preorder = '1'");
 
 		foreach ($query->rows as $row){
@@ -175,20 +164,4 @@ class hoboModelPrice extends hoboModel{
 
 		return $result;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

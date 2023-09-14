@@ -42,7 +42,7 @@ $modelProduct   = new \hobotix\hoboModelProduct($dbObject);
 $modelStocks    = new \hobotix\hoboModelStocks($dbObject, $cacheObject);
 $modelOrder     = new \hobotix\hoboModelOrder($dbObject);
 $modelDrugstore = new \hobotix\hoboModelDrugstore($dbObject);
-$modelPrice     = new \hobotix\hoboModelPrice($dbObject);
+$modelPrice     = new \hobotix\hoboModelPrice($dbObject, $cacheObject);
 
 $restApp = AppFactory::create();
 $restApp->setBasePath('/rest-api');
