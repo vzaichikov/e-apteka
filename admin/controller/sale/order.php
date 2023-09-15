@@ -734,31 +734,31 @@
 				
 				$data['addresses'] = $this->model_customer_customer->getAddresses($order_info['customer_id']);
 				
-				$data['payment_firstname'] = $order_info['payment_firstname'];
-				$data['payment_lastname'] = $order_info['payment_lastname'];
-				$data['payment_company'] = $order_info['payment_company'];
-				$data['payment_address_1'] = $order_info['payment_address_1'];
-				$data['payment_address_2'] = $order_info['payment_address_2'];
-				$data['payment_city'] = $order_info['payment_city'];
-				$data['payment_postcode'] = $order_info['payment_postcode'];
+				$data['payment_firstname'] 	= $order_info['payment_firstname'];
+				$data['payment_lastname'] 	= $order_info['payment_lastname'];
+				$data['payment_company'] 	= $order_info['payment_company'];
+				$data['payment_address_1'] 	= $order_info['payment_address_1'];
+				$data['payment_address_2'] 	= $order_info['payment_address_2'];
+				$data['payment_city'] 		= $order_info['payment_city'];
+				$data['payment_postcode'] 	= $order_info['payment_postcode'];
 				$data['payment_country_id'] = $order_info['payment_country_id'];
-				$data['payment_zone_id'] = $order_info['payment_zone_id'];
-				$data['payment_custom_field'] = $order_info['payment_custom_field'];
-				$data['payment_method'] = $order_info['payment_method'];
-				$data['payment_code'] = $order_info['payment_code'];
+				$data['payment_zone_id'] 	= $order_info['payment_zone_id'];
+				$data['payment_custom_field'] 	= $order_info['payment_custom_field'];
+				$data['payment_method'] 		= $order_info['payment_method'];
+				$data['payment_code'] 			= $order_info['payment_code'];
 				
-				$data['shipping_firstname'] = $order_info['shipping_firstname'];
-				$data['shipping_lastname'] = $order_info['shipping_lastname'];
-				$data['shipping_company'] = $order_info['shipping_company'];
-				$data['shipping_address_1'] = $order_info['shipping_address_1'];
-				$data['shipping_address_2'] = $order_info['shipping_address_2'];
-				$data['shipping_city'] = $order_info['shipping_city'];
-				$data['shipping_postcode'] = $order_info['shipping_postcode'];
-				$data['shipping_country_id'] = $order_info['shipping_country_id'];
-				$data['shipping_zone_id'] = $order_info['shipping_zone_id'];
-				$data['shipping_custom_field'] = $order_info['shipping_custom_field'];
-				$data['shipping_method'] = $order_info['shipping_method'];
-				$data['shipping_code'] = $order_info['shipping_code'];
+				$data['shipping_firstname'] 	= $order_info['shipping_firstname'];
+				$data['shipping_lastname'] 		= $order_info['shipping_lastname'];
+				$data['shipping_company'] 		= $order_info['shipping_company'];
+				$data['shipping_address_1'] 	= $order_info['shipping_address_1'];
+				$data['shipping_address_2'] 	= $order_info['shipping_address_2'];
+				$data['shipping_city'] 			= $order_info['shipping_city'];
+				$data['shipping_postcode'] 		= $order_info['shipping_postcode'];
+				$data['shipping_country_id'] 	= $order_info['shipping_country_id'];
+				$data['shipping_zone_id'] 		= $order_info['shipping_zone_id'];
+				$data['shipping_custom_field'] 	= $order_info['shipping_custom_field'];
+				$data['shipping_method'] 		= $order_info['shipping_method'];
+				$data['shipping_code'] 			= $order_info['shipping_code'];
 				
 				// Products
 				$data['order_products'] = array();
