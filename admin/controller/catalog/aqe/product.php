@@ -611,6 +611,8 @@ class ControllerCatalogAqeProduct extends Controller {
 			$row['original_name'] 	= $result['original_name'];
 			$row['dnup'] 			= $result['dnup'];
 
+			$row['ms_code'] 		= $result['ms_code'];
+
 			if ($result['ehealth_id']){
 				$this->load->model('catalog/ehealth');
 				$row['ehealth_info'] = $this->model_catalog_ehealth->getEhealthProduct($result['ehealth_id']);

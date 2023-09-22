@@ -343,6 +343,16 @@
 									<?php } ?>
 									</div>
 								</td>
+
+								<?php break;
+											case 'sku': ?>
+									<td class="<?php echo $column_info[$col]['align']; ?><?php echo ($column_info[$col]['qe_status']) ? ' ' . $column_info[$col]['type'] : ''; ?>" id="<?php echo $col . "-" . $product['product_id']; ?>"><?php echo $product[$col]; ?>
+
+										<?php if ($product['ms_code']) { ?>
+											<br/>
+											<span class="label label-info"><?php echo $product['ms_code']; ?></span>
+										<?php } ?>
+									</td>				
 								<?php break;
 											case 'name': ?>
 									<td class="<?php echo $column_info[$col]['align']; ?><?php echo ($column_info[$col]['qe_status']) ? ' ' . $column_info[$col]['type'] : ''; ?>" id="<?php echo $col . "-" . $product['product_id']; ?>"><?php echo $product[$col]; ?>
