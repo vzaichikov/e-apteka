@@ -290,7 +290,7 @@
 		
 		public function getProduct($product_id, $explicit = false) {
 			
-			$product_info = $this->cache->get('product.info.' . $product_id . '.'.(int)$this->config->get('config_language_id'));
+		//	$product_info = $this->cache->get('product.info.' . $product_id . '.'.(int)$this->config->get('config_language_id'));
 			
 			if($product_info){
 				return $product_info;
@@ -690,6 +690,7 @@
                     'sale_quantity'    => $query->row['sale_quantity'],
 					'product_xdstickers' => $product_xdstickers
 					);
+
 					} else {
 					$return = false;
 				}
@@ -699,7 +700,7 @@
 				return $return;
 			}
 			
-			}
+		}
 			
 		public function getProductUUID($product_id) {
 			$query = $this->db->query("SELECT uuid FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "'");

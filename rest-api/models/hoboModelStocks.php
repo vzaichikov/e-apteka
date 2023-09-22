@@ -71,6 +71,7 @@ class hoboModelStocks extends hoboModel{
 
 		$this->db->query("UPDATE oc_stocks SET quantity = 0, reserve = 0 WHERE product_uuid NOT IN (SELECT product_uuid FROM oc_stocks_existent WHERE location_id = '" . (int)$DrugstoreID . "') AND location_id = '" . (int)$DrugstoreID . "'");
 		$this->db->query("UPDATE oc_product p SET quantity = (SELECT SUM(quantity) FROM oc_stocks s WHERE s.product_id = p.product_id AND location_id IN (SELECT location_id FROM oc_location WHERE temprorary_closed = 0) GROUP BY s.product_id) WHERE p.is_preorder = 0");
+		$this->db->query("UPDATE oc_product p SET is_onstock = IF(quantity <= 0, 0, 1);");
 
 		return $result;
 	}
@@ -83,6 +84,11 @@ class hoboModelStocks extends hoboModel{
 		}
 
 		foreach ($stocks as $stock){
+
+			if ($stock['ProductQuanity'] <= 0){
+				$stock['ProductQuanity'] = 0;
+			}
+
 			$this->db->query("INSERT INTO oc_stocks SET
 				product_id				= '" . (int)$product_id_int . "',
 				product_uuid			= '" . $this->db->escape($product_id) . "',

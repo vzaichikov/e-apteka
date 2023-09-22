@@ -36,6 +36,7 @@ class hoboModelPrice extends hoboModel{
 
 	public function updateProductPrice($product_id, $price){
 		$this->db->query("UPDATE oc_product SET price = '" . (float)$price . "' WHERE product_id = '" . (int)$product_id . "'");
+		$this->db->query("UPDATE oc_stocks SET price = '" . (float)$price . "' WHERE product_id = '" . (int)$product_id . "'");
 
 		$this->db->query("UPDATE oc_product_option_value oopv LEFT JOIN oc_product p ON (p.product_id = oopv.product_id AND option_id = 2 AND option_value_id = 2) SET oopv.quantity = (p.quantity * p.count_of_parts), oopv.price = ROUND(p.price / p.count_of_parts, 2) WHERE oopv.product_id = '" . (int)$product_id . "' AND option_id = 2 AND option_value_id = 2");
 
