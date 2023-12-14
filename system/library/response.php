@@ -22,6 +22,10 @@ class Response {
 	}
 	
 	public function setOutput($output) {
+		if (!defined('IS_ADMIN')){
+            $output = str_ireplace('https://', 'https://', $output);
+        }
+		
 		$this->output = $output;
 	}
 

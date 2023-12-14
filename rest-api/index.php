@@ -242,20 +242,15 @@ $restApp->post('/drugstores/', function (Request $request, Response $response, a
     }       
 
     $fields = [
-        'drugstoreClosed', 
-        'drugstoreName_RU', 
-        'drugstoreName_UA', 
-        'drugstoreAddress_RU', 
-        'drugstoreAddress_UA', 
-        'drugstoreTelephone', 
-        'drugstoreFax', 
-        'drugstoreGeoCode', 
-        'drugstoreUUID', 
-        'drugstoreGmapsLink', 
-        'drugstoreOpen', 
-        'drugstoreOpenStruct', 
-        'drugstoreSortOrder', 
-        'drugstoreCanSellDrugs'
+        'drugstoreClosed',
+        'drugstoreName_RU',
+        'drugstoreName_UA',
+        'drugstoreAddress_RU',
+        'drugstoreAddress_UA',
+        'drugstoreGeoCode',
+        'drugstoreUUID',
+        'drugstoreOpen',
+        'drugstoreBrand'
     ];
 
     foreach ($fields as $field){
@@ -421,15 +416,19 @@ $restApp->get('/stocks/{id}', function (Request $request, Response $response, ar
 /*
     Point to set stocks for any
 */
-$restApp->put('/stocks/', function (Request $request, Response $response, array $args) use ($modelStocks) {
-    $log = new \Log('rest-api/put-batch-stocks.log');
-    $body = $request->getBody()->getContents();
-    $log->write($body);
+$restApp->put('/stocks/', function (Request $request, Response $response, array $args) use ($modelStocks) {   
+    $body = $request->getBody()->getContents();    
 
     $data = json_decode($body, true);
     if (!is_array($data)) {
         throw new HttpBadRequestException($request, "Invalid JSON body");
     }
+
+    if (!empty($data[0]) && !empty($data[0]['DrugstoreID'])){
+        $drugstore_id = (int)$data[0]['DrugstoreID'];              
+        $log = new \Log('rest-api/put-batch-stocks-' . $drugstore_id . '.log');
+        $log->write($body);
+    }   
 
     if ($stocks = $modelStocks->updateStocks($data)){        
         $payload = ['success' => true, 'data' => $stocks];

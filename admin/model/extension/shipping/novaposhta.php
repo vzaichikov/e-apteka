@@ -182,6 +182,32 @@ class ModelShippingNovaPoshta extends Model {
 		return $data;
 	}
 
+    public function getCityNameByRef($Ref) {
+        $zone = $this->db->query("SELECT * FROM `" . DB_PREFIX . $this->extension . "_cities` WHERE Ref = '" . $this->db->escape($Ref) . "'")->row;
+
+         return !empty($zone['Description']) ? $zone['Description'] : false;
+    }
+
+    public function getCities($data = array()) {
+        $sql = "SELECT * FROM `" . DB_PREFIX . $this->extension . "_cities` WHERE Description LIKE '" . $this->db->escape($data['filter_name']) . "%' OR DescriptionRu LIKE '" . $this->db->escape($data['filter_name']) . "%' ORDER BY Description ASC";
+
+        if (isset($data['start']) || isset($data['limit'])) {
+            if ($data['start'] < 0) {
+                $data['start'] = 0;
+            }
+
+            if ($data['limit'] < 1) {
+                $data['limit'] = 20;
+            }
+
+            $sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
+        }
+
+        $query = $this->db->query($sql);
+
+        return $query->rows;
+    }
+
     public function getZoneIDByName($name) {
         $zone = $this->db->query("SELECT `zone_id` FROM `" . DB_PREFIX . "zone` WHERE `name` = '" . $this->db->escape($name) . "'")->row;
 

@@ -12,13 +12,20 @@ class hoboModelDrugstore extends hoboModel{
 			foreach ($query->rows as $row){
 				$description_query_RU = $this->db->query("SELECT * FROM oc_location_description WHERE location_id = '" . $row['location_id'] . "' AND language_id = '2'");
 				$description_query_UA = $this->db->query("SELECT * FROM oc_location_description WHERE location_id = '" . $row['location_id'] . "' AND language_id = '3'");
+				$city_query    		  = $this->db->query("SELECT * FROM oc_novaposhta_cities WHERE Ref = '" . $row['city_id'] . "'");
 
 				$result[] = [
 					'drugstoreID' 				=> $row['location_id'],
+					'drugstoreUUID' 			=> $row['uuid'],
 					'drugstoreName_RU' 			=> $description_query_RU->row['name'],
 					'drugstoreName_UA' 			=> $description_query_UA->row['name'],
 					'drugstoreAddress_RU' 		=> $description_query_RU->row['address'],
 					'drugstoreAddress_UA' 		=> $description_query_UA->row['address'],
+					'drugstoreCityUUID' 		=> $row['city_id'],
+					'drugstoreCity' 			=> $query->row['city'],
+					'drugstoreNPCityName_RU' 	=> $city_query->num_rows?$city_query->row['DescriptionRu']:'',
+					'drugstoreNPCityName_UA' 	=> $city_query->num_rows?$city_query->row['Description']:'',
+					'drugstoreBrand' 			=> $row['brand'],
 					'drugstoreTelephone' 		=> $row['telephone'],
 					'drugstoreFax' 				=> $row['fax'],
 					'drugstoreGeoCode' 			=> $row['geocode'],
@@ -48,19 +55,29 @@ class hoboModelDrugstore extends hoboModel{
 
 
 	public function getDrugStore($location_id){
-		$query = $this->db->query("SELECT * FROM oc_location ol WHERE ol.location_id = '" . (int)$location_id . "' OR ol.uuid = '" . $this->db->escape($location_id) . "'");		
-
+		if (is_numeric($location_id)){
+			$query = $this->db->query("SELECT * FROM oc_location ol WHERE ol.location_id = '" . (int)$location_id . "' LIMIT 1");
+		} else {
+			$query = $this->db->query("SELECT * FROM oc_location ol WHERE ol.uuid = '" . $this->db->escape($location_id) . "' LIMIT 1");
+		}
 
 		if ($query->num_rows){			
 			$description_query_RU = $this->db->query("SELECT * FROM oc_location_description WHERE location_id = '" . $query->row['location_id'] . "' AND language_id = '2'");
 			$description_query_UA = $this->db->query("SELECT * FROM oc_location_description WHERE location_id = '" . $query->row['location_id'] . "' AND language_id = '3'");
+			$city_query    		  = $this->db->query("SELECT * FROM oc_novaposhta_cities WHERE Ref = '" . $query->row['city_id'] . "'");
 
 			return [
 				'drugstoreID' 				=> $query->row['location_id'],
+				'drugstoreUUID' 			=> $query->row['uuid'],
 				'drugstoreName_RU' 			=> $description_query_RU->row['name'],
 				'drugstoreName_UA' 			=> $description_query_UA->row['name'],
 				'drugstoreAddress_RU' 		=> $description_query_RU->row['address'],
 				'drugstoreAddress_UA' 		=> $description_query_UA->row['address'],
+				'drugstoreCityUUID' 		=> $query->row['city_id'],
+				'drugstoreCity' 			=> $query->row['city'],
+				'drugstoreNPCityName_RU' 	=> $city_query->num_rows?$city_query->row['DescriptionRu']:'',
+				'drugstoreNPCityName_UA' 	=> $city_query->num_rows?$city_query->row['Description']:'',
+				'drugstoreBrand' 			=> $query->row['brand'],
 				'drugstoreTelephone' 		=> $query->row['telephone'],
 				'drugstoreFax' 				=> $query->row['fax'],
 				'drugstoreGeoCode' 			=> $query->row['geocode'],
@@ -112,14 +129,17 @@ class hoboModelDrugstore extends hoboModel{
 			name 				= '" . $this->db->escape($data['drugstoreName_UA']) . "', 
 			address 			= '" . $this->db->escape($data['drugstoreAddress_UA']) . "', 
 			geocode 			= '" . $this->db->escape($data['drugstoreGeoCode']) . "', 
-			gmaps_link 			= '" . $this->db->escape($data['drugstoreGmapsLink']) . "', 
+			gmaps_link 			= '" . (!empty($data['drugstoreGmapsLink'])?$this->db->escape($data['drugstoreGmapsLink']):'') . "', 
 			telephone 			= '" . $this->db->escape($data['drugstoreTelephone']) . "', 
-			fax 				= '" . $this->db->escape($data['drugstoreFax']) . "', 			
+			fax 				= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreFax']):'') . "', 			
 			open 				= '" . $this->db->escape($data['drugstoreOpen']) . "', 
-			open_struct 		= '" . $this->db->escape($data['drugstoreOpenStruct']) . "', 
+			open_struct 		= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreOpenStruct']):'') . "', 
+			brand 				= '" . $this->db->escape($data['drugstoreBrand']) . "',
+			city 				= '" . (!empty($data['drugstoreCity'])?$this->db->escape($data['drugstoreCity']):'') . "',
+			city_id 			= '" . (!empty($data['drugstoreCityUUID'])?$this->db->escape($data['drugstoreCityUUID']):'') . "',
 			can_sell_drugs 		= '" . (int)$data['drugstoreCanSellDrugs'] . "', 
 			temprorary_closed 	= '" . (int)$data['drugstoreClosed'] . "', 
-			sort_order 			= '" . (int)$data['drugstoreSortOrder'] . "',  
+			sort_order 			= '" . (!empty($data['drugstoreSortOrder'])?(int)$data['drugstoreSortOrder']:'') . "',  
 			uuid 				= '" . $this->db->escape($data['drugstoreUUID']) . "'");
 			
 			$location_id = $this->db->getLastId();
@@ -162,14 +182,17 @@ class hoboModelDrugstore extends hoboModel{
 			name 				= '" . $this->db->escape($data['drugstoreName_UA']) . "', 
 			address 			= '" . $this->db->escape($data['drugstoreAddress_UA']) . "', 
 			geocode 			= '" . $this->db->escape($data['drugstoreGeoCode']) . "', 
-			gmaps_link 			= '" . $this->db->escape($data['drugstoreGmapsLink']) . "', 
+			gmaps_link 			= '" . (!empty($data['drugstoreGmapsLink'])?$this->db->escape($data['drugstoreGmapsLink']):'') . "', 
 			telephone 			= '" . $this->db->escape($data['drugstoreTelephone']) . "', 
-			fax 				= '" . $this->db->escape($data['drugstoreFax']) . "', 			
+			fax 				= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreFax']):'') . "', 			
 			open 				= '" . $this->db->escape($data['drugstoreOpen']) . "', 
-			open_struct 		= '" . $this->db->escape($data['drugstoreOpenStruct']) . "', 
+			open_struct 		= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreOpenStruct']):'') . "', 
+			brand 				= '" . $this->db->escape($data['drugstoreBrand']) . "',
+			city 				= '" . (!empty($data['drugstoreCity'])?$this->db->escape($data['drugstoreCity']):'') . "',
+			city_id 			= '" . (!empty($data['drugstoreCityUUID'])?$this->db->escape($data['drugstoreCityUUID']):'') . "',
 			can_sell_drugs 		= '" . (int)$data['drugstoreCanSellDrugs'] . "', 
 			temprorary_closed 	= '" . (int)$data['drugstoreClosed'] . "', 
-			sort_order 			= '" . (int)$data['drugstoreSortOrder'] . "'
+			sort_order 			= '" . (!empty($data['drugstoreSortOrder'])?(int)$data['drugstoreSortOrder']:'') . "'
 			WHERE  			
 			location_id      = '" . (int)$drugstore['drugstoreID'] . "'
 			");			

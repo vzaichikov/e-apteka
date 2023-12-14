@@ -78,6 +78,7 @@ class ControllerApiShipping extends Controller {
 					}
 				}
 
+				unset($json['error']);
 				if (!$json) {
 					$this->load->model('localisation/country');
 

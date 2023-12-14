@@ -34,6 +34,7 @@
 			$data['lang'] 			= $this->language->get('code');
 			$data['direction'] 		= $this->language->get('direction');
 			$data['text_page'] 		= $this->language->get('text_page');
+			$data['tlt_metatags'] 	= $this->document->getTLTMetaTags();
 			
 			if (!empty($this->request->get['page']) && is_numeric($this->request->get['page']) && (int)$this->request->get['page'] > 1){
 				$data['seo_page'] = (int)$this->request->get['page'];	

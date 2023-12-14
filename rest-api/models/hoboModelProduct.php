@@ -51,7 +51,12 @@ class hoboModelProduct extends hoboModel{
 	}
 
 	public function getProductByID($product_id){
-		$query = $this->db->query("SELECT * FROM oc_product p WHERE (p.product_id = '" . (int)$product_id . "' OR uuid = '" . $this->db->escape($product_id) . "') LIMIT 1");
+		if (is_numeric($product_id)){
+			$query = $this->db->query("SELECT * FROM oc_product p WHERE p.product_id = '" . (int)$product_id . "' LIMIT 1");
+		} else {
+			$query = $this->db->query("SELECT * FROM oc_product p WHERE uuid = '" . $this->db->escape($product_id) . "' LIMIT 1");
+		}
+		
 
 		if ($query->num_rows){
 			$description_query_RU = $this->db->query("SELECT * FROM oc_product_description WHERE product_id = '" . $query->row['product_id'] . "' AND language_id = '2'");

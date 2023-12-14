@@ -40,13 +40,10 @@
 	</div>
 </div>
 <div class="container-fluid">
-
-	<div class="alert alert-info text-center"><i class="fa fa-info-circle"></i> Будь-ласка, перед візитом уточнюйте режим роботи аптеки за контактами, вказаними на сайті</div>
-
-	<div class="row product-stock-map"  style="height: 650px;">
+	<div class="row product-stock-map"  style="height: 800px;">
 		<div class="stock-table-wrapper-mobile">
 			<select id="selectAddress">
-				<option>Choose a number</option>
+				<option>Оберіть адресу будь-ласка</option>
 			</select>
 		</div>
 		<div id="stock-table-wrapper" class="col-md-3 col-sm-12 col-xs-12 col-no-right-padding product-stock-map__table-wrapper scrolly" style="height:100%">
@@ -56,8 +53,10 @@
 						<td>
 							<b class="product-stock-map__name"><?php echo $location['address']; ?></b>
 							<br />
+							<?php /* ?>
 							<small class="text-success"><b><?php echo $text_we_work_while_no_light; ?></b></small>
 							<br />
+							<?php */ ?>
 							<span class="product-stock-map__time"><i class="fa fa-clock-o <? echo $location['faclass']; ?>"></i> <i><?php echo $location['open']; ?></i></span><br />
 							<small><?php echo $location['telephone']; ?></small>
 						</td>
@@ -73,12 +72,8 @@
 		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
 		<script>    
 			var select = document.getElementById("selectAddress"); 
-			var options = Array.from(document.querySelectorAll(".location_has_geocode td")); 
-
-			// Optional: Clear all existing options first:
+			var options = Array.from(document.querySelectorAll(".location_has_geocode td")); 			
 			select.innerHTML = "";
-
-			// Populate list with options:
 			for(var i = 0; i < options.length; i++) {
 			    var opt = options[i].textContent;
 			    // var data = 7;
@@ -98,7 +93,6 @@
 			}).addTo(map);
 			
 			function onMapClick(e) {
-			//	alert("You clicked the map at " + e.latlng);
 			}
 			
 			map.on('click', onMapClick);
@@ -116,7 +110,12 @@
 				
 				
 				<?php if ($location['geocode']) { ?>
-					markers[<? echo $i; ?>] = L.marker([<?php echo $location['geocode'];?>], {icon:icon<?php echo $i; ?>}).addTo(map).bindPopup('<div class="" style="margin-bottom: 10px;"><img src="<?php echo $location['image']; ?>" alt="" /></div><h4><? echo $location['name']; ?></h4><small class="text-success"><b><?php echo $text_we_work_while_no_light; ?></b></small><p><?php echo $location['open']; ?></p><h4><strong><?php echo $location['telephone']; ?></strong></h4><p><h4><? echo $location['email']; ?></h4></p>');
+					var html = '<h4><? echo $location['name']; ?></h4>';
+					html += '<p><?php echo $location['open']; ?></p>';
+					html += '<h4><strong><?php echo $location['telephone']; ?></strong></h4>';
+					html += '<p><h4><? echo $location['email']; ?></h4></p>';
+
+					markers[<? echo $i; ?>] = L.marker([<?php echo $location['geocode'];?>], {icon:icon<?php echo $i; ?>}).addTo(map).bindPopup(html);
 				<? } ?>
 			<? $i++; } ?>
 			

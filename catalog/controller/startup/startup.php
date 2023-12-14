@@ -22,15 +22,12 @@
 			}
 			
 			// Settings
-			$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "setting` WHERE store_id = '0' OR store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY store_id ASC");
-			
+			$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "setting` WHERE store_id = '0' OR store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY store_id ASC");			
 			foreach ($query->rows as $result) {
 				
 				if($result['key'] == 'config_maintenance'){
-					//echo '++'.$result['value'];
 					$this->config->set($result['key'], 0);
-				}else{
-				
+				} else {				
 					if (!$result['serialized']) {
 						$this->config->set($result['key'], $result['value']);
 						} else {
@@ -42,6 +39,7 @@
 			
 			// Url
 			$this->registry->set('url', new Url($this->config->get('config_url'), $this->config->get('config_ssl')));
+			$this->url->addRewrite(new Simple\Rewrite($this->config));
 			
 			// Language
 			$code = '';
@@ -58,9 +56,7 @@
 				$code = $this->request->cookie['language'];
 			}						
 		
-			//FROM URL
-			$language_from_url = explode("/", $this->request->server['REQUEST_URI']);
-			
+			$language_from_url = explode("/", $this->request->server['REQUEST_URI']);		
 			$code_from_url = false;
 			foreach($language_from_url as $lang){			
 				unset($value);
@@ -88,42 +84,7 @@
 						$this->response->redirect(HTTPS_SERVER . 'ua' . $this->request->server['REQUEST_URI']);
 					}
 				}
-			}	
-			
-			// Language Detection
-		/*	if (!empty($this->request->server['HTTP_ACCEPT_LANGUAGE']) && !array_key_exists($code, $languages)) {
-				$detect = '';
-				
-				$browser_languages = explode(',', $this->request->server['HTTP_ACCEPT_LANGUAGE']);
-				
-				// Try using local to detect the language
-				foreach ($browser_languages as $browser_language) {
-					foreach ($languages as $key => $value) {
-						if ($value['status']) {
-							$locale = explode(',', $value['locale']);
-							
-							if (in_array($browser_language, $locale)) {
-								$detect = $key;
-								break 2;
-							}
-						}
-					}	
-				}			
-				
-				if (!$detect) { 
-					// Try using language folder to detect the language
-					foreach ($browser_languages as $browser_language) {
-						if (array_key_exists(strtolower($browser_language), $languages)) {
-							$detect = strtolower($browser_language);
-							
-							break;
-						}
-					}
-				}
-				
-				$code = $detect ? $detect : '';
-			}
-		*/
+			}				
 			
 			if (!array_key_exists($code, $languages)) {
 				$code = $this->config->get('config_language');
@@ -226,9 +187,6 @@
 			$this->registry->set('cart', new Cart\Cart($this->registry));
 			
 			// Encryption
-			$this->registry->set('encryption', new Encryption($this->config->get('config_encryption')));
-			
-			// OpenBay Pro
-			//$this->registry->set('openbay', new Openbay($this->registry));					
+			$this->registry->set('encryption', new Encryption($this->config->get('config_encryption')));					
 		}
 	}

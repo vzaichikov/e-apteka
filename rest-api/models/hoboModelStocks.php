@@ -37,7 +37,14 @@ class hoboModelStocks extends hoboModel{
 		$result = [];
 		
 		if (!empty($stocks[0]) && !empty($stocks[0]['DrugstoreID'])){
-			$DrugstoreID = (int)$stocks[0]['DrugstoreID'];				
+			if (!is_numeric($stocks[0]['DrugstoreID'])){
+				$query = $this->db->query("SELECT * FROM oc_location ol WHERE ol.uuid = '" . $this->db->escape($stocks[0]['DrugstoreID']) . "' LIMIT 1");
+				if ($query->num_rows){
+					$DrugstoreID = (int)$query->row['location_id'];
+				}
+			} else {
+				$DrugstoreID = (int)$stocks[0]['DrugstoreID'];
+			}				
 		}		
 
 		$this->db->query("DELETE FROM oc_stocks_existent WHERE drugstore_id = '" . (int)$DrugstoreID . "'" );	
@@ -45,14 +52,15 @@ class hoboModelStocks extends hoboModel{
 		foreach (array_chunk($stocks, 1000) as $chunk) {
 			$sql = "INSERT INTO oc_stocks_existent (`product_uuid`, `drugstore_id`) VALUES ";
 			foreach ($chunk as $row) {
-  				$sql .= "('" . $row['ProductID'] . "', '" . $row['DrugstoreID'] . "'),"; 
+  				$sql .= "('" . $row['ProductID'] . "', '" . $DrugstoreID . "'),"; 
 			}
 
 			$sql = rtrim($sql, ',');
 			$this->db->query($sql);
 		}
 
-		foreach ($stocks as $stock){			
+		foreach ($stocks as $stock){		
+			$stock['DrugstoreID'] = $DrugstoreID;
 			$product_id = $this->updateProductStocks($stock['ProductID'], [$stock]);
 
 			if ($product_id){				
@@ -69,7 +77,7 @@ class hoboModelStocks extends hoboModel{
 			}
 		}
 
-		$this->db->query("UPDATE oc_stocks SET quantity = 0, reserve = 0 WHERE product_uuid NOT IN (SELECT product_uuid FROM oc_stocks_existent WHERE location_id = '" . (int)$DrugstoreID . "') AND location_id = '" . (int)$DrugstoreID . "'");
+		$this->db->query("UPDATE oc_stocks SET quantity = 0, quantity_of_parts = 0, count = 0, counts_of_parts = 0, reserve = 0 WHERE product_uuid NOT IN (SELECT product_uuid FROM oc_stocks_existent WHERE drugstore_id = '" . (int)$DrugstoreID . "') AND location_id = '" . (int)$DrugstoreID . "'");
 		$this->db->query("UPDATE oc_product p SET quantity = (SELECT SUM(quantity) FROM oc_stocks s WHERE s.product_id = p.product_id AND location_id IN (SELECT location_id FROM oc_location WHERE temprorary_closed = 0) GROUP BY s.product_id) WHERE p.is_preorder = 0");
 		$this->db->query("UPDATE oc_product p SET is_onstock = IF(quantity <= 0, 0, 1);");
 

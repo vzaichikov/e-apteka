@@ -1,9 +1,84 @@
 <?php
 class ControllerCommonHome extends Controller {
 	public function index() {
-		$this->document->setTitle($this->config->get('config_meta_title'));
-		$this->document->setDescription($this->config->get('config_meta_description'));
-		$this->document->setKeywords($this->config->get('config_meta_keyword'));
+		$code = $this->session->data['language'];
+
+		if ($this->config->get('tltmultilang_meta_title_' . $code)){
+			$this->document->setTitle($this->config->get('tltmultilang_meta_title_' . $code));
+		} else {
+			$this->document->setTitle($this->config->get('config_meta_title'));
+		}
+		
+		if ($this->config->get('tltmultilang_meta_description_' . $code)){
+			$this->document->setDescription($this->config->get('tltmultilang_meta_description_' . $code));
+		} else {
+			$this->document->setDescription($this->config->get('config_meta_description'));
+		}
+
+		if ($this->config->get('tltmultilang_meta_keyword_' . $code)){
+			$this->document->setKeywords($this->config->get('tltmultilang_meta_keyword_' . $code));
+		} else {
+			$this->document->setKeywords($this->config->get('config_meta_keyword'));
+		}
+		
+		if (property_exists('Document', 'tlt_metatags')) {
+			$image = $this->config->get('tltmultilang_image');
+			
+			if (is_file(DIR_IMAGE . $image)) {
+				if ($this->request->server['HTTPS']) {
+					$image_tw = $image_fb = $this->config->get('config_ssl') . 'image/' . $image;
+				} else {
+					$image_tw = $image_fb = $this->config->get('config_url') . 'image/' . $image;
+				} 
+			} else {
+				$image_tw = $image_fb = '';
+			}
+			
+			if ($this->config->get('tltmultilang_twitter_status')) {
+				if ($this->config->get('tltmultilang_twitter_card')) {
+					$this->document->addTLTMetaTag('twitter:card', 'summary_large_image');
+				} else {
+					$this->document->addTLTMetaTag('twitter:card', 'summary');
+				}
+				
+				$this->document->addTLTMetaTag('twitter:site', $this->config->get('tltmultilang_twitter_name'));	
+				$this->document->addTLTMetaTag('twitter:title', $meta_title);	
+				$this->document->addTLTMetaTag('twitter:text:description', $meta_description);	
+				
+				if ($image_tw) {
+					$this->document->addTLTMetaTag('twitter:image', $image_tw);
+					$this->document->addTLTMetaTag('twitter:image:alt', $meta_title);
+				}
+			}
+			
+			if ($this->config->get('tltmultilang_facebook_status')) {
+				$this->document->addTLTMetaTag('og:type', 'website', 'property');
+				$this->document->addTLTMetaTag('og:site_name', $this->config->get('tltmultilang_facebook_name'), 'property');
+				
+				if ($this->request->server['HTTPS']) {
+					$this->document->addTLTMetaTag('og:url', $this->config->get('config_ssl'), 'property');
+				} else {
+					$this->document->addTLTMetaTag('og:url', $this->config->get('config_url'), 'property');
+				} 
+				
+				$this->document->addTLTMetaTag('og:title', $meta_title, 'property');
+				$this->document->addTLTMetaTag('og:description', $meta_description, 'property');
+				
+				if ($this->config->get('tltmultilang_facebook_appid')) {
+					$this->document->addTLTMetaTag('fb:app_id', $this->config->get('tltmultilang_facebook_appid'), 'property');
+				}
+				
+				if ($image_fb) {
+					list($image_width, $image_height) = getimagesize(DIR_IMAGE . $image);
+					$this->document->addTLTMetaTag('og:image', $image_fb, 'property');
+					$this->document->addTLTMetaTag('og:image:width', $image_width, 'property');
+					$this->document->addTLTMetaTag('og:image:height', $image_height, 'property');
+				}
+			}
+		} else {
+			$this->log->write('TLT Structured Data: Meta tag support is not installed. Read Readme.txt for more info.');
+		}				
+		
 
 		$this->document->addLink($this->url->link('common/home'), 'canonical');
 		

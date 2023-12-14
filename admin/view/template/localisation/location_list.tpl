@@ -40,6 +40,8 @@
               <?php } else { ?>
                 <a href="<?php echo $sort_name; ?>"><?php echo $column_name; ?></a>
                 <?php } ?></td>
+                <td class="text-left">Бренд</td>
+                <td class="text-left">Город</td>
                 <td class="text-left"><?php if ($sort == 'address') { ?>
                   <a href="<?php echo $sort_address; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_address; ?></a>
                 <?php } else { ?>
@@ -47,15 +49,12 @@
                   <?php } ?></td>
                   <td class="text-left">Телефон</td>
                   <td class="text-left">GeoCode</td>
-                  <td class="text-left">GM Код</td>
+                  <td class="text-left">GM Код</td>                  
                   <td class="text-left">1C UUID</td>
                   <td class="text-left">Остатки</td>
                   <td class="text-left">Наркотики</td>
-                  <td class="text-left">Основн. цена</td>
-                  <td class="text-left">Время доставки</td>
                   <td class="text-left">Открыто</td>
                   <td class="text-left">Открыто Структ</td>
-                  <td class="text-left">Точка обмена</td>
                   <td class="text-left">Статья - описание</td>
                   <td class="text-left">Сорт</td>
                   <td class="text-right"><?php echo $column_action; ?></td>
@@ -74,21 +73,22 @@
                           <?php echo $locations['name']; ?>
                           
                           <?php if ($locations['temprorary_closed']) { ?>
-                            <span class="label label-danger">Временно закрыто</span>
+                            <br /><span class="label label-danger">Временно закрыто</span>
                           <?php } else { ?>
-                             <span class="label label-success">Открыто</span>
+                            <br /><span class="label label-success">Открыто</span>
                           <?php } ?>
-
                         </td>
+
+                        <td class="text-left"><?php echo $locations['brand']; ?> </td>
+
+                        <td class="text-left"><?php echo $locations['city']; ?></td>
                         <td class="text-left"><?php echo $locations['address']; ?></td>
                         <td class="text-left"><?php echo $locations['telephone']; ?></td>
                         <td class="text-left">
                           <span class="label label-success"><?php echo $locations['geocode']; ?></span>
                           <?php if ($locations['gmaps_link']) { ?>
                           <br /><small><?php echo $locations['gmaps_link']; ?></small>
-                          <?php } ?>
-                          
-
+                          <?php } ?>                          
                         </td>
 
                         <td class="text-left"><span class="label label-success">drugstore<?php echo $locations['location_id']; ?></span></td>
@@ -109,18 +109,9 @@
                            <span class="btn btn-danger"><i class="fa fa-minus"></i></span>
                          <? } ?>
                        </td>
-                       
-                       <td class="text-left">
-                         <?php if ($locations['default_price']) { ?>
-                           <span class="btn btn-success"><i class="fa fa-plus"></i></span>
-                         <? } else { ?>					  
-                           <span class="btn btn-danger"><i class="fa fa-minus"></i></span>
-                         <? } ?>
-                       </td>
-                       <td class="text-left" style="font-size:10px; white-space: nowrap;"><?php echo $locations['delivery_times']; ?></td>
+
                        <td class="text-left" style="font-size:10px; white-space: nowrap;"><?php echo $locations['open']; ?></td>
                        <td class="text-left" style="font-size:10px; white-space: nowrap;"><?php echo $locations['open_struct']; ?></td>
-                       <td class="text-left" style="font-size:10px;"><?php echo $locations['node']; ?></td>
                        <td class="text-left" style="font-size:10px;"><?php echo $locations['information']; ?></td>
                        <td class="text-left"><?php echo $locations['sort_order']; ?></td>
                        <td class="text-right"><a href="<?php echo $locations['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>

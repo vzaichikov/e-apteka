@@ -4,15 +4,15 @@
 		private $description;
 		private $canonical;
 		private $keywords;
-		private $robots_meta;
-		//	private $noindex = false;
+		private $robots_meta;		
 		private $og_image;
 		private $hreflangs = array();
 		private $links = array();
 		private $styles = array();
 		private $scripts = array();
 		private $opengraph = array();
-		
+		private $tlt_metatags = array();
+			
 		
 		public function setTitle($title) {
 			$this->title = $title;
@@ -50,6 +50,12 @@
 		public function getOpengraph() {
 			return $this->opengraph;
 		}
+
+
+		public function getTLTMetaTags() {
+			return $this->tlt_metatags;
+		}
+		
 		
 		public function addLink($href, $rel) {			
 			$this->links[$href.' '.$rel] = array(
@@ -57,7 +63,15 @@
 			'rel'  => $rel
 			);
 		}
-		
+
+		public function addTLTMetaTag($name, $content, $type = 'name') {
+			$this->tlt_metatags[$name] = array(
+				'type'		=> $type,
+				'name'		=> $name,
+				'content'	=> $content
+			);
+		}
+				
 		public function setOpengraph($meta, $content) {
 			$this->opengraph[] = array(
 			'meta'   => $meta,

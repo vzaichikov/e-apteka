@@ -69,9 +69,15 @@
 		<?php if ($description) { ?>
 			<meta name="description" content="<?php echo $description; ?>" />
 		<?php } ?>
+
 		<?php if ($keywords) { ?>
 			<meta name="keywords" content= "<?php echo $keywords; ?>" />
 		<?php } ?>
+
+		<?php foreach ($tlt_metatags as $metatag) { ?>
+			<meta <?php echo $metatag['type']; ?>="<?php echo $metatag['name']; ?>" content="<?php echo $metatag['content']; ?>" />
+		<?php } ?>
+
 		<script src="/catalog/view/javascript/jquery/jquery-2.1.1.min.js" type="text/javascript"></script>
 		<link href="/catalog/view/theme/default/stylesheet/bootstrap.min.css" rel="stylesheet" media="screen" />
 		<script src="/catalog/view/javascript/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>

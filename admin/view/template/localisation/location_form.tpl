@@ -58,6 +58,14 @@
 									<?php } ?>
 								</div>
 							</div>
+
+							<div class="form-group required">
+								<label class="col-sm-2 control-label" for="input-name">Бренд аптеки</label>
+								<div class="col-sm-10">
+									<input type="text" name="brand" value="<?php echo $brand; ?>" placeholder="Аптека Гормональных Препаратов" id="input-brand" class="form-control" />		
+									<span>Бренд (вывеска) аптеки может отличаться от лицензиата, поэтому нужно отдельно его ввести</span>
+								</div>
+							</div>
 							
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-node_id">Точка обмена</label>
@@ -138,6 +146,15 @@
 									</select>
 								</div>
 							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-parent">Город</label>
+								<div class="col-sm-8">
+									<input type="text" name="city" value="<?php echo $city; ?>" placeholder="Город" id="input-city" class="form-control" />
+									<input type="hidden" name="city_id" value="<?php echo $city_id; ?>" />
+								</div>
+								<div class="col-sm-2"><button type="button" data-toggle="tooltip" title="" class="btn btn-danger" onclick="$('input[name=\'google_base_category\']').val('');$('input[name=\'google_base_category_id\']').val('');" data-original-title="Очистить"><i class="fa fa-trash-o"></i></button></div>
+							</div>
 							
 							<div class="form-group required">
 								<label class="col-sm-2 control-label" for="input-address"><?php echo $entry_address; ?></label>
@@ -148,6 +165,7 @@
 									<?php } ?>
 								</div>
 							</div>
+
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-geocode"><span data-toggle="tooltip" data-container="#content" title="<?php echo $help_geocode; ?>"><?php echo $entry_geocode; ?></span></label>
 								<div class="col-sm-10">
@@ -242,6 +260,15 @@
 												<textarea name="location_description[<?php echo $language['language_id']; ?>][open]" id="input-open<?php echo $language['language_id']; ?>" class="form-control"><?php echo isset($location_description[$language['language_id']]) ? $location_description[$language['language_id']]['open'] : ''; ?></textarea>
 											</div>
 										</div>
+
+										<div class="form-group required">
+											<label class="col-sm-2 control-label" for="input-address<?php echo $language['language_id']; ?>">Бренд</label>
+											<div class="col-sm-10">
+												<input type="text" name="location_description[<?php echo $language['language_id']; ?>][brand]" value="<?php echo isset($location_description[$language['language_id']]) ? $location_description[$language['language_id']]['brand'] : ''; ?>" id="input-address<?php echo $language['language_id']; ?>" class="form-control" />
+												<span>Бренд (вывеска) аптеки может отличаться от лицензиата, поэтому нужно отдельно его ввести</span>											
+											</div>
+										</div>
+
 										<div class="form-group required">
 											<label class="col-sm-2 control-label" for="input-address<?php echo $language['language_id']; ?>"><?php echo $entry_address; ?></label>
 											<div class="col-sm-10">
@@ -275,5 +302,35 @@
 <script type="text/javascript" src="view/javascript/summernote/opencart.js"></script> 
 <script type="text/javascript"><!--
 	$('#language a:first').tab('show');
-//--></script></div>
+//--></script>
+
+<script type="text/javascript">
+		<!--
+		// Google Category
+		$('input[name=\'city\']').autocomplete({
+			'source': function(request, response) {
+				$.ajax({
+					url: 'index.php?route=localisation/location/city_autocomplete&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request),
+					dataType: 'json',
+					success: function(json) {
+						response($.map(json, function(item) {
+							return {
+								label: item['city'],
+								value: item['city_id']
+							}
+						}));
+					},
+					error: function(xhr, ajaxOptions, thrownError) {
+						alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+					}
+				});
+			},
+			'select': function(item) {
+				$(this).val(item['label']);
+				$('input[name=\'city_id\']').val(item['value']);
+			}
+		});
+</script>
+
+</div>
 <?php echo $footer; ?>

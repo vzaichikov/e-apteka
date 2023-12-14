@@ -73,11 +73,6 @@
 			'href' => $this->url->link('common/home')
 			);
 			
-			/*	$data['breadcrumbs'][] = array(
-				'text' => $this->language->get('heading_title'),
-				'href' => $this->url->link('information/contact')
-				);
-			*/
 			$data['heading_title'] = $this->language->get('heading_title');
 			
 			$data['text_location'] = $this->language->get('text_location');
@@ -162,7 +157,6 @@
 					$open = '';
 					$mcolor = 'red';
 					$is_open_now = false;
-					//parse open time struct
 					if ($location_info['open_struct']){
 						date_default_timezone_set('Europe/Kiev');
 						
@@ -246,6 +240,7 @@
 
 					$name = $location_info['name'];
 					if (!in_array($location_info['location_id'], $this->cart->getOpenedStores())){
+						continue;
 						$name 		= ' <b>[ТИМЧАСОВО НЕ ПРАЦЮЄ]</b> ' . $name;		
 						$address 	= ' <b>[ТИМЧАСОВО НЕ ПРАЦЮЄ]</b> ' . $address;		
 

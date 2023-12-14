@@ -395,7 +395,7 @@
 
 					$name .= $location['name'];
 					$name .= '</b>';
-					$name .= '<br /><small class="text-success"><b>' . $this->language->get('text_we_work_while_no_light') . '</b></small>';
+					//$name .= '<br /><small class="text-success"><b>' . $this->language->get('text_we_work_while_no_light') . '</b></small>';
 					$name .= '<br />';
 
 					if ($cart_has_preorder){

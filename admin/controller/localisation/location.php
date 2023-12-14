@@ -7,7 +7,8 @@ class ControllerLocalisationLocation extends Controller {
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->load->model('localisation/location');		
+		$this->load->model('localisation/location');
+		$this->load->model('extension/shipping/novaposhta');		
 
 		$this->getList();
 	}
@@ -116,7 +117,7 @@ class ControllerLocalisationLocation extends Controller {
 		if (isset($this->request->get['sort'])) {
 			$sort = $this->request->get['sort'];
 		} else {
-			$sort = 'sort_order';
+			$sort = 'location_id';
 		}
 
 		if (isset($this->request->get['order'])) {
@@ -181,7 +182,9 @@ class ControllerLocalisationLocation extends Controller {
 				'name'        		=> $result['name'],
 				'node'        		=> $this->model_setting_nodes->getNodeName($result['node_id']),
 				'last_sync'   		=> date($this->language->get('datetime_format'), strtotime($result['last_sync'])),
+				'city'     			=> $this->model_extension_shipping_novaposhta->getCityNameByRef($result['city_id']),
 				'address'     		=> $result['address'],
+				'brand'     		=> $result['brand'],
 				'telephone'   		=> $result['telephone'],
 				'geocode'     		=> $result['geocode'],
 				'gmaps_link'     	=> $result['gmaps_link'],
@@ -406,6 +409,19 @@ class ControllerLocalisationLocation extends Controller {
 			$data['address'] = '';
 		}
 
+		if (isset($this->request->post['city_id'])) {
+			$data['city_id'] = $this->request->post['city_id'];
+		} elseif (!empty($location_info)) {
+			$data['city_id'] = $location_info['city_id'];
+		} else {
+			$data['city_id'] = '';
+		}
+
+		if (!empty($data['city_id'])){
+			$this->load->model('extension/shipping/novaposhta');
+			$data['city'] = $this->model_extension_shipping_novaposhta->getCityNameByRef($data['city_id']);
+		}
+
 		if (isset($this->request->post['geocode'])) {
 			$data['geocode'] = $this->request->post['geocode'];
 		} elseif (!empty($location_info)) {
@@ -420,6 +436,14 @@ class ControllerLocalisationLocation extends Controller {
 			$data['gmaps_link'] = $location_info['gmaps_link'];
 		} else {
 			$data['gmaps_link'] = '';
+		}
+
+		if (isset($this->request->post['brand'])) {
+			$data['brand'] = $this->request->post['brand'];
+		} elseif (!empty($location_info)) {
+			$data['brand'] = $location_info['brand'];
+		} else {
+			$data['brand'] = '';
 		}
 
 		if (isset($this->request->post['telephone'])) {
@@ -597,4 +621,41 @@ class ControllerLocalisationLocation extends Controller {
 
 		return !$this->error;
 	}
+
+	 public function city_autocomplete() {
+            $json = array();
+            
+            if (isset($this->request->get['filter_name'])) {
+                $this->load->model('extension/shipping/novaposhta');
+                
+                $filter_data = array(
+                'filter_name' => $this->request->get['filter_name'],
+                'sort'        => 'Description',
+                'order'       => 'ASC',
+                'start'       => 0,
+                'limit'       => 20
+                );
+                
+                $results = $this->model_extension_shipping_novaposhta->getCities($filter_data);
+                
+                foreach ($results as $result) {
+                    $json[] = array(
+                    'city_id' 		=> $result['Ref'],
+                    'city'        	=> strip_tags(html_entity_decode($result['Description'], ENT_QUOTES, 'UTF-8'))
+                    );
+                }
+            }
+            
+            $sort_order = array();
+            
+            foreach ($json as $key => $value) {
+                $sort_order[$key] = $value['Description'];
+            }
+            
+            array_multisort($sort_order, SORT_ASC, $json);
+            
+            $this->response->addHeader('Content-Type: application/json');
+            $this->response->setOutput(json_encode($json));
+        }
+
 }

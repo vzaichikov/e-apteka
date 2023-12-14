@@ -1156,6 +1156,12 @@ class ControllerCustomerCustomer extends Controller {
 			}
 		}
 
+		$warning = isset($this->error['warning']) ? $this->error['warning'] : '';
+		$this->error = array();
+		if ($warning) {
+			$this->error['warning'] = $warning;
+		}
+
 		if ($this->error && !isset($this->error['warning'])) {
 			$this->error['warning'] = $this->language->get('error_warning');
 		}

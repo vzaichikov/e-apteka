@@ -75,6 +75,7 @@ class ControllerApiCustomer extends Controller {
 				}
 			}
 
+			unset($json['error']);
 			if (!$json) {
 				$this->session->data['customer'] = array(
 					'customer_id'       => $this->request->post['customer_id'],
