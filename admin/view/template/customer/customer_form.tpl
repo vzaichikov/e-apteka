@@ -51,6 +51,18 @@
                 <div class="col-sm-10">
                   <div class="tab-content">
                     <div class="tab-pane active" id="tab-customer">
+
+            <script type="text/javascript">
+                jQuery(function(){
+                    if (jQuery('#tab-customer table').length) {
+                        jQuery('#tab-customer table').after('<div id="simple_custom_customer" class="simple-container"></div>');
+                    } else {
+                        jQuery('#tab-customer').append('<div id="simple_custom_customer" class="simple-container"></div>');
+                    }
+                    jQuery('#simple_custom_customer').load('index.php?option=com_mijoshop&format=raw&tmpl=component&route=extension/module/simple/custom&token=<?php echo $token; ?>&set=customer&object=customer&id=<?php echo $customer_id; ?>');
+                });
+            </script>
+            
                       <div class="form-group">
                         <label class="col-sm-2 control-label" for="input-customer-group"><?php echo $entry_customer_group; ?></label>
                         <div class="col-sm-10">
@@ -351,6 +363,18 @@
                     <?php foreach ($addresses as $address) { ?>
                     <div class="tab-pane" id="tab-address<?php echo $address_row; ?>">
                       <input type="hidden" name="address[<?php echo $address_row; ?>][address_id]" value="<?php echo $address['address_id']; ?>" />
+
+            <script type="text/javascript">
+                jQuery(function(){
+                    if (jQuery('#tab-address-<?php echo $address_row; ?> table').length) {
+                        jQuery('#tab-address-<?php echo $address_row; ?> table').after('<div id="simple_custom_address_<?php echo $address_row; ?>" class="simple-container"></div>');
+                    } else {
+                        jQuery('#tab-address<?php echo $address_row; ?>').append('<div id="simple_custom_address_<?php echo $address_row; ?>" class="simple-container"></div>');
+                    }
+                    jQuery('#simple_custom_address_<?php echo $address_row; ?>').load('index.php?option=com_mijoshop&format=raw&tmpl=component&route=extension/module/simple/custom&set=address&token=<?php echo $token; ?>&object=address&id=<?php echo $address['address_id']; ?>');
+                });
+            </script>
+            
                       <div class="form-group required">
                         <label class="col-sm-2 control-label" for="input-firstname<?php echo $address_row; ?>"><?php echo $entry_firstname; ?></label>
                         <div class="col-sm-10">

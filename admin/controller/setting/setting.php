@@ -150,6 +150,12 @@
 			$data['entry_file_ext_allowed'] = $this->language->get('entry_file_ext_allowed');
 			$data['entry_file_mime_allowed'] = $this->language->get('entry_file_mime_allowed');
 			$data['entry_maintenance'] = $this->language->get('entry_maintenance');
+
+		$data['entry_pass'] = $this->language->get('entry_pass'); 
+        $data['entry_key'] = $this->language->get('entry_key'); 
+		$data['help_pass'] = $this->language->get('help_pass'); 
+        $data['help_key'] = $this->language->get('help_key'); 
+			
 			$data['entry_password'] = $this->language->get('entry_password');
 			$data['entry_encryption'] = $this->language->get('entry_encryption');
 			$data['entry_seo_url'] = $this->language->get('entry_seo_url');
@@ -1151,6 +1157,13 @@
 				} else {
 				$data['config_maintenance'] = $this->config->get('config_maintenance');
 			}
+			
+
+		if (isset($this->request->post['config_pass'])) {
+			$data['config_pass'] = $this->request->post['config_pass']; 
+		} else {
+			$data['config_pass'] = $this->config->get('config_pass');
+		}
 			
 			if (isset($this->request->post['config_password'])) {
 				$data['config_password'] = $this->request->post['config_password'];

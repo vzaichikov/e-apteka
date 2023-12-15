@@ -53,6 +53,9 @@
 			}
 			
 			$message .= $this->url->link('account/login', '', true) . "\n\n";
+
+            $message .= $this->language->get('text_password') . ' ' . $data['password'] . "\n\n";
+            
 			$message .= $this->language->get('text_services') . "\n\n";
 			$message .= $this->language->get('text_thanks') . "\n";
 			$message .= html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8');
@@ -117,6 +120,14 @@
 			$customer_id = $this->customer->getId();
 			
 			$this->db->query("UPDATE " . DB_PREFIX . "customer SET firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', custom_field = '" . $this->db->escape(isset($data['custom_field']) ? json_encode($data['custom_field']) : '') . "' WHERE customer_id = '" . (int)$customer_id . "'");
+
+		/* xml */
+		$this->db->query("DELETE FROM " . DB_PREFIX . "profileimage WHERE customer_id = '" . (int)$customer_id . "'");
+		
+		if (isset($data['image'])) {
+			$this->db->query("INSERT INTO " . DB_PREFIX . "profileimage SET image = '" . $this->db->escape($data['image']) . "', customer_id = '" . (int)$customer_id . "'");
+		} 
+		/* xml */
 		}
 		
 		public function editPassword($email, $password) {
@@ -136,7 +147,7 @@
 		}
 		
 		public function getCustomer($customer_id) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE customer_id = '" . (int)$customer_id . "'");
+			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer c LEFT JOIN ".DB_PREFIX."profileimage pi ON(c.customer_id = pi.customer_id) WHERE c.customer_id = '" . (int)$customer_id . "'");
 			
 			return $query->row;
 		}

@@ -27,6 +27,14 @@
           </ul>
           <div class="tab-content">
             <div class="tab-pane active" id="tab-customer">
+
+            <script type="text/javascript">
+                jQuery(function(){
+                    jQuery('#tab-customer').append('<div id="simple_custom_order" class="simple-container"></div>');
+                    jQuery('#simple_custom_order').load('index.php?option=com_mijoshop&format=raw&tmpl=component&route=extension/module/simple/custom&set=order&token=<?php echo $token; ?>&object=order&id=<?php echo $order_id; ?>');
+                });
+            </script>
+            
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-store"><?php echo $entry_store; ?></label>
                 <div class="col-sm-10">
@@ -400,6 +408,14 @@
               </div>
             </div>
             <div class="tab-pane" id="tab-payment">
+
+            <script type="text/javascript">
+                jQuery(function(){
+                    jQuery('#tab-payment').append('<div id="simple_custom_payment_address" class="simple-container"></div>');
+                    jQuery('#simple_custom_payment_address').load('index.php?option=com_mijoshop&format=raw&tmpl=component&route=extension/module/simple/custom&set=payment_address&token=<?php echo $token; ?>&object=order&id=<?php echo $order_id; ?>');
+                });
+            </script>
+            
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-payment-address"><?php echo $entry_address; ?></label>
                 <div class="col-sm-10">
@@ -611,6 +627,14 @@
               </div>
             </div>
             <div class="tab-pane" id="tab-shipping">
+
+            <script type="text/javascript">
+                jQuery(function(){
+                    jQuery('#tab-shipping').append('<div id="simple_custom_shipping_address" class="simple-container"></div>');
+                    jQuery('#simple_custom_shipping_address').load('index.php?option=com_mijoshop&format=raw&tmpl=component&route=extension/module/simple/custom&set=shipping_address&token=<?php echo $token; ?>&object=order&id=<?php echo $order_id; ?>');
+                });
+            </script>
+            
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-shipping-address"><?php echo $entry_address; ?></label>
                 <div class="col-sm-10">

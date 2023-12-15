@@ -87,7 +87,7 @@
             <table class="table table-bordered table-hover">
               <thead>
                 <tr>
-                  <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                  <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked).trigger('change');" /></td>
 		              <td class="left"><a href="<?php echo $sort_name; ?>" <?php echo ($sort == 'cod.name' ? 'class="' . strtolower($order) . '"' : ''); ?>><?php echo $column_name; ?></a></td>
 		              <td class="left"><?php echo $column_values; ?></td>
 		              <td class="left"><?php echo $column_categories; ?></td>

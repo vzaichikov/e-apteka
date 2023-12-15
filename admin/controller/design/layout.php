@@ -5,7 +5,7 @@ class ControllerDesignLayout extends Controller {
 	public function index() {
 		$this->load->language('design/layout');
 
-		$this->document->setTitle($this->language->get('heading_title'));
+		$this->document->setTitle(trim(strip_tags($this->language->get('heading_title'))));
 		
 		$this->load->model('design/layout');
 
@@ -15,7 +15,7 @@ class ControllerDesignLayout extends Controller {
 	public function add() {
 		$this->load->language('design/layout');
 
-		$this->document->setTitle($this->language->get('heading_title'));
+		$this->document->setTitle(trim(strip_tags($this->language->get('heading_title'))));
 
 		$this->load->model('design/layout');
 
@@ -47,7 +47,7 @@ class ControllerDesignLayout extends Controller {
 	public function edit() {
 		$this->load->language('design/layout');
 
-		$this->document->setTitle($this->language->get('heading_title'));
+		$this->document->setTitle(trim(strip_tags($this->language->get('heading_title'))));
 
 		$this->load->model('design/layout');
 
@@ -79,7 +79,7 @@ class ControllerDesignLayout extends Controller {
 	public function delete() {
 		$this->load->language('design/layout');
 
-		$this->document->setTitle($this->language->get('heading_title'));
+		$this->document->setTitle(trim(strip_tags($this->language->get('heading_title'))));
 
 		$this->load->model('design/layout');
 
@@ -151,7 +151,7 @@ class ControllerDesignLayout extends Controller {
 		);
 
 		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('heading_title'),
+			'text' => trim(strip_tags($this->language->get('heading_title'))),
 			'href' => $this->url->link('design/layout', 'token=' . $this->session->data['token'] . $url, true)
 		);
 
@@ -179,7 +179,7 @@ class ControllerDesignLayout extends Controller {
 			);
 		}
 
-		$data['heading_title'] = $this->language->get('heading_title');
+		$data['heading_title'] = trim(strip_tags($this->language->get('heading_title')));
 
 		$data['text_list'] = $this->language->get('text_list');
 		$data['text_no_results'] = $this->language->get('text_no_results');
@@ -257,7 +257,7 @@ class ControllerDesignLayout extends Controller {
 	}
 
 	protected function getForm() {
-		$data['heading_title'] = $this->language->get('heading_title');
+		$data['heading_title'] = trim(strip_tags($this->language->get('heading_title')));
 
 		$data['text_form'] = !isset($this->request->get['layout_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
 		$data['text_route'] = $this->language->get('text_route');
@@ -316,7 +316,7 @@ class ControllerDesignLayout extends Controller {
 		);
 
 		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('heading_title'),
+			'text' => trim(strip_tags($this->language->get('heading_title'))),
 			'href' => $this->url->link('design/layout', 'token=' . $this->session->data['token'] . $url, true)
 		);
 
@@ -365,6 +365,9 @@ class ControllerDesignLayout extends Controller {
 
 		// Add all the modules which have multiple settings for each module
 		foreach ($extensions as $code) {
+
+			if ($code == 'admin_quick_edit') continue;
+			
 			$this->load->language('extension/module/' . $code);
 
 			$module_data = array();
@@ -380,7 +383,7 @@ class ControllerDesignLayout extends Controller {
 
 			if ($this->config->has($code . '_status') || $module_data) {
 				$data['extensions'][] = array(
-					'name'   => strip_tags($this->language->get('heading_title')),
+					'name'   => strip_tags(trim(strip_tags($this->language->get('heading_title')))),
 					'code'   => $code,
 					'module' => $module_data
 				);
@@ -406,7 +409,7 @@ class ControllerDesignLayout extends Controller {
 
 			if (!isset($part[1])) {
 				$data['layout_modules'][] = array(
-					'name'       => strip_tags($this->language->get('heading_title')),
+					'name'       => strip_tags(trim(strip_tags($this->language->get('heading_title')))),
 					'code'       => $layout_module['code'],
 					'edit'       => $this->url->link('extension/module/' . $part[0], 'token=' . $this->session->data['token'], true),
 					'position'   => $layout_module['position'],

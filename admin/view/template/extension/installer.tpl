@@ -17,6 +17,22 @@
       </div>
       <div class="panel-body">
         <form class="form-horizontal">
+<?php /* //karapuz (no_ftp.ocmod.xml) */?>
+ <div class="form-group">
+ <label class="col-sm-2 control-label" for="input-upload_without_ftp"><span data-toggle="tooltip" title="<?php echo $help_upload_without_ftp; ?>"><?php echo $text_upload_without_ftp; ?></span></label>
+ <div class="col-sm-10">
+ <div class="checkbox">
+ <label>
+ <?php if ($upload_without_ftp) { ?>
+ <input type="checkbox" name="upload_without_ftp" value="1" checked="checked" id="input-upload_without_ftp" />
+ <?php } else { ?>
+ <input type="checkbox" name="upload_without_ftp" value="1" id="input-upload_without_ftp" />
+ <?php } ?>
+ &nbsp; </label>
+ </div>
+ </div>
+ </div>
+<?php /* ///karapuz (no_ftp.ocmod.xml) */?>
           <div class="form-group required">
             <label class="col-sm-2 control-label" for="button-upload"><span data-toggle="tooltip" title="<?php echo $help_upload; ?>"><?php echo $entry_upload; ?></span></label>
             <div class="col-sm-10">
@@ -64,6 +80,11 @@ $('#button-upload').on('click', function() {
     	clearInterval(timer);
 	}
 
+<?php /* //karapuz (no_ftp.ocmod.xml) */?>
+ if (typeof(timer) != 'undefined' && timer) {
+ clearInterval(timer); 
+ }
+<?php /* ///karapuz (no_ftp.ocmod.xml) */?>
 	timer = setInterval(function() {
 		if ($('#form-upload input[name=\'file\']').val() != '') {
 			clearInterval(timer);
@@ -128,6 +149,12 @@ $('#button-continue').on('click', function() {
 });
 
 function next() {
+<?php /* //karapuz (no_ftp.ocmod.xml) */?>
+ var custom_params = '';
+ if ($('#input-upload_without_ftp').prop('checked')) {
+ custom_params = '&upload_without_ftp=1';
+ }
+<?php /* ///karapuz (no_ftp.ocmod.xml) */?>
 	data = step.shift();
 
 	if (data) {
@@ -138,7 +165,7 @@ function next() {
 			url: data.url,
 			type: 'post',
 			dataType: 'json',
-			data: 'path=' + data.path,
+			data: 'path=' + data.path + custom_params,
 			success: function(json) {
 				if (json['error']) {
 					$('#progress-bar').addClass('progress-bar-danger');

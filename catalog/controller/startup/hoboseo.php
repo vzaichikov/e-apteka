@@ -13,7 +13,6 @@ class ControllerStartupHoboSeo extends Controller {
 			
 			$this->response->redirect($new_page, 301);			
 		}
-	
 
 		if (isset($this->request->get['prlpn']) && $this->request->get['prlpn']){
 			$val = $this->request->get['prlpn'];

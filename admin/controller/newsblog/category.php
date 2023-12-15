@@ -52,6 +52,9 @@ class ControllerNewsBlogCategory extends Controller {
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
+			$this->cache->delete('newsblog.category.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
+
 			$url = '';
 
 			if (isset($this->request->get['sort'])) {
@@ -118,6 +121,9 @@ class ControllerNewsBlogCategory extends Controller {
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
+			$this->cache->delete('newsblog.category.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
+
 			$url = '';
 
 			if (isset($this->request->get['sort'])) {
@@ -152,6 +158,9 @@ class ControllerNewsBlogCategory extends Controller {
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
+			$this->cache->delete('newsblog.category.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
+
 			$url = '';
 
 			if (isset($this->request->get['sort'])) {
@@ -183,6 +192,9 @@ class ControllerNewsBlogCategory extends Controller {
 			$this->model_newsblog_category->repairCategories();
 
 			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->cache->delete('newsblog.category.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
 
 			$this->response->redirect($this->url->link('newsblog/category', 'token=' . $this->session->data['token'], 'SSL'));
 		}

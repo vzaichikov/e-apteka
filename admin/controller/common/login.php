@@ -5,6 +5,27 @@
 		public function index() {
 			
 			$this->load->language('common/login');
+
+			$dbpass = $this->config->get('config_pass');
+	        $snpass = null;
+	if (!empty($dbpass['admin_pass']) && empty($dbpass['admin_key']))  {			
+		if (!isset($_GET[$dbpass['admin_pass']]))   {
+                $this->response->redirect('http://'.$_SERVER['HTTP_HOST']."/");
+        }
+        else{
+            $snpass = '&'.$dbpass['admin_pass'];
+        }			
+	}		
+    else if (!empty($dbpass['admin_pass']) && !empty($dbpass['admin_key']))  {
+	
+        if (!isset($_GET[$dbpass['admin_pass']]) || $_GET[$dbpass['admin_pass']] != $dbpass['admin_key'])  {
+                $this->response->redirect('http://'.$_SERVER['HTTP_HOST']."/");
+        }
+        else{
+            $snpass = '&'.$dbpass['admin_pass'].'='.$dbpass['admin_key'];
+        }
+	}
+            
 			
 			$this->document->setTitle($this->language->get('heading_title'));
 			
@@ -50,7 +71,14 @@
 				$data['success'] = '';
 			}
 			
-			$data['action'] = $this->url->link('common/login', '', true);
+			
+			if (!empty($dbpass['admin_pass']))  {
+             $data['action'] = $this->url->link('common/login', '', 'SSL').$snpass; 
+			}
+			else {
+            $data['action'] = $this->url->link('common/login', '', 'SSL');
+            }
+            
 			
 			if (isset($this->request->post['username'])) {
 				$data['username'] = $this->request->post['username'];

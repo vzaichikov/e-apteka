@@ -24,6 +24,13 @@
 			$this->connection->set_charset("utf8");
 			$this->connection->query("SET names utf8mb4");
 			$this->connection->query("SET SQL_MODE = ''");
+
+		if (property_exists($this, 'link')) {
+			$this->link->query("SET SESSION group_concat_max_len = 65535");
+		} else {
+			$this->connection->query("SET SESSION group_concat_max_len = 65535");
+		}
+			
 		}
 		
 		public function ncquery($sql) {

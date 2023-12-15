@@ -31,6 +31,21 @@ class ControllerCommonColumnLeft extends Controller {
 			$layout_id = $this->model_catalog_product->getProductLayoutId($this->request->get['product_id']);
 		}
 
+
+      if ($route == 'newsblog/category' && isset($this->request->get['newsblog_path'])) {
+			$this->load->model('newsblog/category');
+
+			$path = explode('_', (string)$this->request->get['newsblog_path']);
+
+			$layout_id = $this->model_newsblog_category->getCategoryLayoutId(end($path));
+		}
+
+		if ($route == 'newsblog/article' && isset($this->request->get['newsblog_article_id'])) {
+			$this->load->model('newsblog/article');
+
+			$layout_id = $this->model_newsblog_article->getArticleLayoutId($this->request->get['newsblog_article_id']);
+		}
+      
 		if ($route == 'information/information' && isset($this->request->get['information_id'])) {
 			$this->load->model('catalog/information');
 
@@ -65,7 +80,7 @@ class ControllerCommonColumnLeft extends Controller {
 			if (isset($part[1])) {
 				$setting_info = $this->model_extension_module->getModule($part[1]);
 
-				if ($setting_info && $setting_info['status']) {
+				if ($setting_info && isset($setting_info['status']) && $setting_info['status']) {
 					$output = $this->load->controller('extension/module/' . $part[0], $setting_info);
 
 					if ($output) {

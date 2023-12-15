@@ -386,6 +386,15 @@
 			return $query->rows;
 		}
 		
+
+					/* START Shipping Data */
+					public function getOrdersShippingData($data = array()) {
+						$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "order` WHERE `order_id` IN (" . implode(',', $data) . ")");
+
+						return $query->rows;
+					}
+					/* END Shipping Data */
+				
 		public function getOrderProducts($order_id) {
 			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "order_product WHERE order_id = '" . (int)$order_id . "'");
 			

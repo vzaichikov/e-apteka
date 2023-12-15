@@ -1,16 +1,4 @@
 <?php
-
-	function loadJsonConfig($config){
-		if (defined('DIR_SYSTEM')){
-			$json = file_get_contents(DIR_SYSTEM . 'config/' . $config . '.json');
-			} else {
-			$json = file_get_contents(dirname(__FILE__) . '/config/' . $config . '.json');
-		}
-		
-		return json_decode($json, true);
-	}
-
-
 	// Registry
 	$registry = new Registry();
 	
@@ -67,8 +55,7 @@
 			// }		
 			} catch (\Exception $e){
 			$registry->set('dbCalls', false);
-		}
-		
+		}		
 	}
 
 	$registry->set('crawlerDetect', new \Jaybizzle\CrawlerDetect\CrawlerDetect);
@@ -92,11 +79,13 @@
 	$language = new Language($config->get('language_default'));
 	$language->load($config->get('language_default'));
 	$registry->set('language', $language);
+
+	//Branding
+	$registry->set('branding', loadJsonConfig('brands'));
 	
 	// Document
 	$registry->set('document', new Document());
-	
-	
+		
 	// Config Autoload
 	if ($config->has('config_autoload')) {
 		foreach ($config->get('config_autoload') as $value) {

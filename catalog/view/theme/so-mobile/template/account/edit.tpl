@@ -1,5 +1,11 @@
 <?php echo $header; ?>
-<div class="container">
+<?php if ($tmdaccount_status==1) { ?>
+				<link href="catalog/view/theme/default/stylesheet/ele-style.css" rel="stylesheet">
+				<link href="catalog/view/theme/default/stylesheet/dashboard.css" rel="stylesheet">
+				<div class="container dashboard">
+				<?php } else { ?>
+				<div class="container">
+				<?php } ?>
   <ul class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
     <li><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a></li>
@@ -63,6 +69,26 @@
               <input type="text" name="fax" value="<?php echo $fax; ?>" placeholder="<?php echo $entry_fax; ?>" id="input-fax" class="form-control" />
             </div>
           </div>
+
+			
+			<!--xml code-->
+		   <div class="form-group">
+				<label class="col-sm-2 control-label" for="input-fax"><?php echo $entry_profileimage; ?></label>
+				<div class="col-sm-1">
+				<input type="hidden" name="image" id="image" value=""/>
+				<a class="button addprofileimage" data-toggle="tooltip" title="<?php echo $entry_profileimage; ?>"><i class="fa fa-upload" aria-hidden="true"></i></a>
+				</div>
+			  
+				<div class="col-sm-3">
+				 <?php if($image){ ?>
+				<img  style="" src="<?php echo $image?>" id="imagesrc" class="img-thumbnail">
+				  <?php } else { ?>
+				<img style="display:none" src="" id="imagesrc" class="img-thumbnail">
+				 <?php } ?>
+				</div>
+			</div>
+		  <!--xml code-->
+		  
           <?php foreach ($custom_fields as $custom_field) { ?>
           <?php if ($custom_field['location'] == 'account') { ?>
           <?php if ($custom_field['type'] == 'select') { ?>
@@ -314,4 +340,69 @@ $('.time').datetimepicker({
 	pickDate: false
 });
 //--></script>
+<style>
+			<?php echo $tmdaccount_customcss; ?>
+			</style>
+
+			<!--xml-->
+				<script type="text/javascript"><!--
+				$('.addprofileimage').on('click', function() {
+					var node = this;
+
+					$('#form-upload').remove();
+
+					$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+
+					$('#form-upload input[name=\'file\']').trigger('click');
+
+					if (typeof timer != 'undefined') {
+						clearInterval(timer);
+					}
+
+					timer = setInterval(function() {
+						if ($('#form-upload input[name=\'file\']').val() != '') {
+							clearInterval(timer);
+
+							$.ajax({
+								url: 'index.php?route=account/edit/uploadprofileimage',
+								type: 'post',
+								dataType: 'json',
+								data: new FormData($('#form-upload')[0]),
+								cache: false,
+								contentType: false,
+								processData: false,
+								beforeSend: function() {
+									$(node).button('loading');
+								},
+								complete: function() {
+									$(node).button('reset');
+								},
+								success: function(json) {
+									$('.text-danger').remove();
+
+									if (json['error']) {
+										$('#image').after('<div class="text-danger">' + json['error'] + '</div>');
+									}
+
+									if (json['success']) {
+										alert(json['success']);
+
+										$('#image').attr('value', json['file']);
+										$('#imagesrc').attr('src', json['file1'] );
+										$('#imagesrc').css({ display: "block", padding: "0px" }); 
+									}
+								},
+								error: function(xhr, ajaxOptions, thrownError) {
+									alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+								}
+							});
+						}
+					}, 500);
+				});
+				//--></script>
+				<style>
+			<?php echo $tmdaccount_customcss; ?>
+			</style>
+				<!--xml-->
+				
 <?php echo $footer; ?>

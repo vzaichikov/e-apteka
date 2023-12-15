@@ -3,6 +3,13 @@
 	<div class="page-header">
 		<div class="container-fluid">
 			<div class="pull-right">
+
+<!-- quicksave -->
+	  <?php if (isset($pidqs) && $pidqs) { ?>
+	  <button id="qsave" style="margin: 0 10px;" data-toggle="tooltip" title="Сохранить и остаться" class="btn btn-warning"><i class="fa fa-save"></i></button>
+	  <?php } ?>
+<!-- quicksave end -->
+			
 				<button type="submit" form="form-manufacturer" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
 			<a href="<?php echo $cancel; ?>" data-toggle="tooltip" title="<?php echo $button_cancel; ?>" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
 			<h1><?php echo $heading_title; ?></h1>
@@ -150,6 +157,56 @@
 								<input type="text" name="sort_order" value="<?php echo $sort_order; ?>" placeholder="<?php echo $entry_sort_order; ?>" id="input-sort-order" class="form-control" />
 							</div>
 						</div>
+
+				<div class="form-group">
+				<label class="col-sm-2 control-label"><?php echo $faq_name; ?></label>
+				<div class="col-sm-10">
+				<?php foreach($languages as $language) { ?>
+                    <div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" style="display:inline-block;"/></span><input type="text" name="manufacturer_description[<?php echo $language['language_id']; ?>][faq_name]" value="<?php echo isset($manufacturer_description[$language['language_id']]) ? $manufacturer_description[$language['language_id']]['faq_name'] : ''; ?>" id="input-name<?php echo $language['language_id']; ?>" class="form-control" style="width:50%;display:inline-block;"/></div><br />
+				<?php } ?>
+				</div>
+				</div>  
+				<div class="table-responsive">
+                <table id="faq" class="table table-striped table-bordered table-hover">
+				<thead>
+				<tr>
+				<td class="text-center"><?php echo $column_question; ?></td>
+				<td class="text-center"><?php echo $column_faq; ?></td>
+				<td class="text-center" style="width:10%"><?php echo $column_icon; ?></td>
+				<td class="text-center" style="width:10%"><?php echo $column_sort_order; ?></td>
+				<td class="text-center" style="width:10%"></td>
+				</tr>
+				</thead>
+				<tbody>
+				<?php $faq_row = 0; ?>
+				<?php foreach ($manufacturer_faq as $manufacturer_faq) { ?>
+                    <tr id="faq-row<?php echo $faq_row; ?>">
+					<td class="text-center">
+					<?php foreach($languages as $language) { ?>
+						<div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" style="display:inline-block;"/></span><input type="text" name="manufacturer_faq[<?php echo $faq_row; ?>][question][<?php echo $language['language_id']; ?>]" value="<?php if (isset($manufacturer_faq['question'][$language['language_id']])) echo $manufacturer_faq['question'][$language['language_id']]; ?>" class="form-control" style="display:inline-block;width:80%;" /></div><br />
+					<?php } ?>
+					</td>
+					<td class="text-center">
+					<?php foreach($languages as $language) { ?>
+						<div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" style="display:inline-block;"/></span><textarea rows="3" name="manufacturer_faq[<?php echo $faq_row; ?>][faq][<?php echo $language['language_id']; ?>]" class="form-control" style="display:inline-block;width:80%;"><?php if (isset($manufacturer_faq['faq'][$language['language_id']])) echo $manufacturer_faq['faq'][$language['language_id']]; ?></textarea></div><br />
+					<?php } ?> 
+					</td>
+					<td class="text-center"><input type="text" name="manufacturer_faq[<?php echo $faq_row; ?>][icon]" value="<?php echo $manufacturer_faq['icon']; ?>" class="form-control" /></td>
+					<td class="text-center"><input type="text" name="manufacturer_faq[<?php echo $faq_row; ?>][sort_order]" value="<?php echo $manufacturer_faq['sort_order']; ?>" class="form-control" /></td>
+					<td class="text-center"><button type="button" onclick="$('#faq-row<?php echo $faq_row; ?>').remove();" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+                    </tr> 
+                    <?php $faq_row++; ?>
+				<?php } ?>
+				</tbody>
+				<tfoot>
+				<tr>
+				<td colspan="4"></td>
+				<td class="text-center"><button type="button" onclick="addFaq();" data-toggle="tooltip" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+				</tr>
+				</tfoot>
+                </table>
+				</div>
+			
 					</form>
 				</div>
 			</div>
@@ -165,4 +222,39 @@
 			$('#language a:first').tab('show');
 		//--></script></div>
 </div>
+
+				<script type="text/javascript"><!--
+				var faq_row = <?php echo $faq_row; ?>;
+				function addFaq() {
+				html  = '<tr id="faq-row' + faq_row + '">';
+				html += '  <td class="text-center">';
+				<?php foreach($languages as $language) { ?>
+					html += '<div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" style="display:inline-block;"/></span><input type="text" name="manufacturer_faq[' + faq_row + '][question][<?php echo $language['language_id']; ?>]" value="" class="form-control" style="display:inline-block;width:80%;" /></div><br />';
+				<?php } ?>
+				html += '</td>';
+				html += '  <td class="text-center">';
+				<?php foreach($languages as $language) { ?>
+					html += '<div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" style="display:inline-block;"/></span><textarea rows="3" name="manufacturer_faq[' + faq_row + '][faq][<?php echo $language['language_id']; ?>]" value="" class="form-control" style="display:inline-block;width:80%;"></textarea></div><br />';
+				<?php } ?>
+				html += '</td>';
+				html += '  <td class="text-center" style="width:10%"><input type="text" name="manufacturer_faq[' + faq_row + '][icon]" value=""  class="form-control" /></td>';
+				html += '  <td class="text-center" style="width:10%"><input type="text" name="manufacturer_faq[' + faq_row + '][sort_order]" value=""  class="form-control" /></td>';
+				html += '  <td class="text-center"><button type="button" onclick="$(\'#faq-row' + faq_row + '\').remove();" data-toggle="tooltip" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+				html += '</tr>';
+				
+				$('#faq tbody').append(html);
+				
+				faq_row++;
+				}
+				//--></script>
+			
+
+<script type="text/javascript"><!--
+//quicksave
+$("#qsave").on("click",function(){
+for(var zz=$(".note-editor").length,i=0;zz>i;i++){var yy=$(".note-editor").eq(i).parent().children("textarea").attr("id");if("function"==typeof $().code)var content=$("#"+yy).code();else var content=$("#"+yy).summernote("code");$("#"+yy).html(content)}
+$.ajax({type:"post",data:$("form").serialize(),url:"index.php?route=catalog/manufacturer/qsave&token=<?php echo $token; ?>&manufacturer_id=<?php echo $pidqs; ?>",dataType:"json",beforeSend:function(){$("#qsave").prop("disabled",!0)},complete:function(){$("#qsave").prop("disabled",!1)},success:function(e){$(".alert").remove(),$(".text-danger").remove(),$(".form-group").removeClass("has-error"),e.error&&(html='<div class="alert alert-danger">',html+=" "+e.error.warning+' <button type="button" class="close" data-dismiss="alert">&times;</button></br>',e.error.keyword&&($("#input-keyword").after('<div class="text-danger">'+e.error.keyword+"</div>"),html+='</br><i class="fa fa-exclamation-circle"></i> '+e.error.keyword),e.error.name&&($("#input-name").after('<div class="text-danger">'+e.error.name+"</div>"),html+='</br><i class="fa fa-exclamation-circle"></i> '+e.error.name),$(".text-danger").parentsUntil(".form-group").parent().addClass("has-error"),html+=" </div>",$("#content > .container-fluid").prepend(html)),e.success&&$("#content > .container-fluid").prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+e.success+'  <button type="button" class="close" data-dismiss="alert">&times;</button></div>')},error:function(e,r,t){alert(t+"\r\n"+e.statusText+"\r\n"+e.responseText)}})});
+//quicksave end
+//--></script>
+			
 <?php echo $footer; ?>

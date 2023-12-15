@@ -7,6 +7,15 @@
 	<!--<![endif]-->
 	<head>
 
+				<?php if (is_array($opengraphs)) { ?>
+                <?php foreach ($opengraphs as $opengraph) { ?>
+                <?php if ($content = strip_tags(html_entity_decode($opengraph['content'], ENT_QUOTES, 'UTF-8'))) { ?>
+                <meta property="<?php echo $opengraph['meta'] ?>" content="<?php echo $content; ?>" />
+                <?php } ?>
+                <?php } ?>
+                <?php } ?>
+				
+
 		<link rel="dns-prefetch" href="//ajax.googleapis.com">
 		<link rel="dns-prefetch" href="//www.google.com">
 		<link rel="dns-prefetch" href="//fonts.googleapis.com">
@@ -628,6 +637,10 @@
 		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 		})(window,document,'script','dataLayer','GTM-K3MKBK7');</script>
 		<!-- End Google Tag Manager -->
+
+			<?php if ($hb_snippets_kg_enable == '1'){echo html_entity_decode($hb_snippets_kg_data);} ?>
+			<?php if ($hb_snippets_local_enable == 'y'){echo html_entity_decode($hb_snippets_local_snippet);} ?>
+			
 	</head>
 	<body class="<?php echo $class; ?>">
 		<!-- Google Tag Manager (noscript) -->

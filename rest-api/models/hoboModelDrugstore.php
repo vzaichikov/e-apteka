@@ -130,16 +130,16 @@ class hoboModelDrugstore extends hoboModel{
 			address 			= '" . $this->db->escape($data['drugstoreAddress_UA']) . "', 
 			geocode 			= '" . $this->db->escape($data['drugstoreGeoCode']) . "', 
 			gmaps_link 			= '" . (!empty($data['drugstoreGmapsLink'])?$this->db->escape($data['drugstoreGmapsLink']):'') . "', 
-			telephone 			= '" . $this->db->escape($data['drugstoreTelephone']) . "', 
+			telephone 			= '" . (!empty($data['drugstoreTelephone'])?$this->db->escape($data['drugstoreTelephone']):'') . "', 
 			fax 				= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreFax']):'') . "', 			
 			open 				= '" . $this->db->escape($data['drugstoreOpen']) . "', 
 			open_struct 		= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreOpenStruct']):'') . "', 
 			brand 				= '" . $this->db->escape($data['drugstoreBrand']) . "',
 			city 				= '" . (!empty($data['drugstoreCity'])?$this->db->escape($data['drugstoreCity']):'') . "',
 			city_id 			= '" . (!empty($data['drugstoreCityUUID'])?$this->db->escape($data['drugstoreCityUUID']):'') . "',
-			can_sell_drugs 		= '" . (int)$data['drugstoreCanSellDrugs'] . "', 
-			temprorary_closed 	= '" . (int)$data['drugstoreClosed'] . "', 
-			sort_order 			= '" . (!empty($data['drugstoreSortOrder'])?(int)$data['drugstoreSortOrder']:'') . "',  
+			can_sell_drugs 		= '" . (isset($data['drugstoreCanSellDrugs'])?(int)$data['drugstoreCanSellDrugs']:'0') . "',  
+			temprorary_closed 	= '" . (isset($data['drugstoreClosed'])?(int)$data['drugstoreClosed']:'0') . "', 
+			sort_order 			= '" . (!empty($data['drugstoreSortOrder'])?(int)$data['drugstoreSortOrder']:'0') . "',  
 			uuid 				= '" . $this->db->escape($data['drugstoreUUID']) . "'");
 			
 			$location_id = $this->db->getLastId();
@@ -149,12 +149,14 @@ class hoboModelDrugstore extends hoboModel{
 					'name' 		=> $data['drugstoreName_RU'],
 					'address' 	=> $data['drugstoreAddress_RU'],
 					'open' 		=> $data['drugstoreOpen'],
+					'brand' 	=> $data['drugstoreBrand']
 				],
 
 				'3' => [
 					'name' 		=> $data['drugstoreName_UA'],
 					'address' 	=> $data['drugstoreAddress_UA'],
 					'open' 		=> $data['drugstoreOpen'],
+					'brand' 	=> $data['drugstoreBrand']
 				] 
 			];
 			
@@ -163,7 +165,8 @@ class hoboModelDrugstore extends hoboModel{
 					location_id 	= '" . (int)$location_id . "', 
 					language_id 	= '" . (int)$language_id . "', 
 					name 			= '" . $this->db->escape($value['name']) . "', 
-					open 			= '" . $this->db->escape($value['open']) . "', 
+					open 			= '" . $this->db->escape($value['open']) . "',
+					brand 			= '" . $this->db->escape($value['brand']) . "',
 					address 		= '" . $this->db->escape($value['address']) . "'");
 			}
 
@@ -178,21 +181,37 @@ class hoboModelDrugstore extends hoboModel{
 			return false;
 		}
 
+		if (empty($data['drugstoreGmapsLink'])){
+			$data['drugstoreGmapsLink'] = $drugstore['drugstoreGmapsLink'];
+		}
+
+		if (empty($data['drugstoreTelephone'])){
+			$data['drugstoreTelephone'] = $drugstore['drugstoreTelephone'];
+		}
+
+		if (empty($data['drugstoreCanSellDrugs'])){
+			$data['drugstoreCanSellDrugs'] = $drugstore['drugstoreCanSellDrugs'];
+		}
+
+		if (empty($data['drugstoreSortOrder'])){
+			$data['drugstoreSortOrder'] = $drugstore['drugstoreSortOrder'];
+		}
+
 		$this->db->query("UPDATE oc_location SET 
 			name 				= '" . $this->db->escape($data['drugstoreName_UA']) . "', 
 			address 			= '" . $this->db->escape($data['drugstoreAddress_UA']) . "', 
 			geocode 			= '" . $this->db->escape($data['drugstoreGeoCode']) . "', 
 			gmaps_link 			= '" . (!empty($data['drugstoreGmapsLink'])?$this->db->escape($data['drugstoreGmapsLink']):'') . "', 
-			telephone 			= '" . $this->db->escape($data['drugstoreTelephone']) . "', 
+			telephone 			= '" . (!empty($data['drugstoreTelephone'])?$this->db->escape($data['drugstoreTelephone']):'') . "', 
 			fax 				= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreFax']):'') . "', 			
 			open 				= '" . $this->db->escape($data['drugstoreOpen']) . "', 
-			open_struct 		= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreOpenStruct']):'') . "', 
+			open_struct 		= '" . (!empty($data['drugstoreOpenStruct'])?$this->db->escape($data['drugstoreOpenStruct']):'') . "', 
 			brand 				= '" . $this->db->escape($data['drugstoreBrand']) . "',
 			city 				= '" . (!empty($data['drugstoreCity'])?$this->db->escape($data['drugstoreCity']):'') . "',
 			city_id 			= '" . (!empty($data['drugstoreCityUUID'])?$this->db->escape($data['drugstoreCityUUID']):'') . "',
-			can_sell_drugs 		= '" . (int)$data['drugstoreCanSellDrugs'] . "', 
-			temprorary_closed 	= '" . (int)$data['drugstoreClosed'] . "', 
-			sort_order 			= '" . (!empty($data['drugstoreSortOrder'])?(int)$data['drugstoreSortOrder']:'') . "'
+			can_sell_drugs 		= '" . (isset($data['drugstoreCanSellDrugs'])?(int)$data['drugstoreCanSellDrugs']:'0') . "',  
+			temprorary_closed 	= '" . (isset($data['drugstoreClosed'])?(int)$data['drugstoreClosed']:'0') . "', 
+			sort_order 			= '" . (!empty($data['drugstoreSortOrder'])?(int)$data['drugstoreSortOrder']:'0') . "'
 			WHERE  			
 			location_id      = '" . (int)$drugstore['drugstoreID'] . "'
 			");			
@@ -204,12 +223,14 @@ class hoboModelDrugstore extends hoboModel{
 					'name' 		=> $data['drugstoreName_RU'],
 					'address' 	=> $data['drugstoreAddress_RU'],
 					'open' 		=> $data['drugstoreOpen'],
+					'brand' 	=> $data['drugstoreBrand']
 				],
 
 				'3' => [
 					'name' 		=> $data['drugstoreName_UA'],
 					'address' 	=> $data['drugstoreAddress_UA'],
 					'open' 		=> $data['drugstoreOpen'],
+					'brand' 	=> $data['drugstoreBrand']
 				] 
 			];
 			
@@ -218,7 +239,8 @@ class hoboModelDrugstore extends hoboModel{
 					location_id 	= '" . (int)$drugstore['drugstoreID'] . "', 
 					language_id 	= '" . (int)$language_id . "', 
 					name 			= '" . $this->db->escape($value['name']) . "', 
-					open 			= '" . $this->db->escape($value['open']) . "', 
+					open 			= '" . $this->db->escape($value['open']) . "',
+					brand 			= '" . $this->db->escape($value['brand']) . "',
 					address 		= '" . $this->db->escape($value['address']) . "'");
 			}
 

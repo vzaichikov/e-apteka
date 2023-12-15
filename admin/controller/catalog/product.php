@@ -1,8 +1,75 @@
 <?php
 	class ControllerCatalogProduct extends Controller {
+
+	public function filter() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_products_status')) {
+			return $this->load->controller('catalog/aqe/product/filter');
+		} else {
+			$this->response->redirect($this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+
+	public function category() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_products_status')) {
+			return $this->load->controller('catalog/aqe/product/category');
+		} else {
+			$this->response->redirect($this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+
+	public function load_popup() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_products_status')) {
+			return $this->load->controller('catalog/aqe/product/load_popup');
+		} else {
+			$this->response->redirect($this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+
+	public function refresh_data() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_products_status')) {
+			return $this->load->controller('catalog/aqe/product/refresh_data');
+		} else {
+			$this->response->redirect($this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+
+	public function quick_update() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_products_status')) {
+			return $this->load->controller('catalog/aqe/product/quick_update');
+		} else {
+			$this->response->redirect($this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+			
 		private $error = array();
 		
+
+//quicksave
+	public function qsave() {
+		$this->language->load('catalog/product');
+
+		$this->load->model('catalog/product');
+
+		$json = array();
+
+		if ($this->validateForm()) {
+			$this->model_catalog_product->editProduct($this->request->get['product_id'], $this->request->post);
+			$json['success'] = ($this->language->get('text_success')).' --- '.(date("Y-m-d - H:i:s"));
+		} else {
+			$json['error'] = $this->error;
+		}
+
+		$this->response->addHeader('Content-Type: application/json; charset=utf-8');
+		$this->response->setOutput(json_encode($json));
+	}
+//quicksave end
+			
 		public function index() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_products_status')) {
+			return $this->load->controller('catalog/aqe/product');
+		}
+			
 			$this->load->language('catalog/product');
 			
 			$this->document->setTitle($this->language->get('heading_title'));
@@ -23,9 +90,24 @@
 				$this->model_catalog_product->addProduct($this->request->post);
 				
 				$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->cache->delete('product.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
 				
 				$url = '';
 				
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_products_status')) {
+			foreach ($this->config->get('aqe_catalog_products') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+			if (isset($this->request->get['filter_sub_category'])) {
+				$url .= '&filter_sub_category=' . urlencode(html_entity_decode($this->request->get['filter_sub_category'], ENT_QUOTES, 'UTF-8'));
+			}
+		}
+			
 				if (isset($this->request->get['filter_name'])) {
 					$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 				}
@@ -35,27 +117,27 @@
 				}
 				
 				if (isset($this->request->get['filter_price'])) {
-					$url .= '&filter_price=' . $this->request->get['filter_price'];
+					$url .= '&filter_price=' . urlencode(html_entity_decode($this->request->get['filter_price'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['filter_quantity'])) {
-					$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
+					$url .= '&filter_quantity=' . urlencode(html_entity_decode($this->request->get['filter_quantity'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['filter_status'])) {
-					$url .= '&filter_status=' . $this->request->get['filter_status'];
+					$url .= '&filter_status=' . urlencode(html_entity_decode($this->request->get['filter_status'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['sort'])) {
-					$url .= '&sort=' . $this->request->get['sort'];
+					$url .= '&sort=' . urlencode(html_entity_decode($this->request->get['sort'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['order'])) {
-					$url .= '&order=' . $this->request->get['order'];
+					$url .= '&order=' . urlencode(html_entity_decode($this->request->get['order'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['page'])) {
-					$url .= '&page=' . $this->request->get['page'];
+					$url .= '&page=' . urlencode(html_entity_decode($this->request->get['page'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				$this->response->redirect($this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true));
@@ -75,9 +157,24 @@
 				$this->model_catalog_product->editProduct($this->request->get['product_id'], $this->request->post);
 				
 				$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->cache->delete('product.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
 				
 				$url = '';
 				
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_products_status')) {
+			foreach ($this->config->get('aqe_catalog_products') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+			if (isset($this->request->get['filter_sub_category'])) {
+				$url .= '&filter_sub_category=' . urlencode(html_entity_decode($this->request->get['filter_sub_category'], ENT_QUOTES, 'UTF-8'));
+			}
+		}
+			
 				if (isset($this->request->get['filter_name'])) {
 					$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 				}
@@ -87,31 +184,31 @@
 				}
 				
 				if (isset($this->request->get['filter_price'])) {
-					$url .= '&filter_price=' . $this->request->get['filter_price'];
+					$url .= '&filter_price=' . urlencode(html_entity_decode($this->request->get['filter_price'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['filter_quantity'])) {
-					$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
+					$url .= '&filter_quantity=' . urlencode(html_entity_decode($this->request->get['filter_quantity'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['filter_status'])) {
-					$url .= '&filter_status=' . $this->request->get['filter_status'];
+					$url .= '&filter_status=' . urlencode(html_entity_decode($this->request->get['filter_status'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['sort'])) {
-					$url .= '&sort=' . $this->request->get['sort'];
+					$url .= '&sort=' . urlencode(html_entity_decode($this->request->get['sort'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['order'])) {
-					$url .= '&order=' . $this->request->get['order'];
+					$url .= '&order=' . urlencode(html_entity_decode($this->request->get['order'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['page'])) {
-					$url .= '&page=' . $this->request->get['page'];
+					$url .= '&page=' . urlencode(html_entity_decode($this->request->get['page'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['product_id'])) {
-					$url .= '&product_id=' . $this->request->get['product_id'];
+					$url .= '&product_id=' . urlencode(html_entity_decode($this->request->get['product_id'], ENT_QUOTES, 'UTF-8'));
 					$this->response->redirect($this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . $url, true));
 				}
 				
@@ -133,6 +230,11 @@
 		}
 		
 		public function delete() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_products_status')) {
+			return $this->load->controller('catalog/aqe/product/delete');
+		}
+			
 			$this->load->language('catalog/product');
 			
 			$this->document->setTitle($this->language->get('heading_title'));
@@ -145,9 +247,24 @@
 				}
 				
 				$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->cache->delete('product.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
 				
 				$url = '';
 				
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_products_status')) {
+			foreach ($this->config->get('aqe_catalog_products') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+			if (isset($this->request->get['filter_sub_category'])) {
+				$url .= '&filter_sub_category=' . urlencode(html_entity_decode($this->request->get['filter_sub_category'], ENT_QUOTES, 'UTF-8'));
+			}
+		}
+			
 				if (isset($this->request->get['filter_name'])) {
 					$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 				}
@@ -157,27 +274,27 @@
 				}
 				
 				if (isset($this->request->get['filter_price'])) {
-					$url .= '&filter_price=' . $this->request->get['filter_price'];
+					$url .= '&filter_price=' . urlencode(html_entity_decode($this->request->get['filter_price'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['filter_quantity'])) {
-					$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
+					$url .= '&filter_quantity=' . urlencode(html_entity_decode($this->request->get['filter_quantity'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['filter_status'])) {
-					$url .= '&filter_status=' . $this->request->get['filter_status'];
+					$url .= '&filter_status=' . urlencode(html_entity_decode($this->request->get['filter_status'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['sort'])) {
-					$url .= '&sort=' . $this->request->get['sort'];
+					$url .= '&sort=' . urlencode(html_entity_decode($this->request->get['sort'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['order'])) {
-					$url .= '&order=' . $this->request->get['order'];
+					$url .= '&order=' . urlencode(html_entity_decode($this->request->get['order'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['page'])) {
-					$url .= '&page=' . $this->request->get['page'];
+					$url .= '&page=' . urlencode(html_entity_decode($this->request->get['page'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				$this->response->redirect($this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true));
@@ -187,6 +304,11 @@
 		}
 		
 		public function copy() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_products_status')) {
+			return $this->load->controller('catalog/aqe/product/copy');
+		}
+			
 			$this->load->language('catalog/product');
 			
 			$this->document->setTitle($this->language->get('heading_title'));
@@ -199,9 +321,24 @@
 				}
 				
 				$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->cache->delete('product.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
 				
 				$url = '';
 				
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_products_status')) {
+			foreach ($this->config->get('aqe_catalog_products') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+			if (isset($this->request->get['filter_sub_category'])) {
+				$url .= '&filter_sub_category=' . urlencode(html_entity_decode($this->request->get['filter_sub_category'], ENT_QUOTES, 'UTF-8'));
+			}
+		}
+			
 				if (isset($this->request->get['filter_name'])) {
 					$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 				}
@@ -211,27 +348,27 @@
 				}
 				
 				if (isset($this->request->get['filter_price'])) {
-					$url .= '&filter_price=' . $this->request->get['filter_price'];
+					$url .= '&filter_price=' . urlencode(html_entity_decode($this->request->get['filter_price'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['filter_quantity'])) {
-					$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
+					$url .= '&filter_quantity=' . urlencode(html_entity_decode($this->request->get['filter_quantity'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['filter_status'])) {
-					$url .= '&filter_status=' . $this->request->get['filter_status'];
+					$url .= '&filter_status=' . urlencode(html_entity_decode($this->request->get['filter_status'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['sort'])) {
-					$url .= '&sort=' . $this->request->get['sort'];
+					$url .= '&sort=' . urlencode(html_entity_decode($this->request->get['sort'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['order'])) {
-					$url .= '&order=' . $this->request->get['order'];
+					$url .= '&order=' . urlencode(html_entity_decode($this->request->get['order'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				if (isset($this->request->get['page'])) {
-					$url .= '&page=' . $this->request->get['page'];
+					$url .= '&page=' . urlencode(html_entity_decode($this->request->get['page'], ENT_QUOTES, 'UTF-8'));
 				}
 				
 				$this->response->redirect($this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true));
@@ -297,6 +434,18 @@
 			
 			$url = '';
 			
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_products_status')) {
+			foreach ($this->config->get('aqe_catalog_products') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+			if (isset($this->request->get['filter_sub_category'])) {
+				$url .= '&filter_sub_category=' . urlencode(html_entity_decode($this->request->get['filter_sub_category'], ENT_QUOTES, 'UTF-8'));
+			}
+		}
+			
 			if (isset($this->request->get['filter_name'])) {
 				$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 			}
@@ -306,31 +455,31 @@
 			}
 			
 			if (isset($this->request->get['filter_price'])) {
-				$url .= '&filter_price=' . $this->request->get['filter_price'];
+				$url .= '&filter_price=' . urlencode(html_entity_decode($this->request->get['filter_price'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['filter_quantity'])) {
-				$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
+				$url .= '&filter_quantity=' . urlencode(html_entity_decode($this->request->get['filter_quantity'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['filter_status'])) {
-				$url .= '&filter_status=' . $this->request->get['filter_status'];
+				$url .= '&filter_status=' . urlencode(html_entity_decode($this->request->get['filter_status'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['filter_image'])) {
-				$url .= '&filter_image=' . $this->request->get['filter_image'];
+				$url .= '&filter_image=' . urlencode(html_entity_decode($this->request->get['filter_image'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['sort'])) {
-				$url .= '&sort=' . $this->request->get['sort'];
+				$url .= '&sort=' . urlencode(html_entity_decode($this->request->get['sort'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['order'])) {
-				$url .= '&order=' . $this->request->get['order'];
+				$url .= '&order=' . urlencode(html_entity_decode($this->request->get['order'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['page'])) {
-				$url .= '&page=' . $this->request->get['page'];
+				$url .= '&page=' . urlencode(html_entity_decode($this->request->get['page'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			$data['breadcrumbs'] = array();
@@ -455,6 +604,18 @@
 			
 			$url = '';
 			
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_products_status')) {
+			foreach ($this->config->get('aqe_catalog_products') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+			if (isset($this->request->get['filter_sub_category'])) {
+				$url .= '&filter_sub_category=' . urlencode(html_entity_decode($this->request->get['filter_sub_category'], ENT_QUOTES, 'UTF-8'));
+			}
+		}
+			
 			if (isset($this->request->get['filter_name'])) {
 				$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 			}
@@ -464,19 +625,19 @@
 			}
 			
 			if (isset($this->request->get['filter_price'])) {
-				$url .= '&filter_price=' . $this->request->get['filter_price'];
+				$url .= '&filter_price=' . urlencode(html_entity_decode($this->request->get['filter_price'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['filter_quantity'])) {
-				$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
+				$url .= '&filter_quantity=' . urlencode(html_entity_decode($this->request->get['filter_quantity'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['filter_status'])) {
-				$url .= '&filter_status=' . $this->request->get['filter_status'];
+				$url .= '&filter_status=' . urlencode(html_entity_decode($this->request->get['filter_status'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['filter_image'])) {
-				$url .= '&filter_image=' . $this->request->get['filter_image'];
+				$url .= '&filter_image=' . urlencode(html_entity_decode($this->request->get['filter_image'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if ($order == 'ASC') {
@@ -486,7 +647,7 @@
 			}
 			
 			if (isset($this->request->get['page'])) {
-				$url .= '&page=' . $this->request->get['page'];
+				$url .= '&page=' . urlencode(html_entity_decode($this->request->get['page'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			$data['sort_name'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=pd.name' . $url, true);
@@ -498,6 +659,18 @@
 			
 			$url = '';
 			
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_products_status')) {
+			foreach ($this->config->get('aqe_catalog_products') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+			if (isset($this->request->get['filter_sub_category'])) {
+				$url .= '&filter_sub_category=' . urlencode(html_entity_decode($this->request->get['filter_sub_category'], ENT_QUOTES, 'UTF-8'));
+			}
+		}
+			
 			if (isset($this->request->get['filter_name'])) {
 				$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 			}
@@ -507,27 +680,27 @@
 			}
 			
 			if (isset($this->request->get['filter_price'])) {
-				$url .= '&filter_price=' . $this->request->get['filter_price'];
+				$url .= '&filter_price=' . urlencode(html_entity_decode($this->request->get['filter_price'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['filter_quantity'])) {
-				$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
+				$url .= '&filter_quantity=' . urlencode(html_entity_decode($this->request->get['filter_quantity'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['filter_status'])) {
-				$url .= '&filter_status=' . $this->request->get['filter_status'];
+				$url .= '&filter_status=' . urlencode(html_entity_decode($this->request->get['filter_status'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['filter_image'])) {
-				$url .= '&filter_image=' . $this->request->get['filter_image'];
+				$url .= '&filter_image=' . urlencode(html_entity_decode($this->request->get['filter_image'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['sort'])) {
-				$url .= '&sort=' . $this->request->get['sort'];
+				$url .= '&sort=' . urlencode(html_entity_decode($this->request->get['sort'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['order'])) {
-				$url .= '&order=' . $this->request->get['order'];
+				$url .= '&order=' . urlencode(html_entity_decode($this->request->get['order'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			$pagination = new Pagination();
@@ -656,6 +829,15 @@
 			
 			$data['button_save'] = $this->language->get('button_save');
 			$data['button_cancel'] = $this->language->get('button_cancel');
+
+				$data['column_faq_name'] = $this->language->get('column_faq_name');
+				$data['column_question'] = $this->language->get('column_question');
+				$data['column_faq'] = $this->language->get('column_faq');
+				$data['column_icon'] = $this->language->get('column_icon');
+				$data['tab_faq'] = $this->language->get('tab_faq');
+				$data['faq_name'] = $this->language->get('faq_name');
+				$data['button_remove'] = $this->language->get('button_remove');
+			
 			$data['button_attribute_add'] = $this->language->get('button_attribute_add');
 			$data['button_option_add'] = $this->language->get('button_option_add');
 			$data['button_option_value_add'] = $this->language->get('button_option_value_add');
@@ -713,6 +895,18 @@
 			
 			$url = '';
 			
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_products_status')) {
+			foreach ($this->config->get('aqe_catalog_products') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+			if (isset($this->request->get['filter_sub_category'])) {
+				$url .= '&filter_sub_category=' . urlencode(html_entity_decode($this->request->get['filter_sub_category'], ENT_QUOTES, 'UTF-8'));
+			}
+		}
+			
 			if (isset($this->request->get['filter_name'])) {
 				$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 			}
@@ -722,27 +916,27 @@
 			}
 			
 			if (isset($this->request->get['filter_price'])) {
-				$url .= '&filter_price=' . $this->request->get['filter_price'];
+				$url .= '&filter_price=' . urlencode(html_entity_decode($this->request->get['filter_price'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['filter_quantity'])) {
-				$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
+				$url .= '&filter_quantity=' . urlencode(html_entity_decode($this->request->get['filter_quantity'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['filter_status'])) {
-				$url .= '&filter_status=' . $this->request->get['filter_status'];
+				$url .= '&filter_status=' . urlencode(html_entity_decode($this->request->get['filter_status'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['sort'])) {
-				$url .= '&sort=' . $this->request->get['sort'];
+				$url .= '&sort=' . urlencode(html_entity_decode($this->request->get['sort'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['order'])) {
-				$url .= '&order=' . $this->request->get['order'];
+				$url .= '&order=' . urlencode(html_entity_decode($this->request->get['order'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			if (isset($this->request->get['page'])) {
-				$url .= '&page=' . $this->request->get['page'];
+				$url .= '&page=' . urlencode(html_entity_decode($this->request->get['page'], ENT_QUOTES, 'UTF-8'));
 			}
 			
 			$data['breadcrumbs'] = array();
@@ -762,6 +956,11 @@
 				} else {
 				$data['action'] = $this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $this->request->get['product_id'] . $url, true);
 			}
+			
+
+//quicksave
+	$data['pidqs'] = isset($this->request->get['product_id']) ? $this->request->get['product_id'] : '';
+//quicksave end
 			
 			$data['cancel'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true);
 			
@@ -1876,6 +2075,27 @@
 				$data['product_reward'] = array();
 			}
 			
+				
+				$data['product_faq'] = array(); 
+				if (isset($this->request->post['product_faq'])) {
+				$product_faq = $this->request->post['product_faq'];
+				} elseif (isset($this->request->get['product_id'])) {
+				$product_faq = $this->model_catalog_product->getProductFaq($this->request->get['product_id']);
+				} else {
+				$product_faq = array();
+				}
+				
+				$data['product_faq'] = array();
+				
+				foreach ($product_faq as $product_faq) {
+				$data['product_faq'][] = array(
+				'question'       => unserialize($product_faq['question']),
+				'faq'       => unserialize($product_faq['faq']),
+				'icon'     => $product_faq['icon'],
+				'sort_order' => $product_faq['sort_order']
+				);
+				}
+			
 			if (isset($this->request->post['product_layout'])) {
 				$data['product_layout'] = $this->request->post['product_layout'];
 				} elseif (isset($this->request->get['product_id'])) {
@@ -1972,6 +2192,11 @@
 		}
 		
 		public function autocomplete() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_products_status')) {
+			return $this->load->controller('catalog/aqe/product/autocomplete');
+		}
+			
 			$json = array();
 			
 			if (isset($this->request->get['filter_name']) || isset($this->request->get['filter_model'])) {

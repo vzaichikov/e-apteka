@@ -418,6 +418,13 @@
 				$sale = array();
 				
 				if ($this->user->hasPermission('access', 'sale/order')) {
+
+            $sale[] = array(
+                'name'     => $this->language->get('text_abandoned_carts'),
+                'href'     => $this->url->link('extension/module/simple', 'abandoned&token=' . $this->session->data['token'], true),
+                'children' => array()       
+            );
+            
 					$sale[] = array(
 					'name'	   => $this->language->get('text_order'),
 					'href'     => $this->url->link('sale/order', 'token=' . $this->session->data['token'], true),

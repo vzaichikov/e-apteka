@@ -60,6 +60,7 @@
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
+$data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
 			
 			$this->response->setOutput($this->load->view('product/manufacturer_list', $data));
 		}
@@ -350,6 +351,10 @@
 					$this->document->addLink($this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'] . $url . '&page='. ($page + 1), true), 'next');
 				}
 				
+
+				$data['hobofaq'] = $this->load->controller('hobotix/hobofaq');
+				$data['description'] .= '<div class="row"><div class="col-xs-12">' . $data['hobofaq'] . '</div></div>';
+			
 				$data['sort'] = $sort;
 				$data['order'] = $order;
 				$data['limit'] = $limit;
@@ -362,6 +367,7 @@
 				$data['content_bottom'] = $this->load->controller('common/content_bottom');
 				$data['footer'] = $this->load->controller('common/footer');
 				$data['header'] = $this->load->controller('common/header');
+$data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
 				
 				$this->response->setOutput($this->load->view('product/manufacturer_info', $data));
 				} else {
@@ -408,6 +414,7 @@
 				$this->response->addHeader($this->request->server['SERVER_PROTOCOL'] . ' 404 Not Found');
 				
 				$data['header'] = $this->load->controller('common/header');
+$data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
 				$data['footer'] = $this->load->controller('common/footer');
 				$data['column_left'] = $this->load->controller('common/column_left');
 				$data['column_right'] = $this->load->controller('common/column_right');

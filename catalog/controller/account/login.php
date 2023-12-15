@@ -3,6 +3,9 @@
 		private $error = array();
 		
 		public function index() {
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 			$this->load->model('account/customer');				
 			
 			// Login override for admin users

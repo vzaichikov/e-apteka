@@ -34,6 +34,12 @@ $_['text_upload']                  = 'Загрузка';
 $_['text_error']                   = 'Ошибки';
 
 // Entry
+
+        $_['entry_pass']      = 'Ключ в Admin URL';
+        $_['entry_key']       = 'Значение ключа в Admin URL';
+		$_['help_pass']      = 'Введите ключ, который нужно будет добавлять в URL чтобы попасть в админку.<br /><br /><b><i> Внимание !! </b></i><br /> <br />Ваша админка будет доступна уже по новому адресу, типа: http://yourdomain.com/admin/?key';
+        $_['help_key']       = 'Введите значение ключа, чтобы усложнить путь доступа к админке (необязательно)<br /><br /><b><i> Внимание !! </b></i><br /> <br />Ваша админка будет доступна уже по новому адресу, типа: http://yourdomain.com/admin/?key=value';
+			
 $_['entry_meta_title']             = 'Мета-тег Title';
 $_['entry_meta_description']       = 'Мета-тег \'Description\'';
 $_['entry_meta_keyword']           = 'Мета-тег \'Keywords\'';

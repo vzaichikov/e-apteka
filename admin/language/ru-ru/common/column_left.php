@@ -1,4 +1,7 @@
 <?php
+
+            $_['text_abandoned_carts'] = 'Брошенные корзины';
+            
 	$_['text_simple_blogs']	= 'Новости / лента';
 				$_['text_simple_blog_author']	= 'Автор';
 				$_['text_simple_blog_category']	= 'Категории';
@@ -44,6 +47,7 @@ $_['text_location']                  = 'Местонахождение';
 $_['text_contact']                   = 'Почта';
 $_['text_marketing']                 = 'Маркетинг';
 $_['text_menu']                      = 'Меню';
+$_['text_seo_snippet']    = 'Сниппеты';
 $_['text_modification']              = 'Модификаторы';
 $_['text_manufacturer']              = 'Производители';
 $_['text_option']                    = 'Опции';

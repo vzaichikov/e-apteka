@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+<name>PopUpCart Extended for OpenCart 2.3</name>
+<code>PopUpCart Extended for OpenCart 2.3</code>
+<version>1.6</version>
+<author>http://oc-dev.ru/</author>
+
+<file path="system/library/cart/cart.php">
+	<operation>
+	<search><![CDATA[$product_data[] = array(]]></search>
+		<add position="before" error="skip"><![CDATA[
+	//	$manufacturer_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "manufacturer m LEFT JOIN " . DB_PREFIX . "product p ON (p.manufacturer_id = m.manufacturer_id) WHERE p.product_id = '" . (int)$product_query->row['product_id'] . "'");
+	//	$manufacturer = $manufacturer_query->num_rows ? $manufacturer_query->row['name'] : '';
+	]]></add>
+	</operation>
+	<operation>
+	<search><![CDATA[$product_query->row['minimum'],]]></search>
+	<add position="after" error="skip"><![CDATA[
+		'maximum'         => $product_query->row['quantity'],
+	//	'manufacturer'    => $manufacturer,
+	]]></add>
+	</operation>
+</file>	
+
+<file path="catalog/controller/common/footer.php">
+	<operation>
+	<search><![CDATA[$this->load->language('common/footer');]]></search>
+	<add position="after" error="skip"><![CDATA[
+	//	$data['popupcartext'] = $this->load->controller('extension/module/popupcart');
+	]]></add>
+	</operation>
+</file>	
+
+	
+</modification>

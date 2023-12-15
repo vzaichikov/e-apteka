@@ -3,6 +3,9 @@
 	
 	class ControllerCheckoutSuccess extends Controller {
 		public function index() {
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 			$barcodeValidator = new \Ced\Validator\Barcode();
 			
 			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');

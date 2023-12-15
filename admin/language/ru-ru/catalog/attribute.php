@@ -14,6 +14,15 @@ $_['column_attribute_group'] = 'Группа атрибута';
 $_['column_sort_order']      = 'Порядок сортировки';
 $_['column_action']          = 'Действие';
 
+
+				$_['column_faq']  		= 'Ответ (можно HTML)';
+				$_['column_question']   = 'Вопрос';
+				$_['column_sort_order']	= 'Порядок сортировки';
+				$_['column_icon']     	= 'Fa-иконка';
+				$_['tab_faq']         	= 'FAQ';
+				$_['button_remove']     = 'Удалить';
+				$_['faq_name']     		= 'Название блока FAQ';
+			
 // Entry
 $_['entry_name']             = 'Название атрибута';
 $_['entry_attribute_group']  = 'Группа атрибута';

@@ -1,6 +1,9 @@
 <?php
 class ControllerAccountSuccess extends Controller {
 	public function index() {
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		$this->load->language('account/success');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -49,6 +52,9 @@ class ControllerAccountSuccess extends Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		$this->response->setOutput($this->load->view('common/success', $data));
 	}
 }

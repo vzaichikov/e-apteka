@@ -74,6 +74,10 @@
 			);
 			
 			$data['heading_title'] = $this->language->get('heading_title');
+
+				$data['hb_snippets_local_enable'] = $this->config->get('hb_snippets_local_enable');
+				$data['hb_snippets_local_snippet'] = $this->config->get('hb_snippets_local_snippet');
+				
 			
 			$data['text_location'] = $this->language->get('text_location');
 			$data['text_store'] = $this->language->get('text_store');
@@ -129,8 +133,7 @@
 			$data['fax'] = $this->config->get('config_fax');
 			$data['open'] = nl2br($this->config->get('config_open'));
 			$data['comment'] = $this->config->get('config_comment');
-			
-			
+						
 			$data['locations'] = array();
 			
 			$this->load->model('localisation/location');
@@ -188,23 +191,23 @@
 								$is_open_now = false;
 								} else {
 								
-								$date_now = DateTime::createFromFormat('H:i', date('H:i'));
-								$date_open = DateTime::createFromFormat('H:i', $d[$day]['s']);					
+								$date_now 	= DateTime::createFromFormat('H:i', date('H:i'));
+								$date_open 	= DateTime::createFromFormat('H:i', $d[$day]['s']);					
 								$date_close = DateTime::createFromFormat('H:i', $d[$day]['f']);
 								
 								if ($date_now > $date_open && $date_now < $date_close){
 									$is_open_now = true;
 									$to_close_h = date_diff($date_now, $date_close)->format('%h');
 									$to_close_m = date_diff($date_now, $date_close)->format('%i');
-									$open_text = sprintf($this->language->get('text_opened_now'), $to_close_h, $to_close_m);
-									$open = sprintf($this->language->get('text_opened_now'), $to_close_h, $to_close_m);
+									$open_text 	= sprintf($this->language->get('text_opened_now'), $to_close_h, $to_close_m);
+									$open 		= sprintf($this->language->get('text_opened_now'), $to_close_h, $to_close_m);
 								}
 								
 								if ($date_now > $date_close || $date_now < $date_open){
-									$is_open_now = false;
-									$to_close = date_diff($date_now, $date_open)->format('%h');
-									$open_text = $this->language->get('text_closed_now');
-									$open = $this->language->get('text_closed_now');
+									$is_open_now 	= false;
+									$to_close 		= date_diff($date_now, $date_open)->format('%h');
+									$open_text 		= $this->language->get('text_closed_now');
+									$open 			= $this->language->get('text_closed_now');
 								}
 							}
 							
@@ -235,8 +238,15 @@
 							} else {
 							${$_field} = $location_info[$_field];
 						}
-					}			
+					}								
+					
+					$data['text_we_work_while_no_light'] = $this->language->get('text_we_work_while_no_light');
 
+					if (!empty($this->registry->get('branding')[$location_info['brand']])){
+						$icon = HTTPS_SERVER . 'image/brand/marker-icon-'. $this->registry->get('branding')[$location_info['brand']] .'.png';
+					} else {
+						$icon = HTTPS_SERVER . 'image/brand/marker-icon-brand-default.png';
+					}
 
 					$name = $location_info['name'];
 					if (!in_array($location_info['location_id'], $this->cart->getOpenedStores())){
@@ -244,12 +254,10 @@
 						$name 		= ' <b>[ТИМЧАСОВО НЕ ПРАЦЮЄ]</b> ' . $name;		
 						$address 	= ' <b>[ТИМЧАСОВО НЕ ПРАЦЮЄ]</b> ' . $address;		
 
-						$mcolor = 'grey';
-						$tdclass = 'bg-danger';
-
+						$mcolor 	= 'grey';
+						$tdclass 	= 'bg-danger';
+						$icon 		= HTTPS_SERVER . 'image/brand/marker_grey.png';
 					}
-
-					$data['text_we_work_while_no_light'] = $this->language->get('text_we_work_while_no_light');
 					
 					$data['locations'][] = array(
 					'location_id' => $location_info['location_id'],
@@ -260,22 +268,18 @@
 					'email'   	  => $this->config->get('config_email'),
 					'fax'         => $location_info['fax'],
 					'image'       => $image,
-					'open_text'       => $open_text,
-					//'is_open_now' => $is_open_now,
-					//'to_close_h' => $to_close_h,
-					//'to_close_m' => $to_close_m,
+					'open_text'   => $open_text,
 					'open'        => nl2br($open),
 					'tdclass' 	  => $tdclass,
 					'faclass' 	  => $faclass,
 					'open_text'   => $open_text,
-					'icon' 	      => HTTPS_SERVER . 'image/gmarkers/source/marker_' . $mcolor . '.png',
+					'icon' 	      => $icon,
 					'comment'     => $location_info['comment'],
 					'information_id' => $location_info['information_id'],
 					'information_href' => $location_info['information_id']?$this->url->link('catalog/information', 'information_id=' . $location_info['information_id']):false
 					);
 				}
 			}
-			
 			
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');
@@ -322,6 +326,10 @@
 			);
 			
 			$data['heading_title'] = $this->language->get('heading_title');
+
+				$data['hb_snippets_local_enable'] = $this->config->get('hb_snippets_local_enable');
+				$data['hb_snippets_local_snippet'] = $this->config->get('hb_snippets_local_snippet');
+				
 			
 			$data['text_location'] = $this->language->get('text_location');
 			$data['text_store'] = $this->language->get('text_store');
@@ -462,6 +470,10 @@
 			);
 			
 			$data['heading_title'] = $this->language->get('heading_title');
+
+				$data['hb_snippets_local_enable'] = $this->config->get('hb_snippets_local_enable');
+				$data['hb_snippets_local_snippet'] = $this->config->get('hb_snippets_local_snippet');
+				
 			
 			$data['text_message'] = $this->language->get('text_success');
 			

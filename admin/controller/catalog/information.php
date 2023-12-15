@@ -1,8 +1,59 @@
 <?php
 class ControllerCatalogInformation extends Controller {
+
+	public function autocomplete() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_information_status')) {
+			return $this->load->controller('catalog/aqe/information/autocomplete');
+		} else {
+			$this->response->redirect($this->url->link('catalog/information', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+
+	public function load_popup() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_information_status')) {
+			return $this->load->controller('catalog/aqe/information/load_popup');
+		} else {
+			$this->response->redirect($this->url->link('catalog/information', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+
+	public function quick_update() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_information_status')) {
+			return $this->load->controller('catalog/aqe/information/quick_update');
+		} else {
+			$this->response->redirect($this->url->link('catalog/information', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+			
 	private $error = array();
 
+
+//quicksave
+	public function qsave() {
+		$this->language->load('catalog/information');
+
+		$this->load->model('catalog/information');
+
+		$json = array();
+
+		if ($this->validateForm()) {
+			$this->model_catalog_information->editInformation($this->request->get['information_id'], $this->request->post);
+			$json['success'] = ($this->language->get('text_success')).' --- '.(date("Y-m-d - H:i:s"));
+		} else {
+			$json['error'] = $this->error;
+		}
+
+		$this->response->addHeader('Content-Type: application/json; charset=utf-8');
+		$this->response->setOutput(json_encode($json));
+	}
+//quicksave end
+			
 	public function index() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_information_status')) {
+			return $this->load->controller('catalog/aqe/information');
+		}
+			
 		$this->load->language('catalog/information');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -24,8 +75,20 @@ class ControllerCatalogInformation extends Controller {
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
+			$this->cache->delete('information.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
+
 			$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_information_status')) {
+			foreach ($this->config->get('aqe_catalog_information') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -56,8 +119,20 @@ class ControllerCatalogInformation extends Controller {
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
+			$this->cache->delete('information.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
+
 			$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_information_status')) {
+			foreach ($this->config->get('aqe_catalog_information') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -77,6 +152,11 @@ class ControllerCatalogInformation extends Controller {
 	}
 
 	public function delete() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_information_status')) {
+			return $this->load->controller('catalog/aqe/information/delete');
+		}
+			
 		$this->load->language('catalog/information');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -90,8 +170,20 @@ class ControllerCatalogInformation extends Controller {
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
+			$this->cache->delete('information.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
+
 			$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_information_status')) {
+			foreach ($this->config->get('aqe_catalog_information') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -131,6 +223,15 @@ class ControllerCatalogInformation extends Controller {
 
 		$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_information_status')) {
+			foreach ($this->config->get('aqe_catalog_information') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}
@@ -231,6 +332,15 @@ class ControllerCatalogInformation extends Controller {
 
 		$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_information_status')) {
+			foreach ($this->config->get('aqe_catalog_information') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}
@@ -285,6 +395,15 @@ class ControllerCatalogInformation extends Controller {
 		$data['button_save'] = $this->language->get('button_save');
 		$data['button_cancel'] = $this->language->get('button_cancel');
 
+				$data['column_faq_name'] = $this->language->get('column_faq_name');
+				$data['column_question'] = $this->language->get('column_question');
+				$data['column_faq'] = $this->language->get('column_faq');
+				$data['column_icon'] = $this->language->get('column_icon');
+				$data['tab_faq'] = $this->language->get('tab_faq');
+				$data['faq_name'] = $this->language->get('faq_name');
+				$data['button_remove'] = $this->language->get('button_remove');
+			
+
 		$data['tab_general'] = $this->language->get('tab_general');
 		$data['tab_data'] = $this->language->get('tab_data');
 		$data['tab_design'] = $this->language->get('tab_design');
@@ -321,6 +440,15 @@ class ControllerCatalogInformation extends Controller {
 
 		$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_information_status')) {
+			foreach ($this->config->get('aqe_catalog_information') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}
@@ -351,6 +479,11 @@ class ControllerCatalogInformation extends Controller {
 			$data['action'] = $this->url->link('catalog/information/edit', 'token=' . $this->session->data['token'] . '&information_id=' . $this->request->get['information_id'] . $url, true);
 		}
 
+
+//quicksave
+	$data['pidqs'] = isset($this->request->get['information_id']) ? $this->request->get['information_id'] : '';
+//quicksave end
+			
 		$data['cancel'] = $this->url->link('catalog/information', 'token=' . $this->session->data['token'] . $url, true);
 
 		if (isset($this->request->get['information_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
@@ -407,6 +540,27 @@ class ControllerCatalogInformation extends Controller {
 			$data['status'] = true;
 		}
 
+				
+				$data['information_faq'] = array(); 
+				if (isset($this->request->post['information_faq'])) {
+				$information_faq = $this->request->post['information_faq'];
+				} elseif (isset($this->request->get['information_id'])) {
+				$information_faq = $this->model_catalog_information->getInformationFaq($this->request->get['information_id']);
+				} else {
+				$information_faq = array();
+				}
+				
+				$data['information_faq'] = array();
+				
+				foreach ($information_faq as $information_faq) {
+				$data['information_faq'][] = array(
+				'question'       => unserialize($information_faq['question']),
+				'faq'       => unserialize($information_faq['faq']),
+				'icon'     => $information_faq['icon'],
+				'sort_order' => $information_faq['sort_order']
+				);
+				}
+			
 		if (isset($this->request->post['sort_order'])) {
 			$data['sort_order'] = $this->request->post['sort_order'];
 		} elseif (!empty($information_info)) {

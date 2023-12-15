@@ -94,7 +94,7 @@
             <table class="table table-bordered table-hover">
               <thead>
                 <tr>
-                  <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                  <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked).trigger('change');" /></td>
                   <td class="text-center"><?php echo $column_image; ?></td>
                   <td class="text-left"><?php if ($sort == 'pd.name') { ?>
                     <a href="<?php echo $sort_name; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_name; ?></a>
@@ -175,7 +175,7 @@
   </div>
   <script type="text/javascript"><!--
 $('#button-filter').on('click', function() {
-	var url = 'index.php?route=catalog/product&token=<?php echo $token; ?>';
+	var url = 'index.php?route=catalog/product&token=<?php echo $token; ?>&sort=<?php echo $sort; ?>&order=<?php echo $order; ?>';
 
 	var filter_name = $('input[name=\'filter_name\']').val();
 
@@ -203,13 +203,13 @@ $('#button-filter').on('click', function() {
 
 	var filter_status = $('select[name=\'filter_status\']').val();
 
-	if (filter_status != '*') {
+	if (filter_status && filter_status != '*') {
 		url += '&filter_status=' + encodeURIComponent(filter_status);
 	}
 
   var filter_image = $('select[name=\'filter_image\']').val();
 
-  if (filter_image != '*') {
+  if (filter_image && filter_image != '*') {
     url += '&filter_image=' + encodeURIComponent(filter_image);
   }
 

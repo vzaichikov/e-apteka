@@ -27,6 +27,9 @@ class ControllerNewsBlogArticle extends Controller {
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
+			$this->cache->delete('newsblog.article.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
+
 			$url = '';
 
 			if (isset($this->request->get['filter_name'])) {
@@ -70,6 +73,9 @@ class ControllerNewsBlogArticle extends Controller {
 			$this->model_newsblog_article->editArticle($this->request->get['article_id'], $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->cache->delete('newsblog.article.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
 
 			$url = '';
 
@@ -117,6 +123,9 @@ class ControllerNewsBlogArticle extends Controller {
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
+			$this->cache->delete('newsblog.article.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
+
 			$url = '';
 
 			if (isset($this->request->get['filter_name'])) {
@@ -162,6 +171,9 @@ class ControllerNewsBlogArticle extends Controller {
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->cache->delete('newsblog.article.seopath'); // customized for SEO Pro
+			$this->cache->delete('seo_pro'); // customized for SEO Pro
 
 			$url = '';
 

@@ -1,5 +1,11 @@
 <?php echo $header; ?>
-<div class="container">
+<?php if ($tmdaccount_status==1) { ?>
+				<link href="catalog/view/theme/default/stylesheet/ele-style.css" rel="stylesheet">
+				<link href="catalog/view/theme/default/stylesheet/dashboard.css" rel="stylesheet">
+				<div class="container dashboard">
+				<?php } else { ?>
+				<div class="container">
+				<?php } ?>
   <ul class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
     <li><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a></li>
@@ -417,4 +423,7 @@ $('select[name=\'country_id\']').on('change', function() {
 
 $('select[name=\'country_id\']').trigger('change');
 //--></script>
+<style>
+			<?php echo $tmdaccount_customcss; ?>
+			</style>
 <?php echo $footer; ?>

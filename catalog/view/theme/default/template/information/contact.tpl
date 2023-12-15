@@ -16,6 +16,7 @@
 	<div class="col-sm-12  content-row">
 		<div class="row">
 			<h1 class="headline-collection cat-header"><?php echo $heading_title; ?></h1>
+<?php if ($hb_snippets_local_enable == 'y'){echo html_entity_decode($hb_snippets_local_snippet);} ?>
 		</div>
 	</div>
 </div>

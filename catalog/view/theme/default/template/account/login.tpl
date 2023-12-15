@@ -46,7 +46,13 @@
         }
     }
 </style>
-<div class="container">
+<?php if ($tmdaccount_status==1) { ?>
+				<link href="catalog/view/theme/default/stylesheet/ele-style.css" rel="stylesheet">
+				<link href="catalog/view/theme/default/stylesheet/dashboard.css" rel="stylesheet">
+				<div class="container dashboard">
+				<?php } else { ?>
+				<div class="container">
+				<?php } ?>
     <?php if ($success) { ?>
         <div class="alert alert-success">
             <div class="modal-msg__close alert__close">
@@ -182,4 +188,7 @@
         <?php echo $content_bottom; ?></div>
     <?php echo $column_right; ?></div>
 </div>
+<style>
+			<?php echo $tmdaccount_customcss; ?>
+			</style>
 <?php echo $footer; ?>

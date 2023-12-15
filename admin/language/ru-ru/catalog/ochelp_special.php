@@ -32,6 +32,15 @@ $_['button_setting']          = 'Настройки';
 // Tab
 $_['tab_special']             = 'Акционные товары';
 
+
+				$_['column_faq']  		= 'Ответ (можно HTML)';
+				$_['column_question']   = 'Вопрос';
+				$_['column_sort_order']	= 'Порядок сортировки';
+				$_['column_icon']     	= 'Fa-иконка';
+				$_['tab_faq']         	= 'FAQ';
+				$_['button_remove']     = 'Удалить';
+				$_['faq_name']     		= 'Название блока FAQ';
+			
 // Entry
 $_['entry_title']             = 'Заголовок акции:';
 $_['entry_description']       = 'Описание:';

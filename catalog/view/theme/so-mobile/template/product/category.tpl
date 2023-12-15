@@ -78,7 +78,33 @@ else $listingType = 'grid';
 
 					</div>
 					
-					<?php echo $content_top; ?>
+					
+			<?php echo $content_top; ?>
+			 <?php if ($hb_snippets_bc_enable == '1'){ ?>
+			<?php 
+				$count_breadcrumb = 0; 
+				$bc = '';
+				foreach ($breadcrumbs as $breadcrumb) { 
+				$count_breadcrumb = $count_breadcrumb + 1; 
+				$bc .= '{
+    "@type": "ListItem",
+    "position": '.$count_breadcrumb.',
+    "item": {
+      "@id": "'.$breadcrumb['href'].'",
+      "name": "'.$breadcrumb['text'].'"
+    }},';
+	}
+	$bc = str_replace('<i class="fa fa-home"></i>','Home',$bc);
+	$bc = rtrim($bc,',');
+	?>
+			<script type="application/ld+json">
+			{
+		  "@context": "http://schema.org",
+		  "@type": "BreadcrumbList",
+		  "itemListElement": [<?php echo $bc; ?>]}
+		  </script>
+		  <?php } ?>
+		
 				
 				</div>
 				<!-- //end Filters -->

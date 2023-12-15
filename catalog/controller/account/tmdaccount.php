@@ -1,6 +1,9 @@
 <?php
 class ControllerAccountTmdAccount extends Controller {
 	public function index() {
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		if (!$this->customer->isLogged()) {
 			$this->session->data['redirect'] = $this->url->link('account/tmdaccount', '', true);
 			$this->response->redirect($this->url->link('account/login', '', true));

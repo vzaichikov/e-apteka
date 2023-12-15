@@ -377,6 +377,35 @@
 				$this->document->setTitle($product_info['meta_title']);
 				$this->document->setDescription($product_info['meta_description']);
 				$this->document->setKeywords($product_info['meta_keyword']);
+
+			if ($this->config->get('hb_snippets_og_enable') == '1'){
+			$hb_snippets_ogp = $this->config->get('hb_snippets_ogp');
+			if (strlen($hb_snippets_ogp) > 4){
+				$ogp_name = $product_info['name'];
+				$ogp_brand = $product_info['manufacturer'];
+				$ogp_model = $product_info['model'];
+				if ((float)$product_info['special']) {
+					$ogp_price = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+				}else {
+					$ogp_price = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+				}
+				
+				$hb_snippets_ogp = str_replace('{name}',$ogp_name,$hb_snippets_ogp);
+				$hb_snippets_ogp = str_replace('{model}',$ogp_model,$hb_snippets_ogp);
+				$hb_snippets_ogp = str_replace('{brand}',$ogp_brand,$hb_snippets_ogp);
+				$hb_snippets_ogp = str_replace('{price}',$ogp_price,$hb_snippets_ogp);
+			}else{
+				$hb_snippets_ogp = $product_info['name'];
+			}
+			
+			$this->document->setOpengraph('og:title', $hb_snippets_ogp);
+            $this->document->setOpengraph('og:type', 'website');
+            $this->document->setOpengraph('og:site_name', $this->config->get('config_name'));
+            $this->document->setOpengraph('og:image', HTTP_SERVER . 'image/' . $product_info['image']);
+            $this->document->setOpengraph('og:url', $this->url->link('product/product', 'product_id=' . $product_id));
+            $this->document->setOpengraph('og:description', $product_info['meta_description']);
+			}
+			
 				$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');				
 				
 				$this->document->addLink($this->url->link('product/amp_product', 'product_id=' . $this->request->get['product_id']), 'amphtml');
@@ -719,6 +748,14 @@
 				
 				$data['reviews'] = sprintf($this->language->get('text_reviews'), (int)$product_info['reviews']);
 				$data['rating'] = (int)$product_info['rating'];
+
+			$data['review_count'] = $product_info['reviews'];
+			$data['currencycode'] = $this->session->data['currency'];//$this->currency->getCode();
+			$data['stockqty'] = $product_info['quantity'];
+			$data['hb_snippets_prod_enable'] = $this->config->get('hb_snippets_prod_enable');
+			$data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
+			$data['language_decimal_point'] = $this->language->get('decimal_point');
+			
 				
 				if ($this->config->get($this->config->get('config_captcha') . '_status') && in_array('review', (array)$this->config->get('config_captcha_page'))) {
 					$data['captcha'] = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha'));

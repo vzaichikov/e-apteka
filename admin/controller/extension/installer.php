@@ -31,6 +31,11 @@ class ControllerExtensionInstaller extends Controller {
 		$data['button_upload'] = $this->language->get('button_upload');
 		$data['button_clear'] = $this->language->get('button_clear');
 		$data['button_continue'] = $this->language->get('button_continue');
+//karapuz (no_ftp.ocmod.xml) 
+ $data['text_upload_without_ftp'] = $this->language->get('text_upload_without_ftp');
+ $data['help_upload_without_ftp'] = $this->language->get('help_upload_without_ftp');
+ $data['upload_without_ftp'] = false;
+///karapuz (no_ftp.ocmod.xml) 
 
 		$data['token'] = $this->session->data['token'];
 
@@ -129,7 +134,7 @@ class ControllerExtensionInstaller extends Controller {
 						// FTP
 						$json['step'][] = array(
 							'text' => $this->language->get('text_ftp'),
-							'url'  => str_replace('&amp;', '&', $this->url->link('extension/installer/ftp', 'token=' . $this->session->data['token'], true)),
+							'url'  => str_replace('&amp;', '&', $this->url->link('extension/installer/file_tp_wrapper', 'token=' . $this->session->data['token'], true)),
 							'path' => $path
 						);
 
@@ -249,6 +254,51 @@ class ControllerExtensionInstaller extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
+//karapuz (no_ftp.ocmod.xml) 
+ static public function cpy($source, $dest) {
+ if(is_dir($source)) {
+ $dir_handle = opendir($source);
+ while ($file = readdir($dir_handle)) {
+ if ($file != "." && $file != "..") {
+ if (is_dir($source . "/" . $file)) {
+ if (!is_dir($dest . "/" . $file)) {
+ mkdir($dest . "/" . $file);
+ }
+ self::cpy($source . "/" . $file, $dest . "/" . $file);
+ } else {
+ copy($source . "/" . $file, $dest . "/" . $file);
+ }
+ }
+ }
+ closedir($dir_handle);
+ } else {
+ copy($source, $dest);
+ }
+ }
+ 
+ protected function copyUpload() {
+ $json = array();
+ 
+ $directory = DIR_UPLOAD . str_replace(array('../', '..\\', '..'), '', $this->request->post['path']) . '/upload/';
+
+ if (!is_dir($directory)) {
+ $json['error'] = $this->language->get('error_directory');
+ return $json;
+ }
+
+ self::cpy($directory, dirname(DIR_APPLICATION));
+ 
+ return $json;
+ }
+ 
+ /*
+ This wrapper is used because some hostings block calls to URLs containing '/ftp'. It
+ brokes installation process.
+ */
+ public function file_tp_wrapper() {
+ return $this->ftp();
+ }
+///karapuz (no_ftp.ocmod.xml) 
 	public function ftp() {
 		$this->load->language('extension/installer');
 
@@ -259,6 +309,14 @@ class ControllerExtensionInstaller extends Controller {
 		}
 
 		// Check FTP status
+//karapuz (no_ftp.ocmod.xml) 
+ if (!empty($this->request->post['upload_without_ftp'])) {
+ $json = $this->copyUpload();
+ $this->response->addHeader('Content-Type: application/json');
+ $this->response->setOutput(json_encode($json));
+ return; 
+ }
+///karapuz (no_ftp.ocmod.xml) 
 		if (!$this->config->get('config_ftp_status')) {
 			$json['error'] = $this->language->get('error_ftp_status');
 		}

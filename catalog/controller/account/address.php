@@ -3,6 +3,9 @@ class ControllerAccountAddress extends Controller {
 	private $error = array();
 
 	public function index() {
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		if (!$this->customer->isLogged()) {
 			$this->session->data['redirect'] = $this->url->link('account/address', '', true);
 
@@ -210,6 +213,19 @@ class ControllerAccountAddress extends Controller {
 				$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
 			}
 
+
+                $this->load->model('tool/simplecustom');
+
+                if ($result['address_format']) {
+                    $format = $result['address_format'];
+                } else {
+                    $format = $this->model_tool_simplecustom->getAddressFormat();
+
+                    if (!$format) {
+                        $format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+                    }
+                }
+            
 			$find = array(
 				'{firstname}',
 				'{lastname}',
@@ -236,6 +252,31 @@ class ControllerAccountAddress extends Controller {
 				'country'   => $result['country']
 			);
 
+
+                $find[] = '{company_id}';
+                $find[] = '{tax_id}';
+                $replace['company_id'] = isset($result['company_id']) ? $result['company_id'] : '';
+                $replace['tax_id'] = isset($result['tax_id']) ? $result['tax_id'] : '';
+
+                $customInfo = $this->model_tool_simplecustom->getCustomFields('address', $result['address_id']);
+
+                foreach($customInfo as $id => $value) {
+                    $find[] = '{'.$id.'}';
+                    $replace[$id] = $value;
+                }
+
+                $all_fields = array();
+                preg_match_all('{([\w:]+)}', $format, $all_fields);
+
+                if (!empty($all_fields[0]) && is_array($all_fields[0])) {
+                    foreach($all_fields[0] as $id) {
+                        if (!in_array('{'.$id.'}', $find)) {
+                            $find[] = '{'.$id.'}';
+                            $replace[$id] = '';
+                        }
+                    }
+                }
+            
 			$data['addresses'][] = array(
 				'address_id' => $result['address_id'],
 				'address'    => str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format)))),
@@ -254,6 +295,9 @@ class ControllerAccountAddress extends Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		$this->response->setOutput($this->load->view('account/address_list', $data));
 	}
 
@@ -476,6 +520,9 @@ class ControllerAccountAddress extends Controller {
 		$data['header'] = $this->load->controller('common/header');
 
 
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		$this->response->setOutput($this->load->view('account/address_form', $data));
 	}
 

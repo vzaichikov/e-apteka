@@ -16,6 +16,15 @@ $_['text_recurring']	    = '<p><i class="fa fa-info-circle"></i> Повторе�
 $_['text_profile']			= 'Периодичность';
 $_['text_trial']			= 'Триал профиль';
 
+
+				$_['column_faq']  		= 'Ответ (можно HTML)';
+				$_['column_question']   = 'Вопрос';
+				$_['column_sort_order']	= 'Порядок сортировки';
+				$_['column_icon']     	= 'Fa-иконка';
+				$_['tab_faq']         	= 'FAQ';
+				$_['button_remove']     = 'Удалить';
+				$_['faq_name']     		= 'Название блока FAQ';
+			
 // Entry
 $_['entry_name']		    = 'Название';
 $_['entry_price']			= 'Цена';

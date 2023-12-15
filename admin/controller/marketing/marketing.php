@@ -1,8 +1,22 @@
 <?php
 class ControllerMarketingMarketing extends Controller {
+
+	public function quick_update() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_marketing_campaigns_status')) {
+			return $this->load->controller('marketing/aqe/marketing/quick_update');
+		} else {
+			$this->response->redirect($this->url->link('marketing/marketing', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+			
 	private $error = array();
 
 	public function index() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_marketing_campaigns_status')) {
+			return $this->load->controller('marketing/aqe/marketing');
+		}
+			
 		$this->load->language('marketing/marketing');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -38,6 +52,15 @@ class ControllerMarketingMarketing extends Controller {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_marketing_campaigns_status')) {
+			foreach ($this->config->get('aqe_marketing_campaigns') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -82,6 +105,15 @@ class ControllerMarketingMarketing extends Controller {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_marketing_campaigns_status')) {
+			foreach ($this->config->get('aqe_marketing_campaigns') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -101,6 +133,11 @@ class ControllerMarketingMarketing extends Controller {
 	}
 
 	public function delete() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_marketing_campaigns_status')) {
+			return $this->load->controller('marketing/aqe/marketing/delete');
+		}
+			
 		$this->load->language('marketing/marketing');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -128,6 +165,15 @@ class ControllerMarketingMarketing extends Controller {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_marketing_campaigns_status')) {
+			foreach ($this->config->get('aqe_marketing_campaigns') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -197,10 +243,28 @@ class ControllerMarketingMarketing extends Controller {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_marketing_campaigns_status')) {
+			foreach ($this->config->get('aqe_marketing_campaigns') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_marketing_campaigns_status')) {
+			foreach ($this->config->get('aqe_marketing_campaigns') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}
@@ -342,6 +406,15 @@ class ControllerMarketingMarketing extends Controller {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_marketing_campaigns_status')) {
+			foreach ($this->config->get('aqe_marketing_campaigns') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}
@@ -422,6 +495,15 @@ class ControllerMarketingMarketing extends Controller {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_marketing_campaigns_status')) {
+			foreach ($this->config->get('aqe_marketing_campaigns') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}

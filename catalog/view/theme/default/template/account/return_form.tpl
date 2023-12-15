@@ -1,6 +1,12 @@
 <?php echo $header; ?>
 
-<div class="container">
+<?php if ($tmdaccount_status==1) { ?>
+				<link href="catalog/view/theme/default/stylesheet/ele-style.css" rel="stylesheet">
+				<link href="catalog/view/theme/default/stylesheet/dashboard.css" rel="stylesheet">
+				<div class="container dashboard">
+				<?php } else { ?>
+				<div class="container">
+				<?php } ?>
   <!-- breadcrumb -->
   <ul class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
     <?php $ListItem_pos = 1; ?>
@@ -12,7 +18,13 @@
   <!-- breadcrumb -->
 </div>
 
-<div class="container">
+<?php if ($tmdaccount_status==1) { ?>
+				<link href="catalog/view/theme/default/stylesheet/ele-style.css" rel="stylesheet">
+				<link href="catalog/view/theme/default/stylesheet/dashboard.css" rel="stylesheet">
+				<div class="container dashboard">
+				<?php } else { ?>
+				<div class="container">
+				<?php } ?>
   <?php if ($error_warning) { ?>
   <div class="alert alert-danger">
     <div class="modal-msg__close alert__close">
@@ -194,4 +206,7 @@ $('.date').datetimepicker({
 	pickTime: false
 });
 //--></script>
+<style>
+			<?php echo $tmdaccount_customcss; ?>
+			</style>
 <?php echo $footer; ?>

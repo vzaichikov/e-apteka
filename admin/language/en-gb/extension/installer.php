@@ -12,6 +12,10 @@ $_['text_xml']             = 'Applying modifications!';
 $_['text_php']             = 'Running PHP!';
 $_['text_remove']          = 'Removing temporary files!';
 $_['text_clear']           = 'Success: You have cleared all temporary files!';
+//karapuz (no_ftp.ocmod.xml) 
+$_['text_upload_without_ftp'] = 'Upload Without FTP'; 
+$_['help_upload_without_ftp'] = 'When the checkbox is set, files from the archive will be unpacked to the store directory directly without connecting to it through FTP';
+///karapuz (no_ftp.ocmod.xml) 
 
 // Entry
 $_['entry_upload']         = 'Upload File';

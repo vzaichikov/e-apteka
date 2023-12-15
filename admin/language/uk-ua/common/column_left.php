@@ -31,6 +31,7 @@ $_['text_location'] = 'Місцезнаходження';
 $_['text_contact'] = 'Пошта';
 $_['text_marketing'] = 'Маркетинг';
 $_['text_menu'] = 'Меню';
+$_['text_seo_snippet']    = 'Сниппеты';
 $_['text_modification'] = 'Модифікатори';
 $_['text_manufacturer'] = 'Виробники';
 $_['text_option'] = 'Опції';

@@ -13,6 +13,15 @@
 <!DOCTYPE html>
 <html>
 	<head>
+
+				<?php if (is_array($opengraphs)) { ?>
+                <?php foreach ($opengraphs as $opengraph) { ?>
+                <?php if ($content = strip_tags(html_entity_decode($opengraph['content'], ENT_QUOTES, 'UTF-8'))) { ?>
+                <meta property="<?php echo $opengraph['meta'] ?>" content="<?php echo $content; ?>" />
+                <?php } ?>
+                <?php } ?>
+                <?php } ?>
+				
 		<title><?php echo $title; ?></title>
 		<meta charset="UTF-8" />
 		<base href="<?php echo $base; ?>" />
@@ -188,6 +197,10 @@
 			<?php echo $analytic; ?>
 		<?php } ?>
 		
+
+			<?php if ($hb_snippets_kg_enable == '1'){echo html_entity_decode($hb_snippets_kg_data);} ?>
+			<?php if ($hb_snippets_local_enable == 'y'){echo html_entity_decode($hb_snippets_local_snippet);} ?>
+			
 	</head>
 	
 	<?php

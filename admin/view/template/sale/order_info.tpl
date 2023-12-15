@@ -680,4 +680,237 @@
 		});
 	//--></script> 
 </div>
+
+					<!-- START Shipping Data -->
+					<style>
+						.btn-novaposhta {
+							color: #333;
+							background-color: #ff392e;
+							border-color: #ccc;
+						}
+						.btn-light-novaposhta {
+							color: #333;
+							background-color: #fff;
+							border-color: #ff392e;
+						}
+						.btn-ukrposhta {
+							color: #333;
+							background-color: #ffce2f;
+							border-color: #ccc;
+						}
+						.btn-light-ukrposhta {
+							color: #333;
+							background-color: #fff;
+							border-color: #ffce2f;
+						}
+					</style>
+					<!-- START Modal assignment CN to order -->
+					<div class="modal fade" id="assignment-cn-to-order" tabindex="-1" role="dialog" aria-labelledby="assignment-cn-to-order-label">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title" id="assignment-cn-to-order-label"><?php echo $heading_cn; ?></h4>
+								</div>
+								<div class="modal-body">
+									<div class="form-group clearfix">
+										<input type="hidden" name="cn_shipping_method" value="" id="cn_shipping_method" />
+										<label class="col-sm-2 control-label" for="cn_number"><?php echo $entry_cn_number; ?></label>
+										<div class="col-sm-10">
+											<input type="text" name="cn_number" value="" placeholder="<?php echo $entry_cn_number; ?>" id="cn_number" class="form-control" />
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary" onclick="assignmentCN();"><i class="fa fa-check"></i></button>
+									<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i></button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END Modal assignment CN to order -->
+
+					<script type="text/javascript"><!--
+						function deleteCN(shipping_method) {
+							var post_data = 'order_id=<?php echo $order_id; ?>';
+
+							$.ajax( {
+								url: 'index.php?route=extension/shipping/' + shipping_method + '/deleteCNFromOrder&token=<?php echo $token; ?>',
+								type: 'POST',
+								data: post_data,
+								dataType: 'json',
+								beforeSend: function () {
+									$('body').fadeTo('fast', 0.7).prepend('<div id="ocmax-loader" style="position: fixed; top: 50%;	left: 50%; z-index: 9999;"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>');
+								},
+								complete: function () {
+									var $alerts = $('.alert-danger, .alert-success');
+
+									if ($alerts.length !== 0) {
+										setTimeout(function() { $alerts.fadeOut() }, 5000);
+									}
+
+									$('body').fadeTo('fast', 1)
+									$('#ocmax-loader').remove();
+								},
+								success: function(json) {
+									if(json['error']) {
+										$('.container-fluid:eq(1)').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+									}
+
+									if (json['success']) {
+										$('.container-fluid:eq(1)').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+										setTimeout(function() {
+												location.reload();
+											},
+											2000
+										);
+									}
+
+									$('html, body').animate({ scrollTop: 0 }, 'slow');
+								},
+								error: function (jqXHR, textStatus, errorThrown) {
+									console.log(textStatus);
+								}
+							} );
+						}
+
+						function assignmentCN(shipping_method) {
+							if (shipping_method) {
+								$('#cn_shipping_method').val(shipping_method);
+							}
+
+							if ($('#assignment-cn-to-order').is(':hidden')) {
+								$('#assignment-cn-to-order').modal('show');
+							} else {
+								var post_data = 'order_id=<?php echo $order_id; ?>&cn_number=' + $('#cn_number').val();
+
+								$.ajax( {
+									url: 'index.php?route=extension/shipping/' + $('#cn_shipping_method').val() + '/addCNToOrder&token=<?php echo $token; ?>',
+									type: 'POST',
+									data: post_data,
+									dataType: 'json',
+									beforeSend: function () {
+										$('body').fadeTo('fast', 0.7).prepend('<div id="ocmax-loader" style="position: fixed; top: 50%;	left: 50%; z-index: 9999;"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>');
+									},
+									complete: function () {
+										var $alerts = $('.alert-danger, .alert-success');
+
+										if ($alerts.length !== 0) {
+											setTimeout(function() { $alerts.fadeOut() }, 5000);
+										}
+
+										$('body').fadeTo('fast', 1)
+										$('#ocmax-loader').remove();
+									},
+									success: function(json) {
+										if(json['error']) {
+											$('.container-fluid:eq(1)').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+										}
+
+										if (json['success']) {
+											$('.container-fluid:eq(1)').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+											setTimeout(function() {
+													location.reload();
+												},
+												2000
+											);
+										}
+
+										$('html, body').animate({ scrollTop: 0 }, 'slow');
+									},
+									error: function (jqXHR, textStatus, errorThrown) {
+										console.log(textStatus);
+									}
+								} );
+
+								$('#assignment-cn-to-order').modal('hide');
+							}
+						}
+
+						$(function() {
+							var post_data = 'selected[]=<?php echo $order_id; ?>';
+
+							$.ajax( {
+								url: 'index.php?route=sale/order/getShippingData&token=<?php echo $token; ?>',
+								type: 'POST',
+								data: post_data,
+								dataType: 'json',
+								success: function(json) {
+									if(json['error']) {
+										$('.container-fluid:eq(1)').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+										$('html, body').animate({ scrollTop: 0 }, 'slow');
+									}
+
+									if (json instanceof Object) {
+										for (var i in json['orders']) {
+											var
+												c       = 0,
+												f       = false,
+												b_class = '',
+												btn_o   = '<div class="btn-group"><button type="button" id="button-cn" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-text-o" aria-hidden="true"></i> <span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right">';
+
+											btn_o += '<li class="dropdown-header">' + json['heading_cn'] + '</li>';
+											btn_o += '<li role="separator" class="divider"></li>';
+
+											for (var ii in json['orders'][i]) {
+												c++;
+
+												btn_o += '<li class="dropdown-header">' + json['shipping_methods'][ii]['heading'] + '</li>';
+
+												if (json['orders'][i][ii]['create']) {
+													btn_o += '<li><a href="' + json['orders'][i][ii]['create']['href'] + '">' + json['orders'][i][ii]['create']['text'] + '</a></li>';
+												}
+
+												if (json['orders'][i][ii]['edit']) {
+													f = true;
+													btn_o += '<li><a href="' + json['orders'][i][ii]['edit']['href'] + '">' + json['orders'][i][ii]['edit']['text'] + '</a></li>';
+												}
+
+												if (json['orders'][i][ii]['delete']) {
+													f = true;
+													btn_o += '<li><a style="cursor: pointer;" onclick="deleteCN(\'' + ii + '\');">' + json['orders'][i][ii]['delete']['text'] + '</a></li>';
+												}
+
+												if (json['orders'][i][ii]['assignment']) {
+													btn_o += '<li><a style="cursor: pointer;" onclick="assignmentCN(\'' + ii + '\');">' + json['orders'][i][ii]['assignment']['text'] + '</a></li>';
+												}
+
+												btn_o += '<li role="separator" class="divider"></li>';
+
+												if (f) {
+													b_class = 'btn-' + ii;
+
+													continue;
+												} else {
+													b_class = 'btn-light-' + ii;
+												}
+											}
+
+											btn_o += '</ul></div> ';
+
+											$('div.container-fluid div.pull-right:last').prepend(btn_o);
+
+											if (c != 1) {
+												if (f) {
+													b_class = 'btn-info';
+												} else {
+													b_class = 'btn-default';
+												}
+											}
+
+											$('div.container-fluid div.pull-right #button-cn').addClass(b_class);
+										}
+									}
+								},
+								error: function (jqXHR, textStatus, errorThrown) {
+									console.log(textStatus);
+								}
+							} );
+						} );
+					//--></script>
+					<!-- END Shipping Data -->
+				
 <?php echo $footer; ?> 

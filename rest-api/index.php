@@ -242,7 +242,6 @@ $restApp->post('/drugstores/', function (Request $request, Response $response, a
     }       
 
     $fields = [
-        'drugstoreClosed',
         'drugstoreName_RU',
         'drugstoreName_UA',
         'drugstoreAddress_RU',
@@ -276,19 +275,14 @@ $restApp->patch('/drugstores/{id}', function (Request $request, Response $respon
     }       
 
     $fields = [
-        'drugstoreClosed', 
-        'drugstoreName_RU', 
-        'drugstoreName_UA', 
-        'drugstoreAddress_RU', 
-        'drugstoreAddress_UA', 
-        'drugstoreTelephone', 
-        'drugstoreFax', 
-        'drugstoreGeoCode',         
-        'drugstoreGmapsLink', 
-        'drugstoreOpen', 
-        'drugstoreOpenStruct', 
-        'drugstoreSortOrder', 
-        'drugstoreCanSellDrugs'
+        'drugstoreName_RU',
+        'drugstoreName_UA',
+        'drugstoreAddress_RU',
+        'drugstoreAddress_UA',
+        'drugstoreGeoCode',
+        'drugstoreUUID',
+        'drugstoreOpen',
+        'drugstoreBrand'
     ];
 
     foreach ($fields as $field){

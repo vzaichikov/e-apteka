@@ -3,6 +3,9 @@ class ControllerAccountReturn extends Controller {
 	private $error = array();
 
 	public function index() {
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		if (!$this->customer->isLogged()) {
 			$this->session->data['redirect'] = $this->url->link('account/return', '', true);
 
@@ -538,6 +541,9 @@ class ControllerAccountReturn extends Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		$this->response->setOutput($this->load->view('account/return_form', $data));
 	}
 
@@ -627,6 +633,9 @@ class ControllerAccountReturn extends Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		$this->response->setOutput($this->load->view('common/success', $data));
 	}
 }

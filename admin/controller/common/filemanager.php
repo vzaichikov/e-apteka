@@ -1,5 +1,23 @@
 <?php
 class ControllerCommonFileManager extends Controller {
+
+	public function image() {
+		$this->load->model('tool/image');
+
+		if (isset($this->request->get['size'])) {
+			$width = $height = (int)$this->request->get['size'];
+		} else if (isset($this->request->get['width']) && isset($this->request->get['height'])) {
+			$width = (int)$this->request->get['width'];
+			$height = (int)$this->request->get['height'];
+		} else {
+			$width = $height = 100;
+		}
+
+		if (isset($this->request->get['image'])) {
+			$this->response->setOutput($this->model_tool_image->resize(html_entity_decode($this->request->get['image'], ENT_QUOTES, 'UTF-8'), $width, $height));
+		}
+	}
+			
 	public function index() {
 		$this->load->language('common/filemanager');
 

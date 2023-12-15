@@ -1,8 +1,38 @@
 <?php
 class ControllerCatalogReview extends Controller {
+
+	public function autocomplete() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_reviews_status')) {
+			return $this->load->controller('catalog/aqe/review/autocomplete');
+		} else {
+			$this->response->redirect($this->url->link('catalog/review', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+
+	public function refresh_data() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_reviews_status')) {
+			return $this->load->controller('catalog/aqe/review/refresh_data');
+		} else {
+			$this->response->redirect($this->url->link('catalog/review', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+
+	public function quick_update() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_reviews_status')) {
+			return $this->load->controller('catalog/aqe/review/quick_update');
+		} else {
+			$this->response->redirect($this->url->link('catalog/review', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+			
 	private $error = array();
 
 	public function index() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_reviews_status')) {
+			return $this->load->controller('catalog/aqe/review');
+		}
+			
 		$this->load->language('catalog/review');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -99,6 +129,15 @@ class ControllerCatalogReview extends Controller {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_reviews_status')) {
+			foreach ($this->config->get('aqe_catalog_reviews') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -147,6 +186,15 @@ class ControllerCatalogReview extends Controller {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_reviews_status')) {
+			foreach ($this->config->get('aqe_catalog_reviews') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -166,6 +214,11 @@ class ControllerCatalogReview extends Controller {
 	}
 
 	public function delete() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_reviews_status')) {
+			return $this->load->controller('catalog/aqe/review/delete');
+		}
+			
 		$this->load->language('catalog/review');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -197,6 +250,15 @@ class ControllerCatalogReview extends Controller {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_reviews_status')) {
+			foreach ($this->config->get('aqe_catalog_reviews') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -276,6 +338,15 @@ class ControllerCatalogReview extends Controller {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_reviews_status')) {
+			foreach ($this->config->get('aqe_catalog_reviews') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}
@@ -432,6 +503,15 @@ class ControllerCatalogReview extends Controller {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_reviews_status')) {
+			foreach ($this->config->get('aqe_catalog_reviews') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}
@@ -539,6 +619,15 @@ class ControllerCatalogReview extends Controller {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_reviews_status')) {
+			foreach ($this->config->get('aqe_catalog_reviews') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}

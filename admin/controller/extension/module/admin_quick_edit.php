@@ -1,4 +1,5 @@
 <?php
+define('MOD_ACTIVE',                true);
 	define('EXTENSION_NAME',            'Admin Quick Edit PRO');
 	define('EXTENSION_VERSION',         '5.6.0');
 	define('EXTENSION_ID',              '3805');

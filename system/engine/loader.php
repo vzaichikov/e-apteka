@@ -46,7 +46,7 @@
 				$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $route);
 				
 				if (is_file($file)) {
-					include_once($file);
+					include_once(modification($file));
 					
 					$proxy = new Proxy();
 					
@@ -105,7 +105,7 @@
 			$class = str_replace('/', '\\', $route);
 			
 			if (is_file($file)) {
-				include_once($file);
+				include_once(modification($file));
 				
 				$this->registry->set(basename($route), new $class($this->registry));
 				} else {
@@ -117,7 +117,7 @@
 			$file = DIR_SYSTEM . 'helper/' . preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$route) . '.php';
 			
 			if (is_file($file)) {
-				include_once($file);
+				include_once(modification($file));
 				} else {
 				throw new \Exception('Error: Could not load helper ' . $route . '!');
 			}
@@ -162,7 +162,7 @@
 					$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', substr($route, 0, strrpos($route, '/')));
 					
 					if (is_file($file)) {
-						include_once($file);
+						include_once(modification($file));
 						
 						$model[$route] = new $class($registry);
 						} else {

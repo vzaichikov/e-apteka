@@ -1,6 +1,9 @@
 <?php
 class ControllerAccountLogout extends Controller {
 	public function index() {
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		if ($this->customer->isLogged()) {
 			$this->customer->logout();
 
@@ -51,6 +54,9 @@ class ControllerAccountLogout extends Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		$this->response->setOutput($this->load->view('common/success', $data));
 	}
 }

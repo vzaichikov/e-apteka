@@ -126,6 +126,24 @@
 				$this->document->setTitle($category_info['meta_title']);
 				$this->document->setDescription($category_info['meta_description']);
 				$this->document->setKeywords($category_info['meta_keyword']);						
+
+			if ($this->config->get('hb_snippets_og_enable') == '1'){
+			$hb_snippets_ogc = $this->config->get('hb_snippets_ogc');
+			if (strlen($hb_snippets_ogc) > 4){
+				$ogc_name = $category_info['name'];
+				$hb_snippets_ogc = str_replace('{name}',$ogc_name,$hb_snippets_ogc);
+			}else{
+				$hb_snippets_ogc = $category_info['name'];
+			}
+			
+				$this->document->setOpengraph('og:title', $hb_snippets_ogc);
+				$this->document->setOpengraph('og:type', 'website');
+				$this->document->setOpengraph('og:site_name', $this->config->get('config_name'));
+				$this->document->setOpengraph('og:image', HTTP_SERVER . 'image/' . $category_info['image']);
+				$this->document->setOpengraph('og:url', $this->url->link('product/category', 'path=' . $this->request->get['path']));
+				$this->document->setOpengraph('og:description', $category_info['meta_description']);
+			}
+			
 				
 				$data['heading_title'] = trim($category_info['seo_name'])?$category_info['seo_name']:$category_info['name'];
 				
@@ -495,6 +513,10 @@
 					$data['prev_page'] = false;
 				}
 				
+
+				$data['hobofaq'] = $this->load->controller('hobotix/hobofaq');
+				$data['description'] .= '<div class="row"><div class="col-xs-12">' . $data['hobofaq'] . '</div></div>';
+			
 				$data['sort'] = $sort;
 				$data['order'] = $order;
 				$data['limit'] = $limit;
@@ -659,6 +681,7 @@
 				$data['content_bottom'] = $this->load->controller('common/content_bottom');
 				$data['footer'] = $this->load->controller('common/footer');
 				$data['header'] = $this->load->controller('common/header');
+$data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
 				
 				
 				$banner = $category_info['banner'];
@@ -729,6 +752,7 @@
 				$data['content_bottom'] = $this->load->controller('common/content_bottom');
 				$data['footer'] = $this->load->controller('common/footer');
 				$data['header'] = $this->load->controller('common/header');
+$data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
 				
 				$this->response->setOutput($this->load->view('error/not_found', $data));
 			}

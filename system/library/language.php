@@ -35,9 +35,9 @@ class Language {
 		$old_file = DIR_LANGUAGE . 'english/' . str_replace('extension/', '', $filename) . '.php';
 		
 		if (is_file($file)) {
-			require($file);
+			require(modification($file));
 		} elseif (is_file($old_file)) {
-			require($old_file);
+			require(modification($old_file));
 		}
 
 		$file = DIR_LANGUAGE . $this->default . '/' . $filename . '.php';
@@ -46,9 +46,9 @@ class Language {
 		$old_file = DIR_LANGUAGE . $this->default . '/' . str_replace('extension/', '', $filename) . '.php';
 		
 		if (is_file($file)) {
-			require($file);
+			require(modification($file));
 		} elseif (is_file($old_file)) {
-			require($old_file);
+			require(modification($old_file));
 		}
 
 		$file = DIR_LANGUAGE . $this->directory . '/' . $filename . '.php';
@@ -57,9 +57,9 @@ class Language {
 		$old_file = DIR_LANGUAGE . $this->directory . '/' . str_replace('extension/', '', $filename) . '.php';
 		
 		if (is_file($file)) {
-			require($file);
+			require(modification($file));
 		} elseif (is_file($old_file)) {
-			require($old_file);
+			require(modification($old_file));
 		}
 
 		$this->data = array_merge($this->data, $_);

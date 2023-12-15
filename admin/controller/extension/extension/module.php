@@ -3,6 +3,7 @@ class ControllerExtensionExtensionModule extends Controller {
 	private $error = array();
 
 	public function index() {
+      if ($this->config->get('aqe_installed')) { define("AQE_STATUS", $this->config->get('aqe_status')); }
 		$this->load->language('extension/extension/module');
 
 		$this->load->model('extension/extension');

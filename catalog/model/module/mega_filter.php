@@ -218,6 +218,8 @@ class ModelModuleMegaFilter extends Model {
 			$data['header'] .= '<div id="mfilter-json" style="display:none">' . base64_encode( $data['mfilter_json'] ) . '</div>';
 		}
 		
+foreach (array('content_top', 'content_bottom', 'column_left', 'column_right') as $_index)
+        if (!isset($data[$_index])) $data[$_index] = '';
 		$data['content_top'] .= '<div id="mfilter-content-container">';
 		$data['content_bottom'] = '</div>' . $data['content_bottom'];
 					

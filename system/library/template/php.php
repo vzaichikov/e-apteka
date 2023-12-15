@@ -17,7 +17,7 @@
 				
 				if (!is_null(modification($file))){
 					
-					require($file);
+					require(modification($file));
 					
 				}
 				

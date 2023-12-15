@@ -6,9 +6,19 @@ class ModelCatalogInformation extends Model {
 		$information_id = $this->db->getLastId();
 
 		foreach ($data['information_description'] as $language_id => $value) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "information_description SET information_id = '" . (int)$information_id . "', language_id = '" . (int)$language_id . "', title = '" . $this->db->escape($value['title']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
+			$this->db->query("INSERT INTO " . DB_PREFIX . "information_description SET information_id = '" . (int)$information_id . "', language_id = '" . (int)$language_id . "', title = '" . $this->db->escape($value['title']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "'");
 		}
 
+
+				
+				$this->db->query("DELETE FROM " . DB_PREFIX . "information_faq WHERE information_id = '" . (int)$information_id . "'");
+				
+				if (isset($data['information_faq'])) {
+				foreach ($data['information_faq'] as $information_faq) {
+				$this->db->query("INSERT INTO " . DB_PREFIX . "information_faq SET information_id = '" . (int)$information_id . "', `question` = '" . serialize($information_faq['question']) . "', `faq` = '" . serialize($information_faq['faq']) . "', `icon` = '" . $this->db->escape($information_faq['icon']) . "', `sort_order` = '" . (int)$information_faq['sort_order'] . "'");
+				}
+				} 
+			
 		if (isset($data['information_store'])) {
 			foreach ($data['information_store'] as $store_id) {
 				$this->db->query("INSERT INTO " . DB_PREFIX . "information_to_store SET information_id = '" . (int)$information_id . "', store_id = '" . (int)$store_id . "'");
@@ -36,11 +46,21 @@ class ModelCatalogInformation extends Model {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "information_description WHERE information_id = '" . (int)$information_id . "'");
 
 		foreach ($data['information_description'] as $language_id => $value) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "information_description SET information_id = '" . (int)$information_id . "', language_id = '" . (int)$language_id . "', title = '" . $this->db->escape($value['title']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
+			$this->db->query("INSERT INTO " . DB_PREFIX . "information_description SET information_id = '" . (int)$information_id . "', language_id = '" . (int)$language_id . "', title = '" . $this->db->escape($value['title']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "'");
 		}
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "information_to_store WHERE information_id = '" . (int)$information_id . "'");
 
+
+				
+				$this->db->query("DELETE FROM " . DB_PREFIX . "information_faq WHERE information_id = '" . (int)$information_id . "'");
+				
+				if (isset($data['information_faq'])) {
+				foreach ($data['information_faq'] as $information_faq) {
+				$this->db->query("INSERT INTO " . DB_PREFIX . "information_faq SET information_id = '" . (int)$information_id . "', `question` = '" . serialize($information_faq['question']) . "', `faq` = '" . serialize($information_faq['faq']) . "', `icon` = '" . $this->db->escape($information_faq['icon']) . "', `sort_order` = '" . (int)$information_faq['sort_order'] . "'");
+				}
+				} 
+			
 		if (isset($data['information_store'])) {
 			foreach ($data['information_store'] as $store_id) {
 				$this->db->query("INSERT INTO " . DB_PREFIX . "information_to_store SET information_id = '" . (int)$information_id . "', store_id = '" . (int)$store_id . "'");
@@ -142,13 +162,22 @@ class ModelCatalogInformation extends Model {
 				'description'      => $result['description'],
 				'meta_title'       => $result['meta_title'],
 				'meta_description' => $result['meta_description'],
-				'meta_keyword'     => $result['meta_keyword']
+				
+				'meta_keyword'     => $result['meta_keyword'],
+				'faq_name'     => $result['faq_name']
+			
 			);
 		}
 
 		return $information_description_data;
 	}
 
+
+				public function getInformationFaq($information_id) {
+				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "information_faq WHERE information_id = '" . (int)$information_id . "' ORDER BY sort_order ASC");
+				return $query->rows;
+				}
+			
 	public function getInformationStores($information_id) {
 		$information_store_data = array();
 

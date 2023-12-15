@@ -673,6 +673,11 @@
 				
 				// If order status is 0 then becomes greater than 0 send main html email
 				if (!$order_info['order_status_id'] && $order_status_id) {
+
+                $this->load->model('tool/simplecustom');
+
+                $customInfo = $this->model_tool_simplecustom->getCustomFields('order', $order_info['order_id'], $order_info['language_code']);
+            
 					// Check for any downloadable products
 					$download_status = false;
 					
@@ -706,6 +711,11 @@
 					$data = array();
 					
 					$data['title'] = sprintf($language->get('text_new_subject'), $order_info['store_name'], $order_id);
+
+                $this->load->model('tool/simplecustom');
+
+                $customInfo = $this->model_tool_simplecustom->getCustomFields('order', $order_info['order_id'], $order_info['language_code']);
+            
 					
 					$data['text_greeting'] = sprintf($language->get('text_new_greeting'), $order_info['store_name']);
 					$data['text_link'] = $language->get('text_new_link');
@@ -788,6 +798,23 @@
 					'country'   => $order_info['payment_country']
 					);
 					
+
+                $find[] = '{company_id}';
+                $find[] = '{tax_id}';
+                $replace['company_id'] = isset($order_info['payment_company_id']) ? $order_info['payment_company_id'] : '';
+                $replace['tax_id'] = isset($order_info['payment_tax_id']) ? $order_info['payment_tax_id'] : '';
+
+                foreach($customInfo as $id => $value) {
+                    if (strpos($id, 'payment_') === 0) {
+                        $id = str_replace('payment_', '', $id);
+                        $find[] = '{'.$id.'}';
+                        $replace[$id] = $value;
+                    } elseif (strpos($id, 'shipping_') === false) {
+                        $find[] = '{'.$id.'}';
+                        $replace[$id] = $value;
+                    }
+                }
+            
 					$data['payment_address'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
 					
 					if ($order_info['shipping_address_format']) {
@@ -822,6 +849,23 @@
 					'country'   => $order_info['shipping_country']
 					);
 					
+
+                $find[] = '{company_id}';
+                $find[] = '{tax_id}';
+                $replace['company_id'] = isset($order_info['shipping_company_id']) ? $order_info['shipping_company_id'] : '';
+                $replace['tax_id'] = isset($order_info['shipping_tax_id']) ? $order_info['shipping_tax_id'] : '';
+
+                foreach($customInfo as $id => $value) {
+                    if (strpos($id, 'shipping_') === 0) {
+                        $id = str_replace('shipping_', '', $id);
+                        $find[] = '{'.$id.'}';
+                        $replace[$id] = $value;
+                    } elseif (strpos($id, 'payment_') === false) {
+                        $find[] = '{'.$id.'}';
+                        $replace[$id] = $value;
+                    }
+                }
+            
 					$data['shipping_address'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
 					
 					$this->load->model('tool/upload');

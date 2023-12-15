@@ -1213,6 +1213,21 @@
 						<div class="tab-pane" id="tab-server">
 							<fieldset>
 								<legend><?php echo $text_general; ?></legend>
+
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="admin_pass"><span data-toggle="tooltip" title="<?php echo $help_pass; ?>"><?php echo $entry_pass; ?></label>
+                <div class="col-sm-10">
+                  <input type="text" name="config_pass[admin_pass]" value="<?php if (isset($config_pass['admin_pass'])) echo $config_pass['admin_pass']; ?>" id="admin_pass" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="admin_key"><span data-toggle="tooltip" title="<?php echo $help_key; ?>"><?php echo $entry_key; ?></label>
+                <div class="col-sm-10">
+                  <input type="text" name="config_pass[admin_key]" value="<?php if (isset($config_pass['admin_key'])) echo $config_pass['admin_key']; ?>" id="admin_key" class="form-control" />
+                </div>
+              </div>
+			
 								<div class="form-group">
 									<label class="col-sm-2 control-label"><span data-toggle="tooltip" title="<?php echo $help_maintenance; ?>"><?php echo $entry_maintenance; ?></span></label>
 									<div class="col-sm-10">

@@ -55,6 +55,10 @@ class ControllerCommonHeader extends Controller {
 			// Orders
 			$this->load->model('sale/order');
 
+				 $data['clear_cache'] = $this->url->link('tool/clear_cache', 'token=' . $this->session->data['token'], 'SSL');
+				 $data['clear_cache_premission'] = $this->user->hasPermission('modify', 'tool/clear_cache');
+				
+
 			// Processing Orders
 			$data['processing_status_total'] = $this->model_sale_order->getTotalOrders(array('filter_order_status' => implode(',', $this->config->get('config_processing_status'))));
 			$data['processing_status'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'] . '&filter_order_status=' . implode(',', $this->config->get('config_processing_status')), true);

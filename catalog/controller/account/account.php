@@ -1,6 +1,13 @@
 <?php
 	class ControllerAccountAccount extends Controller {
 		public function index() {
+
+				if($this->config->get('tmdaccount_status')){
+				$this->response->redirect($this->url->link('account/tmdaccount','',true));
+				}
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 			if (!$this->customer->isLogged()) {
 				$this->session->data['redirect'] = $this->url->link('account/account', '', true);
 				

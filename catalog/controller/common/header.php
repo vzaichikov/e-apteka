@@ -158,6 +158,7 @@
 			$data['hreflangs'] = $this->document->getHrefLangs();
 			
 			$this->load->language('common/header');
+$data['store_url'] = HTTPS_SERVER;
 			
 			$data['text_home'] = $this->language->get('text_home');
 			$data['text_callcenter'] = $this->language->get('text_callcenter');

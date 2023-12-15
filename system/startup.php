@@ -7,6 +7,8 @@ if (version_compare(phpversion(), '5.4.0', '<') == true) {
 	exit('PHP5.4+ Required');
 }
 
+require_once(DIR_SYSTEM . 'functions.php');
+
 // Magic Quotes Fix
 if (ini_get('magic_quotes_gpc')) {
 	function clean($data) {
@@ -95,10 +97,6 @@ if (is_file(DIR_SYSTEM . '../vendor/autoload.php')) {
 }
 
 $CrawlerDetect = new \Jaybizzle\CrawlerDetect\CrawlerDetect;
-if (!$CrawlerDetect->isCrawler()){
-	$html = file_get_contents(dirname(__FILE__) . '/../index.html');
-	//echo ($html); exit();
-}
 
 function library($class) {
 	$file = DIR_SYSTEM . 'library/' . str_replace('\\', '/', strtolower($class)) . '.php';

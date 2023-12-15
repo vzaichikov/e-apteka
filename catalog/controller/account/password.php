@@ -3,6 +3,9 @@ class ControllerAccountPassword extends Controller {
 	private $error = array();
 
 	public function index() {
+
+			$data['tmdaccount_customcss'] = $this->config->get('tmdaccount_custom_css');
+			$data['tmdaccount_status'] = $this->config->get('tmdaccount_status');
 		if (!$this->customer->isLogged()) {
 			$this->session->data['redirect'] = $this->url->link('account/password', '', true);
 

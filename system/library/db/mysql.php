@@ -17,6 +17,13 @@ final class MySQL {
 		mysql_query("SET CHARACTER SET utf8", $this->connection);
 		mysql_query("SET CHARACTER_SET_CONNECTION=utf8", $this->connection);
 		mysql_query("SET SQL_MODE = ''", $this->connection);
+
+		if (property_exists($this, 'link')) {
+			mysql_query("SET SESSION group_concat_max_len = 65535", $this->link);
+		} else {
+			mysql_query("SET SESSION group_concat_max_len = 65535", $this->connection);
+		}
+			
 	}
 
 	public function query($sql) {

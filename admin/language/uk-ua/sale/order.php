@@ -2,6 +2,21 @@
 // Heading
 $_['heading_title'] = 'Замовлення';
 
+
+					/* START Shipping Data */
+					$_['heading_cn'] 			= 'Товарно-транспортна накладна';
+					$_['heading_cn_novaposhta'] = 'Нова Пошта';
+					$_['heading_cn_ukrposhta']  = 'Укрпошта';
+
+					$_['entry_cn_number'] 		= 'Номер накладної';
+
+					$_['text_cn_list'] 			= 'Список накладних';
+					$_['text_cn_create'] 		= 'Створити';
+					$_['text_cn_edit'] 			= 'Редагувати';
+					$_['text_cn_delete'] 		= 'Видалити';
+					$_['text_cn_assignment']  	= 'Присвоїти номер';
+					/* END Shipping Data */
+				
 // Text
 $_['text_success'] = 'Замовлення успішно змінено!';
 $_['text_list'] = 'Замовлення';

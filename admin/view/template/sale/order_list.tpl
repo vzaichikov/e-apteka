@@ -11,6 +11,9 @@
 				
 
 
+
+		<?php if ($aqe_enabled) { ?><label for="batch_edit" class="hidden" id="batch-edit-container"><input type="checkbox" id="batch-edit"<?php echo ($batch_edit) ? ' checked' : ''; ?>> <?php echo $text_batch_edit; ?></label><?php } ?>
+			
 				<button type="submit" id="button-shipping" form="form-order" formaction="<?php echo $shipping; ?>" formtarget="_blank" data-toggle="tooltip" title="<?php echo $button_shipping_print; ?>" class="btn btn-info"><i class="fa fa-truck"></i></button>
 				<button type="submit" id="button-invoice" form="form-order" formaction="<?php echo $invoice; ?>" formtarget="_blank" data-toggle="tooltip" title="<?php echo $button_invoice_print; ?>" class="btn btn-info"><i class="fa fa-print"></i></button>
 				<a href="<?php echo $add; ?>" data-toggle="tooltip" title="<?php echo $button_add; ?>" class="btn btn-primary"><i class="fa fa-plus"></i></a>
@@ -35,6 +38,14 @@
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 			</div>
 		<?php } ?>
+
+		<?php if ($aqe_enabled) { ?>
+  <div class="alerts">
+	<div class="container-fluid" id="alerts">
+	</div>
+  </div>
+		<?php } ?>
+			
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title"><i class="fa fa-list"></i> <?php echo $text_list; ?></h3>
@@ -175,7 +186,7 @@
 						<table class="table table-bordered table-hover">
 							<thead>
 								<tr>
-									<td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+									<td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked).trigger('change');" /></td>
 									<td class="text-right"><?php if ($sort == 'o.order_id') { ?>
 										<a href="<?php echo $sort_order; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_order_id; ?></a>
 										<?php } else { ?>
@@ -485,4 +496,260 @@
 			pickTime: false
 		});
 	//--></script></div>
+
+					<!-- START Shipping Data -->
+					<style>
+						.btn-novaposhta {
+							color: #333;
+							background-color: #ff392e;
+							border-color: #ccc;
+						}
+						.btn-light-novaposhta {
+							color: #333;
+							background-color: #fff;
+							border-color: #ff392e;
+						}
+						.btn-ukrposhta {
+							color: #333;
+							background-color: #ffce2f;
+							border-color: #ccc;
+						}
+						.btn-light-ukrposhta {
+							color: #333;
+							background-color: #fff;
+							border-color: #ffce2f;
+						}
+					</style>
+					<!-- START Modal assignment CN to order -->
+					<div class="modal fade" id="assignment-cn-to-order" tabindex="-1" role="dialog" aria-labelledby="assignment-cn-to-order-label">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title" id="assignment-cn-to-order-label"><?php echo $heading_cn; ?></h4>
+								</div>
+								<div class="modal-body">
+									<div class="form-group clearfix">
+										<input type="hidden" name="cn_order_id" value="" id="cn_order_id" />
+										<input type="hidden" name="cn_shipping_method" value="" id="cn_shipping_method" />
+										<label class="col-sm-2 control-label" for="cn_number"><?php echo $entry_cn_number; ?></label>
+										<div class="col-sm-10">
+											<input type="text" name="cn_number" value="" placeholder="<?php echo $entry_cn_number; ?>" id="cn_number" class="form-control" />
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary" onclick="assignmentCN();"><i class="fa fa-check"></i></button>
+									<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i></button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END Modal assignment CN to order -->
+
+					<script type="text/javascript"><!--
+						function deleteCN(self, shipping_method) {
+							var post_data = 'order_id=' + $(self).parents('tr').find('input[name^="selected"]').val();
+
+							$.ajax( {
+								url: 'index.php?route=extension/shipping/' + shipping_method + '/deleteCNFromOrder&token=<?php echo $token; ?>',
+								type: 'POST',
+								data: post_data,
+								dataType: 'json',
+								beforeSend: function () {
+									$('body').fadeTo('fast', 0.7).prepend('<div id="ocmax-loader" style="position: fixed; top: 50%;	left: 50%; z-index: 9999;"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>');
+								},
+								complete: function () {
+									var $alerts = $('.alert-danger, .alert-success');
+
+									if ($alerts.length !== 0) {
+										setTimeout(function() { $alerts.fadeOut() }, 5000);
+									}
+
+									$('body').fadeTo('fast', 1)
+									$('#ocmax-loader').remove();
+								},
+								success: function(json) {
+									if(json['error']) {
+										$('.container-fluid:eq(1)').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+									}
+
+									if (json['success']) {
+										$('.container-fluid:eq(1)').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+										setTimeout(function() {
+												location.reload();
+											},
+											2000
+										);
+									}
+
+									$('html, body').animate({ scrollTop: 0 }, 'slow');
+								},
+								error: function (jqXHR, textStatus, errorThrown) {
+									console.log(textStatus);
+								}
+							} );
+						}
+
+						function assignmentCN(self, shipping_method) {
+							if (typeof(self) !== 'undefined') {
+								$('#cn_order_id').val($(self).parents('tr').find('input[name^="selected"]').val());
+							}
+
+							if (shipping_method) {
+								$('#cn_shipping_method').val(shipping_method);
+							}
+
+							if ($('#assignment-cn-to-order').is(':hidden')) {
+								$('#assignment-cn-to-order').modal('show');
+							} else {
+								var post_data = 'order_id=' + $('#cn_order_id').val() + '&cn_number=' + $('#cn_number').val();
+
+								$.ajax( {
+									url: 'index.php?route=extension/shipping/' + $('#cn_shipping_method').val() + '/addCNToOrder&token=<?php echo $token; ?>',
+									type: 'POST',
+									data: post_data,
+									dataType: 'json',
+									beforeSend: function () {
+										$('body').fadeTo('fast', 0.7).prepend('<div id="ocmax-loader" style="position: fixed; top: 50%;	left: 50%; z-index: 9999;"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>');
+									},
+									complete: function () {
+										var $alerts = $('.alert-danger, .alert-success');
+
+										if ($alerts.length !== 0) {
+											setTimeout(function() { $alerts.fadeOut() }, 5000);
+										}
+
+										$('body').fadeTo('fast', 1)
+										$('#ocmax-loader').remove();
+									},
+									success: function(json) {
+										if(json['error']) {
+											$('.container-fluid:eq(1)').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+										}
+
+										if (json['success']) {
+											$('.container-fluid:eq(1)').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+											setTimeout(function() {
+													location.reload();
+												},
+												2000
+											);
+										}
+
+										$('html, body').animate({ scrollTop: 0 }, 'slow');
+									},
+									error: function (jqXHR, textStatus, errorThrown) {
+										console.log(textStatus);
+									}
+								} );
+
+								$('#assignment-cn-to-order').modal('hide');
+							}
+						}
+
+						$(function() {
+							var post_data = $('input[name^="selected"]');
+
+							$.ajax( {
+								url: 'index.php?route=sale/order/getShippingData&token=<?php echo $token; ?>',
+								type: 'POST',
+								data: post_data,
+								dataType: 'json',
+								success: function(json) {
+									if(json['error']) {
+										$('.container-fluid:eq(1)').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+										$('html, body').animate({ scrollTop: 0 }, 'slow');
+									}
+
+									if (json instanceof Object) {
+										if (json['shipping_methods']) {
+											var btn_l = '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list-ul"></i> <span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right">';
+
+											for (var i in json['shipping_methods']) {
+												btn_l += '<li class="dropdown-header">' + json['shipping_methods'][i]['heading'] + '</li>';
+
+												if (json['shipping_methods'][i]['cn_list']) {
+													btn_l += '<li><a href="' + json['shipping_methods'][i]['cn_list']['href'] + '">' + json['shipping_methods'][i]['cn_list']['text'] + '</a></li>';
+												}
+
+												btn_l += '<li role="separator" class="divider"></li>';
+											}
+
+											btn_l += '</ul></div> ';
+
+											$('div.container-fluid div.pull-right:last').prepend(btn_l);
+										}
+
+										for (var i in json['orders']) {
+											var
+												c       = 0,
+												f       = false,
+												b_class = '',
+												btn_o   = '<div class="btn-group"><button type="button" id="button-cn-' + i + '" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-text-o" aria-hidden="true"></i> <span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right">';
+
+											btn_o += '<li class="dropdown-header">' + json['heading_cn'] + '</li>';
+											btn_o += '<li role="separator" class="divider"></li>';
+
+											for (var ii in json['orders'][i]) {
+												c++;
+
+												btn_o += '<li class="dropdown-header">' + json['shipping_methods'][ii]['heading'] + '</li>';
+
+												if (json['orders'][i][ii]['create']) {
+													btn_o += '<li><a href="' + json['orders'][i][ii]['create']['href'] + '">' + json['orders'][i][ii]['create']['text'] + '</a></li>';
+												}
+
+												if (json['orders'][i][ii]['edit']) {
+													f = true;
+													btn_o += '<li><a href="' + json['orders'][i][ii]['edit']['href'] + '">' + json['orders'][i][ii]['edit']['text'] + '</a></li>';
+												}
+
+												if (json['orders'][i][ii]['delete']) {
+													f = true;
+													btn_o += '<li><a style="cursor: pointer;" onclick="deleteCN(this, \'' + ii + '\');">' + json['orders'][i][ii]['delete']['text'] + '</a></li>';
+												}
+
+												if (json['orders'][i][ii]['assignment']) {
+													btn_o += '<li><a style="cursor: pointer;" onclick="assignmentCN(this, \'' + ii + '\');">' + json['orders'][i][ii]['assignment']['text'] + '</a></li>';
+												}
+
+												btn_o += '<li role="separator" class="divider"></li>';
+
+												if (f) {
+													b_class = 'btn-' + ii;
+
+													continue;
+												} else {
+													b_class = 'btn-light-' + ii;
+												}
+											}
+
+											btn_o += '</ul></div> ';
+
+											$('input[value="' + i + '"]').parents('tr').find('td:last').prepend(btn_o);
+
+											if (c != 1) {
+												if (f) {
+													b_class = 'btn-info';
+												} else {
+													b_class = 'btn-default';
+												}
+											}
+
+											$('input[value="' + i + '"]').parents('tr').find('[id^="button-cn"]').addClass(b_class);
+										}
+									}
+								},
+								error: function (jqXHR, textStatus, errorThrown) {
+									console.log(textStatus);
+								}
+							} );
+						} );
+					//--></script>
+					<!-- END Shipping Data -->
+    			
 	<?php echo $footer; ?>												

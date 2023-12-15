@@ -49,6 +49,28 @@
 		<?php foreach ($scripts as $script) { ?>
 			<script type="text/javascript" src="<?php echo $script; ?>"></script>
 		<?php } ?>
+<script type="text/javascript">
+			$(document).ready(function() {
+				$('a.button-clear-cache').click(function(e) {
+					let $this = $('a.button-clear-cache');
+					e.preventDefault();		
+					$.ajax({
+						url: $(this).attr('href'),
+						type: 'POST',
+						data: {push: 1},
+						dataType: 'json',
+     					beforeSend: function(){
+							$this.children('i').removeClass('fa-trash').addClass('fa-spinner fa-spin');	
+						},
+						success: function(status){
+							if(status){
+							   $this.children('i').removeClass('fa-spinner fa-spin').addClass('fa-trash');														   
+							}
+						}	
+					});
+				});
+			});
+		</script>
 	</head>
 	<body>
 		<div id="container">
@@ -76,6 +98,7 @@
 						}
 					//--></script>
 					<ul class="nav pull-right">
+<style>a.button-clear-cache{color:#fff!important;} a.button-clear-cache:hover{background-color: #f56b6b!important;}}</style><?php if ($clear_cache_premission) { ?><li><a class="button-clear-cache btn-warning" style="color:#fff;" href="<?php echo $clear_cache; ?>"><i class="fa fa-trash fa-lg"></i> Сбросить кэш</a></li><?php } ?>
 						<? /*
 							<li class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown">

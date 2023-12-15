@@ -1,8 +1,46 @@
 <?php
 class ControllerCatalogOption extends Controller {
+
+	public function autocomplete2() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_options_status')) {
+			return $this->load->controller('catalog/aqe/option/autocomplete2');
+		} else {
+			$this->response->redirect($this->url->link('catalog/option', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+
+	public function load_popup() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_options_status')) {
+			return $this->load->controller('catalog/aqe/option/load_popup');
+		} else {
+			$this->response->redirect($this->url->link('catalog/option', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+
+	public function refresh_data() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_options_status')) {
+			return $this->load->controller('catalog/aqe/option/refresh_data');
+		} else {
+			$this->response->redirect($this->url->link('catalog/option', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+
+	public function quick_update() {
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_options_status')) {
+			return $this->load->controller('catalog/aqe/option/quick_update');
+		} else {
+			$this->response->redirect($this->url->link('catalog/option', 'token=' . $this->session->data['token'] . $url, true));
+		}
+	}
+			
 	private $error = array();
 
 	public function index() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_options_status')) {
+			return $this->load->controller('catalog/aqe/option');
+		}
+			
 		$this->load->language('catalog/option');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -26,6 +64,15 @@ class ControllerCatalogOption extends Controller {
 
 			$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_options_status')) {
+			foreach ($this->config->get('aqe_catalog_options') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -58,6 +105,15 @@ class ControllerCatalogOption extends Controller {
 
 			$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_options_status')) {
+			foreach ($this->config->get('aqe_catalog_options') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -77,6 +133,11 @@ class ControllerCatalogOption extends Controller {
 	}
 
 	public function delete() {
+
+		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_options_status')) {
+			return $this->load->controller('catalog/aqe/option/delete');
+		}
+			
 		$this->load->language('catalog/option');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -92,6 +153,15 @@ class ControllerCatalogOption extends Controller {
 
 			$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_options_status')) {
+			foreach ($this->config->get('aqe_catalog_options') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -131,6 +201,15 @@ class ControllerCatalogOption extends Controller {
 
 		$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_options_status')) {
+			foreach ($this->config->get('aqe_catalog_options') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}
@@ -231,6 +310,15 @@ class ControllerCatalogOption extends Controller {
 
 		$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_options_status')) {
+			foreach ($this->config->get('aqe_catalog_options') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}
@@ -306,6 +394,15 @@ class ControllerCatalogOption extends Controller {
 
 		$url = '';
 
+
+		if ($this->config->get('aqe_status') && $this->config->get('aqe_catalog_options_status')) {
+			foreach ($this->config->get('aqe_catalog_options') as $column => $attr) {
+				if ($attr['filter']['show'] && isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+		}
+			
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
 		}

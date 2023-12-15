@@ -38,55 +38,7 @@
 		
 		return strpos($string, '@') && filter_var($string, FILTER_VALIDATE_EMAIL);
 		
-	}
-	
-	function echoLine($line, $type = 'l'){
-		if (php_sapi_name() === 'cli'){
-			switch ($type) {
-				case 'e':
-				echo "\033[31m$line \033[0m" . PHP_EOL;
-				break;
-				case 's':
-				echo "\033[32m$line \033[0m" . PHP_EOL;
-				break;
-				case 'w':
-				echo "\033[33m$line \033[0m" . PHP_EOL;
-				break;  
-				case 'i':
-				echo "\033[36m$line \033[0m" . PHP_EOL;
-				break;    
-				case 'l':
-				echo $line . PHP_EOL;
-				break;  
-				default:
-				echo $line . PHP_EOL;
-				break;
-			}
-		} else {
-			ob_end_flush();
-			switch ($type) {
-				case 'e':
-				echo "<span class='text-error'>$line</span><br />";
-				break;
-				case 's':
-				echo "<span class='text-success'>$line</span><br />";
-				break;
-				case 'w':
-				echo "<span class='text-warning'>$line</span><br />";
-				break;  
-				case 'i':
-				echo "<span class='text-info'>$line</span><br />";
-				break;    
-				case 'l':
-				echo $line . '<br />';
-				break;  
-				default:
-				echo $line . '<br />';
-				break;
-			}
-			flush();
-		}
-	}
+	}	
 	
 	function normalizePhone($phone, $plus = true){
 		$phone = trim($phone);
@@ -281,13 +233,7 @@
 		return $string;
 		
 	}
-	
-	/**
-		* Backwards support for timing safe hash string comparisons
-		* 
-		* http://php.net/manual/en/function.hash-equals.php
-	*/
-	
+
 	if(!function_exists('hash_equals')) {
 		function hash_equals($known_string, $user_string) {
 			$known_string = (string)$known_string;

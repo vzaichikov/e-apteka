@@ -3,6 +3,7 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right"><a href="<?php echo $refresh; ?>" data-toggle="tooltip" title="<?php echo $button_refresh; ?>" class="btn btn-info"><i class="fa fa-refresh"></i></a> <a href="<?php echo $clear; ?>" data-toggle="tooltip" title="<?php echo $button_clear; ?>" class="btn btn-warning"><i class="fa fa-eraser"></i></a>
+<a href="<?php echo $new; ?>" data-toggle="tooltip" title="<?php echo $button_new; ?>" class="btn btn-primary"><i class="fa fa-plus"></i></a>
         <button type="button" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger" onclick="confirm('<?php echo $text_confirm; ?>') ? $('#form-modification').submit() : false;"><i class="fa fa-trash-o"></i></button>
       </div>
       <h1><?php echo $heading_title; ?></h1>
@@ -91,6 +92,10 @@
                         <?php } else { ?>
                         <button type="button" class="btn btn-info" disabled="disabled"><i class="fa fa-link"></i></button>
                         <?php } ?>
+ 
+ <a href="<?php echo $modification['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a> 
+ <a href="<?php echo $modification['download']; ?>" data-toggle="tooltip" title="<?php echo $button_download; ?>" class="btn btn-success"><i class="fa fa-cloud-download"></i></a> 
+ 
                         <?php if (!$modification['enabled']) { ?>
                         <a href="<?php echo $modification['enable']; ?>" data-toggle="tooltip" title="<?php echo $button_enable; ?>" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
                         <?php } else { ?>

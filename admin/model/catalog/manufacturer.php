@@ -18,8 +18,18 @@
 			}
 			
 			foreach ($data['manufacturer_description'] as $language_id => $value) {
-				$this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer_description SET manufacturer_id = '" . (int)$manufacturer_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', alternate_name = '" . $this->db->escape($value['alternate_name']) . "', country = '" . $this->db->escape($value['country']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_h1 = '" . $this->db->escape($value['meta_h1']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer_description SET manufacturer_id = '" . (int)$manufacturer_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', alternate_name = '" . $this->db->escape($value['alternate_name']) . "', country = '" . $this->db->escape($value['country']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_h1 = '" . $this->db->escape($value['meta_h1']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "'");
 			}
+			
+
+				
+				$this->db->query("DELETE FROM " . DB_PREFIX . "manufacturer_faq WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
+				
+				if (isset($data['manufacturer_faq'])) {
+				foreach ($data['manufacturer_faq'] as $manufacturer_faq) {
+				$this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer_faq SET manufacturer_id = '" . (int)$manufacturer_id . "', `question` = '" . $this->db->escape(serialize($manufacturer_faq['question'])) . "', `faq` = '" . $this->db->escape(serialize($manufacturer_faq['faq'])) . "', `icon` = '" . $this->db->escape($manufacturer_faq['icon']) . "', `sort_order` = '" . (int)$manufacturer_faq['sort_order'] . "'");
+				}
+				} 
 			
 			if (isset($data['manufacturer_store'])) {
 				foreach ($data['manufacturer_store'] as $store_id) {
@@ -54,10 +64,20 @@
 			$this->db->query("DELETE FROM " . DB_PREFIX . "manufacturer_description WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
 			
 			foreach ($data['manufacturer_description'] as $language_id => $value) {
-				$this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer_description SET manufacturer_id = '" . (int)$manufacturer_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', alternate_name = '" . $this->db->escape($value['alternate_name']) . "', country = '" . $this->db->escape($value['country']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_h1 = '" . $this->db->escape($value['meta_h1']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer_description SET manufacturer_id = '" . (int)$manufacturer_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', alternate_name = '" . $this->db->escape($value['alternate_name']) . "', country = '" . $this->db->escape($value['country']) . "', description = '" . $this->db->escape($value['description']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_h1 = '" . $this->db->escape($value['meta_h1']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "'");
 			}
 			
 			$this->db->query("DELETE FROM " . DB_PREFIX . "manufacturer_to_store WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
+			
+
+				
+				$this->db->query("DELETE FROM " . DB_PREFIX . "manufacturer_faq WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
+				
+				if (isset($data['manufacturer_faq'])) {
+				foreach ($data['manufacturer_faq'] as $manufacturer_faq) {
+				$this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer_faq SET manufacturer_id = '" . (int)$manufacturer_id . "', `question` = '" . $this->db->escape(serialize($manufacturer_faq['question'])) . "', `faq` = '" . $this->db->escape(serialize($manufacturer_faq['faq'])) . "', `icon` = '" . $this->db->escape($manufacturer_faq['icon']) . "', `sort_order` = '" . (int)$manufacturer_faq['sort_order'] . "'");
+				}
+				} 
 			
 			if (isset($data['manufacturer_store'])) {
 				foreach ($data['manufacturer_store'] as $store_id) {
@@ -163,6 +183,12 @@
 		}
 		
 		
+
+				public function getManufacturerFaq($manufacturer_id) {
+				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "manufacturer_faq WHERE manufacturer_id = '" . (int)$manufacturer_id . "' ORDER BY sort_order ASC");
+				return $query->rows;
+				}
+			
 		public function getManufacturerStores($manufacturer_id) {
 			$manufacturer_store_data = array();
 			

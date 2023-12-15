@@ -2,6 +2,21 @@
 // Heading
 $_['heading_title']              = 'Orders';
 
+
+					/* START Shipping Data */
+					$_['heading_cn'] 			= 'Consignment note';
+					$_['heading_cn_novaposhta'] = 'Nova Poshta';
+					$_['heading_cn_ukrposhta']  = 'Ukrposhta';
+
+					$_['entry_cn_number'] 		= 'Consignment note number';
+
+					$_['text_cn_list'] 			= 'Consignment note list';
+					$_['text_cn_create'] 		= 'Create';
+					$_['text_cn_edit'] 			= 'Edit';
+					$_['text_cn_delete'] 		= 'Delete';
+					$_['text_cn_assignment']  	= 'Assignment number';
+					/* END Shipping Data */
+				
 // Text
 $_['text_success']               = 'Success: You have modified orders!';
 $_['text_list']                  = 'Order List';

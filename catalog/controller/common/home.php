@@ -19,6 +19,16 @@ class ControllerCommonHome extends Controller {
 			$this->document->setKeywords($this->config->get('tltmultilang_meta_keyword_' . $code));
 		} else {
 			$this->document->setKeywords($this->config->get('config_meta_keyword'));
+
+			if ($this->config->get('hb_snippets_og_enable') == '1'){
+				$this->document->setOpengraph('og:title', $this->config->get('config_meta_title'));
+				$this->document->setOpengraph('og:type', 'website');
+				$this->document->setOpengraph('og:site_name', $this->config->get('config_name'));
+				$this->document->setOpengraph('og:image', HTTP_SERVER . 'image/' . $this->config->get('config_logo'));
+				$this->document->setOpengraph('og:url', $this->config->get('config_url'));
+				$this->document->setOpengraph('og:description', $this->config->get('config_meta_description'));
+			}
+			
 		}
 		
 		if (property_exists('Document', 'tlt_metatags')) {
@@ -75,10 +85,7 @@ class ControllerCommonHome extends Controller {
 					$this->document->addTLTMetaTag('og:image:height', $image_height, 'property');
 				}
 			}
-		} else {
-			$this->log->write('TLT Structured Data: Meta tag support is not installed. Read Readme.txt for more info.');
 		}				
-		
 
 		$this->document->addLink($this->url->link('common/home'), 'canonical');
 		

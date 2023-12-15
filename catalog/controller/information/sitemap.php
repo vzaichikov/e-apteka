@@ -82,6 +82,40 @@ class ControllerInformationSitemap extends Controller {
 		$data['search'] = $this->url->link('product/search');
 		$data['contact'] = $this->url->link('information/contact');
 
+
+      	$this->load->model('newsblog/category');
+        $this->load->model('newsblog/article');
+
+		$data['newsblog_categories'] = array();
+
+		$categories = $this->model_newsblog_category->getCategories(0);
+
+		foreach ($categories as $category) {
+			if ($category['settings']) {
+				$settings=unserialize($category['settings']);
+				if ($settings['show_in_sitemap']==0) continue;
+			}
+
+			$articles = array();
+
+			if ($category['settings'] && $settings['show_in_sitemap_articles']) {
+				$filter=array('filter_category_id'=>$category['category_id'],'filter_sub_category'=>true);
+				$results = $this->model_newsblog_article->getArticles($filter);
+
+				foreach ($results as $result) {
+					$articles[] = array(
+						'name'        => $result['name'],
+						'href'        => $this->url->link('newsblog/article', 'newsblog_path=' . $category['category_id'] . '&newsblog_article_id=' . $result['article_id'])
+					);
+				}
+            }
+			$data['newsblog_categories'][] = array(
+				'name'     => $category['name'],
+				'children' => $articles,
+				'href'     => $this->url->link('newsblog/category', 'newsblog_path=' . $category['category_id'])
+			);
+		}
+		
 		$this->load->model('catalog/information');
 
 		$data['informations'] = array();
