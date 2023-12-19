@@ -123,7 +123,7 @@ class ControllerLocalisationLocation extends Controller {
 		if (isset($this->request->get['order'])) {
 			$order = $this->request->get['order'];
 		} else {
-			$order = 'ASC';
+			$order = 'DESC';
 		}
 
 		if (isset($this->request->get['page'])) {
@@ -182,7 +182,8 @@ class ControllerLocalisationLocation extends Controller {
 				'name'        		=> $result['name'],
 				'node'        		=> $this->model_setting_nodes->getNodeName($result['node_id']),
 				'last_sync'   		=> date($this->language->get('datetime_format'), strtotime($result['last_sync'])),
-				'city'     			=> $this->model_extension_shipping_novaposhta->getCityNameByRef($result['city_id']),
+				'city'     			=> $result['city'],
+				'city_id'     		=> $this->model_extension_shipping_novaposhta->getCityNameByRef($result['city_id']),
 				'address'     		=> $result['address'],
 				'brand'     		=> $result['brand'],
 				'telephone'   		=> $result['telephone'],
@@ -417,9 +418,19 @@ class ControllerLocalisationLocation extends Controller {
 			$data['city_id'] = '';
 		}
 
+		if (isset($this->request->post['city'])) {
+			$data['city'] = $this->request->post['city'];
+		} elseif (!empty($location_info)) {
+			$data['city'] = $location_info['city'];
+		} else {
+			$data['city'] = '';
+		}
+
 		if (!empty($data['city_id'])){
 			$this->load->model('extension/shipping/novaposhta');
-			$data['city'] = $this->model_extension_shipping_novaposhta->getCityNameByRef($data['city_id']);
+			$data['city_input'] = $this->model_extension_shipping_novaposhta->getCityNameByRef($data['city_id']);
+		} else {
+			$data['city_input'] = '';
 		}
 
 		if (isset($this->request->post['geocode'])) {

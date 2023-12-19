@@ -44,7 +44,7 @@
 	
 	$_['text_alsobought']                         = 'З цим товаром купують';
 
-	$_['text_is_in_stock_in_drugstores']            = 'Наявність в аптеках в Києві';
+	$_['text_is_in_stock_in_drugstores']            = 'Наявність в аптеках';
 	
 	$_['text_all_collection_products']            = 'Вся підбірка';
 	//$_['text_make_reserve']						  = 'Зарезервувати';
@@ -99,8 +99,6 @@
 	$_['text_similar_pharmaceutic']    = 'Зі схожою терапевтичною дією';
 
 	$_['text_bought_for_month']    	= 'Цей товар купили %s раз за останній тиждень';
-	$_['text_available_in_drugstores']    = 'Доступно %s шт. в %s аптеках';
-
 
 	$_['tab_same']                           = 'Форми випуску';
 	$_['tab_review'] = 'Відгуків (%s)';

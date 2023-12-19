@@ -3,6 +3,14 @@
 namespace hobotix;
 
 class hoboModelDrugstore extends hoboModel{	
+	private $translations_ru_ua = [
+		'Аптекарь' 				=> 'Аптекар',
+		'Мед-сервис' 			=> 'Мед-сервіс',
+		'Мед-сервис Beauty' 	=> 'Мед-сервіс Beauty',
+		'Городская семейная аптека' => 'Міська сімейна аптека'
+	];	
+
+	private $naming_prefix = 'Аптека №АГП';
 
 	public function getDrugStores(){
 		$result = [];
@@ -53,6 +61,19 @@ class hoboModelDrugstore extends hoboModel{
 		return false;
 	}
 
+	public function getDrugStoreId($location_id){
+		if (is_numeric($location_id)){
+			$query = $this->db->query("SELECT * FROM oc_location ol WHERE ol.location_id = '" . (int)$location_id . "' LIMIT 1");
+		} else {
+			$query = $this->db->query("SELECT * FROM oc_location ol WHERE ol.uuid = '" . $this->db->escape($location_id) . "' LIMIT 1");
+		}
+
+		if ($query->num_rows){
+			return $query->row['location_id'];
+		} else {
+			return false;
+		}
+	}
 
 	public function getDrugStore($location_id){
 		if (is_numeric($location_id)){
@@ -102,7 +123,6 @@ class hoboModelDrugstore extends hoboModel{
 		return false;
 	}
 
-
 	public function deleteDrugstore($location_id){
 		$drugstore = $this->getDrugStore($location_id);
 		if (!$drugstore){
@@ -125,16 +145,23 @@ class hoboModelDrugstore extends hoboModel{
 			return false;
 		}
 
+		if (!empty($data['drugstoreName_UA'])){
+			if (stripos($data['drugstoreName_UA'], 'Склад') !== false || stripos($data['drugstoreName_UA'], 'склад') !== false){
+				return false;
+			}
+		}
+
 		$this->db->query("INSERT INTO oc_location SET 
 			name 				= '" . $this->db->escape($data['drugstoreName_UA']) . "', 
 			address 			= '" . $this->db->escape($data['drugstoreAddress_UA']) . "', 
 			geocode 			= '" . $this->db->escape($data['drugstoreGeoCode']) . "', 
 			gmaps_link 			= '" . (!empty($data['drugstoreGmapsLink'])?$this->db->escape($data['drugstoreGmapsLink']):'') . "', 
-			telephone 			= '" . (!empty($data['drugstoreTelephone'])?$this->db->escape($data['drugstoreTelephone']):'') . "', 
+			telephone 			= '" . (!empty($data['drugstoreTelephone'])?$this->db->escape($data['drugstoreTelephone']):'+38(044)520-03-33') . "', 
 			fax 				= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreFax']):'') . "', 			
 			open 				= '" . $this->db->escape($data['drugstoreOpen']) . "', 
-			open_struct 		= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreOpenStruct']):'') . "', 
+			open_struct 		= '" . (!empty($data['drugstoreOpenStruct'])?$this->db->escape($data['drugstoreOpenStruct']):'') . "', 
 			brand 				= '" . $this->db->escape($data['drugstoreBrand']) . "',
+			is_stock 			= '" . (isset($data['drugstoreIsStock'])?$this->db->escape($data['drugstoreIsStock']):'1') . "',
 			city 				= '" . (!empty($data['drugstoreCity'])?$this->db->escape($data['drugstoreCity']):'') . "',
 			city_id 			= '" . (!empty($data['drugstoreCityUUID'])?$this->db->escape($data['drugstoreCityUUID']):'') . "',
 			can_sell_drugs 		= '" . (isset($data['drugstoreCanSellDrugs'])?(int)$data['drugstoreCanSellDrugs']:'0') . "',  
@@ -170,13 +197,18 @@ class hoboModelDrugstore extends hoboModel{
 					address 		= '" . $this->db->escape($value['address']) . "'");
 			}
 
+		$this->postProcess($location_id, $data);
+
 		return $this->getDrugStore($data['drugstoreUUID']);
 	}
 
-
-	public function editDrugstore($drugstore_id, $data){
-		$drugstore = $this->getDrugStore($data['drugstoreUUID']);
-
+	public function editDrugstore($drugstore_id, $data){	
+		if (is_numeric($drugstore_id)){
+			$drugstore = $this->getDrugStore($drugstore_id);
+		} else {
+			$drugstore = $this->getDrugStore($data['drugstoreUUID']);
+		}
+		
 		if (!$drugstore){
 			return false;
 		}
@@ -197,16 +229,21 @@ class hoboModelDrugstore extends hoboModel{
 			$data['drugstoreSortOrder'] = $drugstore['drugstoreSortOrder'];
 		}
 
+		if (!isset($data['drugstoreIsStock'])){
+			$data['drugstoreIsStock'] = $drugstore['drugstoreIsStock'];
+		}
+
 		$this->db->query("UPDATE oc_location SET 
 			name 				= '" . $this->db->escape($data['drugstoreName_UA']) . "', 
 			address 			= '" . $this->db->escape($data['drugstoreAddress_UA']) . "', 
 			geocode 			= '" . $this->db->escape($data['drugstoreGeoCode']) . "', 
 			gmaps_link 			= '" . (!empty($data['drugstoreGmapsLink'])?$this->db->escape($data['drugstoreGmapsLink']):'') . "', 
-			telephone 			= '" . (!empty($data['drugstoreTelephone'])?$this->db->escape($data['drugstoreTelephone']):'') . "', 
+			telephone 			= '" . (!empty($data['drugstoreTelephone'])?$this->db->escape($data['drugstoreTelephone']):'+38(044)520-03-33') . "', 
 			fax 				= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreFax']):'') . "', 			
 			open 				= '" . $this->db->escape($data['drugstoreOpen']) . "', 
 			open_struct 		= '" . (!empty($data['drugstoreOpenStruct'])?$this->db->escape($data['drugstoreOpenStruct']):'') . "', 
 			brand 				= '" . $this->db->escape($data['drugstoreBrand']) . "',
+			is_stock 			= '" . (isset($data['drugstoreIsStock'])?$this->db->escape($data['drugstoreIsStock']):'1') . "',
 			city 				= '" . (!empty($data['drugstoreCity'])?$this->db->escape($data['drugstoreCity']):'') . "',
 			city_id 			= '" . (!empty($data['drugstoreCityUUID'])?$this->db->escape($data['drugstoreCityUUID']):'') . "',
 			can_sell_drugs 		= '" . (isset($data['drugstoreCanSellDrugs'])?(int)$data['drugstoreCanSellDrugs']:'0') . "',  
@@ -244,7 +281,73 @@ class hoboModelDrugstore extends hoboModel{
 					address 		= '" . $this->db->escape($value['address']) . "'");
 			}
 
+		$this->postProcess($drugstore['drugstoreID'], $data);
+
 		return $this->getDrugStore($data['drugstoreUUID']);
+	}
+
+	private function postProcess($drugstore_id, $data){
+		if (!empty($data['drugstoreCity'])){
+			$sql = "SELECT * FROM `oc_novaposhta_cities` 
+			WHERE LOWER(Description) LIKE '" . $this->db->escape(mb_strtolower($data['drugstoreCity'])) . "' 
+			OR LOWER(DescriptionRu) LIKE '" . $this->db->escape(mb_strtolower($data['drugstoreCity'])) . "' LIMIT 1";
+
+			$query = $this->db->query($sql);
+
+			if ($query->num_rows && !empty($query->row['Ref'])){
+				$this->db->query("UPDATE oc_location SET city_id = '" .  $this->db->escape($query->row['Ref']) . "' WHERE location_id = '" . (int)$drugstore_id . "'");
+			}
+		}
+
+		if (!empty($data['drugstoreOpenStruct'])){
+			$drugstoreOpenStructExploded = explodeByEOL($data['drugstoreOpenStruct']);
+
+			$drugstoreOpenStruct = '';
+			for ($i=1; $i<=7; $i++){	
+				$drugstoreOpenStruct .= $i . '/' . $drugstoreOpenStructExploded[$i-1] . PHP_EOL;
+			}
+
+			$this->db->query("UPDATE oc_location SET open_struct = '" .  $this->db->escape($drugstoreOpenStruct) . "' WHERE location_id = '" . (int)$drugstore_id . "'");
+		} elseif (!empty($data['drugstoreOpen'])){
+			$drugstoreOpenStruct = '';
+			for ($i=1; $i<=7; $i++){	
+				$drugstoreOpenStruct .= $i . '/' . $data['drugstoreOpen'] . PHP_EOL;
+			}
+			$drugstoreOpenStruct = trim($drugstoreOpenStruct);
+
+			$this->db->query("UPDATE oc_location SET open_struct = '" .  $this->db->escape($drugstoreOpenStruct) . "' WHERE location_id = '" . (int)$drugstore_id . "'");
+		}
+
+
+		$drugstoreBrand = $data['drugstoreBrand'];
+		if (!empty($this->translations_ru_ua[$data['drugstoreBrand']])){
+			$drugstoreBrand = $this->translations_ru_ua[$data['drugstoreBrand']];
+			$this->db->query("UPDATE oc_location SET brand = '" .  $this->db->escape($drugstoreBrand) . "' WHERE location_id = '" . (int)$drugstore_id . "'");
+			$this->db->query("UPDATE oc_location_description SET brand = '" .  $this->db->escape($drugstoreBrand) . "' WHERE location_id = '" . (int)$drugstore_id . "' AND language_id = 3");
+		}
+
+		if (!empty($data['drugstoreName_RU'])){
+			$drugstoreName_RU = str_replace($this->naming_prefix, '', $data['drugstoreName_RU']);
+			$drugstoreName_RU = trim($drugstoreName_RU);
+
+			$drugstoreName_RU = 'Аптека ' . $data['drugstoreBrand'] . ' №' . $drugstoreName_RU;
+			$this->db->query("UPDATE oc_location_description SET name = '" .  $this->db->escape($drugstoreName_RU) . "' WHERE location_id = '" . (int)$drugstore_id . "' AND language_id = 2");
+		}
+
+		if (!empty($data['drugstoreName_UA'])){
+			$drugstoreName_UA = str_replace($this->naming_prefix, '', $data['drugstoreName_UA']);
+			$drugstoreName_UA = trim($drugstoreName_UA);
+
+			$drugstoreName_UA = 'Аптека ' . $drugstoreBrand . ' №' . $drugstoreName_UA;
+			$this->db->query("UPDATE oc_location SET name = '" .  $this->db->escape($drugstoreName_UA) . "' WHERE location_id = '" . (int)$drugstore_id . "'");
+			$this->db->query("UPDATE oc_location_description SET name = '" .  $this->db->escape($drugstoreName_UA) . "' WHERE location_id = '" . (int)$drugstore_id . "' AND language_id = 3");
+		}
+
+		$this->db->query("UPDATE oc_location_description SET name = REPLACE(name, 'Київська обл., м.Київ', 'м.Київ') WHERE location_id = '" . (int)$drugstore_id . "'");
+		$this->db->query("UPDATE oc_location_description SET address = REPLACE(address, 'Київська обл., м.Київ', 'м.Київ') WHERE location_id = '" . (int)$drugstore_id . "'");
+		$this->db->query("UPDATE oc_location SET name = REPLACE(name, 'Київська обл., м.Київ', 'м.Київ') WHERE location_id = '" . (int)$drugstore_id . "'");
+		$this->db->query("UPDATE oc_location SET address = REPLACE(address, 'Київська обл., м.Київ', 'м.Київ') WHERE location_id = '" . (int)$drugstore_id . "'");
+
 	}
 
 }

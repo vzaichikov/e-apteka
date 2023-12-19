@@ -24,10 +24,14 @@
                 <?php } ?>
 				<tr>
 					<td colspan="3" class="name">
-						<a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
+						<a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>                        
 
-                        <?php foreach ($product['stocks'] as $stock) { ?>
-                            <div><small class="text text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> <?php echo $stock['address'];?>: доступно <?php echo $stock['stock']; ?> шт.</small></div>
+                        <?php if ($product['stocks']) { ?>
+                            <?php foreach ($product['stocks'] as $stock) { ?>
+                                <div><small class="text text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> <?php echo $stock['name'];?>: доступно <?php echo $stock['stock']; ?> шт.</small></div>
+                            <?php } ?>
+                        <?php } elseif ($product['tai_drugstores']) { ?>
+                                 <div><small class="text text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> <?php echo $product['tai_drugstores']; ?></small></div>
                         <?php } ?>
 
                         <?php if ($product['is_preorder']) { ?>

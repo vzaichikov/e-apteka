@@ -12,7 +12,32 @@
 		
 		return $token;
 	}
-	
+
+	function getPluralWord($number, $titles, $show_number = false) {
+		if( is_string( $titles ) ){
+			$titles = preg_split( '/, */', $titles );
+		}		
+
+		if(empty($titles[2]) && !empty($titles[1])){
+			$titles[2] = $titles[1];
+		}
+
+		$cases = [ 2, 0, 1, 1, 1, 2 ];
+
+		$intnum = abs( (int) strip_tags( $number ) );
+
+		$title_index = ( $intnum % 100 > 4 && $intnum % 100 < 20 )
+		? 2
+		: $cases[ min( $intnum % 10, 5 ) ];
+
+		if (empty($titles[ $title_index ])){
+			return ( $show_number ? "$number " : '' );
+		}
+
+		return ( $show_number ? "$number " : '' ) . $titles[ $title_index ];
+	}	
+
+
 	function pin($length = 4) {
 		$string = '0123456789';
 		
@@ -24,12 +49,19 @@
 			$token .= $string[mt_rand(0, $max)];
 		}	
 		
-		return $token;
-		
+		return $token;		
 	}
 
-	function size_convert($size)
-	{
+	function parsegeocode($geocode){
+		$exploded = explode(',', $geocode);
+
+		return [
+			'lat' => trim($exploded[0]),
+			'lon' => trim($exploded[1])
+		];
+	}
+
+	function size_convert($size){
 		$unit = array('b','kb','mb','gb','tb','pb');
 		return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
 	}

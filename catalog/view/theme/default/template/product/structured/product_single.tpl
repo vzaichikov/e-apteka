@@ -50,6 +50,12 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 				<small class='product-layout__name__manufacturer text-muted'><?php echo $product['manufacturer']; ?></small>
 			<?php } ?>
 		</div>
+
+		<?php if ($product['text_available_in_drugstores']) { ?>
+			<div class="product-layout__stock_info__wrap">
+				<span class='product-layout__name__manufacturer  label label-success label-400'><?php echo $product['text_available_in_drugstores']; ?></span>
+			</div>
+		<?php } ?>
 	</div>
 
 	<?php if ($product['dl_price']) { ?>

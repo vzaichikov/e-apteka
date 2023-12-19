@@ -59,7 +59,9 @@ select.form-control, textarea.form-control, input[type="text"].form-control, inp
 span.hidden-xs, span.hidden-sm, span.hidden-md, span.hidden-lg {
 	display: inline;
 }
-
+.label.label-400{
+	font-weight:400;
+}
 .nav-tabs {
 	margin-bottom: 15px;
 }

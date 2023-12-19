@@ -4,7 +4,7 @@ $_['heading_title']  = 'Контактная информация';
 
 // Text
 $_['text_location']  = 'Наше местонахождение';
-$_['text_store']     = 'Аптечная сеть г. Киева';
+$_['text_store']     = 'Аптечная сеть';
 $_['text_contact']   = 'Написать нам';
 $_['text_address']   = 'Адрес';
 $_['text_telephone'] = 'Телефон';

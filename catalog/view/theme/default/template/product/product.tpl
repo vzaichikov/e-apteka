@@ -825,19 +825,135 @@
 	
 						</div>
 						
-						<?php if ($quantity_stock > 0) { ?>
+						<?php if ($quantity_stock > 0) { ?>							
 							<div class="col-md-4 col-lg-5 col-sm-12" >
 								<style>
 									.big-spinner{margin-bottom: 10px;}
+									.panel-scrollable .panel-body {
+  										max-height: 450px;
+  										min-height: 450px;
+  										overflow-y: scroll;
+									}
 								</style>			
-								<div class="panel panel-info">
+								<div class="panel panel-info panel-scrollable">
 									<div class="panel-heading">
 										<span class="panel-title"><h3><?php echo $text_is_in_stock_in_drugstores; ?></h3></span>
+									</div>									
+									<div class="panel-body">										
+										<div id="find-closest-drugstore-button-wrap" class="row text-left" style="display:none;" onclick="countDistancesToCurrentPosition()">
+											<div class="col-xs-12" style="border-bottom: 1px solid #ddd; padding-bottom:8px">
+												<button class="bbtn bbtn-success product__btn-cart" id="find-closest-drugstore-button"><?php echo $text_find_closest_drugstore; ?></button>				
+											</div>
+										</div>
+										<div id="stocks-in-product">
+											<i class="fa fa-spinner fa-spin" style="font-size:32px; color:#1CACDC;"></i>
+										</div>
 									</div>
-									<div id="stocks-in-product" class="panel-body">
-										<i class="fa fa-spinner fa-spin" style="font-size:32px; color:#1CACDC;"></i>
-									</div>
-								</div>				
+								</div>	
+
+								<script>																				
+									if ("geolocation" in navigator) {
+										function countDistancesToCurrentPosition() {
+											navigator.geolocation.getCurrentPosition(function(position) {
+
+												$('#find-closest-drugstore-button > i').removeClass('fa-search').addClass('fa-spinner fa-spin');
+
+												userLat = position.coords.latitude;
+												userLon = position.coords.longitude;
+												calculateDistances(userLat, userLon);
+
+											}, function(error) {
+												$('#find-closest-drugstore-button').removeClass('bbtn-success product__btn-cart').addClass('btn-danger');
+											});												
+										}									
+
+										function calculateDistances(userLat, userLon){
+											$('.stock-location-class').each(function(i){
+												let distance 	= getDistance(userLat, userLon, $(this).attr('data-geocode-lat'), $(this).attr('data-geocode-lon'));												
+												let location_id = $(this).attr('data-location-id');
+
+												$('#stocks-tr-'  + $(this).attr('data-location-id')).attr('data-distance', distance);											
+												$('#stocks-span-distance-' + $(this).attr('data-location-id')).html(prettyPrintDistance(distance));
+											});
+
+											var rows = $('tr[data-distance]');
+											$('#tbody-table-stocks').empty();  
+											rows.sort(function(a, b) {
+												return $(a).attr('data-distance') - $(b).attr('data-distance');
+											});
+
+											var firstRow = rows.first();
+											firstRow.addClass('closest');
+											rows.prependTo('#tbody-table-stocks');												
+
+											$(".stock-distance-label").remove();
+											$('#stocks-div-address-' + firstRow.attr('data-location-id')).before('<?php echo $text_closest; ?>');
+
+											$('#find-closest-drugstore-button > i').removeClass('fa-spinner fa-spin').addClass('fa-search');
+										}
+
+										function getDistance(lat1, lon1, lat2, lon2) {
+											var R = 6371;
+											var dLat = deg2rad(lat2-lat1); 
+											var dLon = deg2rad(lon2-lon1); 
+											var a = 
+											Math.sin(dLat/2) * Math.sin(dLat/2) +
+											Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+											Math.sin(dLon/2) * Math.sin(dLon/2)
+											; 
+											var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+											var d = R * c;
+											return d;
+										}
+
+										function deg2rad(deg) {
+											return deg * (Math.PI/180)
+										}
+
+										function prettyPrintDistance(distKm) {
+											var km 	= Math.floor(distKm);
+											var m 	= Math.floor((distKm - km) * 1000);
+											var res = '~';
+
+											if (km){
+												res += (km + "км");
+											}
+
+											if (m){
+												res += ' ';
+												res += (m + "м");
+											}
+
+											return res;
+										}
+									}								
+
+									$(document).ready(function(){
+										console.log('Fired loading stocks');
+										$('#stocks-in-product').load('<?php echo $get_stocks_ajax; ?>', function(){
+											if ("geolocation" in navigator) {	
+												console.log('[Drugstore locator] geolocation in navigator, ok');
+
+												if ("permissions" in navigator) {
+													navigator.permissions.query({name:'geolocation'}).then( function(result) {
+														if (result.state == 'granted') {
+															console.log('[Drugstore locator] Already have permissions');
+
+															countDistancesToCurrentPosition();
+														} else if(result.state == 'prompt') {
+															$('#find-closest-drugstore-button-wrap').show();
+														}					
+													});
+												} else {
+													console.warn('[Drugstore locator] geolocation not in navigator, hiding'); 
+												}
+											}  else {
+												console.log('[Drugstore locator] geolocation not in navigator, hiding');
+												$('#find-closest-drugstore-button-wrap').hide();
+											}
+										});
+									});									
+								</script>
 
 								<?php if ($is_mobile) { ?>
 									<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/delivery_pay_mobile.tpl'); ?>
@@ -1390,9 +1506,6 @@
 <script>
 
 	$(document).ready(function(){
-		console.log('Fired loading stocks');
-		$('#stocks-in-product').load('<?php echo $get_stocks_ajax; ?>');
-
 		var instruction_shown = false;
 		$('a[href="#tab-instruction"]').on('shown.bs.tab', function (event) {
 			if (!instruction_shown){

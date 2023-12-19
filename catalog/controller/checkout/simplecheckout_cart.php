@@ -8,10 +8,10 @@
 include_once(DIR_SYSTEM . 'library/simple/simple_controller.php');
 
 class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
-    static $error = array();
+    static $error = [];
     static $updated = false;
 
-    private $_templateData = array();
+    private $_templateData = [];
 
     private function init() {
         $this->loadLibrary('simple/simplecheckout');
@@ -182,7 +182,7 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
         $this->_templateData['button_update'] = $this->language->get('button_update');
         $this->_templateData['button_remove'] = $this->language->get('button_remove');
 
-        $this->_templateData['products'] = array();
+        $this->_templateData['products'] = [];
 
         $this->_templateData['config_stock_warning'] = $this->config->get('config_stock_warning');
         $this->_templateData['config_stock_checkout'] = $this->config->get('config_stock_checkout');
@@ -207,7 +207,7 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
                 $this->simplecheckout->blockOrder();
             }
 
-            $option_data = array();
+            $option_data = [];
 
             foreach ($product['option'] as $option) {
                 if ($version >= 200) {
@@ -272,7 +272,7 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
                 $total = $this->simplecheckout->formatCurrency($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']);
             } else {
                 $total = false;
-            }
+            }          
 
             if ($version >= 200) {
                 $recurring = '';
@@ -297,31 +297,28 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
                     }
                 }
 
+                  $stocks_count = $this->model_catalog_product->getProductStockSum($product['product_id']);
 
-                $stocks = array();
-                $results = $this->model_catalog_product->getProductStocks($product['product_id']);
+                $text_available_in_drugstores = false;
+                if ($stocks_count['quantity'] > 0){
+                    $text_available_in_drugstores = sprintf($this->language->get('text_available_in_drugstores'), $stocks_count['quantity'], $stocks_count['drugstores']);
+                } 
+                
+                $stocks = [];
+                if ($stocks_count['drugstores'] <= 3){                    
+                    $results = $this->model_catalog_product->getProductStocks($product['product_id']);
 
-                $multilang_fields = array('address');
-
-                foreach ($results as $result) {
-
-                    if ($result['quantity'] > 0){
-
-                        foreach ($multilang_fields as $_field){
-                            if ($_mlvalue = $this->model_localisation_location->getLocationML($result['location_id'], $_field)){
-                                ${$_field} = $_mlvalue;
-                            } else {
-                                ${$_field} = $result[$_field];
-                            }
+                    foreach ($results as $result) {
+                        if ($result['quantity'] > 0){
+                            $stocks[] = array(
+                                'stock'     => $result['quantity'],                        
+                                'name'   => $result['name']
+                            );
                         }
-
-                        $stocks[] = array(
-                            'stock'     => $result['quantity'],                        
-                            'address'   => $address
-                        );
-                    }
-
+                    }            
                 }
+
+               
 
                 $this->_templateData['products'][] = array(
                     'key'       => isset($product['key']) ? $product['key'] : '',
@@ -339,6 +336,7 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
                     'option'    => $option_data,
                     'recurring' => $recurring,
                     'quantity'  => $product['quantity'],
+                    'tai_drugstores' => $text_available_in_drugstores,
                     'stock'     => $product['stock'] ? true : !(!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')),
                     'reward'    => ($product['reward'] ? sprintf($this->language->get('text_points'), $product['reward']) : ''),
                     'price'     => $price,
@@ -411,7 +409,7 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
         }
 
         // Gift Voucher
-        $this->_templateData['vouchers'] = array();
+        $this->_templateData['vouchers'] = [];
 
         if (!empty($this->session->data['vouchers'])) {
             foreach ($this->session->data['vouchers'] as $key => $voucher) {
@@ -423,7 +421,7 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
             }
         }
 
-        $totals = array();
+        $totals = [];
         $total = 0;
         $taxes = $this->cart->getTaxes();
 
@@ -433,10 +431,10 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
             'total'  => &$total
         );
 
-        $this->_templateData['modules'] = array();
+        $this->_templateData['modules'] = [];
 
         if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
-            $sort_order = array();
+            $sort_order = [];
 
             if ($version < 200 || $version >= 300) {
                 $this->load->model('setting/extension');
@@ -478,7 +476,7 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
                 }
             }
 
-            $sort_order = array();
+            $sort_order = [];
 
             foreach ($totals as $key => $value) {
                 $sort_order[$key] = $value['sort_order'];
@@ -566,7 +564,7 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
         $this->init();
 
         /*if (!isset($this->session->data['vouchers'])) {
-            $this->session->data['vouchers'] = array();
+            $this->session->data['vouchers'] = [];
         }*/
 
         // Update

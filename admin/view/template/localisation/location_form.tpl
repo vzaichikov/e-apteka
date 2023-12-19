@@ -150,10 +150,19 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-parent">Город</label>
 								<div class="col-sm-8">
-									<input type="text" name="city" value="<?php echo $city; ?>" placeholder="Город" id="input-city" class="form-control" />
-									<input type="hidden" name="city_id" value="<?php echo $city_id; ?>" />
+									<input type="text" name="city" value="<?php echo $city; ?>" placeholder="Город" id="input-city" class="form-control" />								
 								</div>
-								<div class="col-sm-2"><button type="button" data-toggle="tooltip" title="" class="btn btn-danger" onclick="$('input[name=\'google_base_category\']').val('');$('input[name=\'google_base_category_id\']').val('');" data-original-title="Очистить"><i class="fa fa-trash-o"></i></button></div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-parent">City ID</label>
+								<div class="col-sm-4">
+									<input type="text" name="city_input" value="" placeholder="Город" id="input-city" class="form-control" value="<?php echo $city_input; ?>" />									
+								</div>
+								<div class="col-sm-4">
+									<input type="text" name="city_id" id="input-city-id" class="form-control" value="<?php echo $city_id; ?>" />
+								</div>
+								<div class="col-sm-2"><button type="button" data-toggle="tooltip" title="" class="btn btn-danger" onclick="$('input[name=\'city_input\']').val('');$('input[name=\'city_id\']').val('');" data-original-title="Очистить"><i class="fa fa-trash-o"></i></button></div>
 							</div>
 							
 							<div class="form-group required">
@@ -305,9 +314,7 @@
 //--></script>
 
 <script type="text/javascript">
-		<!--
-		// Google Category
-		$('input[name=\'city\']').autocomplete({
+		$('input[name=\'city_input\']').autocomplete({
 			'source': function(request, response) {
 				$.ajax({
 					url: 'index.php?route=localisation/location/city_autocomplete&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request),

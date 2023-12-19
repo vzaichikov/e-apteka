@@ -1,7 +1,7 @@
 <?php
 	class ModelCatalogProduct extends Model {
 		public function updateViewed($product_id) {
-			//$this->db->query("UPDATE " . DB_PREFIX . "product SET viewed = (viewed + 1) WHERE product_id = '" . (int)$product_id . "'");
+			//$this->db->query("UPDATE oc_product SET viewed = (viewed + 1) WHERE product_id = '" . (int)$product_id . "'");
 		}				
 		
 		public function prepareProductArray($results){
@@ -64,7 +64,14 @@
 
 				if ($result['has_analogues']){
 					$href = $href_analog;
-				}					
+				}
+
+				$text_available_in_drugstores = false;
+				if ($result['total_stocks'] > 0){
+ 					$text_available_in_drugstores = sprintf($this->language->get('text_available_in_drugstores'), $result['total_stocks'], $result['total_drugstores'], getPluralWord($result['total_drugstores'], $this->language->get('text_drugstore_plural'), false));
+				} elseif ($result['is_preorder'] == 1) {
+					$text_available_in_drugstores = sprintf($this->language->get('text_available_on_preorder'));
+				}						
 				
 				$return[$result['product_id']] = array(
 				'product_id'  		=> $result['product_id'],
@@ -79,11 +86,12 @@
 				'quantity'    		=> $result['quantity'],
 				'count_of_parts' 	=> $result['count_of_parts'],
 				'pov_part_id' 		=> $result['pov_part_id'],
-				'price_of_part' 			=> $price_of_part,
-				'price_of_part_special' 	=> $price_of_part_special,
-				'dl_price' 			=> $dl_price,
-				'text_full_pack'    => sprintf($this->language->get('text_full_pack'), $result['count_of_parts']),
-				'text_part_pack'	=> $this->language->get('text_part_pack'),
+				'price_of_part' 				=> $price_of_part,
+				'price_of_part_special' 		=> $price_of_part_special,
+				'dl_price' 						=> $dl_price,
+				'text_full_pack'    			=> sprintf($this->language->get('text_full_pack'), $result['count_of_parts']),
+				'text_part_pack'				=> $this->language->get('text_part_pack'),
+				'text_available_in_drugstores'	=> $text_available_in_drugstores,
 				'special'     		=> $special,
 				'tax'         		=> $tax,
 				'rating'      		=> $rating,
@@ -105,7 +113,7 @@
 		}
 
 		public function getProductInstruction($product_id){
-			$query = $this->db->query("SELECT reg_instruction FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "'");
+			$query = $this->db->query("SELECT reg_instruction FROM oc_product WHERE product_id = '" . (int)$product_id . "'");
 
 			if (!empty($query->row['reg_instruction']) && file_exists(DIR_INSTRUCTIONS . $query->row['reg_instruction'])){
 				$extension 	= pathinfo($query->row['reg_instruction'], PATHINFO_EXTENSION);
@@ -131,7 +139,7 @@
 				}
 			}			
 
-			$query = $this->db->query("SELECT instruction FROM " . DB_PREFIX . "product_description WHERE product_id = '" . (int)$product_id . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");			
+			$query = $this->db->query("SELECT instruction FROM oc_product_description WHERE product_id = '" . (int)$product_id . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");			
 
 			if ($query->num_rows){
 				return [
@@ -144,7 +152,7 @@
 		}	
 
 		public function getProductLikReestr($product_id){
-			$query = $this->db->query("SELECT reg_json FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "'");
+			$query = $this->db->query("SELECT reg_json FROM oc_product WHERE product_id = '" . (int)$product_id . "'");
 
 			if ($query->num_rows){
 				return $query->row['reg_json'];
@@ -180,7 +188,7 @@
 		public function getGoogleCategoryPathForCategory($category_id){
 			if (!$string = $this->cache->get('category.google.tree.' . $category_id . '.' . $this->config->get('config_language_id'))){
 
-				$query = $this->db->query("SELECT google_tree FROM " . DB_PREFIX . "category_description WHERE category_id = '" . $category_id . "' AND language_id = '" . $this->config->get('config_language_id') . "' LIMIT 1");
+				$query = $this->db->query("SELECT google_tree FROM oc_category_description WHERE category_id = '" . $category_id . "' AND language_id = '" . $this->config->get('config_language_id') . "' LIMIT 1");
 				if (!$query->num_rows || empty($query->row['google_tree']) || !$string = $query->row['google_tree']){
 					
 					$path = $string = '';
@@ -204,7 +212,7 @@
 						}
 					}
 
-					$this->db->query("UPDATE " . DB_PREFIX . "category_description SET google_tree = '" . $this->db->escape($string) . "' WHERE category_id = '" . $category_id . "' AND language_id = '" . $this->config->get('config_language_id') . "'");
+					$this->db->query("UPDATE oc_category_description SET google_tree = '" . $this->db->escape($string) . "' WHERE category_id = '" . $category_id . "' AND language_id = '" . $this->config->get('config_language_id') . "'");
 				}
 				$this->cache->set('category.google.tree.' . $category_id . '.' . $this->config->get('config_language_id'), $string);
 			}
@@ -217,7 +225,7 @@
 			if (!$string = $this->cache->get('productfullpath.' . (int)$product_id . '.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id'))){
 				$this->load->model('catalog/category');	
 				
-				$category = $this->db->query("SELECT category_id FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . (int)$product_id . "' ORDER BY main_category DESC LIMIT 1")->row;
+				$category = $this->db->query("SELECT category_id FROM oc_product_to_category WHERE product_id = '" . (int)$product_id . "' ORDER BY main_category DESC LIMIT 1")->row;
 				
 				$path = $this->getPath($category['category_id']);
 				
@@ -246,7 +254,7 @@
 		public function getProductPrimenenie($product_id) {
 			$product_category_data = array();
 			
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_primenenie WHERE product_id = '" . (int)$product_id . "'");
+			$query = $this->db->query("SELECT * FROM oc_product_to_primenenie WHERE product_id = '" . (int)$product_id . "'");
 			
 			foreach ($query->rows as $result) {
 				$product_category_data[] = $result['primenenie_id'];
@@ -258,7 +266,7 @@
 		public function getProductTags($product_id) {
 			$product_category_data = array();
 			
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_tags WHERE product_id = '" . (int)$product_id . "'");
+			$query = $this->db->query("SELECT * FROM oc_product_to_tags WHERE product_id = '" . (int)$product_id . "'");
 			
 			foreach ($query->rows as $result) {
 				$product_category_data[] = $result['tags_id'];
@@ -268,7 +276,7 @@
 		}	
 		
 		public function getProductCollection($product_id){
-			$query = $this->db->query("SELECT collection_id FROM " . DB_PREFIX . "product_to_collection WHERE product_id = '" . (int)$product_id . "' AND main_collection = 1");
+			$query = $this->db->query("SELECT collection_id FROM oc_product_to_collection WHERE product_id = '" . (int)$product_id . "' AND main_collection = 1");
 			
 			if ($query->num_rows) {
 				return $query->row['collection_id'];
@@ -278,7 +286,7 @@
 		}
 		
 		public function getProductCollectionLevelZero($product_id){
-			$query = $this->db->query("SELECT cp.path_id, cd.name FROM " . DB_PREFIX . "collection_path cp LEFT JOIN " . DB_PREFIX . "collection_description cd ON (cd.collection_id = cp.path_id) WHERE cp.collection_id = (SELECT collection_id FROM " . DB_PREFIX . "product_to_collection WHERE product_id = '" . (int)$product_id . "' AND main_collection = 1 LIMIT 1) AND level = 0 AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
+			$query = $this->db->query("SELECT cp.path_id, cd.name FROM oc_collection_path cp LEFT JOIN oc_collection_description cd ON (cd.collection_id = cp.path_id) WHERE cp.collection_id = (SELECT collection_id FROM oc_product_to_collection WHERE product_id = '" . (int)$product_id . "' AND main_collection = 1 LIMIT 1) AND level = 0 AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
 			
 			
 			if ($query->num_rows) {
@@ -297,29 +305,32 @@
 				
 				} else {
 
-				$sql = "SELECT DISTINCT *, p.is_preorder, p.no_advert, p.no_payment, p.no_shipping, p.count_of_parts, p.price_of_part, pd.name AS name, p.image, (SELECT md.name FROM " . DB_PREFIX . "manufacturer_description md WHERE md.manufacturer_id = p.manufacturer_id AND md.language_id = '" . (int)$this->config->get('config_language_id') . "') AS manufacturer, (SELECT price FROM " . DB_PREFIX . "product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) AS discount,
+				$sql = "SELECT DISTINCT *, p.is_preorder, p.no_advert, p.no_payment, p.no_shipping, p.count_of_parts, p.price_of_part, pd.name AS name, p.image, (SELECT md.name FROM oc_manufacturer_description md WHERE md.manufacturer_id = p.manufacturer_id AND md.language_id = '" . (int)$this->config->get('config_language_id') . "') AS manufacturer, (SELECT price FROM oc_product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) AS discount,
 				
-				(SELECT price FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special,
+				(SELECT price FROM oc_product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special,
 
-				(SELECT type FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special_type,
+				(SELECT type FROM oc_product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special_type,
 				
-				(SELECT date_end FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special_date_end,
+				(SELECT date_end FROM oc_product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special_date_end,
 				
-				(SELECT SUM(quantity) FROM " . DB_PREFIX . "stocks s WHERE s.product_id = p.product_id) AS stocks, 
+				(SELECT SUM(quantity) FROM oc_stocks s WHERE s.product_id = p.product_id) AS stocks, 
 				
-				(SELECT points FROM " . DB_PREFIX . "product_reward pr WHERE pr.product_id = p.product_id AND pr.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "') AS reward, 
+				(SELECT points FROM oc_product_reward pr WHERE pr.product_id = p.product_id AND pr.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "') AS reward, 
 				
-				(SELECT ss.name FROM " . DB_PREFIX . "stock_status ss WHERE ss.stock_status_id = p.stock_status_id AND ss.language_id = '" . (int)$this->config->get('config_language_id') . "') AS stock_status, 
+				(SELECT ss.name FROM oc_stock_status ss WHERE ss.stock_status_id = p.stock_status_id AND ss.language_id = '" . (int)$this->config->get('config_language_id') . "') AS stock_status, 
 				
-				(SELECT wcd.unit FROM " . DB_PREFIX . "weight_class_description wcd WHERE p.weight_class_id = wcd.weight_class_id AND wcd.language_id = '" . (int)$this->config->get('config_language_id') . "') AS weight_class, 
+				(SELECT wcd.unit FROM oc_weight_class_description wcd WHERE p.weight_class_id = wcd.weight_class_id AND wcd.language_id = '" . (int)$this->config->get('config_language_id') . "') AS weight_class, 
 				
-				(SELECT lcd.unit FROM " . DB_PREFIX . "length_class_description lcd WHERE p.length_class_id = lcd.length_class_id AND lcd.language_id = '" . (int)$this->config->get('config_language_id') . "') AS length_class, 
+				(SELECT lcd.unit FROM oc_length_class_description lcd WHERE p.length_class_id = lcd.length_class_id AND lcd.language_id = '" . (int)$this->config->get('config_language_id') . "') AS length_class, 
 				
-				(SELECT AVG(rating) AS total FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = p.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating, 
+				(SELECT AVG(rating) AS total FROM oc_review r1 WHERE r1.product_id = p.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating, 
 
-				(SELECT category_id FROM " . DB_PREFIX . "product_to_category p2cm WHERE p2cm.product_id = p.product_id ORDER BY main_category DESC LIMIT 1) as main_category_id,
+				(SELECT category_id FROM oc_product_to_category p2cm WHERE p2cm.product_id = p.product_id ORDER BY main_category DESC LIMIT 1) as main_category_id,
+
+				(SELECT SUM(quantity) FROM oc_stocks s JOIN oc_location l ON (s.location_id = l.location_id) WHERE s.product_id = p.product_id AND l.temprorary_closed = 0) as total_stocks,
+				(SELECT COUNT(DISTINCT s.location_id) FROM oc_stocks s JOIN oc_location l ON (s.location_id = l.location_id) WHERE s.product_id = p.product_id AND s.quantity > 0 AND l.temprorary_closed = 0) as total_drugstores, 
 				
-				(SELECT COUNT(*) AS total FROM " . DB_PREFIX . "review r2 WHERE r2.product_id = p.product_id AND r2.status = '1' GROUP BY r2.product_id) AS reviews, p.sort_order FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.product_id = '" . (int)$product_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+				(SELECT COUNT(*) AS total FROM oc_review r2 WHERE r2.product_id = p.product_id AND r2.status = '1' GROUP BY r2.product_id) AS reviews, p.sort_order FROM oc_product p LEFT JOIN oc_product_description pd ON (p.product_id = pd.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.product_id = '" . (int)$product_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 
 				if (!$explicit){
 					$sql .= " AND p.status = '1' ";
@@ -365,19 +376,16 @@
 				}
 				
 				if ($query->num_rows && empty(trim($query->row['name']))){
-					$name_query = $this->db->query("SELECT name FROM " . DB_PREFIX . "product_description WHERE language_id = '2' AND product_id = '" . (int)$product_id . "' LIMIT 1");
+					$name_query = $this->db->query("SELECT name FROM oc_product_description WHERE language_id = '2' AND product_id = '" . (int)$product_id . "' LIMIT 1");
 					
 					if ($name_query->num_rows){
 						$query->row['name'] = $name_query->row['name'];
 					}
 				}
 				
-				//Проверка скидочной модели
 				if ($query->num_rows){					
 					$general_price = false;
 					$has_pricegroup_discount = false;
-					
-					//Если у нас уже есть скидка, то мы не считаем эту вот самую
 					if (!$query->row['special']) {
 						if ($query->row['pricegroup_id']){							
 							$pricegroup_discount = $this->getPriceGroupDiscountForCustomerGroup($query->row['pricegroup_id']);
@@ -469,7 +477,7 @@
 					//Невозможность доставки и оплаты
 					/*
 						if (!$query->row['no_shipping']){
-						$query_ns = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . (int)$query->row['product_id']. "' AND category_id IN (SELECT category_id FROM " . DB_PREFIX . "category WHERE no_shipping = 1)");
+						$query_ns = $this->db->query("SELECT * FROM oc_product_to_category WHERE product_id = '" . (int)$query->row['product_id']. "' AND category_id IN (SELECT category_id FROM oc_category WHERE no_shipping = 1)");
 						
 						if ($query_ns->num_rows){
 						$query->row['no_shipping'] = true;
@@ -477,7 +485,7 @@
 						}
 						
 						if (!$query->row['no_payment']){
-						$query_ns = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . (int)$query->row['product_id']. "' AND category_id IN (SELECT category_id FROM " . DB_PREFIX . "category WHERE no_payment = 1)");
+						$query_ns = $this->db->query("SELECT * FROM oc_product_to_category WHERE product_id = '" . (int)$query->row['product_id']. "' AND category_id IN (SELECT category_id FROM oc_category WHERE no_payment = 1)");
 						
 						if ($query_ns->num_rows){
 						$query->row['no_payment'] = true;
@@ -649,6 +657,8 @@
                     'location'         => $query->row['location'],					
                     'quantity'         => $query->row['quantity'],
                     'stock_status'     => $query->row['stock_status'],
+                    'total_stocks'     => $query->row['total_stocks'],
+                    'total_drugstores'  => $query->row['total_drugstores'],
 					'stock_status_id'  => $query->row['stock_status_id'],
                     'is_preorder'      => $query->row['is_preorder'],
                     'image'            => $query->row['image'],
@@ -663,7 +673,7 @@
 					'price_retail'     		=> $query->row['price_retail'],
 					'price_of_part_retail' 	=> $query->row['price_of_part_retail'],
 					'has_dl_price' 			=> $query->row['has_dl_price'],
-					'dl_price' 			=> $query->row['dl_price'],
+					'dl_price' 				=> $query->row['dl_price'],
                     'general_price'    		=> $general_price,
                     'has_pricegroup_discount' => $has_pricegroup_discount,
                     'special'          => $query->row['special'],
@@ -703,7 +713,7 @@
 		}
 			
 		public function getProductUUID($product_id) {
-			$query = $this->db->query("SELECT uuid FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "'");
+			$query = $this->db->query("SELECT uuid FROM oc_product WHERE product_id = '" . (int)$product_id . "'");
 			
 			return $query->row['uuid'];
 		}
@@ -713,8 +723,8 @@
 		
 		public function getProducts($data = array(), $prevnext = false, $product_ids = array()) {		
 			
-			$sql = "SELECT DISTINCT p.product_id, (SELECT AVG(rating) AS total FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = p.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating_old, (SELECT COUNT(DISTINCT op.order_id) FROM " . DB_PREFIX . "order_product op LEFT JOIN `" . DB_PREFIX . "order` o ON (o.order_id = op.order_id) WHERE product_id = p.product_id AND o.order_status_id = 5 AND o.date_added >= '" . date('Y-m-d', strtotime('-30 day')) . "') as rating,
-			(SELECT price FROM " . DB_PREFIX . "product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) AS discount, (SELECT IF(type = '%', (p.price - p.price/100*price), price) FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special";
+			$sql = "SELECT DISTINCT p.product_id, (SELECT AVG(rating) AS total FROM oc_review r1 WHERE r1.product_id = p.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating_old, (SELECT COUNT(DISTINCT op.order_id) FROM oc_order_product op LEFT JOIN `oc_order` o ON (o.order_id = op.order_id) WHERE product_id = p.product_id AND o.order_status_id = 5 AND o.date_added >= '" . date('Y-m-d', strtotime('-30 day')) . "') as rating,
+			(SELECT price FROM oc_product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) AS discount, (SELECT IF(type = '%', (p.price - p.price/100*price), price) FROM oc_product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special";
 			
 			if (!empty($data['filter_name'])){
 				
@@ -751,31 +761,30 @@
 			
 			if (!empty($data['filter_category_id'])) {
 				if (!empty($data['filter_sub_category'])) {
-					$sql .= " FROM " . DB_PREFIX . "category_path cp LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (cp.category_id = p2c.category_id)";
+					$sql .= " FROM oc_category_path cp LEFT JOIN oc_product_to_category p2c ON (cp.category_id = p2c.category_id)";
 					} else {
-					$sql .= " FROM " . DB_PREFIX . "product_to_category p2c";
+					$sql .= " FROM oc_product_to_category p2c";
 				}
 				
 				if (!empty($data['filter_filter'])) {
-					$sql .= " LEFT JOIN " . DB_PREFIX . "product_filter pf ON (p2c.product_id = pf.product_id) LEFT JOIN " . DB_PREFIX . "product p ON (pf.product_id = p.product_id)";
+					$sql .= " LEFT JOIN oc_product_filter pf ON (p2c.product_id = pf.product_id) LEFT JOIN oc_product p ON (pf.product_id = p.product_id)";
 					} else {
-					$sql .= " LEFT JOIN " . DB_PREFIX . "product p ON (p2c.product_id = p.product_id)";
+					$sql .= " LEFT JOIN oc_product p ON (p2c.product_id = p.product_id)";
 				}
 				} elseif (!empty($data['filter_collection_id'])) {
 				
 				if (!empty($data['filter_sub_collection'])) {
-					$sql .= " FROM " . DB_PREFIX . "collection_path cp LEFT JOIN " . DB_PREFIX . "product_to_collection p2c ON (cp.collection_id = p2c.collection_id)";
+					$sql .= " FROM oc_collection_path cp LEFT JOIN oc_product_to_collection p2c ON (cp.collection_id = p2c.collection_id)";
 					} else {
-					$sql .= " FROM " . DB_PREFIX . "product_to_collection p2c";
+					$sql .= " FROM oc_product_to_collection p2c";
 				}
 				
-				$sql .= " LEFT JOIN " . DB_PREFIX . "product p ON (p2c.product_id = p.product_id)";
+				$sql .= " LEFT JOIN oc_product p ON (p2c.product_id = p.product_id)";
 				
 				} else {
-				$sql .= " FROM " . DB_PREFIX . "product p";
+				$sql .= " FROM oc_product p";
 			}
 			
-			// OCFilter start
 			if (!empty($data['filter_ocfilter'])) {
 				$this->load->model('catalog/ocfilter');
 				
@@ -787,9 +796,8 @@
 			if ($ocfilter_product_sql && $ocfilter_product_sql->join) {
 				$sql .= $ocfilter_product_sql->join;
 			}
-			// OCFilter end
 			
-			$sql .= " LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE 1 AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+			$sql .= " LEFT JOIN oc_product_description pd ON (p.product_id = pd.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE 1 AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 			
 			if (!empty($data['filter_category_id'])) {
 				if (!empty($data['filter_sub_category'])) {
@@ -890,11 +898,9 @@
 				$sql .= " AND (p.no_payment = 0 AND p.is_receipt = 0 AND p.no_advert = 0)";
 			}
 			
-			// OCFilter start
 			if (!empty($ocfilter_product_sql) && $ocfilter_product_sql->where) {
 				$sql .= $ocfilter_product_sql->where;
 			}
-			// OCFilter end
 			
 			if (!empty($data['filter_manufacturer_id'])) {
 				$sql .= " AND p.manufacturer_id = '" . (int)$data['filter_manufacturer_id'] . "'";
@@ -948,15 +954,9 @@
 				$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
 			}
 			
-			$product_data = array();
-			
-			if ($_SERVER['REMOTE_ADDR'] == '31.43.104.37'){
-				//var_dump($sql);			
-			}
-			
+			$product_data = array();			
 			$query = $this->db->ecquery($sql);
-			
-			
+						
 			foreach ($query->rows as $result) {			
 				$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
 			}
@@ -969,7 +969,7 @@
 				return false;
 			}
 
-			$query = $this->db->query("SELECT plus, percent FROM " . DB_PREFIX . "price_group_to_customer_group WHERE pricegroup_id = '" . (int)$pricegroup_id . "' AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' LIMIT 1");
+			$query = $this->db->query("SELECT plus, percent FROM oc_price_group_to_customer_group WHERE pricegroup_id = '" . (int)$pricegroup_id . "' AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' LIMIT 1");
 			
 			if ($query->num_rows){
 				return array(
@@ -984,17 +984,17 @@
 		
 		public function getProductSpecials($data = array()) {
 			$sql = "SELECT DISTINCT ps.product_id, ps.date_end, p.price,
-			(SELECT AVG(rating) AS total FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = ps.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating ";
+			(SELECT AVG(rating) AS total FROM oc_review r1 WHERE r1.product_id = ps.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating ";
 						
 			if (!empty($data['filter_category_id'])) {
-				$sql .= " FROM " . DB_PREFIX . "product_to_category p2c			
-				LEFT JOIN " . DB_PREFIX . "product_special ps ON (p2c.product_id = ps.product_id)
-				LEFT JOIN " . DB_PREFIX . "product p ON (ps.product_id = p.product_id)
-				LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id)";
+				$sql .= " FROM oc_product_to_category p2c			
+				LEFT JOIN oc_product_special ps ON (p2c.product_id = ps.product_id)
+				LEFT JOIN oc_product p ON (ps.product_id = p.product_id)
+				LEFT JOIN oc_product_description pd ON (p.product_id = pd.product_id)";
 				}else{
-				$sql .= "FROM " . DB_PREFIX . "product_special ps
-				LEFT JOIN " . DB_PREFIX . "product p ON (ps.product_id = p.product_id)
-				LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id)";
+				$sql .= "FROM oc_product_special ps
+				LEFT JOIN oc_product p ON (ps.product_id = p.product_id)
+				LEFT JOIN oc_product_description pd ON (p.product_id = pd.product_id)";
 			}
 			
 			$sql .= " WHERE p.status = '1' AND p.date_available <= NOW() AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW()))";
@@ -1080,7 +1080,7 @@
 			$this->cache->get('product.latest.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
 			
 			if (!$product_data) {
-				$query = $this->db->query("SELECT p.product_id FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY p.date_added DESC LIMIT " . (int)$limit);
+				$query = $this->db->query("SELECT p.product_id FROM oc_product p LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY p.date_added DESC LIMIT " . (int)$limit);
 				
 				foreach ($query->rows as $result) {
 					$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
@@ -1093,11 +1093,10 @@
 		}
 
 		public function getProductStock($product_id, $location_id){
-
-			$sql = "SELECT s.*, ld.*, l.gmaps_link, l.can_sell_drugs, p.tax_class_id, p.is_preorder, p.is_pko, p.is_drug FROM " . DB_PREFIX . "stocks s 
-			LEFT JOIN " . DB_PREFIX . "location l ON s.location_id = l.location_id 
-			LEFT JOIN " . DB_PREFIX . "location_description ld ON l.location_id = ld.location_id 
-			LEFT JOIN " . DB_PREFIX . "product p ON p.product_id = s.product_id
+			$sql = "SELECT s.*, ld.*, l.gmaps_link, l.can_sell_drugs, l.brand, l.geocode, p.tax_class_id, p.is_preorder, p.is_pko, p.is_drug FROM oc_stocks s 
+			LEFT JOIN oc_location l ON s.location_id = l.location_id 
+			LEFT JOIN oc_location_description ld ON l.location_id = ld.location_id 
+			LEFT JOIN oc_product p ON p.product_id = s.product_id
 			WHERE s.product_id = '" . (int)$product_id . "' 
 			AND ld.language_id = '" . $this->config->get('config_language_id') . "' 
 			AND s.location_id != 14 
@@ -1110,8 +1109,8 @@
 		}
 
 		public function getProductStockSum($product_id){
-			$query_total = $this->db->query("SELECT SUM(quantity) as total FROM " . DB_PREFIX . "stocks WHERE product_id = '" . (int)$product_id . "'");
-			$query_drugstores = $this->db->query("SELECT COUNT(DISTINCT location_id) as total FROM " . DB_PREFIX . "stocks WHERE product_id = '" . (int)$product_id . "' AND quantity > 0");
+			$query_total = $this->db->query("SELECT SUM(quantity) as total FROM oc_stocks WHERE product_id = '" . (int)$product_id . "' AND location_id IN (". implode(',', $this->cart->getOpenedStores()) .")");
+			$query_drugstores = $this->db->query("SELECT COUNT(DISTINCT location_id) as total FROM oc_stocks WHERE product_id = '" . (int)$product_id . "' AND quantity > 0 AND location_id IN (". implode(',', $this->cart->getOpenedStores()) .") ");
 
 			return [
 				'quantity' 	 => $query_total->row['total'],
@@ -1120,10 +1119,10 @@
 		}		
 		
 		public function getProductStocks($product_id, $cached = false, $in_stock = false){
-			$sql = "SELECT s.*, ld.*, l.gmaps_link, l.can_sell_drugs, l.information_id, p.tax_class_id, p.is_preorder, p.is_pko, p.is_drug FROM " . DB_PREFIX . "stocks s
-			LEFT JOIN " . DB_PREFIX . "location l ON s.location_id = l.location_id 
-			LEFT JOIN " . DB_PREFIX . "location_description ld ON l.location_id = ld.location_id 
-			LEFT JOIN " . DB_PREFIX . "product p ON p.product_id = s.product_id
+			$sql = "SELECT s.*, ld.*, l.gmaps_link, l.can_sell_drugs, l.brand, l.geocode, l.information_id, p.tax_class_id, p.is_preorder, p.is_pko, p.is_drug FROM oc_stocks s
+			LEFT JOIN oc_location l ON s.location_id = l.location_id 
+			LEFT JOIN oc_location_description ld ON l.location_id = ld.location_id 
+			LEFT JOIN oc_product p ON p.product_id = s.product_id
 			WHERE s.product_id = '" . (int)$product_id . "'";
 
 			if ($in_stock){
@@ -1144,9 +1143,9 @@
 		public function getSimilarProductsByName($product_name, $product_id, $limit, $in_stock = false){
 			$product_data = array();
 			
-			$sql = "SELECT DISTINCT pd.product_id FROM " . DB_PREFIX . "product_description pd 
-			LEFT JOIN " . DB_PREFIX . "product p ON (pd.product_id = p.product_id) 
-			LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) 
+			$sql = "SELECT DISTINCT pd.product_id FROM oc_product_description pd 
+			LEFT JOIN oc_product p ON (pd.product_id = p.product_id) 
+			LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) 
 			WHERE pd.language_id = '" . $this->config->get('config_language_id') . "' 
 			AND TRIM(LCASE(pd.name)) LIKE ('" . $this->db->escape(trim(mb_strtolower($product_name))) . "%')
 			AND pd.product_id <> '" . (int)$product_id . "'
@@ -1178,7 +1177,7 @@
 			$product_data = $this->cache->get('product.popular.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
 			
 			if (!$product_data) {
-				$query = $this->db->query("SELECT p.product_id FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY p.viewed DESC, p.date_added DESC LIMIT " . (int)$limit);
+				$query = $this->db->query("SELECT p.product_id FROM oc_product p LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY p.viewed DESC, p.date_added DESC LIMIT " . (int)$limit);
 				
 				foreach ($query->rows as $result) {
 					$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
@@ -1192,7 +1191,7 @@
 
 		public function getLocalStockFeedProducts(){
 
-			$sql = "SELECT p.product_id, p.price, s.location_id, s.quantity, (SELECT price FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special, s.location_id, s.quantity FROM " . DB_PREFIX . "stocks s LEFT JOIN " . DB_PREFIX . "product p ON (p.product_id = s.product_id) WHERE status = 1 AND p.price > 0";
+			$sql = "SELECT p.product_id, p.price, s.location_id, s.quantity, (SELECT price FROM oc_product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special, s.location_id, s.quantity FROM oc_stocks s LEFT JOIN oc_product p ON (p.product_id = s.product_id) WHERE status = 1 AND p.price > 0";
 			
 			$query = $this->db->ncquery($sql);
 			
@@ -1201,7 +1200,7 @@
 		
 		public function getSupplementalFeedProducts(){
 			
-			$sql = "SELECT p.product_id, p.quantity, p.price, (SELECT price FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special FROM " . DB_PREFIX . "product p 
+			$sql = "SELECT p.product_id, p.quantity, p.price, (SELECT price FROM oc_product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special FROM oc_product p 
 			WHERE status = 1 AND p.price > 0";
 			
 			$query = $this->db->ncquery($sql);
@@ -1212,7 +1211,7 @@
 		public function getJustProductAttributeValues($product_id, $attribute_ids = []) {
 			$results = [];
 
-			$query = $this->db->query("SELECT text FROM " . DB_PREFIX . "product_attribute WHERE product_id = '" . (int)$product_id . "' AND attribute_id IN (" . implode(',', $attribute_ids) . ")");
+			$query = $this->db->query("SELECT text FROM oc_product_attribute WHERE product_id = '" . (int)$product_id . "' AND attribute_id IN (" . implode(',', $attribute_ids) . ")");
 
 			foreach($query->rows as $row){
 				if ($row['text']){
@@ -1226,12 +1225,12 @@
 		public function getProductAttributes($product_id) {
 			$product_attribute_group_data = array();
 			
-			$product_attribute_group_query = $this->db->query("SELECT ag.attribute_group_id, agd.name FROM " . DB_PREFIX . "product_attribute pa LEFT JOIN " . DB_PREFIX . "attribute a ON (pa.attribute_id = a.attribute_id) LEFT JOIN " . DB_PREFIX . "attribute_group ag ON (a.attribute_group_id = ag.attribute_group_id) LEFT JOIN " . DB_PREFIX . "attribute_group_description agd ON (ag.attribute_group_id = agd.attribute_group_id) WHERE pa.product_id = '" . (int)$product_id . "' AND agd.language_id = '" . (int)$this->config->get('config_language_id') . "' GROUP BY ag.attribute_group_id ORDER BY ag.sort_order, agd.name");
+			$product_attribute_group_query = $this->db->query("SELECT ag.attribute_group_id, agd.name FROM oc_product_attribute pa LEFT JOIN oc_attribute a ON (pa.attribute_id = a.attribute_id) LEFT JOIN oc_attribute_group ag ON (a.attribute_group_id = ag.attribute_group_id) LEFT JOIN oc_attribute_group_description agd ON (ag.attribute_group_id = agd.attribute_group_id) WHERE pa.product_id = '" . (int)$product_id . "' AND agd.language_id = '" . (int)$this->config->get('config_language_id') . "' GROUP BY ag.attribute_group_id ORDER BY ag.sort_order, agd.name");
 			
 			foreach ($product_attribute_group_query->rows as $product_attribute_group) {
 				$product_attribute_data = array();
 				
-				$product_attribute_query = $this->db->query("SELECT a.attribute_id, ad.name, pa.text FROM " . DB_PREFIX . "product_attribute pa LEFT JOIN " . DB_PREFIX . "attribute a ON (pa.attribute_id = a.attribute_id) LEFT JOIN " . DB_PREFIX . "attribute_description ad ON (a.attribute_id = ad.attribute_id) WHERE pa.product_id = '" . (int)$product_id . "' AND a.attribute_group_id = '" . (int)$product_attribute_group['attribute_group_id'] . "' AND ad.language_id = '" . (int)$this->config->get('config_language_id') . "' AND pa.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY a.sort_order, ad.name");
+				$product_attribute_query = $this->db->query("SELECT a.attribute_id, ad.name, pa.text FROM oc_product_attribute pa LEFT JOIN oc_attribute a ON (pa.attribute_id = a.attribute_id) LEFT JOIN oc_attribute_description ad ON (a.attribute_id = ad.attribute_id) WHERE pa.product_id = '" . (int)$product_id . "' AND a.attribute_group_id = '" . (int)$product_attribute_group['attribute_group_id'] . "' AND ad.language_id = '" . (int)$this->config->get('config_language_id') . "' AND pa.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY a.sort_order, ad.name");
 				
 				foreach ($product_attribute_query->rows as $product_attribute) {
 					$product_attribute_data[] = array(
@@ -1252,7 +1251,7 @@
 		}
 		
 		public function getProductFastPartOption($product_id) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option_value pov WHERE product_id = '" . (int)$product_id . "' AND option_id = 2 AND option_value_id = 2 LIMIT 1");
+			$query = $this->db->query("SELECT * FROM oc_product_option_value pov WHERE product_id = '" . (int)$product_id . "' AND option_id = 2 AND option_value_id = 2 LIMIT 1");
 			
 			if ($query->num_rows){
 				return ['product_option_value_id' => $query->row['product_option_value_id'], 'product_option_id' => $query->row['product_option_id']];
@@ -1265,12 +1264,12 @@
 			$product_option_data = array();
 			$product = $this->getProduct($product_id);
 			
-			$product_option_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option po LEFT JOIN `" . DB_PREFIX . "option` o ON (po.option_id = o.option_id) LEFT JOIN " . DB_PREFIX . "option_description od ON (o.option_id = od.option_id) WHERE po.product_id = '" . (int)$product_id . "' AND od.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY o.sort_order");
+			$product_option_query = $this->db->query("SELECT * FROM oc_product_option po LEFT JOIN `oc_option` o ON (po.option_id = o.option_id) LEFT JOIN oc_option_description od ON (o.option_id = od.option_id) WHERE po.product_id = '" . (int)$product_id . "' AND od.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY o.sort_order");
 			
 			foreach ($product_option_query->rows as $product_option) {
 				$product_option_value_data = array();
 				
-				$product_option_value_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option_value pov LEFT JOIN " . DB_PREFIX . "option_value ov ON (pov.option_value_id = ov.option_value_id) LEFT JOIN " . DB_PREFIX . "option_value_description ovd ON (ov.option_value_id = ovd.option_value_id) WHERE pov.product_id = '" . (int)$product_id . "' AND pov.product_option_id = '" . (int)$product_option['product_option_id'] . "' AND ovd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY ov.sort_order");
+				$product_option_value_query = $this->db->query("SELECT * FROM oc_product_option_value pov LEFT JOIN oc_option_value ov ON (pov.option_value_id = ov.option_value_id) LEFT JOIN oc_option_value_description ovd ON (ov.option_value_id = ovd.option_value_id) WHERE pov.product_id = '" . (int)$product_id . "' AND pov.product_option_id = '" . (int)$product_option['product_option_id'] . "' AND ovd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY ov.sort_order");
 				
 				
 				foreach ($product_option_value_query->rows as $product_option_value) {					
@@ -1330,13 +1329,13 @@
 		}
 		
 		public function getProductDiscounts($product_id) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_discount WHERE product_id = '" . (int)$product_id . "' AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND quantity > 1 AND ((date_start = '0000-00-00' OR date_start < NOW()) AND (date_end = '0000-00-00' OR date_end > NOW())) ORDER BY quantity ASC, priority ASC, price ASC");
+			$query = $this->db->query("SELECT * FROM oc_product_discount WHERE product_id = '" . (int)$product_id . "' AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND quantity > 1 AND ((date_start = '0000-00-00' OR date_start < NOW()) AND (date_end = '0000-00-00' OR date_end > NOW())) ORDER BY quantity ASC, priority ASC, price ASC");
 			
 			return $query->rows;
 		}
 		
 		public function getProductImages($product_id) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_image WHERE product_id = '" . (int)$product_id . "' ORDER BY sort_order ASC");
+			$query = $this->db->query("SELECT * FROM oc_product_image WHERE product_id = '" . (int)$product_id . "' ORDER BY sort_order ASC");
 			
 			return $query->rows;
 		}
@@ -1374,14 +1373,14 @@
 			$groupedalsoViewed = array_slice($groupedalsoViewed, -4);
 			
 			foreach ($groupedalsoViewed as $p) {
-				$this->db->ncquery("INSERT INTO `" . DB_PREFIX . "alsoviewed` (low, high, number, date_added) VALUES ('" . (int)$p['low'] . "', '" . (int)$p['high'] . "', '1', NOW()) ON DUPLICATE KEY UPDATE number = number+1");
+				$this->db->ncquery("INSERT INTO `oc_alsoviewed` (low, high, number, date_added) VALUES ('" . (int)$p['low'] . "', '" . (int)$p['high'] . "', '1', NOW()) ON DUPLICATE KEY UPDATE number = number+1");
 			}
 		}
 		
 		public function getProductRelated($product_id) {
 			$product_data = array();
 			
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_related pr LEFT JOIN " . DB_PREFIX . "product p ON (pr.related_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'");
+			$query = $this->db->query("SELECT * FROM oc_product_related pr LEFT JOIN oc_product p ON (pr.related_id = p.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'");
 			
 			foreach ($query->rows as $result) {
 				$product_data[$result['related_id']] = $this->getProduct($result['related_id']);
@@ -1393,7 +1392,7 @@
 		public function getProductAlsoBought($product_id){
 			$product_data = array();					
 			
-            $sql = "SELECT op.product_id, COUNT(*) AS total FROM " . DB_PREFIX . "order_product op LEFT JOIN `" . DB_PREFIX . "order` o ON (op.order_id = o.order_id) LEFT JOIN `" . DB_PREFIX . "product` p ON (op.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE o.order_status_id = 5 AND p.status = '1' AND p.quantity > 0 AND p.date_available <= NOW() AND op.order_id IN (SELECT order_id FROM " . DB_PREFIX . "order_product WHERE product_id = '" . (int)$product_id . "') AND op.product_id != '" . (int)$product_id . "' AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' GROUP BY op.product_id ORDER BY total DESC LIMIT 10";
+            $sql = "SELECT op.product_id, COUNT(*) AS total FROM oc_order_product op LEFT JOIN `oc_order` o ON (op.order_id = o.order_id) LEFT JOIN `oc_product` p ON (op.product_id = p.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE o.order_status_id = 5 AND p.status = '1' AND p.quantity > 0 AND p.date_available <= NOW() AND op.order_id IN (SELECT order_id FROM oc_order_product WHERE product_id = '" . (int)$product_id . "') AND op.product_id != '" . (int)$product_id . "' AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' GROUP BY op.product_id ORDER BY total DESC LIMIT 10";
 			
             $query = $this->db->ecquery($sql);
 
@@ -1412,8 +1411,8 @@
 		public function getProductRelatedSales($product_id, $category_id) {
 			$product_data = array();
 			
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category p2c
-			LEFT JOIN " . DB_PREFIX . "product p ON (p2c.product_id = p.product_id)
+			$query = $this->db->query("SELECT * FROM oc_product_to_category p2c
+			LEFT JOIN oc_product p ON (p2c.product_id = p.product_id)
 			WHERE p2c.product_id <> '" . (int)$product_id . "' AND p.status = '1'
 			AND p.date_available <= NOW() AND p.quantity > 0 AND p2c.category_id = '" . (int)$category_id . "' ORDER BY RAND() LIMIT 10");
 			
@@ -1424,14 +1423,14 @@
 			
 			if(count($products) < 10){
 				
-				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category p2c
-				LEFT JOIN " . DB_PREFIX . "product p ON (p2c.product_id = p.product_id)
+				$query = $this->db->query("SELECT * FROM oc_product_to_category p2c
+				LEFT JOIN oc_product p ON (p2c.product_id = p.product_id)
 				WHERE p2c.product_id <> '" . (int)$product_id . "' AND p.status = '1' AND p.quantity > 0
 				AND p.date_available <= NOW()
 				AND p.quantity > 0
-				AND p2c.category_id IN (SELECT category_id FROM " . DB_PREFIX . "category_path
+				AND p2c.category_id IN (SELECT category_id FROM oc_category_path
 				WHERE path_id IN (
-				SELECT path_id FROM " . DB_PREFIX . "category_path
+				SELECT path_id FROM oc_category_path
 				WHERE category_id =" . (int)$category_id . "))
 				ORDER BY RAND() LIMIT 10");
 				
@@ -1455,7 +1454,7 @@
 		public function getProductLights($product_id) {
 			$product_data = array();
 			
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_light pr LEFT JOIN " . DB_PREFIX . "product p ON (pr.Light_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.quantity > 0 AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY p.price DESC");
+			$query = $this->db->query("SELECT * FROM oc_product_light pr LEFT JOIN oc_product p ON (pr.Light_id = p.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.quantity > 0 AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY p.price DESC");
 			
 			foreach ($query->rows as $result) {
 				$product_data[$result['light_id']] = $this->getProduct($result['light_id']);
@@ -1467,7 +1466,7 @@
 		public function getProductAnalog($product_id, $product_info = [], $same = [], $limit = 20, $count = false) {
 			$product_data = array();
 			
-			$sql = "SELECT * FROM " . DB_PREFIX . "product_analog pr LEFT JOIN " . DB_PREFIX . "product p ON (pr.analog_id = p.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.quantity > 0 AND p.date_available <= NOW() ORDER BY (p.quantity > 0) DESC, p.price DESC";
+			$sql = "SELECT * FROM oc_product_analog pr LEFT JOIN oc_product p ON (pr.analog_id = p.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.quantity > 0 AND p.date_available <= NOW() ORDER BY (p.quantity > 0) DESC, p.price DESC";
 			
 			$query = $this->db->query($sql);
 			
@@ -1477,7 +1476,7 @@
 
 			if (!empty($product_info['reg_atx_1'])){				
 				if (mb_strlen($product_info['reg_atx_1']) <= 5){
-					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
+					$sql = "SELECT DISTINCT p.product_id FROM oc_product p WHERE 
 					p.reg_atx_1 = '" . $this->db->escape($product_info['reg_atx_1']) . "' 
 					AND p.status = '1'
 					AND p.product_id <> '" . (int)$product_id . "'
@@ -1485,7 +1484,7 @@
 					AND p.quantity > 0				
 					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT ". (int)$limit;
 				} else {
-					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
+					$sql = "SELECT DISTINCT p.product_id FROM oc_product p WHERE 
 					p.reg_atx_1 LIKE '" . $this->db->escape(mb_substr($product_info['reg_atx_1'], 0, 5)) . "%' 
 					AND p.status = '1'
 					AND p.product_id <> '" . (int)$product_id . "'
@@ -1514,8 +1513,8 @@
 			$product_data = array();
 			
 			//This is set by hands
-			$sql = "SELECT DISTINCT pr.same_id FROM " . DB_PREFIX . "product_same pr 
-			LEFT JOIN " . DB_PREFIX . "product p ON (pr.same_id = p.product_id)
+			$sql = "SELECT DISTINCT pr.same_id FROM oc_product_same pr 
+			LEFT JOIN oc_product p ON (pr.same_id = p.product_id)
 			WHERE pr.product_id = '" . (int)$product_id . "' 
 			AND p.status = '1' 
 			AND p.date_available <= NOW() 
@@ -1530,7 +1529,7 @@
 
 			if (!empty($product_info['reg_atx_1'])){
 				if (mb_strlen($product_info['reg_atx_1']) == 7){
-					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
+					$sql = "SELECT DISTINCT p.product_id FROM oc_product p WHERE 
 					p.reg_atx_1 = '" . $this->db->escape($product_info['reg_atx_1']) . "' 
 					AND p.status = '1'
 					AND p.product_id <> '" . (int)$product_id . "'
@@ -1538,7 +1537,7 @@
 					AND p.quantity > 0				
 					ORDER BY (p.quantity > 0) DESC, p.price DESC LIMIT " . (int)$limit;						
 				} elseif (mb_strlen($product_info['reg_atx_1']) < 7 && $product_info['reg_unpatented_name'] && $product_info['reg_unpatented_name'] <> 'Comb drug'){
-					$sql = "SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE 
+					$sql = "SELECT DISTINCT p.product_id FROM oc_product p WHERE 
 					p.reg_unpatented_name = '" . $this->db->escape($product_info['reg_unpatented_name']) . "' 
 					AND p.status = '1'
 					AND p.product_id <> '" . (int)$product_id . "'
@@ -1565,9 +1564,9 @@
 		}
 
 		public function getCountBoughtForMonth($product_id){
-			$sql = "SELECT SUM(quantity) as total FROM " . DB_PREFIX . "order_product op 
+			$sql = "SELECT SUM(quantity) as total FROM oc_order_product op 
 			WHERE op.product_id = '". (int)$product_id ."' AND op.order_id IN 
-			(SELECT o.order_id FROM `" . DB_PREFIX . "order` o WHERE o.order_status_id > 0 AND DATE(o.date_added) >= DATE(DATE_SUB(NOW(),INTERVAL 120 DAY)))";
+			(SELECT o.order_id FROM `oc_order` o WHERE o.order_status_id > 0 AND DATE(o.date_added) >= DATE(DATE_SUB(NOW(),INTERVAL 120 DAY)))";
 
 			$query = $this->db->query($sql);
 
@@ -1575,7 +1574,7 @@
 		}
 		
 		public function getProductLayoutId($product_id) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_layout WHERE product_id = '" . (int)$product_id . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "'");
+			$query = $this->db->query("SELECT * FROM oc_product_to_layout WHERE product_id = '" . (int)$product_id . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "'");
 			
 			if ($query->num_rows) {
 				return $query->row['layout_id'];
@@ -1585,30 +1584,30 @@
 		}
 		
 		public function getCategories($product_id) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . (int)$product_id . "'");
+			$query = $this->db->query("SELECT * FROM oc_product_to_category WHERE product_id = '" . (int)$product_id . "'");
 			
 			return $query->rows;
 		}
 		
 		public function getCategoriesExceptListing($product_id) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . (int)$product_id . "' AND NOT (category_id = 1 OR category_id IN (SELECT category_id FROM " . DB_PREFIX . "category WHERE parent_id = 1))");
+			$query = $this->db->query("SELECT * FROM oc_product_to_category WHERE product_id = '" . (int)$product_id . "' AND NOT (category_id = 1 OR category_id IN (SELECT category_id FROM oc_category WHERE parent_id = 1))");
 			
 			return $query->rows;
 		}
 		
 		
 		public function getMainCategory($product_id) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . (int)$product_id . "' ORDER BY main_category DESC LIMIT 1");
+			$query = $this->db->query("SELECT * FROM oc_product_to_category WHERE product_id = '" . (int)$product_id . "' ORDER BY main_category DESC LIMIT 1");
 			return $query->row;
 		}
 		
 		public function getMainCategoryName($product_id) {
-			$query = $this->db->query("SELECT cd.name FROM " . DB_PREFIX . "product_to_category p2c LEFT JOIN " . DB_PREFIX . "category_description cd ON (cd.category_id = p2c.category_id AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "') WHERE product_id = '" . (int)$product_id . "' ORDER BY main_category DESC LIMIT 1");
+			$query = $this->db->query("SELECT cd.name FROM oc_product_to_category p2c LEFT JOIN oc_category_description cd ON (cd.category_id = p2c.category_id AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "') WHERE product_id = '" . (int)$product_id . "' ORDER BY main_category DESC LIMIT 1");
 			return !empty($query->row['name'])?$query->row['name']:'';
 		}
 		
 		public function getMainCollection($product_id) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_collection WHERE product_id = '" . (int)$product_id . "' ORDER BY main_collection DESC LIMIT 1");
+			$query = $this->db->query("SELECT * FROM oc_product_to_collection WHERE product_id = '" . (int)$product_id . "' ORDER BY main_collection DESC LIMIT 1");
 			
 			if ($query->num_rows){
 				return $query->row['collection_id'];
@@ -1618,7 +1617,7 @@
 		}
 		
 		public function getParentCategory($category_id) {
-			$query = $this->db->query("SELECT parent_id FROM " . DB_PREFIX . "category WHERE category_id = '" . (int)$category_id . "'");
+			$query = $this->db->query("SELECT parent_id FROM oc_category WHERE category_id = '" . (int)$category_id . "'");
 			return $query->row;
 		}
 		
@@ -1628,28 +1627,28 @@
 			
 			if (!empty($data['filter_category_id'])) {
 				if (!empty($data['filter_sub_category'])) {
-					$sql .= " FROM " . DB_PREFIX . "category_path cp LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (cp.category_id = p2c.category_id)";
+					$sql .= " FROM oc_category_path cp LEFT JOIN oc_product_to_category p2c ON (cp.category_id = p2c.category_id)";
 					} else {
-					$sql .= " FROM " . DB_PREFIX . "product_to_category p2c";
+					$sql .= " FROM oc_product_to_category p2c";
 				}
 				
 				if (!empty($data['filter_filter'])) {
-					$sql .= " LEFT JOIN " . DB_PREFIX . "product_filter pf ON (p2c.product_id = pf.product_id) LEFT JOIN " . DB_PREFIX . "product p ON (pf.product_id = p.product_id)";
+					$sql .= " LEFT JOIN oc_product_filter pf ON (p2c.product_id = pf.product_id) LEFT JOIN oc_product p ON (pf.product_id = p.product_id)";
 					} else {
-					$sql .= " LEFT JOIN " . DB_PREFIX . "product p ON (p2c.product_id = p.product_id)";
+					$sql .= " LEFT JOIN oc_product p ON (p2c.product_id = p.product_id)";
 				}
 				} elseif (!empty($data['filter_collection_id'])) {
 				
 				if (!empty($data['filter_sub_collection'])) {
-					$sql .= " FROM " . DB_PREFIX . "collection_path cp LEFT JOIN " . DB_PREFIX . "product_to_collection p2c ON (cp.collection_id = p2c.collection_id)";
+					$sql .= " FROM oc_collection_path cp LEFT JOIN oc_product_to_collection p2c ON (cp.collection_id = p2c.collection_id)";
 					} else {
-					$sql .= " FROM " . DB_PREFIX . "product_to_collection p2c";
+					$sql .= " FROM oc_product_to_collection p2c";
 				}
 				
-				$sql .= " LEFT JOIN " . DB_PREFIX . "product p ON (p2c.product_id = p.product_id)";
+				$sql .= " LEFT JOIN oc_product p ON (p2c.product_id = p.product_id)";
 				
 				} else {
-				$sql .= " FROM " . DB_PREFIX . "product p";
+				$sql .= " FROM oc_product p";
 			}
 			
 			// OCFilter start
@@ -1666,7 +1665,7 @@
 			}
 			// OCFilter end
 			
-			$sql .= " LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE 1 AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+			$sql .= " LEFT JOIN oc_product_description pd ON (p.product_id = pd.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE 1 AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 			
 			if (!empty($data['filter_category_id'])) {
 				if (!empty($data['filter_sub_category'])) {
@@ -1787,18 +1786,18 @@
 			
 			if (!empty($data['filter_category_id'])) {
 				if (!empty($data['filter_sub_category'])) {
-					$sql .= " FROM " . DB_PREFIX . "category_path cp LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (cp.category_id = p2c.category_id)";
+					$sql .= " FROM oc_category_path cp LEFT JOIN oc_product_to_category p2c ON (cp.category_id = p2c.category_id)";
 					} else {
-					$sql .= " FROM " . DB_PREFIX . "product_to_category p2c";
+					$sql .= " FROM oc_product_to_category p2c";
 				}
 				
 				if (!empty($data['filter_filter'])) {
-					$sql .= " LEFT JOIN " . DB_PREFIX . "product_filter pf ON (p2c.product_id = pf.product_id) LEFT JOIN " . DB_PREFIX . "product p ON (pf.product_id = p.product_id)";
+					$sql .= " LEFT JOIN oc_product_filter pf ON (p2c.product_id = pf.product_id) LEFT JOIN oc_product p ON (pf.product_id = p.product_id)";
 					} else {
-					$sql .= " LEFT JOIN " . DB_PREFIX . "product p ON (p2c.product_id = p.product_id)";
+					$sql .= " LEFT JOIN oc_product p ON (p2c.product_id = p.product_id)";
 				}
 				} else {
-				$sql .= " FROM " . DB_PREFIX . "product p";
+				$sql .= " FROM oc_product p";
 			}
 			
 			// OCFilter start
@@ -1815,7 +1814,7 @@
 			}
 			// OCFilter end
 			
-			$sql .= " LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+			$sql .= " LEFT JOIN oc_product_description pd ON (p.product_id = pd.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 			
 			if (!empty($data['filter_category_id'])) {
 				if (!empty($data['filter_sub_category'])) {
@@ -1905,20 +1904,20 @@
 		}
 		
 		public function getProfile($product_id, $recurring_id) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "recurring r JOIN " . DB_PREFIX . "product_recurring pr ON (pr.recurring_id = r.recurring_id AND pr.product_id = '" . (int)$product_id . "') WHERE pr.recurring_id = '" . (int)$recurring_id . "' AND status = '1' AND pr.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "'");
+			$query = $this->db->query("SELECT * FROM oc_recurring r JOIN oc_product_recurring pr ON (pr.recurring_id = r.recurring_id AND pr.product_id = '" . (int)$product_id . "') WHERE pr.recurring_id = '" . (int)$recurring_id . "' AND status = '1' AND pr.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "'");
 			
 			return $query->row;
 		}
 		
 		public function getProfiles($product_id) {
-			$query = $this->db->query("SELECT rd.* FROM " . DB_PREFIX . "product_recurring pr JOIN " . DB_PREFIX . "recurring_description rd ON (rd.language_id = " . (int)$this->config->get('config_language_id') . " AND rd.recurring_id = pr.recurring_id) JOIN " . DB_PREFIX . "recurring r ON r.recurring_id = rd.recurring_id WHERE pr.product_id = " . (int)$product_id . " AND status = '1' AND pr.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' ORDER BY sort_order ASC");
+			$query = $this->db->query("SELECT rd.* FROM oc_product_recurring pr JOIN oc_recurring_description rd ON (rd.language_id = " . (int)$this->config->get('config_language_id') . " AND rd.recurring_id = pr.recurring_id) JOIN oc_recurring r ON r.recurring_id = rd.recurring_id WHERE pr.product_id = " . (int)$product_id . " AND status = '1' AND pr.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' ORDER BY sort_order ASC");
 			
 			return $query->rows;
 		}
 		
 		public function getProductByUUID($uuid){
 			
-			$query = $this->db->query("SELECT product_id FROM " . DB_PREFIX . "product WHERE uuid = '" . $this->db->escape($uuid) . "'");
+			$query = $this->db->query("SELECT product_id FROM oc_product WHERE uuid = '" . $this->db->escape($uuid) . "'");
 			
 			if ($query->num_rows){
 				return $this->getProduct($query->row['product_id']);
@@ -1930,7 +1929,7 @@
 		
 		public function getProductIDByUUID($uuid){
 			
-			$query = $this->db->query("SELECT product_id FROM " . DB_PREFIX . "product WHERE uuid = '" . $this->db->escape($uuid) . "'");
+			$query = $this->db->query("SELECT product_id FROM oc_product WHERE uuid = '" . $this->db->escape($uuid) . "'");
 			
 			if ($query->num_rows){
 				return $query->row['product_id'];
@@ -1941,7 +1940,7 @@
 		}
 		
 		public function getTotalProductSpecials() {
-			$query = $this->db->query("SELECT COUNT(DISTINCT ps.product_id) AS total FROM " . DB_PREFIX . "product_special ps LEFT JOIN " . DB_PREFIX . "product p ON (ps.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW()))");
+			$query = $this->db->query("SELECT COUNT(DISTINCT ps.product_id) AS total FROM oc_product_special ps LEFT JOIN oc_product p ON (ps.product_id = p.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW()))");
 			
 			if (isset($query->row['total'])) {
 				return $query->row['total'];
@@ -1952,13 +1951,13 @@
 		
 		public function getProductsForSiteMap($language_id, $start)
 		{
-			$query = $this->db->query("SELECT p.product_id, p.date_modified, p.date_added, p.image, p.manufacturer_id, pd.name FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON pd.product_id = p.product_id WHERE  pd.language_id ='". (int)$language_id ."' AND p.product_id >= '". (int)$start ."' ORDER BY p.product_id ASC");
+			$query = $this->db->query("SELECT p.product_id, p.date_modified, p.date_added, p.image, p.manufacturer_id, pd.name FROM oc_product p LEFT JOIN oc_product_description pd ON pd.product_id = p.product_id WHERE  pd.language_id ='". (int)$language_id ."' AND p.product_id >= '". (int)$start ."' ORDER BY p.product_id ASC");
 			return $query->rows;
 		}
 		
 		public function getProductsTags($product_id){
-			$query = $this->db->query("SELECT pt.product_id, pt.tags_id, a.tags FROM " . DB_PREFIX . "product_to_tags pt 
-			LEFT JOIN " . DB_PREFIX . "simple_blog_article_description a ON pt.tags_id = a.simple_blog_article_id 
+			$query = $this->db->query("SELECT pt.product_id, pt.tags_id, a.tags FROM oc_product_to_tags pt 
+			LEFT JOIN oc_simple_blog_article_description a ON pt.tags_id = a.simple_blog_article_id 
 			WHERE  pt.product_id ='". (int)$product_id ."' AND a.language_id=2");
 			$str = '';
 			if(!empty($query->rows)){
@@ -1972,7 +1971,7 @@
 		
 		public function getProductsForSiteMap2($language_id, $start)
 		{
-			$query = $this->db->query("SELECT p.product_id, p.date_modified, p.date_added, p.image, p.manufacturer_id, pd.name, pd.description, pd.instruction FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON pd.product_id = p.product_id  WHERE  pd.language_id ='". (int)$language_id ."' AND p.product_id >= '". (int)$start ."' ORDER BY p.product_id ASC");
+			$query = $this->db->query("SELECT p.product_id, p.date_modified, p.date_added, p.image, p.manufacturer_id, pd.name, pd.description, pd.instruction FROM oc_product p LEFT JOIN oc_product_description pd ON pd.product_id = p.product_id  WHERE  pd.language_id ='". (int)$language_id ."' AND p.product_id >= '". (int)$start ."' ORDER BY p.product_id ASC");
 			
 			
 			return $query->rows;
@@ -1981,14 +1980,14 @@
 		
 		public function getProductByManufacturer($manufacturerId)
 		{
-			$query = $this->db->query("SELECT product_id FROM " . DB_PREFIX . "product WHERE manufacturer_id = '". (int)$manufacturerId ."'");
+			$query = $this->db->query("SELECT product_id FROM oc_product WHERE manufacturer_id = '". (int)$manufacturerId ."'");
 			
 			return $query->rows;
 		}
 		
 		public function getProductsByCategory($categoryId)
 		{
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE category_id='" . (int)$categoryId . "'");
+			$query = $this->db->query("SELECT * FROM oc_product_to_category WHERE category_id='" . (int)$categoryId . "'");
 			
 			return $query->rows;
 		}

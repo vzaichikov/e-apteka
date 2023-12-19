@@ -1,13 +1,17 @@
-<div class="form-group <?php if ($required) { ?>required<?php } ?> row-<?php echo $id ?>">
+<div style="max-height: 500px; overflow-y:scroll;" class="form-group <?php if ($required) { ?>required<?php } ?> row-<?php echo $id ?>">
 
 	<?php if ($id == 'shipping_location_id') { ?>
-    	<span class='col-sm-2' for="<?php echo $id ?>"></span>
+    	<span class='col-sm-1' for="<?php echo $id ?>"></span>
 	<?php } else { ?>
 		<label class="control-label <?php echo $page == 'checkout' ? 'col-sm-4' : 'col-sm-2' ?>" for="<?php echo $id ?>"><?php echo $label ?></label>
 	<?php } ?>
 
-
-    <div class="<?php echo $page == 'checkout' ? 'col-sm-8' : 'col-sm-10' ?>">
+	<?php if ($id == 'shipping_location_id') { ?>
+		<div class="<?php echo $page == 'checkout' ? 'col-sm-11' : 'col-sm-10' ?>">
+	<?php } else { ?>
+		<div class="<?php echo $page == 'checkout' ? 'col-sm-8' : 'col-sm-10' ?>">
+	<?php } ?>
+    
 		<?php if ($type == 'select' || $type == 'select2') { ?>
 			<select class="form-control" name="<?php echo $name ?>" id="<?php echo $id ?>" <?php echo $bootstrap ? 'data-theme="bootstrap"' : '' ?> <?php echo $type == 'select2' ? 'data-type="select2"' : '' ?> <?php echo $reload ? 'data-onchange="reloadAll"' : 'data-reload-payment-form="true"'?>>
 				<?php foreach ($values as $info) { ?>
@@ -41,8 +45,7 @@
 			</div>
 			<?php } elseif ($type == 'checkbox') { ?>
 			<div>
-				<?php if ($name == 'customer[is_fourteen]' && count($values) == 1) { ?>
-					
+				<?php if ($name == 'customer[is_fourteen]' && count($values) == 1) { ?>					
 					<?php foreach ($values as $info_id => $info) { ?>
 						<div class="checkbox">
 							<div class="el-checkbox">
@@ -51,11 +54,8 @@
 								<input type="checkbox" name="<?php echo $name ?>[<?php echo $info['id'] ?>]" id="<?php echo $id ?>" value="1" <?php echo !empty($value[$info['id']]) ? 'checked="checked"' : '' ?> <?php echo $reload ? 'data-onchange="reloadAll"' : 'data-reload-payment-form="true"'?>><?php echo $info['text'] ?></label>
 							</div>
 						</div>
-					<?php } ?>
-					
-					<?php } else { ?>
-					
-					
+					<?php } ?>					
+					<?php } else { ?>										
 					<?php foreach ($values as $info_id => $info) { ?>
 						<div class="checkbox">
 							<div class="el-checkbox">

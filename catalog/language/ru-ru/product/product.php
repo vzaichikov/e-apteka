@@ -48,7 +48,7 @@
 	//$_['text_make_reserve']						  = 'Зарезервировать';
 	$_['text_make_reserve']						  = 'Купить';
 
-	$_['text_is_in_stock_in_drugstores']            = 'Наличие в аптеках в Киеве';
+	$_['text_is_in_stock_in_drugstores']            = 'Наличие в аптеках';
 	
 	$_['text_all_collection_products']            = 'Вся подборка';
 	$_['text_special_time_to_left']               = 'Скидка будет действовать еще';	
@@ -97,8 +97,6 @@
 
 	$_['text_full_analogs'] = 'Аналоги';
 	$_['text_similar_pharmaceutic'] = 'Со схожим терапевтическим действием';
-
-	$_['text_available_in_drugstores']    	= 'Доступно %s шт. в %s аптеках';
 
 	$_['text_bought_for_month']    = 'Этот товар купили %s раз за последнюю неделю';
 

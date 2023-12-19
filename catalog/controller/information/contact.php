@@ -125,27 +125,20 @@
 				$data['image'] = false;
 			}
 			
-			$data['store'] = $this->config->get('config_name');
-			$data['address'] = nl2br($this->config->get('config_address'));
-			$data['geocode'] = $this->config->get('config_geocode');
+			$data['store'] 		= $this->config->get('config_name');
+			$data['address'] 	= nl2br($this->config->get('config_address'));
+			$data['geocode'] 	= $this->config->get('config_geocode');
 			$data['geocode_hl'] = $this->config->get('config_language');
-			$data['telephone'] = $this->config->get('config_telephone');
-			$data['fax'] = $this->config->get('config_fax');
-			$data['open'] = nl2br($this->config->get('config_open'));
-			$data['comment'] = $this->config->get('config_comment');
-						
-			$data['locations'] = array();
+			$data['telephone'] 	= $this->config->get('config_telephone');
+			$data['fax'] 		= $this->config->get('config_fax');
+			$data['open'] 		= nl2br($this->config->get('config_open'));
+			$data['comment'] 	= $this->config->get('config_comment');
+
 			
+						
+			$data['locations'] = [];			
 			$this->load->model('localisation/location');
 			
-			$multilang_fields = array(
-			'open',
-			'address',
-			'name',
-			'comment'		
-			);
-			
-
 			foreach((array)$this->model_localisation_location->getLocationsForMapPage() as $location_id) {
 				$location_info = $this->model_localisation_location->getLocation($location_id);
 				
@@ -166,9 +159,9 @@
 						$_r = trim($location_info['open_struct']);
 						
 						if ($_r == '∞'){
-							$open = $this->language->get('text_open_alltime');
-							$open_text = $this->language->get('text_open_alltime');
-							$is_open_now = true;
+							$open 			= $this->language->get('text_open_alltime');
+							$open_text 		= $this->language->get('text_open_alltime');
+							$is_open_now 	= true;
 							} else {
 							$a = explode(PHP_EOL, $location_info['open_struct']);													
 							$d = array();
@@ -209,13 +202,10 @@
 									$open_text 		= $this->language->get('text_closed_now');
 									$open 			= $this->language->get('text_closed_now');
 								}
-							}
-							
+							}							
 						}									
 					}
-					
-					
-					
+															
 					if ($is_open_now){
 						$faclass = 'text-success';
 						} else {
@@ -230,54 +220,62 @@
 					if (!$is_open_now){
 						$mcolor = 'red';
 						$tdclass = 'bg-danger';					
-					}
-					
-					foreach ($multilang_fields as $_field){
-						if ($_mlvalue = $this->model_localisation_location->getLocationML($location_info['location_id'], $_field)){
-							${$_field} = $_mlvalue;
-							} else {
-							${$_field} = $location_info[$_field];
-						}
-					}								
+					}					
 					
 					$data['text_we_work_while_no_light'] = $this->language->get('text_we_work_while_no_light');
 
 					if (!empty($this->registry->get('branding')[$location_info['brand']])){
 						$icon = HTTPS_SERVER . 'image/brand/marker-icon-'. $this->registry->get('branding')[$location_info['brand']] .'.png';
+						$logo = HTTPS_SERVER . 'image/brand/marker-icon-'. $this->registry->get('branding')[$location_info['brand']] .'.svg';
 					} else {
 						$icon = HTTPS_SERVER . 'image/brand/marker-icon-brand-default.png';
+						$logo = HTTPS_SERVER . 'image/brand/marker-icon-brand-default.svg';
 					}
 
 					$name = $location_info['name'];
-					if (!in_array($location_info['location_id'], $this->cart->getOpenedStores())){
-						continue;
-						$name 		= ' <b>[ТИМЧАСОВО НЕ ПРАЦЮЄ]</b> ' . $name;		
-						$address 	= ' <b>[ТИМЧАСОВО НЕ ПРАЦЮЄ]</b> ' . $address;		
+					// if (!in_array($location_info['location_id'], $this->cart->getOpenedStores())){
+					// 	continue;
+					// 	$name 		= ' <b>[ТИМЧАСОВО НЕ ПРАЦЮЄ]</b> ' . $name;		
+					// 	$address 	= ' <b>[ТИМЧАСОВО НЕ ПРАЦЮЄ]</b> ' . $address;		
 
-						$mcolor 	= 'grey';
-						$tdclass 	= 'bg-danger';
-						$icon 		= HTTPS_SERVER . 'image/brand/marker_grey.png';
+					// 	$mcolor 	= 'grey';
+					// 	$tdclass 	= 'bg-danger';
+					// 	$icon 		= HTTPS_SERVER . 'image/brand/marker_grey.png';
+					// }
+
+					if (!$location_info['geocode']){
+						continue;
 					}
+
+					if (!$location_info['gmaps_link']){
+						$location_info['gmaps_link'] = 'https://www.google.com/maps/place/'. str_replace(' ', '', $location_info['geocode']);
+					}
+
+					$location_info['name'] = str_replace($location_info['address'], '', $location_info['name']);
 					
-					$data['locations'][] = array(
-					'location_id' => $location_info['location_id'],
-					'name'        => $this->db->escape($name),
-					'address'     => $this->db->escape(nl2br($address)),
-					'geocode'     => $location_info['geocode'],
-					'telephone'   => $location_info['telephone'],
-					'email'   	  => $this->config->get('config_email'),
-					'fax'         => $location_info['fax'],
-					'image'       => $image,
-					'open_text'   => $open_text,
-					'open'        => nl2br($open),
-					'tdclass' 	  => $tdclass,
-					'faclass' 	  => $faclass,
-					'open_text'   => $open_text,
-					'icon' 	      => $icon,
-					'comment'     => $location_info['comment'],
-					'information_id' => $location_info['information_id'],
-					'information_href' => $location_info['information_id']?$this->url->link('catalog/information', 'information_id=' . $location_info['information_id']):false
-					);
+					$data['locations'][] = [
+					'location_id' 	=> $location_info['location_id'],
+					'name'        	=> str_replace("'", '`', $location_info['name']),
+					'address'     	=> str_replace("'", '`', $location_info['address']),
+					'geocode'     	=> $location_info['geocode'],
+					'geocode_lat'   => parsegeocode($location_info['geocode'])['lat'],
+					'geocode_lon'   => parsegeocode($location_info['geocode'])['lon'],
+					'gmaps_link' 	=> $location_info['gmaps_link'],
+					'telephone'   	=> $location_info['telephone'],
+					'email'   	  	=> $this->config->get('config_email'),
+					'fax'         	=> $location_info['fax'],
+					'image'       	=> $image,
+					'open_text'   	=> $open_text,
+					'open'        	=> nl2br($location_info['open']),
+					'tdclass' 	  	=> $tdclass,
+					'faclass' 	  	=> $faclass,
+					'open_text'   	=> $open_text,
+					'icon' 	      	=> $icon,
+					'logo' 	     	=> $logo,
+					'comment'     	=> $location_info['comment'],
+					'information_id' 	=> $location_info['information_id'],
+					'information_href' 	=> $location_info['information_id']?$this->url->link('catalog/information', 'information_id=' . $location_info['information_id']):false
+					];
 				}
 			}
 			

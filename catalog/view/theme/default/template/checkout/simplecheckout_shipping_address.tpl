@@ -9,6 +9,8 @@
     .el-radio-style .text-warning{padding-left:10px;}
     
     .loadingspan {float: right; margin-right: 6px; margin-top: -20px;position: relative;z-index: 2;color: red;}
+
+    .row-shipping_location_id .col-sm-2 {}
 </style>
 
 <div class="simplecheckout-block" id="simplecheckout_shipping_address" <?php echo $hide ? 'data-hide="true"' : '' ?> <?php echo $display_error && $has_error ? 'data-error="true"' : '' ?>>

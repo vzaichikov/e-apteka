@@ -46,6 +46,8 @@
 	$_['please_select_street'] = 'Выберите улицу Киева';
 	
 	$_['text_we_work_while_no_light'] = '<i class="fa fa-lightbulb-o" aria-hidden="true"></i> Работаем без света';
+	$_['text_available_in_drugstores']    	= 'Доступно %s шт. в %s %s';
+	$_['text_drugstore_plural'] = ['аптеке', 'аптеках', 'аптеках'];
 
 	// Buttons
 	$_['button_address_add']		= 'Добавить адрес';
@@ -108,7 +110,9 @@
 	$_['free_price']					= 'Бесплатно';
 	$_['zero_price_order']				= 'Под заказ';
 
-	$_['text_make_route']				= '<i class="fa fa-map-marker"></i> маршрут';
+	$_['text_make_route']				= '<i class="fa fa-arrow-circle-right"></i> маршрут';
+	$_['text_find_closest_drugstore']   = '<i class="fa fa-search"></i> Найти ближайшую аптеку';
+	$_['text_closest']					= '<span class="stock-distance-label label label-success">ближайшая</span>';
 	
 	
 	$_['text_yourprice']               = 'Ваша цена';

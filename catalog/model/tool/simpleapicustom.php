@@ -80,7 +80,6 @@
 			}
 
 			public function getIfStreetIsOnLeftSide($street){
-
 				foreach ($this->leftShoreRegions as $leftShoreRegion){
 					if (strpos($street['district'], $leftShoreRegion) !== false){
 						return true;
@@ -106,11 +105,10 @@
 				return true;
 			}
 			
-			public function getKyivRiverSides(){
-				
+			public function getKyivRiverSides(){				
 				$this->load->language('checkout/simplecheckout');
 				
-				$locations = $this->cart->getCurrentLocationsAvailableForPickup(true);								
+				$locations = $this->cart->getCurrentLocationsAvailableForPickup(['novaposhta_city_guid' => $this->cart->getDefaultCityRef], true, true);								
 				
 				if (in_array(6, $locations)){
 					$result[] = array(
@@ -297,8 +295,6 @@
 			}
 
 			public function checkIfDrugstoreIsSelected($val){
-				//var_dump($val);
-
 				if (empty($val)){
 					return false;
 				}
@@ -308,11 +304,9 @@
 				}
 
 				return true;
-
 			}
 
 			public function validateNovaPoshtaWareHouse($val){
-
 				if ($val == 0){
 					return false;
 				}
@@ -325,7 +319,6 @@
 			}
 
 			public function validateKyivStreet($val){
-
 				if ($val == 0){
 					return false;
 				}
@@ -341,11 +334,11 @@
 				return true;
 			}
 
-			public function getCurrentLocationsAvailableForPickup(){
+			public function getCurrentLocationsAvailableForPickup($novaposhta_city_guid = ''){
 				$values = [];
 				$this->load->model('localisation/location');
 				
-				$available_locations 		= $this->cart->getCurrentLocationsAvailableForPickup();
+				$available_locations 		= $this->cart->getCurrentLocationsAvailableForPickup(['novaposhta_city_guid' => $novaposhta_city_guid], false, false);
 				$cart_has_narcotic_drugs 	= $this->cart->getIfCartHasNarcoticDrugs();
 				$cart_has_preorder 			= $this->cart->getIfCartHasPreorder();
 
@@ -364,9 +357,24 @@
 					}
 				}
 
+				if (!$this->cart->getIfEnableLogicDeliverFromAny()){
+					$not_stock_locations = [];
+				}
+
 				unset($location);
-				foreach ($stock_locations as $location){
+				foreach ($stock_locations as $location){					
 					$name = '<b class="drugstore-radio-head">';
+
+					if (!empty($this->registry->get('branding')[$location['brand']])){
+						$icon = HTTPS_SERVER . 'image/brand/marker-icon-'. $this->registry->get('branding')[$location['brand']] .'.png';
+						$logo = HTTPS_SERVER . 'image/brand/marker-icon-'. $this->registry->get('branding')[$location['brand']] .'.svg';
+					} else {
+						$icon = HTTPS_SERVER . 'image/brand/marker-icon-brand-default.png';
+						$logo = HTTPS_SERVER . 'image/brand/marker-icon-brand-default.svg';
+					}	
+
+					$name .= '<img src="'. $logo .'" height="15px" width="15px"> ';
+
 					$name .= $location['name'];					
 					$name .= '</b>';
 
@@ -480,7 +488,6 @@
 					);
 
 					return $values;
-
 				}
 
 

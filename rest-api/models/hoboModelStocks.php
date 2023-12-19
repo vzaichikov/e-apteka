@@ -65,9 +65,10 @@ class hoboModelStocks extends hoboModel{
 
 			if ($product_id){				
 				$result[] = [
-					'ProductID' 	=> $stock['ProductID'],
-					'ProductIDInt' 	=> $product_id,
-					'Success' 		=> true
+					'ProductID' 		=> $stock['ProductID'],
+					'ProductIDInt' 		=> $product_id,
+					'DrugstoreIDInt' 	=> $DrugstoreID,
+					'Success' 			=> true
 				];
 			} else {
 				$result[] = [

@@ -32,8 +32,13 @@ $_['text_no_results'] = 'Немає даних!';
 
 $_['text_full_pack']                         = 'Упаковка (%s шт.)';
 $_['text_part_pack']                         = 'Частина упаковки';
+$_['text_available_in_drugstores']    = 'Доступно %s шт. в %s %s';
+$_['text_drugstore_plural'] = ['аптеці', 'аптеках', 'аптеках'];
 
-$_['text_make_route']				= '<i class="fa fa-map-marker"></i> маршрут';
+
+$_['text_make_route']				= '<i class="fa fa-arrow-circle-right"></i> маршрут';
+$_['text_find_closest_drugstore']   = '<i class="fa fa-search"></i> Знайти найближчу аптеку';
+$_['text_closest']					= ' <span class="stock-distance-label label label-success">найближча</span>';
 
 $_['text_search_field'] 		= '';
 $_['text_search_total_product'] = 'всього %s товарів';

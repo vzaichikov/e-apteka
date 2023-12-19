@@ -378,33 +378,33 @@
 				$this->document->setDescription($product_info['meta_description']);
 				$this->document->setKeywords($product_info['meta_keyword']);
 
-			if ($this->config->get('hb_snippets_og_enable') == '1'){
-			$hb_snippets_ogp = $this->config->get('hb_snippets_ogp');
-			if (strlen($hb_snippets_ogp) > 4){
-				$ogp_name = $product_info['name'];
-				$ogp_brand = $product_info['manufacturer'];
-				$ogp_model = $product_info['model'];
-				if ((float)$product_info['special']) {
-					$ogp_price = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				}else {
-					$ogp_price = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+				if ($this->config->get('hb_snippets_og_enable') == '1'){
+					$hb_snippets_ogp = $this->config->get('hb_snippets_ogp');
+					if (strlen($hb_snippets_ogp) > 4){
+						$ogp_name = $product_info['name'];
+						$ogp_brand = $product_info['manufacturer'];
+						$ogp_model = $product_info['model'];
+						if ((float)$product_info['special']) {
+							$ogp_price = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+						}else {
+							$ogp_price = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+						}
+
+						$hb_snippets_ogp = str_replace('{name}',$ogp_name,$hb_snippets_ogp);
+						$hb_snippets_ogp = str_replace('{model}',$ogp_model,$hb_snippets_ogp);
+						$hb_snippets_ogp = str_replace('{brand}',$ogp_brand,$hb_snippets_ogp);
+						$hb_snippets_ogp = str_replace('{price}',$ogp_price,$hb_snippets_ogp);
+					}else{
+						$hb_snippets_ogp = $product_info['name'];
+					}
+
+					$this->document->setOpengraph('og:title', $hb_snippets_ogp);
+					$this->document->setOpengraph('og:type', 'website');
+					$this->document->setOpengraph('og:site_name', $this->config->get('config_name'));
+					$this->document->setOpengraph('og:image', HTTP_SERVER . 'image/' . $product_info['image']);
+					$this->document->setOpengraph('og:url', $this->url->link('product/product', 'product_id=' . $product_id));
+					$this->document->setOpengraph('og:description', $product_info['meta_description']);
 				}
-				
-				$hb_snippets_ogp = str_replace('{name}',$ogp_name,$hb_snippets_ogp);
-				$hb_snippets_ogp = str_replace('{model}',$ogp_model,$hb_snippets_ogp);
-				$hb_snippets_ogp = str_replace('{brand}',$ogp_brand,$hb_snippets_ogp);
-				$hb_snippets_ogp = str_replace('{price}',$ogp_price,$hb_snippets_ogp);
-			}else{
-				$hb_snippets_ogp = $product_info['name'];
-			}
-			
-			$this->document->setOpengraph('og:title', $hb_snippets_ogp);
-            $this->document->setOpengraph('og:type', 'website');
-            $this->document->setOpengraph('og:site_name', $this->config->get('config_name'));
-            $this->document->setOpengraph('og:image', HTTP_SERVER . 'image/' . $product_info['image']);
-            $this->document->setOpengraph('og:url', $this->url->link('product/product', 'product_id=' . $product_id));
-            $this->document->setOpengraph('og:description', $product_info['meta_description']);
-			}
 			
 				$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');				
 				
@@ -441,6 +441,10 @@
 				$data['text_has_analogs'] 		= $this->language->get('text_has_analogs');
 				$data['text_dl_receipt'] = $this->language->get('text_dl_receipt');
 				$data['text_is_in_stock_in_drugstores'] = $this->language->get('text_is_in_stock_in_drugstores');
+
+				$data['text_closest'] = $this->language->get('text_closest');
+				$data['text_make_route'] = $this->language->get('text_make_route');
+				$data['text_find_closest_drugstore'] = $this->language->get('text_find_closest_drugstore');
 				
 				$data['text_yourprice'] = $this->language->get('text_yourprice');
 				$data['text_genprice'] = $this->language->get('text_genprice');
@@ -494,8 +498,7 @@
 
 				if ($data['reg_instruction']){
 					$data['reg_instruction_pdf_href'] = $this->url->link('eapteka/ajax/downloadinstruction', 'x=' . $product_info['product_id'] . '&dpath=' . base64_encode($data['reg_instruction']));
-				}
-							
+				}							
 
 				$data['likreestr'] 	 = json_decode($product_info['reg_json'])?json_decode($product_info['reg_json'], true):false;
 				
@@ -749,13 +752,13 @@
 				$data['reviews'] = sprintf($this->language->get('text_reviews'), (int)$product_info['reviews']);
 				$data['rating'] = (int)$product_info['rating'];
 
-			$data['review_count'] = $product_info['reviews'];
-			$data['currencycode'] = $this->session->data['currency'];//$this->currency->getCode();
-			$data['stockqty'] = $product_info['quantity'];
-			$data['hb_snippets_prod_enable'] = $this->config->get('hb_snippets_prod_enable');
-			$data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
-			$data['language_decimal_point'] = $this->language->get('decimal_point');
-			
+				$data['review_count'] 				= $product_info['reviews'];
+				$data['currencycode'] 				= $this->session->data['currency'];
+				$data['stockqty'] 					= $product_info['quantity'];
+				$data['hb_snippets_prod_enable'] 	= $this->config->get('hb_snippets_prod_enable');
+				$data['hb_snippets_bc_enable'] 		= $this->config->get('hb_snippets_bc_enable');
+				$data['language_decimal_point'] 	= $this->language->get('decimal_point');
+				
 				
 				if ($this->config->get($this->config->get('config_captcha') . '_status') && in_array('review', (array)$this->config->get('config_captcha_page'))) {
 					$data['captcha'] = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha'));
@@ -770,8 +773,6 @@
 				if ($substance_path){
 					$data['substance_path'] = $this->url->link('product/category', 'path=' . $substance_path);
 				}
-
-
 
 				$data['atx_classifier'] = $this->language->get('atx_classifier');
 
@@ -838,14 +839,11 @@
 					$data['text_bought_for_month'] = false;
 				}
 
-				$stocks_count = $this->model_catalog_product->getProductStockSum($this->request->get['product_id']);
-
-				if ($stocks_count['quantity'] > 0){
- 					$data['text_available_in_drugstores'] = sprintf($this->language->get('text_available_in_drugstores'), $stocks_count['quantity'], $stocks_count['drugstores']);
+				if ($product_info['total_stocks'] > 0){
+ 					$data['text_available_in_drugstores'] = sprintf($this->language->get('text_available_in_drugstores'), $product_info['total_stocks'], $product_info['total_drugstores'], getPluralWord($product_info['total_drugstores'], $this->language->get('text_drugstore_plural'), false));
 				} elseif ($product_info['is_preorder'] == 1) {
 					$data['text_available_on_preorder'] = sprintf($this->language->get('text_available_on_preorder'));
 				}			
-
 
 				$data['text_full_analogs'] 			= $this->language->get('text_full_analogs');
 				$data['text_similar_pharmaceutic'] 	= $this->language->get('text_similar_pharmaceutic');
@@ -986,7 +984,6 @@
 					$data['buyoneclick_name'] = $this->language->get('buyoneclick_button');
 				}
 				$data['buyoneclick_text_loading'] = $this->language->get('buyoneclick_text_loading');
-				// BuyOneClickEnd
 				
 				$this->response->setOutput($this->load->view('product/product', $data));
 				} else {

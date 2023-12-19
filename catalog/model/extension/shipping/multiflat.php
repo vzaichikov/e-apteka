@@ -27,11 +27,11 @@
 				if ($multiflats[$i]['status']== true && (!empty($address['novaposhta_city_guid'] || !empty($address['city'])))){
 					
 					if (!empty($address['novaposhta_city_guid'])){
-						if ($address['novaposhta_city_guid'] != '8d5a980d-391c-11dd-90d9-001a92567626'){
+						if ($address['novaposhta_city_guid'] != $this->cart->getDefaultCityRef()){
 							$multiflats[$i]['status'] = false;
 						}			
 						} elseif (!empty($address['city'])){
-						if (!in_array(trim(mb_strtolower($address['city'])), array('киев','київ'))){
+						if (!in_array(trim(mb_strtolower($address['city'])), $this->cart->getDefaultCityNames())){
 							$multiflats[$i]['status'] = false;
 						}
 					}
@@ -60,10 +60,7 @@
 					}
 
 					$dummy = false;
-					
-					//if ($cart_weight == 0 && $flat['sort_order'] != 0) continue;
-					//if ($cart_weight > 0 && $flat['sort_order'] == 0) continue;										
-					
+													
 					$cost = $flat['cost'];
 					$text = $this->currency->format($cost, $this->session->data['currency']);
 					$text_free_info = '';
@@ -112,7 +109,7 @@
 					$text_info 		= $this->language->get('text_info_' . $i);
 					
 					if ($i == 0){
-						$locations = $this->cart->getCurrentLocationsAvailableForPickup(true);
+						$locations = $this->cart->getCurrentLocationsAvailableForPickup($address);
 						$rightSide = in_array(7, $locations);
 						$leftSide =  in_array(6, $locations);
 					} 

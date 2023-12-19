@@ -15,22 +15,31 @@
 	.table-borderless > thead > tr > th {
 		border: none;
 	}
+
+	tr.closest{background-color:#eff9e7;}
+
+	.stocks-span-distance{color:#777; font-style:italic;}
 </style>
 
 <table class="table table-responsive table-stocks table-borderless">	
-	<tbody>
+	<tbody id="tbody-table-stocks">
 		<?php foreach ($stocks as $stock) { ?>
-			<tr>		
+			<tr id="stocks-tr-<?php echo $stock['location_id']; ?>" data-location-id="<?php echo $stock['location_id']; ?>" class="" data-distance="">		
 				<td>
-					<?php echo $stock['address']; ?>
-					<?php if (empty($stock['can_not_deliver'])) { ?>						
+					<div id="stocks-div-address-<?php echo $stock['location_id']; ?>" class="stock-location-class" data-geocode-lat="<?php echo $stock['geocode_lat']; ?>" data-geocode-lon="<?php echo $stock['geocode_lon']; ?>" data-location-id="<?php echo $stock['location_id']; ?>">
+						<img src="<?php echo $stock['logo']; ?>" height="15px" width="15px"> <?php echo $stock['address']; ?>
+
+						<?php if (empty($stock['can_not_deliver'])) { ?>						
 							<br />
 							<span class="product-stock-map__time"><i class="fa fa-clock-o <? echo $stock['faclass']; ?>"></i> <i><?php echo $stock['open']; ?></i></span>
 
 							<?php if ($stock['gmaps_link']) { ?>
 								<br /><a href="<?php echo $stock['gmaps_link']; ?>" target="_blank"><?php echo $text_make_route; ?></a>					
 							<?php } ?>
-					<?php } ?>
+						<?php } ?>
+
+						<span class="stocks-span-distance" id="stocks-span-distance-<?php echo $stock['location_id']; ?>"></span>
+					</div>
 				</td>
 
 				<td style="white-space: nowrap;" class="text-right">
@@ -38,7 +47,7 @@
 
 					<?php if (empty($stock['can_not_deliver'])) { ?>
 						<button class="bbtn bbtn-small bbtn-<?php if ((int)$stock['stock'] >= 3) { ?>success<? } else { ?>warning<?php } ?> product-layout__btn-cart" onclick="$('input[name=\'oneclick_location_id\']').val('<?php echo $stock['location_id']; ?>'); callFastOrderPopup(this);"><?php echo $text_make_reserve;?></button>
-					<?php }?>
+					<?php } ?>
 				</td>
 
 			</tr>

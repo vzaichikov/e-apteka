@@ -4,7 +4,7 @@
 		public function index(){			
 			if (empty($this->request->get['modpath'])){
 				$this->response->setOutput('');
-				} else {
+			} else {
 				$data = [];
 				if (!empty($this->request->get['group'])){
 					$exploded = explode(';', $this->request->get['modpath']);
@@ -14,22 +14,21 @@
 							try{
 								
 								$data[] = [
-								'path' 	=> $line,
-								'html'	=> $this->load->controller($line)
+									'path' 	=> $line,
+									'html'	=> $this->load->controller($line)
 								];
 								
-								} catch (Exception $e){
-							}
-							
+							} catch (Exception $e){
+							}							
 						}
 					}		
 					
 					return $this->load->view('structured/module', $data);
 					
-					} else {
+				} else {
 					try{				
 						$data['data'] = $this->load->controller($this->request->get['modpath']);
-						} catch (Exception $e){
+					} catch (Exception $e){
 						$data['data'] = '';
 					}				
 					return $this->load->view('structured/module', $data);	
@@ -58,12 +57,6 @@
 			}	
 
 			$results = $this->model_catalog_product->getProductStocks($product_id);
-			$multilang_fields = array(
-				'open',
-				'address',
-				'name',
-				'comment'		
-			);
 
 			$data['text_is_in_stock_in_drugstores'] = $this->language->get('text_is_in_stock_in_drugstores');
 			$data['text_make_route'] 				= $this->language->get('text_make_route');
@@ -202,10 +195,26 @@
 					$stock_icon = 'fa-clock-o';
 				}
 
+				if ($result['quantity'] == 0 && !$result['is_preorder']){
+					continue;
+				}
+
+				if (!$result['gmaps_link']){
+					$result['gmaps_link'] = 'https://www.google.com/maps/place/'. str_replace(' ', '', $result['geocode']);
+				}
+
+				if (!empty($this->registry->get('branding')[$result['brand']])){
+					$icon = HTTPS_SERVER . 'image/brand/marker-icon-'. $this->registry->get('branding')[$result['brand']] .'.png';
+					$logo = HTTPS_SERVER . 'image/brand/marker-icon-'. $this->registry->get('branding')[$result['brand']] .'.svg';
+				} else {
+					$icon = HTTPS_SERVER . 'image/brand/marker-icon-brand-default.png';
+					$logo = HTTPS_SERVER . 'image/brand/marker-icon-brand-default.svg';
+				}				
+
 				$data['stocks'][] = array(
-					'name'			=> $result['name'],
-					'address'		=> $result['address'],
 					'location_id'	=> $result['location_id'],
+					'name'        	=> str_replace("'", '`', $result['name']),
+					'address'     	=> str_replace("'", '`', $result['address']),
 					'image' 		=> $image,
 					'is_preorder' 	=> $result['is_preorder'],
 					'text_class' 	=> $text_class,
@@ -214,9 +223,13 @@
 					'can_not_deliver' => $can_not_deliver,
 					'stock' 		=> $result['quantity'],
 					'geocode' 		=> $result['geocode'],
+					'geocode_lat'   => parsegeocode($result['geocode'])['lat'],
+					'geocode_lon'   => parsegeocode($result['geocode'])['lon'],
 					'gmaps_link' 	=> $result['gmaps_link'],
 					'open_text' 	=> $open_text,
 					'open'			=> $result['open'],
+					'icon' 	      	=> $icon,
+					'logo' 	      	=> $logo,
 					'tdclass' 		=> $tdclass,
 					'faclass' 		=> $faclass,
 					'icon' 	    	=> HTTPS_SERVER . 'image/gmarkers/source/marker_' . $mcolor . '.png',

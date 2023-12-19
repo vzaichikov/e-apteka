@@ -410,7 +410,7 @@ $restApp->get('/stocks/{id}', function (Request $request, Response $response, ar
 /*
     Point to set stocks for any
 */
-$restApp->put('/stocks/', function (Request $request, Response $response, array $args) use ($modelStocks) {   
+$restApp->put('/stocks/', function (Request $request, Response $response, array $args) use ($modelStocks, $modelDrugstore) {   
     $body = $request->getBody()->getContents();    
 
     $data = json_decode($body, true);
@@ -419,10 +419,17 @@ $restApp->put('/stocks/', function (Request $request, Response $response, array 
     }
 
     if (!empty($data[0]) && !empty($data[0]['DrugstoreID'])){
-        $drugstore_id = (int)$data[0]['DrugstoreID'];              
+        $drugstore_id = $modelDrugstore->getDrugStoreId($data[0]['DrugstoreID']);
+
+        if (!$drugstore_id){
+            throw new HttpNotFoundException($request, 'Drugstore ' . $data[0]['DrugstoreID'] . ' not found');
+        }
+        
         $log = new \Log('rest-api/put-batch-stocks-' . $drugstore_id . '.log');
         $log->write($body);
-    }   
+    } else {
+        throw new HttpBadRequestException($request, "No Drugstore ID or UUID found in zero array element");
+    } 
 
     if ($stocks = $modelStocks->updateStocks($data)){        
         $payload = ['success' => true, 'data' => $stocks];

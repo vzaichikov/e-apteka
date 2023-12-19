@@ -1,4 +1,9 @@
 <style type="text/css">
+	
+		.product-category-list .product-item .product-layout__stock_info__wrap {
+		    margin-bottom: 5px;
+		}
+
 	@media screen and (max-width: 560px) {
 		.product-category-list{
 			gap: 10px;
@@ -34,6 +39,7 @@
 		    overflow: hidden;
 		    margin-bottom: 5px;
 		}
+
 		.product-category-list .product-item .price_group .price {
 		    font-size: 17px;
 		    line-height: 16px;

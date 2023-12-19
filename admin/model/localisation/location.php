@@ -68,6 +68,7 @@
 			$sort_data = array(
 			'name',
 			'address',
+			'location_id',
 			'sort_order'
 			);
 			

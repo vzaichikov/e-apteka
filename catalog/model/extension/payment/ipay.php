@@ -27,7 +27,7 @@ class ModelExtensionPaymentiPay extends Model {
 		}
 		
 		//Невозможность оплаты в случае необходимости разделять заказ
-		if (!$this->cart->getCurrentLocationsAvailableForPickup()){
+		if (!$this->cart->getCurrentLocationsAvailableForPickup($address)){
 			$status = false;
 			$dummy  = true;
 		}

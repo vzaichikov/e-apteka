@@ -1,9 +1,21 @@
 <?php
 	class ModelLocalisationLocation extends Model {
 		public function getLocation($location_id) {
-			$query = $this->db->query("SELECT l.*, l.name as main_name, ld.name as name, l.address as main_address, ld.address as address FROM " . DB_PREFIX . "location l
-			LEFT JOIN " . DB_PREFIX . "location_description ld ON (l.location_id = ld.location_id)
+			$query = $this->db->query("SELECT l.*, 
+				ld.name as name_overload, 
+				ld.brand as brand_overload,
+				ld.open as open_overload,
+				ld.address as address_overload,
+				ld.comment as comment_overload
+				FROM oc_location l
+			LEFT JOIN oc_location_description ld ON (l.location_id = ld.location_id)
 			WHERE l.location_id = '" . (int)$location_id . "' AND ld.language_id = '" . (int)$this->config->get('config_language_id') . "'");
+
+			foreach (['open', 'address', 'name', 'brand', 'comment'] as $field){
+				if (!empty($query->row[$field . '_overload'])){
+					$query->row[$field] = $query->row[$field . '_overload'];
+				}
+			}
 			
 			return $query->row;
 		}
@@ -13,9 +25,10 @@
 			l.name as main_name, 
 			ld.name as name, 
 			l.address as main_address, 
-			ld.address as address 
-			FROM " . DB_PREFIX . "location l
-			LEFT JOIN " . DB_PREFIX . "location_description ld ON (l.location_id = ld.location_id)
+			ld.address as address,
+			l.brand 
+			FROM oc_location l
+			LEFT JOIN oc_location_description ld ON (l.location_id = ld.location_id)
 			WHERE l.temprorary_closed = '0' AND ld.language_id = '" . (int)$this->config->get('config_language_id') . "'";
 
 			if (!empty($filter_data['filter_can_sell_drugs'])){
@@ -28,13 +41,13 @@
 		}
 		
 		public function getLocations() {
-			$query = $this->db->query("SELECT location_id FROM " . DB_PREFIX . "location WHERE 1");
+			$query = $this->db->query("SELECT location_id FROM oc_location WHERE 1");
 			
 			return $query->rows;
 		}
 
 		public function getLocationsForMapPage() {
-			$query = $this->db->query("SELECT location_id FROM " . DB_PREFIX . "location WHERE 1 order by temprorary_closed ASC");
+			$query = $this->db->query("SELECT location_id FROM oc_location WHERE 1 order by temprorary_closed ASC");
 
 			$result = [];
 
@@ -46,7 +59,7 @@
 		}
 		
 		public function getLocationML($location_id, $field = false) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "location_description WHERE location_id = '" . (int)$location_id . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");
+			$query = $this->db->query("SELECT * FROM oc_location_description WHERE location_id = '" . (int)$location_id . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");
 			
 			if ($field){
 				return isset($query->row[$field])?$query->row[$field]:false;
@@ -56,15 +69,15 @@
 		}
 		
 		public function getLocationNode($location_id) {
-			$query = $this->db->query("SELECT n.* FROM " . DB_PREFIX . "location l
-			LEFT JOIN " . DB_PREFIX . "nodes n ON l.node_id = n.node_id WHERE location_id = '" . (int)$location_id . "'");
+			$query = $this->db->query("SELECT n.* FROM oc_location l
+			LEFT JOIN oc_nodes n ON l.node_id = n.node_id WHERE location_id = '" . (int)$location_id . "'");
 			
 			return $query->row;
 		}
 		
 		public function setNodeLastUpdateStatus($node_id, $status) {
 			
-			$this->db->query("UPDATE " . DB_PREFIX . "nodes 
+			$this->db->query("UPDATE oc_nodes 
 			SET 
 			node_last_update = NOW(),
 			node_last_update_status = '" . $this->db->escape($status) . "'
@@ -73,7 +86,7 @@
 		
 		public function setNodeLastUpdateStatusSuccess($node_id) {
 			
-			$this->db->query("UPDATE " . DB_PREFIX . "nodes 
+			$this->db->query("UPDATE oc_nodes 
 			SET 
 			node_last_update_error = 0		
 			WHERE node_id = '" . (int)$node_id . "'");
@@ -81,7 +94,7 @@
 		
 		public function setNodeLastUpdateStatusError($node_id) {
 			
-			$this->db->query("UPDATE " . DB_PREFIX . "nodes 
+			$this->db->query("UPDATE oc_nodes 
 			SET 
 			node_last_update_error = 1			
 			WHERE node_id = '" . (int)$node_id . "'");
@@ -89,11 +102,11 @@
 		
 		public function addNodeExchangeHistory($node_id, $data) {
 			
-			$this->db->query("DELETE FROM `" . DB_PREFIX . "node_exchange_history` 
+			$this->db->query("DELETE FROM `oc_node_exchange_history` 
 				WHERE DATE(date_added) < NOW() - INTERVAL 10 DAY AND node_id = '" . (int)$node_id . "'");
 			
 			$this->db->query("
-			INSERT INTO " . DB_PREFIX . "node_exchange_history 
+			INSERT INTO oc_node_exchange_history 
 			SET 
 			node_id 	= '" . (int)$node_id . "',
 			date_added  = NOW(),
@@ -109,7 +122,7 @@
 		}
 		
 		public function getLocationUUID($location_id) {
-			$query = $this->db->query("SELECT uuid FROM " . DB_PREFIX . "location WHERE location_id = '" . (int)$location_id . "'");
+			$query = $this->db->query("SELECT uuid FROM oc_location WHERE location_id = '" . (int)$location_id . "'");
 			
 			if ($query->num_rows && $query->row['uuid']){
 				return $query->row['uuid'];
