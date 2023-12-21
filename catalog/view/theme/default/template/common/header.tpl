@@ -54,15 +54,15 @@
 		<title><?php echo $title; ?></title>
 		<base href="<?php echo $base; ?>" />
 		
-		<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=bORwKrwnaR">
-		<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png?v=bORwKrwnaR">
-		<link rel="icon" type="image/png" sizes="194x194" href="/icons/favicon-194x194.png?v=bORwKrwnaR">
-		<link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png?v=bORwKrwnaR">
+		<link rel="apple-touch-icon" sizes="180x180" href="/pwa/icons/apple-touch-icon.png?v=bORwKrwnaR">
+		<link rel="icon" type="image/png" sizes="32x32" href="/pwa/icons/favicon-32x32.png?v=bORwKrwnaR">
+		<link rel="icon" type="image/png" sizes="194x194" href="/pwa/icons/favicon-194x194.png?v=bORwKrwnaR">
+		<link rel="icon" type="image/png" sizes="192x192" href="/pwa/icons/android-chrome-192x192.png?v=bORwKrwnaR">
 		<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png?v=bORwKrwnaR">
-		<link rel="mask-icon" href="/icons/safari-pinned-tab.svg?v=bORwKrwnaR" color="#01a0c6">
+		<link rel="mask-icon" href="/pwa/icons/safari-pinned-tab.svg?v=bORwKrwnaR" color="#01a0c6">
 		<link rel="shortcut icon" href="/favicon.ico?v=bORwKrwnaR">
 		<meta name="msapplication-TileColor" content="#01a0c6">
-		<meta name="msapplication-TileImage" content="/icons/mstile-144x144.png?v=bORwKrwnaR">
+		<meta name="msapplication-TileImage" content="/pwa/icons/mstile-144x144.png?v=bORwKrwnaR">
 		<meta name="theme-color" content="#ffffff">
 				
 		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">		

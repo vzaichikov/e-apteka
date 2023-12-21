@@ -22,8 +22,7 @@
 	],
 
 
-    "prefer_related_applications": true,
-	
+    "prefer_related_applications": true,	
     "gcm_sender_id": "482941778795",
 	
 	"shortcuts": [
@@ -31,20 +30,20 @@
 			"name": "Поточні акції",
 			"short_name": "Акції",
 			"description": "Подивитись всі акції",
-			"url": "https://e-apteka.com.ua/ua/promotions/",
+			"url": "https://e-apteka.com.ua/promotions/",
 			"icons": [
 				{
-					"src": "/icons/96.png",
+					"src": "/pwa/icons/96.png",
 					"sizes": "96x96",
 					"type": "image/png"
 					},
 				{
-					"src": "/icons/192.png",
+					"src": "/pwa/icons/192.png",
 					"sizes": "192x192",
 					"type": "image/png"
 				},
 				{
-					"src": "/icons/512.png",
+					"src": "/pwa/icons/512.png",
 					"sizes": "512x512",
 					"type": "image/png"
 				}
@@ -54,20 +53,20 @@
 			"name": "Розпродаж до -60%",
 			"short_name": "Розпродаж",
 			"description": "Подивитись всі товари зі знижкою",
-			"url": "https://e-apteka.com.ua/ua/specials/",
+			"url": "https://e-apteka.com.ua/specials/",
 			"icons": [
 				{
-					"src": "/icons/96.png",
+					"src": "/pwa/icons/96.png",
 					"sizes": "96x96",
 					"type": "image/png"
 				},
 				{
-					"src": "/icons/192.png",
+					"src": "/pwa/icons/192.png",
 					"sizes": "192x192",
 					"type": "image/png"
 				},
 				{
-					"src": "/icons/512.png",
+					"src": "/pwa/icons/512.png",
 					"sizes": "512x512",
 					"type": "image/png"
 				}
@@ -77,20 +76,20 @@
 			"name": "Аптеки на мапі",
 			"short_name": "Аптеки",
 			"description": "Подивитись на аптечну мережу на мапі",
-			"url": "https://e-apteka.com.ua/ua/apteki/",
+			"url": "https://e-apteka.com.ua/apteki/",
 			"icons": [
 				{
-					"src": "/icons/96.png",
+					"src": "/pwa/icons/96.png",
 					"sizes": "96x96",
 					"type": "image/png"
 				},
 				{
-					"src": "/icons/192.png",
+					"src": "/pwa/icons/192.png",
 					"sizes": "192x192",
 					"type": "image/png"
 				},
 				{
-					"src": "/icons/512.png",
+					"src": "/pwa/icons/512.png",
 					"sizes": "512x512",
 					"type": "image/png"
 				}
@@ -100,20 +99,20 @@
 			"name": "Перейти до мого кабінету",
 			"short_name": "Кабінет",
 			"description": "Мої замовлення, історія покупок",
-			"url": "https://e-apteka.com.ua/ua/account/",
+			"url": "https://e-apteka.com.ua/account/",
 			"icons": [
 				{
-					"src": "/icons/96.png",
+					"src": "/pwa/icons/96.png",
 					"sizes": "96x96",
 					"type": "image/png"
 				},
 				{
-					"src": "/icons/192.png",
+					"src": "/pwa/icons/192.png",
 					"sizes": "192x192",
 					"type": "image/png"
 				},
 				{
-					"src": "/icons/512.png",
+					"src": "/pwa/icons/512.png",
 					"sizes": "512x512",
 					"type": "image/png"
 				}
@@ -125,43 +124,43 @@
 	
     "icons": [
 		{
-            "src": "/icons/96.png",
+            "src": "/pwa/icons/96.png",
             "sizes": "96x96",
             "type": "image/png",
 			"purpose": "any"
 		},
 		{
-            "src": "/icons/96.png",
+            "src": "/pwa/icons/96.png",
             "sizes": "96x96",
             "type": "image/png",
 			"purpose": "any maskable"
 		},
         {
-            "src": "/icons/192.png",
+            "src": "/pwa/icons/192.png",
             "sizes": "192x192",
             "type": "image/png",
 			"purpose": "any"
 		},
 		{
-            "src": "/icons/192.png",
+            "src": "/pwa/icons/192.png",
             "sizes": "192x192",
             "type": "image/png",
 			"purpose": "any maskable"
 		},
         {
-            "src": "/icons/512.png",
+            "src": "/pwa/icons/512.png",
             "sizes": "512x512",
             "type": "image/png",
 			"purpose": "any"
 		},
 		{
-            "src": "/icons/512.png",
+            "src": "/pwa/icons/512.png",
             "sizes": "512x512",
             "type": "image/png",
 			"purpose": "any maskable"
 		},		
 		{
-            "src": "/icons/512-bw.png",
+            "src": "/pwa/icons/512-bw.png",
             "sizes": "512x512",
             "type": "image/png",
 			"purpose": "monochrome"
@@ -170,42 +169,42 @@
 	
 	"screenshots": [
 		{
-			"src": "/screenshots/001.jpg",
+			"src": "/pwa/screenshots/001.jpg",
 			"type": "image/jpg",
 			"sizes": "1080x1920"
 		},
 		{
-			"src": "/screenshots/002.jpg",
+			"src": "/pwa/screenshots/002.jpg",
 			"type": "image/jpg",
 			"sizes": "1080x1920"
 		},
 		{
-			"src": "/screenshots/003.jpg",
+			"src": "/pwa/screenshots/003.jpg",
 			"type": "image/jpg",
 			"sizes": "1080x1920"
 		},
 		{
-			"src": "/screenshots/004.jpg",
+			"src": "/pwa/screenshots/004.jpg",
 			"type": "image/jpg",
 			"sizes": "1080x1920"
 		},
 		{
-			"src": "/screenshots/005.jpg",
+			"src": "/pwa/screenshots/005.jpg",
 			"type": "image/jpg",
 			"sizes": "1080x1920"
 		},
 		{
-			"src": "/screenshots/006.jpg",
+			"src": "/pwa/screenshots/006.jpg",
 			"type": "image/jpg",
 			"sizes": "1080x1920"
 		},
 		{
-			"src": "/screenshots/007.jpg",
+			"src": "/pwa/screenshots/007.jpg",
 			"type": "image/jpg",
 			"sizes": "1080x1920"
 		},
 		{
-			"src": "/screenshots/008.jpg",
+			"src": "/pwa/screenshots/008.jpg",
 			"type": "image/jpg",
 			"sizes": "1080x1920"
 		}

@@ -1,6 +1,6 @@
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox-sw.js');
 
-const OFFLINE_HTML = '/offline.html';
+const OFFLINE_HTML = '/pwa/offline.html';
 const JQUERY_LIB = '/catalog/view/javascript/jquery/jquery-2.1.1.min.js';
 const JQUERY_UI_LIB = '/catalog/view/theme/default/js/lib/jquery-ui-1.12.1.custom/jquery-ui.min.js';
 const BOOTSTRAP_LIB = '/catalog/view/javascript/bootstrap/js/bootstrap.min.js';
