@@ -1,7 +1,8 @@
 <?php
 	class ControllerStartupSeoPro extends Controller {
-		private $cache_data = null;
-		private $lang_prefix = null;
+		private $cache_data 				= null;
+		private $lang_prefix 				= null;
+		private $allowedGetParams			= ['tracking','utm_term','utm_source','utm_medium','utm_campaign','utoken','oid','gclid','hello','search', 'product-display'];
 		
 		
 		public function __construct($registry) {
@@ -9,8 +10,8 @@
 			parent::__construct($registry);
 			$this->cache_data = $this->cache->get('seo_pro');					
 			if (!$this->cache_data) {
-				$query = $this->db->query("SELECT LOWER(`keyword`) as 'keyword', `query` FROM " . DB_PREFIX . "url_alias ORDER BY url_alias_id");
-				$this->cache_data = array();
+				$query = $this->db->query("SELECT LOWER(`keyword`) as 'keyword', `query` FROM oc_url_alias ORDER BY url_alias_id");
+				$this->cache_data = [];
 				foreach ($query->rows as $row) {
 					if (isset($this->cache_data['keywords'][$row['keyword']])){
 						$this->cache_data['keywords'][$row['query']] = $this->cache_data['keywords'][$row['keyword']];
@@ -38,11 +39,54 @@
 				}
 			}
 		}
+
+		private function getKeyword($query){	
+			if ($this->registry->has('short_uri_queries') && isset($this->registry->get('short_uri_queries')[$query])){
+				return $this->registry->get('short_uri_queries')[$query];
+			}
+
+			$exploded_query = explode('=', $query);
+			if ($this->registry->has('short_uri_queries') && count($exploded_query) == '2' && isset($this->registry->get('short_uri_queries')[$exploded_query[0]])){
+				return $this->registry->get('short_uri_queries')[$exploded_query[0]] . (int)$exploded_query[1];				
+			}
+
+			if (isset($this->cache_data['queries'][$query])){
+				return $this->cache_data['queries'][$query];
+			}
+
+			return false;
+		}
+
+		private function getQuery($keyword){
+			if ($this->registry->has('short_uri_keywords') && isset($this->registry->get('short_uri_keywords')[$keyword])){
+				return $this->registry->get('short_uri_keywords')[$keyword];
+			}
+
+			if ($this->registry->get('short_uri_keywords') && preg_match('/^[a-z]{1,2}[0-9]+$/', $keyword)){
+				preg_match('/^[a-z]/', $keyword, $code);
+				preg_match('/[0-9]+$/', $keyword, $identifier);
+
+				if (count($code) == 1 && count($identifier) == 1 && isset($this->registry->get('short_uri_keywords')[$code[0]])){
+					return $this->registry->get('short_uri_keywords')[$code[0]] . '=' . $identifier[0];
+				}
+			}
+
+			if (isset($this->cache_data['keywords'][$keyword])){
+				return $this->cache_data['keywords'][$keyword];
+			}
+
+			return false;
+		}
 		
 		public function index() {
 		
 			if ($this->config->get('config_seo_url')) {
 				$this->url->addRewrite($this);
+
+				if (!is_null($this->registry->get('ocfilter'))) {
+					$this->url->addRewrite($this->registry->get('ocfilter'));
+				}
+
 				} else {
 				return;
 			}
@@ -50,16 +94,13 @@
 			
 			if(isset($this->request->get['_route_'])){				
 				$urllanguage = explode('/', trim(utf8_strtolower($this->request->get['_route_']), '/'));
-				$this->load->model('localisation/language');
-				$languages = $this->model_localisation_language->getLanguages();
 				
-				$lang = array();
-				foreach($languages as $language){
+				$lang = [];
+				foreach($this->registry->get('languages') as $language){
 					$lang[] = $language['urlcode'];
 				}
 				
-				if(isset($urllanguage[0]) && in_array($urllanguage[0], $lang)){
-					
+				if(isset($urllanguage[0]) && in_array($urllanguage[0], $lang)){					
 					if(count($urllanguage) > 1){
 						$replace_lang = $urllanguage[0] . "/";
 						}else{
@@ -73,7 +114,6 @@
 				}
 			}						
 
-			// Decode URL
 			if (!isset($this->request->get['_route_'])) {
 				$this->validate();
 				} else {
@@ -93,25 +133,25 @@
 				list($last_part) = explode('.', array_pop($parts));
 				array_push($parts, $last_part);
 				
-				$rows = array();
+				$rows = [];
 				
-				$mfp_parts = array();
+				$mfp_parts = [];
 				$mfp_key = 0;
-				
+
 				foreach ($parts as $keyword) {
-					if (isset($this->cache_data['keywords'][$keyword])) {
-						$rows[] = array('keyword' => $keyword, 'query' => $this->cache_data['keywords'][$keyword]);
+					if ($this->getQuery($keyword)) {
+						$rows[] = ['keyword' => $keyword, 'query' => $this->getQuery($keyword)];
 					}
 				}
 				
-				if (isset($this->cache_data['keywords'][$route])){
-					$keyword = $route;
-					$parts = array($keyword);
-					$rows = array(array('keyword' => $keyword, 'query' => $this->cache_data['keywords'][$keyword]));
+				if ($this->getQuery($route)){
+					$keyword 	= $route;
+					$parts 		= array($keyword);
+					$rows 		= [['keyword' => $keyword, 'query' => $this->getQuery($keyword)]];
 				}
 				
 				if (count($rows) == sizeof($parts)) {
-					$queries = array();
+					$queries = [];
 					foreach ($rows as $row) {
 						$queries[utf8_strtolower($row['keyword'])] = $row['query'];
 					}
@@ -190,9 +230,11 @@
 					$this->request->get['route'] = 'simple_blog/author';
 					} elseif (isset($this->request->get['simple_blog_category_id'])) {
 					$this->request->get['route'] = 'simple_blog/category';
-					} elseif(isset($this->cache_data['queries'][$route_]) && isset($this->request->server['SERVER_PROTOCOL'])) {
+
+					} elseif($this->getKeyword($route_) && isset($this->request->server['SERVER_PROTOCOL'])) {
 					header($this->request->server['SERVER_PROTOCOL'] . ' 301 Moved Permanently');
-					$this->response->redirect($this->cache_data['queries'][$route_], 301);
+					$this->response->redirect($this->getKeyword($route_), 301);
+
 					} else {
 					if (isset($queries[$parts[0]])) {
 						$this->request->get['route'] = $queries[$parts[0]];
@@ -217,7 +259,7 @@
 			
 			$component = parse_url(str_replace('&amp;', '&', $link));
 			
-			$data = array();
+			$data = [];
 			parse_str($component['query'], $data);
 			
 			$route = $data['route'];
@@ -227,8 +269,8 @@
 				case 'product/amp_product':
 				if (isset($data['product_id'])) {
 					$tmp = $data;
-					$data = array();
-					if ($this->config->get('config_seo_url_include_path')) {
+					$data = [];
+					if (true) {
 						$data['path'] = $this->getPathByProduct($tmp['product_id']);
 						if (!$data['path']) return $link  ;
 					}
@@ -236,15 +278,17 @@
 					
 					$isAmpURL = 1;
 					
-					if (isset($tmp['tracking'])) {
-						$data['tracking'] = $tmp['tracking'];
-					}
+					foreach ($this->allowedGetParams as $allowedGetParam){
+						if (isset($tmp[$allowedGetParam])) {
+							$data[$allowedGetParam] = $tmp[$allowedGetParam];
+						}
+					}	
 				}
 				break;
 				case 'newsblog/article':
 				if (isset($data['newsblog_article_id'])) {
 					$tmp = $data;
-					$data = array();
+					$data = [];
 					$data['newsblog_path'] = $this->getPathByNewsBlogArticle($tmp['newsblog_article_id']);
 					if (!$data['newsblog_path']) return $link;
 					$data['newsblog_article_id'] = $tmp['newsblog_article_id'];
@@ -263,33 +307,24 @@
 				case 'product/product':
 				if (isset($data['product_id'])) {
 					$tmp = $data;
-					$data = array();
-					if ($this->config->get('config_seo_url_include_path')) {
+					$data = [];
+					if (true) {
 						$data['path'] = $this->getPathByProduct($tmp['product_id']);
 						if (!$data['path']) return $link;
 					}
 					$data['product_id'] = $tmp['product_id'];
-					if (isset($tmp['tracking'])) {
-						$data['tracking'] = $tmp['tracking'];
+
+					foreach ($this->allowedGetParams as $allowedGetParam){
+						if (isset($tmp[$allowedGetParam])) {
+							$data[$allowedGetParam] = $tmp[$allowedGetParam];
+						}
 					}
-					if (isset($tmp['hello'])) {
-						$data['hello'] = $tmp['hello'];
-					}
-					if (isset($tmp['product-display'])) {
-						$data['product-display'] = $tmp['product-display'];
-					}
-					if (isset($tmp['search'])) {
-						$data['search'] = $tmp['search'];
-					}
-					if (isset($tmp['gclid'])) {
-						$data['gclid'] = $tmp['gclid'];
-					}					
 				}
 				break;
 
 				case 'product/product/analog':
 				$data['product-display'] = 'analog';
-				if ($this->config->get('config_seo_url_include_path')) {
+				if (true) {
 					$data['path'] = $this->getPathByProduct($tmp['product_id']);
 					if (!$data['path']) return $link;
 				} else {
@@ -299,7 +334,7 @@
 
 				case 'product/product/instruction':
 				$data['product-display'] = 'instruction';
-				if ($this->config->get('config_seo_url_include_path')) {
+				if (true) {
 					$data['path'] = $this->getPathByProduct($tmp['product_id']);
 					if (!$data['path']) return $link;
 				} else {
@@ -362,9 +397,8 @@
 				$link .= '&amp;' . urldecode(http_build_query($data, '', '&amp;'));
 			}
 			
-			$queries = array();
+			$queries = [];
 			
-			//
 			if (count($data) == 2 && !empty($data['colpath']) && !empty($data['manufacturer_id'])){
 				krsort($data);
 			}
@@ -464,10 +498,10 @@
 				$queries[] = $route;
 			}
 			
-			$rows = array();
+			$rows = [];
 			foreach($queries as $query) {										
-				if(isset($this->cache_data['queries'][$query])) {
-					$rows[] = array('query' => $query, 'keyword' => $this->cache_data['queries'][$query]);
+				if (($keyword_result = $this->getKeyword($query)) !== false){
+					$rows[] = ['query' => $query, 'keyword' => $keyword_result];
 				}
 			}
 			
@@ -477,7 +511,7 @@
 			
 			
 			if(count($rows) == count($queries)) {
-				$aliases = array();
+				$aliases = [];
 				foreach($rows as $row) {
 					$aliases[$row['query']] = $row['keyword'];
 				}
@@ -526,11 +560,11 @@
 			static $path = null;
 			if (!isset($path)) {
 				$path = $this->cache->get('newsblog.article.seopath');
-				if (!isset($path)) $path = array();
+				if (!is_array($path)) $path = [];
 			}
 			
 			if (!isset($path[$article_id])) {
-				$query = $this->db->query("SELECT category_id FROM " . DB_PREFIX . "newsblog_article_to_category WHERE article_id = '" . $article_id . "' ORDER BY main_category DESC LIMIT 1");
+				$query = $this->db->query("SELECT category_id FROM oc_newsblog_article_to_category WHERE article_id = '" . $article_id . "' ORDER BY main_category DESC LIMIT 1");
 				
 				$path[$article_id] = $this->getPathByNewsBlogCategory($query->num_rows ? (int)$query->row['category_id'] : 0);
 				
@@ -547,7 +581,7 @@
 			static $path = null;
 			if (!isset($path)) {
 				$path = $this->cache->get('newsblog.category.seopath');
-				if (!isset($path)) $path = array();
+				if (!is_array($path)) $path = [];
 			}
 			
 			if (!isset($path[$category_id])) {
@@ -557,9 +591,9 @@
 				for ($i = $max_level-1; $i >= 0; --$i) {
 					$sql .= ",t$i.category_id";
 				}
-				$sql .= ") AS path FROM " . DB_PREFIX . "newsblog_category t0";
+				$sql .= ") AS path FROM oc_newsblog_category t0";
 				for ($i = 1; $i < $max_level; ++$i) {
-					$sql .= " LEFT JOIN " . DB_PREFIX . "newsblog_category t$i ON (t$i.category_id = t" . ($i-1) . ".parent_id)";
+					$sql .= " LEFT JOIN oc_newsblog_category t$i ON (t$i.category_id = t" . ($i-1) . ".parent_id)";
 				}
 				$sql .= " WHERE t0.category_id = '" . $category_id . "'";
 				
@@ -580,17 +614,16 @@
 			static $path = null;
 			if (!isset($path)) {
 				$path = $this->cache->get('product.seopath');
-				if (!isset($path)) $path = array();
+				if (!is_array($path)) $path = [];
 			}
-			
+
 			if (!isset($path[$product_id])) {
-				$query = $this->db->query("SELECT category_id FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . $product_id . "' ORDER BY main_category DESC LIMIT 1");
-				
+				$query = $this->db->query("SELECT category_id FROM oc_product_to_category WHERE product_id = '" . $product_id . "' ORDER BY main_category DESC LIMIT 1");				
 				$path[$product_id] = $this->getPathByCategory($query->num_rows ? (int)$query->row['category_id'] : 0);
 				
 				$this->cache->set('product.seopath', $path);
 			}
-			
+
 			return $path[$product_id];
 		}
 		
@@ -601,11 +634,11 @@
 			static $path = null;
 			if (!isset($path)) {
 				$path = $this->cache->get('collection.manufacturer.seopath');
-				if (!isset($path)) $path = array();
+				if (!is_array($path)) $path = [];
 			}
 			
 			if (!isset($path[$collection_id])) {
-				$query = $this->db->query("SELECT manufacturer_id FROM " . DB_PREFIX . "collection WHERE collection_id = '" . $collection_id . "' LIMIT 1");
+				$query = $this->db->query("SELECT manufacturer_id FROM oc_collection WHERE collection_id = '" . $collection_id . "' LIMIT 1");
 				
 				$path[$collection_id] = $query->num_rows ? (int)$query->row['manufacturer_id'] : false;
 				
@@ -623,7 +656,7 @@
 			static $colpath = null;
 			if (!isset($colpath)) {
 				$colpath = $this->cache->get('collection.seopath');
-				if (!isset($colpath)) $colpath = array();
+				if (!is_array($colpath)) $colpath = [];
 			}
 			
 			if (!isset($colpath[$collection_id])) {
@@ -633,9 +666,9 @@
 				for ($i = $max_level-1; $i >= 0; --$i) {
 					$sql .= ",t$i.collection_id";
 				}
-				$sql .= ") AS colpath FROM " . DB_PREFIX . "collection t0";
+				$sql .= ") AS colpath FROM oc_collection t0";
 				for ($i = 1; $i < $max_level; ++$i) {
-					$sql .= " LEFT JOIN " . DB_PREFIX . "collection t$i ON (t$i.collection_id = t" . ($i-1) . ".parent_id)";
+					$sql .= " LEFT JOIN oc_collection t$i ON (t$i.collection_id = t" . ($i-1) . ".parent_id)";
 				}
 				$sql .= " WHERE t0.collection_id = '" . $collection_id . "'";
 				
@@ -656,7 +689,7 @@
 			static $path = null;
 			if (!isset($path)) {
 				$path = $this->cache->get('category.seopath');
-				if (!isset($path)) $path = array();
+				if (!is_array($path)) $path = [];
 			}
 			
 			if (!isset($path[$category_id])) {
@@ -666,9 +699,9 @@
 				for ($i = $max_level-1; $i >= 0; --$i) {
 					$sql .= ",t$i.category_id";
 				}
-				$sql .= ") AS path FROM " . DB_PREFIX . "category t0";
+				$sql .= ") AS path FROM oc_category t0";
 				for ($i = 1; $i < $max_level; ++$i) {
-					$sql .= " LEFT JOIN " . DB_PREFIX . "category t$i ON (t$i.category_id = t" . ($i-1) . ".parent_id)";
+					$sql .= " LEFT JOIN oc_category t$i ON (t$i.category_id = t" . ($i-1) . ".parent_id)";
 				}
 				$sql .= " WHERE t0.category_id = '" . $category_id . "'";
 				
@@ -752,7 +785,7 @@
 		
 		private function getQueryString($exclude = array()) {
 			if (!is_array($exclude)) {
-				$exclude = array();
+				$exclude = [];
 			}
 			
 			foreach ($this->request->get as $key => $value){

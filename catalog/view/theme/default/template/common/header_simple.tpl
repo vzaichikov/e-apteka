@@ -20,21 +20,20 @@
 			<meta name="robots" content="index, follow" />
 		<?php } ?>
 		
-		<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
 		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title><?php echo $title; ?></title>
 		<base href="<?php echo $base; ?>" />
 		
-		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=bORwKrwnaR">
-		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=bORwKrwnaR">
-		<link rel="icon" type="image/png" sizes="194x194" href="/favicon-194x194.png?v=bORwKrwnaR">
-		<link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png?v=bORwKrwnaR">
-		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=bORwKrwnaR">
-		<link rel="mask-icon" href="/safari-pinned-tab.svg?v=bORwKrwnaR" color="#01a0c6">
+		<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=bORwKrwnaR">
+		<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png?v=bORwKrwnaR">
+		<link rel="icon" type="image/png" sizes="194x194" href="/icons/favicon-194x194.png?v=bORwKrwnaR">
+		<link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png?v=bORwKrwnaR">
+		<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png?v=bORwKrwnaR">
+		<link rel="mask-icon" href="/icons/safari-pinned-tab.svg?v=bORwKrwnaR" color="#01a0c6">
 		<link rel="shortcut icon" href="/favicon.ico?v=bORwKrwnaR">
 		<meta name="msapplication-TileColor" content="#01a0c6">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.png?v=bORwKrwnaR">
+		<meta name="msapplication-TileImage" content="/icons/mstile-144x144.png?v=bORwKrwnaR">
 		<meta name="theme-color" content="#ffffff">
 		
 		<link rel="dns-prefetch" href="//ajax.googleapis.com">
@@ -654,36 +653,34 @@
 	<script type="text/javascript" src="catalog/view/javascript/ajax-product-page-loader.js"></script>
 	<style>
 		#ajax_loader {
-		width: 100%;
-		height: 30px;
-		margin-top: 15px;
-		text-align: center;
-		border: none!important;	
+			width: 100%;
+			height: 30px;
+			margin-top: 15px;
+			text-align: center;
+			border: none!important;	
 		}
 		#arrow_top {
-		/*background: url("../../../../../image/chevron_up.png") no-repeat transparent;*/
-		/*background-size: cover;*/
-		background-color: #bcbcbc;
-		border-radius: 50%;
-		position: fixed;
-		bottom: 50px;
-		right: 15px;
-		cursor: pointer;
-		height: 50px;
-		width: 50px;
-		-webkit-transition: all .3s;
-		-o-transition: all .3s;
-		transition: all .3s;
-		z-index: 100;
+			background-color: #bcbcbc;
+			border-radius: 50%;
+			position: fixed;
+			bottom: 50px;
+			right: 15px;
+			cursor: pointer;
+			height: 50px;
+			width: 50px;
+			-webkit-transition: all .3s;
+			-o-transition: all .3s;
+			transition: all .3s;
+			z-index: 100;
 		}
 		#arrow_top:hover {
-		background-color: #14a0d4;
+			background-color: #14a0d4;
 		}
 		.arrow_top__icon {
-		fill: #fff;
-		width: 25px;
-		height: 25px;
-		margin: 10px auto 0;
-		display: block;
+			fill: #fff;
+			width: 25px;
+			height: 25px;
+			margin: 10px auto 0;
+			display: block;
 		}
-		</style>																																				
+	</style>																																				

@@ -28,10 +28,8 @@ ini_set('display_startup_errors', 1);
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 
-	// Version
 define('VERSION', '2.3.0.2');
 
-	// Configuration
 if (is_file('config.php')) {
 	require_once('config.php');
 }
@@ -42,7 +40,6 @@ if (in_array($_SERVER['REMOTE_ADDR'], INNER_IP_POOL)){
 	define ('INNER_IP', false);
 }
 
-// Startup
 require_once(DIR_SYSTEM . 'startup.php');
 
 start('catalog');

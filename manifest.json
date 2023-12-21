@@ -1,7 +1,7 @@
 {
     "name": "Аптека Гормональних Препаратів",
     "short_name": "Моя Аптека",
-    "start_url": "https://e-apteka.com.ua/ua/",
+    "start_url": "https://e-apteka.com.ua/",
     "scope": "/",
     "display": "standalone",
     "lang": "uk-UA",

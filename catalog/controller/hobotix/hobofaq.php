@@ -31,9 +31,7 @@
 		}
 
 		private function makeStockAnswer($answer, $stocks){
-
-			return $answer . '<br />' . $this->makeStocksList($stocks);
-
+			//return $answer . '<br />' . $this->makeStocksList($stocks);
 		}
 		
 		private function makeProductFaqQA($question, $answer, $products){
@@ -196,14 +194,14 @@
 							$data['faq'][] = $this->makeProductFaqQA($question, $answer, $products);
 						}
 
-						if ($locations = $this->model_localisation_location->getLocationsGood()){
-							$question = sprintf($data['text_faq_question_stocks'], $category_info['name']);							
-							$answer = $this->makeStockAnswer(sprintf($data['text_faq_answer_stocks'], $category_info['name']), $locations);
-							$data['faq'][] = array(
-								'question' 	=> $question,
-								'answer'	=> $answer
-							);			
-						}
+						// if ($locations = $this->model_localisation_location->getLocationsGood()){
+						// 	$question = sprintf($data['text_faq_question_stocks'], $category_info['name']);							
+						// 	$answer = $this->makeStockAnswer(sprintf($data['text_faq_answer_stocks'], $category_info['name']), $locations);
+						// 	$data['faq'][] = array(
+						// 		'question' 	=> $question,
+						// 		'answer'	=> $answer
+						// 	);			
+						// }
 						
 						//Как не платить за доставку
 						/*

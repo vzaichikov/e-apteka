@@ -327,6 +327,8 @@
 
 				(SELECT category_id FROM oc_product_to_category p2cm WHERE p2cm.product_id = p.product_id ORDER BY main_category DESC LIMIT 1) as main_category_id,
 
+				(SELECT GROUP_CONCAT(xdsticker_id SEPARATOR ',') FROM oc_xdstickers_product xds WHERE xds.product_id = p.product_id GROUP BY xds.product_id) as custom_xdsticker_ids,
+
 				(SELECT SUM(quantity) FROM oc_stocks s JOIN oc_location l ON (s.location_id = l.location_id) WHERE s.product_id = p.product_id AND l.temprorary_closed = 0) as total_stocks,
 				(SELECT COUNT(DISTINCT s.location_id) FROM oc_stocks s JOIN oc_location l ON (s.location_id = l.location_id) WHERE s.product_id = p.product_id AND s.quantity > 0 AND l.temprorary_closed = 0) as total_drugstores, 
 				
@@ -336,7 +338,7 @@
 					$sql .= " AND p.status = '1' ";
 				}
 				
-				$query = $this->db->query($sql);
+				$query = $this->db->query($sql, [], true);
 
 				$query->row['price'] 				= (float)$query->row['price'];
 				$query->row['price_retail'] 		= (float)$query->row['price_retail'];
@@ -585,16 +587,14 @@
 							}
 						}
 						*/
-						
-						// CUSTOM stickers
-						$this->load->model('extension/module/xdstickers');
-						$custom_xdstickers_id = $this->model_extension_module_xdstickers->getCustomXDStickersProduct($query->row['product_id']);
-						if (!empty($custom_xdstickers_id)) {
-							foreach ($custom_xdstickers_id as $custom_xdsticker_id) {
-								$custom_xdsticker = $this->model_extension_module_xdstickers->getCustomXDSticker($custom_xdsticker_id['xdsticker_id']);
+												
+						if (!empty($query->row['custom_xdsticker_ids'])) {
+							$custom_xdstickers_ids = explode(',', $query->row['custom_xdsticker_ids']);
+							foreach ($custom_xdstickers_ids as $custom_xdsticker_id) {
+								$custom_xdsticker = $this->model_extension_module_xdstickers->getCustomXDSticker($custom_xdsticker_id);
 								$custom_xdsticker_text = json_decode($custom_xdsticker['text'], true);
 								if ($custom_xdsticker['status'] == '1') {
-									$custom_sticker_class = 'xdsticker_' . $custom_xdsticker_id['xdsticker_id'];
+									$custom_sticker_class = 'xdsticker_' . $custom_xdsticker_id;
 									$product_xdstickers[] = array(
 									'id'			=> $custom_sticker_class,
 									'text'			=> $custom_xdsticker_text[$current_language_id]
@@ -1159,11 +1159,6 @@
 			
 			$sql .= " ORDER BY p.quantity DESC, p.image DESC LIMIT " . (int)$limit . "";
 			
-			
-			if ($_SERVER['REMOTE_ADDR'] == '185.41.249.201'){
-				//		$this->log->debug($sql);
-			}
-			
 			$query = $this->db->query($sql);
 			
 			foreach ($query->rows as $result) {
@@ -1651,7 +1646,6 @@
 				$sql .= " FROM oc_product p";
 			}
 			
-			// OCFilter start
 			if (!empty($data['filter_ocfilter'])) {
 				$this->load->model('catalog/ocfilter');
 				
@@ -1663,7 +1657,6 @@
 			if ($ocfilter_product_sql && $ocfilter_product_sql->join) {
 				$sql .= $ocfilter_product_sql->join;
 			}
-			// OCFilter end
 			
 			$sql .= " LEFT JOIN oc_product_description pd ON (p.product_id = pd.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE 1 AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 			
@@ -1800,7 +1793,6 @@
 				$sql .= " FROM oc_product p";
 			}
 			
-			// OCFilter start
 			if (!empty($data['filter_ocfilter'])) {
 				$this->load->model('catalog/ocfilter');
 				
@@ -1812,7 +1804,6 @@
 			if ($ocfilter_product_sql && $ocfilter_product_sql->join) {
 				$sql .= $ocfilter_product_sql->join;
 			}
-			// OCFilter end
 			
 			$sql .= " LEFT JOIN oc_product_description pd ON (p.product_id = pd.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 			

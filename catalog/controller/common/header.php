@@ -1,6 +1,7 @@
 <?php
 	class ControllerCommonHeader extends Controller {
 		public function index() {
+			$this->load->controller('startup/hoboseo/postSeoPro');
 			
 			// Analytics
 			$this->load->model('extension/extension');
@@ -55,7 +56,6 @@
 				$data['logo'] = '';
 			}
 			
-			// XD Stickers start
 			$this->load->model('setting/setting');
 			$xdstickers = $this->config->get('xdstickers');
 			$data['xdstickers_status'] = $xdstickers['status'];
@@ -106,8 +106,7 @@
 						}
 					}
 				}
-				
-				// CUSTOM stickers
+
 				$this->load->model('extension/module/xdstickers');
 				$custom_xdstickers = $this->model_extension_module_xdstickers->getCustomXDStickers();
 				if (!empty($custom_xdstickers)) {
@@ -122,13 +121,11 @@
 					}
 				}
 			}
-			// XD Stickers end
 			
 			$this->load->model('localisation/language');
-			$languages = $this->model_localisation_language->getLanguages();
+			$languages = $this->registry->get('languages');
 			$default_language = $this->config->get('config_language');			
 			
-			//try to remove all language codes from url to leave it clean
 			$real_url = $this->request->server['REQUEST_URI'];
 			foreach ($languages as $language){	
 				if (strpos(trim($this->request->server['REQUEST_URI']),  '/' . $language['urlcode'] . '/') === 0){
@@ -142,9 +139,9 @@
 			foreach ($languages as $language){
 				if ($language['code'] == $default_language){
 					if ($this->request->server['REQUEST_URI'] == '' || $this->request->server['REQUEST_URI'] == '/'){
-						$hreflang = trim((isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1')) ? HTTPS_SERVER : HTTP_SERVER) . $real_url, '/');
+						$hreflang = trim(HTTPS_SERVER . $real_url, '/');
 						} else {
-						$hreflang = (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1')) ? HTTPS_SERVER : HTTP_SERVER) . $real_url;
+						$hreflang = HTTPS_SERVER . $real_url;
 					}
 					$this->document->addHrefLang($language['hreflang'], $hreflang);
 					} else {
@@ -153,12 +150,11 @@
 				
 			}
 			
-			$data['languages'] = $languages;
-			
+			$data['languages'] = $languages;			
 			$data['hreflangs'] = $this->document->getHrefLangs();
 			
 			$this->load->language('common/header');
-$data['store_url'] = HTTPS_SERVER;
+			$data['store_url'] = HTTPS_SERVER;
 			
 			$data['text_home'] = $this->language->get('text_home');
 			$data['text_callcenter'] = $this->language->get('text_callcenter');
@@ -166,7 +162,6 @@ $data['store_url'] = HTTPS_SERVER;
 			$data['text_mycard_small'] = $this->language->get('text_mycard_small');
 			$data['text_simple_call'] = $this->language->get('text_simple_call');
 			
-			// Wishlist
 			if ($this->customer->isLogged()) {
 				$this->load->model('account/wishlist');
 				
@@ -265,7 +260,6 @@ $data['store_url'] = HTTPS_SERVER;
 
 			$data['brands'] = $this->url->link('product/manufacturer');
 			
-			//ЗАГЛУШКИ ДЛЯ ХЕДЕРА
 			$data['contacts'] = $this->url->link('information/contact');
 			$data['delivery'] = $this->url->link('information/information', 'information_id=6');
 			$data['loyality'] = $this->url->link('information/information', 'information_id=7');
@@ -282,7 +276,6 @@ $data['store_url'] = HTTPS_SERVER;
 			$lang = $this->config->get('config_language_id');
 			$data['registry'] = $this->registry;
 			
-			//MINIFICATION ENGINE W/STATIC
 			require_once DIR_SYSTEM . '../min/static/lib.php';
 			$static_uri = "/min/static";
 			

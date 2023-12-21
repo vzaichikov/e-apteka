@@ -40,13 +40,11 @@
 				$limit = $this->config->get($this->config->get('config_theme') . '_product_limit');
 			}
 			
-			// OCFilter start
 			if (isset($this->request->get['filter_ocfilter'])) {
 				$filter_ocfilter = $this->request->get['filter_ocfilter'];
 				} else {
 				$filter_ocfilter = '';
 			}
-			// OCFilter end
 			
 			$data['breadcrumbs'] = array();
 			
@@ -253,7 +251,6 @@
                 'limit'              => $limit
 				);
 				
-				// OCFilter start
 				$filter_data['filter_ocfilter'] = $filter_ocfilter;
 				
 				if ($this->config->get('ocfilter_sub_category')) {
@@ -265,7 +262,6 @@
 						$data['categories'] = array();
 					}
 				}
-				// OCFilter end
 				
 				$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
 				$product_total_info = $this->model_catalog_product->getTotalProductsInfo($filter_data);
@@ -354,11 +350,9 @@
 				
 				$url = '';
 				
-				// OCFilter start
 				if (isset($this->request->get['filter_ocfilter'])) {
 					$url .= '&filter_ocfilter=' . $this->request->get['filter_ocfilter'];
 				}
-				// OCFilter end
 				
 				if (isset($this->request->get['filter'])) {
 					$url .= '&filter=' . $this->request->get['filter'];
@@ -391,11 +385,9 @@
 				
 				$url = '';
 				
-				// OCFilter start
 				if (isset($this->request->get['filter_ocfilter'])) {
 					$url .= '&filter_ocfilter=' . $this->request->get['filter_ocfilter'];
 				}
-				// OCFilter end
 				
 				if (isset($this->request->get['filter'])) {
 					$url .= '&filter=' . $this->request->get['filter'];
@@ -428,11 +420,9 @@
 				
 				$url = '';
 				
-				// OCFilter start
 				if (isset($this->request->get['filter_ocfilter'])) {
 					$url .= '&filter_ocfilter=' . $this->request->get['filter_ocfilter'];
-				}
-				// OCFilter end
+				}				
 				
 				if (isset($this->request->get['filter'])) {
 					$url .= '&filter=' . $this->request->get['filter'];
@@ -525,7 +515,6 @@
 					$this->data['display_small_subcategories'] = 1;
 				}
 				
-				// OCFilter Start
 				if (isset($this->request->get['filter_ocfilter'])) {
 					if (!$product_total) {
 						$this->response->redirect($this->url->link('product/category', 'path=' . $this->request->get['path']));
@@ -666,7 +655,6 @@
 						$data['heading_title'] = $data['seo_h1'] = trim(str_replace('{filter}', '', $data['heading_title']));
 					}
 				}
-				// OCFilter End
 				
 				$data['continue'] = $this->url->link('common/home');
 				
@@ -681,21 +669,21 @@
 				$data['content_bottom'] = $this->load->controller('common/content_bottom');
 				$data['footer'] = $this->load->controller('common/footer');
 				$data['header'] = $this->load->controller('common/header');
-$data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
-				
-				
+				$data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
+								
 				$banner = $category_info['banner'];
 				
 				$setting = [
-                'width' => 804,
-                'height' => 374,
-                'width_mobil' => 290,
-                'height_mobil' => 440,
-                'category' => 1,
+					'width' => 804,
+					'height' => 374,
+					'width_mobil' => 290,
+					'height_mobil' => 440,
+					'category' => 1,
 				];
+
 				if($banner == 0){
 					$setting['banner_id'] = 11;
-					}else{
+				}else{
 					$setting['banner_id'] = $banner;
 				}
 				
@@ -752,7 +740,7 @@ $data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
 				$data['content_bottom'] = $this->load->controller('common/content_bottom');
 				$data['footer'] = $this->load->controller('common/footer');
 				$data['header'] = $this->load->controller('common/header');
-$data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
+				$data['hb_snippets_bc_enable'] = $this->config->get('hb_snippets_bc_enable');
 				
 				$this->response->setOutput($this->load->view('error/not_found', $data));
 			}

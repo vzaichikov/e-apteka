@@ -46,7 +46,7 @@
 			
 			$this->load->model('localisation/language');
 			
-			$languages = $this->model_localisation_language->getLanguages();
+			$languages = $this->registry->get('languages');
 			
 			if (isset($this->session->data['language'])) {
 				$code = $this->session->data['language'];
@@ -73,18 +73,7 @@
 			
 			if ((!isset($code) || !$code || !array_key_exists($code, $languages)) && ($code_from_url && array_key_exists($code_from_url, $languages))){
 				$code = $code_from_url;
-			}
-
-			
-			if (!(php_sapi_name() === 'cli') && !$code){
-				$CrawlerDetect = new Jaybizzle\CrawlerDetect\CrawlerDetect;
-
-				if (!$CrawlerDetect->isCrawler()) {
-					if (stripos($this->request->server['REQUEST_URI'], 'index.php') === false){
-						$this->response->redirect(HTTPS_SERVER . 'ua' . $this->request->server['REQUEST_URI']);
-					}
-				}
-			}				
+			}		
 			
 			if (!array_key_exists($code, $languages)) {
 				$code = $this->config->get('config_language');

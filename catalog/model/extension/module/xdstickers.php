@@ -1,15 +1,13 @@
 <?php
 class ModelExtensionModuleXDStickers extends Model {
 	public function getCustomXDSticker($xdsticker_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "xdstickers WHERE xdsticker_id = '" . (int)$xdsticker_id . "'");
+		$query = $this->db->query("SELECT * FROM oc_xdstickers WHERE xdsticker_id = '" . (int)$xdsticker_id . "'");
 		return $query->row;
 	}
 	
 	public function getCustomXDStickersProduct($product_id) {
-		$query = $this->db->query("SELECT `xdsticker_id` FROM " . DB_PREFIX . "xdstickers_product WHERE product_id = '" . (int)$product_id . "'");
-		
-		
-		
+		$query = $this->db->query("SELECT `xdsticker_id` FROM oc_xdstickers_product WHERE product_id = '" . (int)$product_id . "'");
+						
 		if ($query) {
 			return $query->rows;
 		} else {
@@ -25,17 +23,17 @@ class ModelExtensionModuleXDStickers extends Model {
 		$sql = "SELECT op.product_id, SUM(op.quantity) AS total ";
 		
 		if ($parent_id > 0) {
-			$sql .= " FROM " . DB_PREFIX . "category_path cp
-			LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (cp.category_id = p2c.category_id)
-			LEFT JOIN " . DB_PREFIX . "order_product op ON (op.product_id = p2c.product_id)
+			$sql .= " FROM oc_category_path cp
+			LEFT JOIN oc_product_to_category p2c ON (cp.category_id = p2c.category_id)
+			LEFT JOIN oc_order_product op ON (op.product_id = p2c.product_id)
 			";
 		} else {
-			$sql .= " FROM " . DB_PREFIX . "order_product op ";
+			$sql .= " FROM oc_order_product op ";
 		}
 		
-		$sql .= " LEFT JOIN `" . DB_PREFIX . "order` o ON (op.order_id = o.order_id)
-		LEFT JOIN `" . DB_PREFIX . "product` p ON (op.product_id = p.product_id)
-		LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id)
+		$sql .= " LEFT JOIN `oc_order` o ON (op.order_id = o.order_id)
+		LEFT JOIN `oc_product` p ON (op.product_id = p.product_id)
+		LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id)
 		WHERE o.order_status_id > '0' AND p.status = '1' AND p.quantity > '0' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 		
 		if ($parent_id > 0) {
@@ -58,7 +56,7 @@ class ModelExtensionModuleXDStickers extends Model {
 	}
 	
 	public function getCustomXDStickers($data = array()) {
-		$sql = "SELECT * FROM " . DB_PREFIX . "xdstickers";
+		$sql = "SELECT * FROM oc_xdstickers";
 		$sort_data = array(
 			'name',
 			'status'

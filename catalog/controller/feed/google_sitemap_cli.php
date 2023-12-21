@@ -28,8 +28,8 @@
 
 		//VERY FAST AND DIRTY FIX
 		private function linkUA($uri){
-			if ($this->config->get('config_language_id') == 3){
-				return str_ireplace(HTTPS_SERVER, HTTPS_SERVER . 'ua/', $uri);
+			if ($this->config->get('config_language_id') == 2){
+				return str_ireplace(HTTPS_SERVER, HTTPS_SERVER . 'ru/', $uri);
 			} else {
 				return $uri;
 			}

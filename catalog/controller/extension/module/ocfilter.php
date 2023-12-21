@@ -22,7 +22,6 @@ class ControllerExtensionModuleOCFilter extends Controller {
 		$this->load->model('catalog/product');
     $this->load->model('tool/image');
 
-    // Decode URL
     $this->decode();
 
     if (!$this->path) {
@@ -56,10 +55,9 @@ class ControllerExtensionModuleOCFilter extends Controller {
       }
     }
 
-    // Get values counter
     $filter_data = array(
-			'filter_category_id' => $this->category_id,
-      'filter_ocfilter' => $this->params
+			'filter_category_id'=> $this->category_id,
+      'filter_ocfilter'   => $this->params
 		);
 
 		$this->counters = $this->model_catalog_ocfilter->getCounters($filter_data);
@@ -78,7 +76,6 @@ class ControllerExtensionModuleOCFilter extends Controller {
     $this->registry->set('ocfilter', $this);
   }
 
-  // Array access
   public function __get($key) {
     if (isset($this->data[$key])) {
       return $this->data[$key];
@@ -93,7 +90,6 @@ class ControllerExtensionModuleOCFilter extends Controller {
     $this->data[$key] = $value;
   }
 
-  // Empty method to prevent execution of index()
   public function initialise() {
 
   }
@@ -179,7 +175,40 @@ class ControllerExtensionModuleOCFilter extends Controller {
 
     $options = array();
 
-    // Manufacturers filtering
+    if ($this->config->get('ocfilter_stock_status')) {
+      if ($this->config->get('ocfilter_stock_status_method') == 'stock_status_id') {
+        $results = $this->model_catalog_ocfilter->getStockStatuses();
+
+        $options['stock'] = array(
+          'option_id'   => 's',
+          'name'        => $this->language->get('text_stock'),
+          'description' => $this->language->get('text_stock_description'),
+          'type'        => $this->config->get('ocfilter_stock_status_type'),
+          'values'      => $results
+        );
+      } else if ($this->config->get('ocfilter_stock_status_method') == 'quantity') {
+        $options['stock'] = array(
+          'option_id'   => 's',
+          'name'        => $this->language->get('text_stock'),
+          'description' => $this->language->get('text_stock_description'),
+          'type'        => ($this->config->get('ocfilter_stock_out_value') ? 'radio' : 'checkbox'),
+          'values'      => array(
+            array(
+              'value_id'    => 'in',
+              'name'        => $this->language->get('text_in_stock')
+            )
+          )
+        );
+
+        if ($this->config->get('ocfilter_stock_out_value')) {
+          $options['stock']['values'][] = array(
+            'value_id'    => 'out',
+            'name'        => $this->language->get('text_out_of_stock')
+          );
+        }
+      }
+    }
+
     if ($this->config->get('ocfilter_manufacturer')) {
   		$results = $this->model_catalog_ocfilter->getManufacturersByCategoryId($this->category_id);
 
@@ -194,42 +223,6 @@ class ControllerExtensionModuleOCFilter extends Controller {
       }
     }
 
-    // Stock status filtering
-    if ($this->config->get('ocfilter_stock_status')) {
-			if ($this->config->get('ocfilter_stock_status_method') == 'stock_status_id') {
-				$results = $this->model_catalog_ocfilter->getStockStatuses();
-
-	      $options['stock'] = array(
-	        'option_id'   => 's',
-	        'name'        => $this->language->get('text_stock'),
-          'description' => $this->language->get('text_stock_description'),
-	        'type'        => $this->config->get('ocfilter_stock_status_type'),
-	        'values'      => $results
-	      );
-			} else if ($this->config->get('ocfilter_stock_status_method') == 'quantity') {
-	      $options['stock'] = array(
-	        'option_id'   => 's',
-	        'name'        => $this->language->get('text_stock'),
-          'description' => $this->language->get('text_stock_description'),
-	        'type'        => ($this->config->get('ocfilter_stock_out_value') ? 'radio' : 'checkbox'),
-	        'values'      => array(
-						array(
-							'value_id'    => 'in',
-							'name'        => $this->language->get('text_in_stock')
-						)
-					)
-	      );
-
-				if ($this->config->get('ocfilter_stock_out_value')) {
-          $options['stock']['values'][] = array(
-						'value_id'    => 'out',
-						'name'        => $this->language->get('text_out_of_stock')
-					);
-				}
-			}
-    }
-
-    // Get category options
 	  $results = $this->model_catalog_ocfilter->getOCFilterOptionsByCategoryId($this->category_id);
 
     if ($results) {
@@ -474,7 +467,6 @@ class ControllerExtensionModuleOCFilter extends Controller {
 
 		$keywords = explode('/', $_route_);
 
-		// remove any empty arrays from trailing
 		if (utf8_strlen(end($keywords)) == 0) {
 			array_pop($keywords);
 		}
@@ -483,7 +475,6 @@ class ControllerExtensionModuleOCFilter extends Controller {
 
     $page_keywords = array();
 
-    // Get category path
     if (!$this->path) {
       $path_info = $this->model_catalog_ocfilter->decodeCategory($keywords);
 
@@ -502,14 +493,12 @@ class ControllerExtensionModuleOCFilter extends Controller {
 
     $category_id = (int)end($parts);
 
-    // Ignore language
     $key = array_search($this->session->data['language'], $keywords);
 
     if (false !== $key) {
     	$ignored[] = $keywords[$key];
     }
 
-    // Get SEO Page
     foreach ($keywords as $key => $keyword) {
       if (in_array($keyword, $ignored)) {
       	continue;
@@ -522,7 +511,6 @@ class ControllerExtensionModuleOCFilter extends Controller {
 
   			$keywords = explode('/', $this->page_info['params']);
 
-  			// remove any empty arrays from trailing
   			if (utf8_strlen(end($keywords)) == 0) {
   				array_pop($keywords);
   			}
@@ -533,7 +521,6 @@ class ControllerExtensionModuleOCFilter extends Controller {
 
     $params = array();
 
-    // Special filters
     foreach ($keywords as $key => $keyword) {
       if (in_array($keyword, $ignored)) {
       	continue;
@@ -721,7 +708,15 @@ class ControllerExtensionModuleOCFilter extends Controller {
         $query = false;
 
         if ($option_id == 'm') {
-          $query = $this->db->query("SELECT keyword FROM " . DB_PREFIX . "url_alias WHERE `query` = 'manufacturer_id=" . (int)$value_id . "'");
+          if ($this->registry->has('short_uri_queries')){
+              $query            = new stdClass();
+              $query->num_rows  = 1;
+              $query->row       = ['keyword' => $this->registry->get('short_uri_queries')['manufacturer_id']  . (int)$value_id];
+
+
+          } else {
+            $query = $this->db->query("SELECT keyword FROM " . DB_PREFIX . "url_alias WHERE `query` = 'manufacturer_id=" . (int)$value_id . "'");
+          }
         } else if (isID($value_id)) {
           $query = $this->db->query("SELECT keyword FROM " . DB_PREFIX . "ocfilter_option_value WHERE value_id = '" . $this->db->escape((string)$value_id) . "'");
         }

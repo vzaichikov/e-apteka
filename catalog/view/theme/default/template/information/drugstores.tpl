@@ -28,7 +28,6 @@
 	}
 </style>
 <div class="container">
-	<!-- breadcrumb -->
 	<ul class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
 		<?php $ListItem_pos = 1; ?>
 		<?php foreach ($breadcrumbs as $breadcrumb) { ?>
@@ -36,7 +35,6 @@
 			itemtype="https://schema.org/ListItem"><a href="<?php echo $breadcrumb['href']; ?>" itemprop="item"><span itemprop="name"><?php echo $breadcrumb['text']; ?></span></a><meta itemprop="position" content="<?php echo $ListItem_pos++; ?>" /></li>
 		<?php } ?>
 	</ul> 
-	<!-- breadcrumb -->
 </div>
 
 <div class="container">
@@ -58,7 +56,9 @@
 				<?php $i=0; foreach ($locations as $location) { ?>
 					<tr <?php if ($location['geocode']) { ?>class="location_has_geocode" data-i="<?php echo $i; ?>"<?php } ?>>						
 						<td>							
-							<img src="<?php echo $location['logo']; ?>" height="15px" width="15px"> <b class="product-stock-map__name"><?php echo $location['address']; ?></b>
+							<img src="<?php echo $location['logo']; ?>" height="15px" width="15px" />
+							<b class="product-stock-map__name"><?php echo $location['name']; ?></b><br />
+							<i class="fa fa-map-marker <? echo $location['faclass']; ?>"></i> <b class="product-stock-map__address" style="font-size:"><?php echo $location['address']; ?></b>
 							<br />
 							<span class="product-stock-map__time"><i class="fa fa-clock-o <? echo $location['faclass']; ?>"></i> <i><?php echo $location['open']; ?></i></span>
 						</td>

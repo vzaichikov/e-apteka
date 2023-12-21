@@ -23,60 +23,7 @@ class ControllerExtensionModuleIMCallMeAskMe extends Controller {
         
         $template = 'extension/module/IMCallMeAskMe';
         $this->response->setOutput($this->load->view($template, $data));
-    }
-
-    protected function sendToBitrix($settings, $post, &$json, $lang_id){
-
-        $this->load->library('hobotix/BitrixBot');
-        $this->bitrixBot = new hobotix\BitrixBot($this->registry);
-
-        $this->load->model('extension/module/IMCallMeAskMe');
-        $this->model_extension_module_IMCallMeAskMe->insertStat($lang_id, $post, '');
-
-        $customer_name = '';
-        if ($this->customer->isLogged()){
-            $customer_name = ' ' . $this->customer->getFirstName();
-        }
-
-        $message = array(
-            'message' => ':!: Зворотній дзвінок!',
-            'attach' => array(
-                "ID" => 1,
-                "COLOR" => "#29619b",
-                "BLOCKS" => Array(
-                    Array("USER" => Array(
-                        "NAME"      => "Клієнт$customer_name замовив зворотній дзвінок!",
-                        "AVATAR"    => "http://e-apteka.com.ua/bitrix/images/bitrixavatar.jpg",
-                    )),
-                    Array("MESSAGE" => "[B]Телефон клієнта:[/B] " . $post['tel']),
-                    Array("MESSAGE" => "[B]Повідомлення:[/B] " . strip_tags($post['text'])),
-                    Array("DELIMITER" => Array(
-                        'SIZE' => 200,
-                        'COLOR' => "#c6c6c6"
-                    )),
-                    Array("MESSAGE" => "[B]Сторінка на якій був клієнт[/B]"),
-                    Array("LINK" => Array(
-                        "NAME"      => urldecode($post['url']),
-                        "LINK"      => urldecode($post['url']),
-                    )), 
-                )                
-            )
-        );
-
-        try{
-
-            if (!$this->bitrixBot->logRequest()->loadConfigFile()->validateAppsConfig()){
-                return;
-            }
-
-            $this->bitrixBot->sendMessageToGroup('chat5644', $message);
-
-        } catch(Exception $e)
-        {
-
-        }
-
-    }
+    }   
 
     protected function sendEmailAndSetStat($settings, $post, &$json, $lang_id)
     {
@@ -117,8 +64,6 @@ class ControllerExtensionModuleIMCallMeAskMe extends Controller {
             'complete' => $settings['complete_send']
         );
 
-
-            // Проверяем данные из поста
         $post = array(
             'url'           => $this->getPostValue('url'),
             'name'          => $this->getPostValue('name'),
@@ -132,9 +77,6 @@ class ControllerExtensionModuleIMCallMeAskMe extends Controller {
             'utm_term'      => $this->getPostValue('utm_term')
         );
 
-
-
-            // Требуется ввод имени
         if (('' . $settings['name_req']) == '1' && ('' . $settings['name_inc']) == '1')
         {
             if (trim($post['name']) == '')
@@ -144,7 +86,6 @@ class ControllerExtensionModuleIMCallMeAskMe extends Controller {
             }
         }
 
-            // Требуется ввод сообщения
         if (('' . $settings['text_req']) == '1' && ('' . $settings['text_inc']) == '1')
         {
             if (trim($post['text']) == '')
@@ -154,7 +95,6 @@ class ControllerExtensionModuleIMCallMeAskMe extends Controller {
             }
         }
 
-            // Требуется ввод почты
         if (('' . $settings['email_req']) == '1' && ('' . $settings['email_inc']) == '1')
         {
             if (trim($post['email']) == '')
@@ -188,7 +128,7 @@ class ControllerExtensionModuleIMCallMeAskMe extends Controller {
         }
 
         if (!$json['error']) {
-            $this->sendToBitrix($settings, $post, $json, $lang_id);
+           
         }
 
         $this->response->setOutput(json_encode($json));

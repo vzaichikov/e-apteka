@@ -5880,7 +5880,13 @@ h2.cat-header:before {
 }
 
 .product-stock-map__name {
-    font-size: 16px;
+    font-size: 14px;
+    color: #59595e;
+    font-weight: 700;
+}
+
+.product-stock-map__address {
+    font-size: 14px;
     color: #59595e;
     font-weight: 400;
 }

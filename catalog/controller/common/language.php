@@ -3,25 +3,21 @@ class ControllerCommonLanguage extends Controller {
 	public function index() {
 		$this->load->language('common/language');
 
-		$data['text_language'] = $this->language->get('text_language');
-
-		$data['action'] = $this->url->link('common/language/language', '', $this->request->server['HTTPS']);
-
-		$data['code'] = $this->session->data['language'];
-
-		$this->load->model('localisation/language');
+		$data['text_language'] 	= $this->language->get('text_language');
+		$data['action'] 		= $this->url->link('common/language/language', '', $this->request->server['HTTPS']);
+		$data['code'] 			= $this->session->data['language'];
 
 		$data['languages'] = array();
 
-		$results = $this->model_localisation_language->getLanguages();
+		$results = $this->registry->get('languages');
 
 		foreach ($results as $result) {
 			if ($result['status']) {
 				$data['languages'][] = array(
-					'name' => $result['name'],
-					'urlcode' => $result['urlcode'],
-					'code' => $result['code'],
-					'url' => $result['urlcode']
+					'name' 		=> $result['name'],
+					'urlcode' 	=> $result['urlcode'],
+					'code' 		=> $result['code'],
+					'url' 		=> $result['urlcode']
 				);
 			}
 		}

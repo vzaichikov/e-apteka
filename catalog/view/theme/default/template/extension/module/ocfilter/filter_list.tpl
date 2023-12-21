@@ -23,7 +23,7 @@
 
   <?php } ?>
 </div>
-<button type="button" class="btn btn-default btn-block" data-toggle="collapse" data-target="#ocfilter-hidden-options" aria-expanded="false"><i class="fa"></i></button>
+<button type="button" class="bbtn bbtn-primary btn-block" data-toggle="collapse" data-target="#ocfilter-hidden-options" aria-expanded="false"><i class="fa"></i></button>
 <?php } ?>
 
 

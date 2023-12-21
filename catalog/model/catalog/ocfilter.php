@@ -16,12 +16,12 @@ class ModelCatalogOCFilter extends Model {
 			return $options_data;
 		}
 
-    $options_data = array();
+    $options_data = [];
 
-    $sql = "SELECT * FROM " . DB_PREFIX . "ocfilter_option oo LEFT JOIN " . DB_PREFIX . "ocfilter_option_description ood ON (oo.option_id = ood.option_id) LEFT JOIN " . DB_PREFIX . "ocfilter_option_to_category oo2c ON (oo.option_id = oo2c.option_id)";
+    $sql = "SELECT * FROM oc_ocfilter_option oo LEFT JOIN oc_ocfilter_option_description ood ON (oo.option_id = ood.option_id) LEFT JOIN oc_ocfilter_option_to_category oo2c ON (oo.option_id = oo2c.option_id)";
 
     if ($this->config->get('ocfilter_sub_category')) {
-    	$sql .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (oo2c.category_id = cp.category_id)";
+    	$sql .= " LEFT JOIN oc_category_path cp ON (oo2c.category_id = cp.category_id)";
     }
 
     $sql .= " WHERE oo.status = '1' AND ood.language_id = '" . (int)$this->config->get('config_language_id') . "'";
@@ -44,7 +44,7 @@ class ModelCatalogOCFilter extends Model {
       ));
 
       if (!($option['type'] == 'slide' || $option['type'] == 'slide_dual')) {
-        $values_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "ocfilter_option_value oov LEFT JOIN " . DB_PREFIX . "ocfilter_option_value_description oovd ON (oov.value_id = oovd.value_id) WHERE oov.option_id = '" . (int)$option['option_id'] . "' AND oovd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oov.sort_order, (oovd.name = '-') DESC, (oovd.name = '0') DESC, (oovd.name + 0 > 0) DESC, (oovd.name + 0), oovd.name");
+        $values_query = $this->db->query("SELECT * FROM oc_ocfilter_option_value oov LEFT JOIN oc_ocfilter_option_value_description oovd ON (oov.value_id = oovd.value_id) WHERE oov.option_id = '" . (int)$option['option_id'] . "' AND oovd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oov.sort_order, (oovd.name = '-') DESC, (oovd.name = '0') DESC, (oovd.name + 0 > 0) DESC, (oovd.name + 0), oovd.name");
 
         $option_data['values'] = $values_query->rows;
       }
@@ -59,10 +59,10 @@ class ModelCatalogOCFilter extends Model {
 
   public function decodeOption($keyword, $category_id) {
     // Get Option by keyword
-    $sql = "SELECT oo.option_id FROM " . DB_PREFIX . "ocfilter_option oo LEFT JOIN " . DB_PREFIX . "ocfilter_option_to_category oo2c ON (oo.option_id = oo2c.option_id)";
+    $sql = "SELECT oo.option_id FROM oc_ocfilter_option oo LEFT JOIN oc_ocfilter_option_to_category oo2c ON (oo.option_id = oo2c.option_id)";
 
     if ($this->config->get('ocfilter_sub_category')) {
-    	$sql .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (oo2c.category_id = cp.category_id)";
+    	$sql .= " LEFT JOIN oc_category_path cp ON (oo2c.category_id = cp.category_id)";
     }
 
     $sql .= " WHERE oo.status = '1' AND oo.`keyword` = '" . $this->db->escape($keyword) . "'";
@@ -81,10 +81,10 @@ class ModelCatalogOCFilter extends Model {
 
     // Get Option by ID
     if (!$query->num_rows && isID($keyword)) {
-      $sql = "SELECT oo.option_id FROM " . DB_PREFIX . "ocfilter_option oo LEFT JOIN " . DB_PREFIX . "ocfilter_option_to_category oo2c ON (oo.option_id = oo2c.option_id)";
+      $sql = "SELECT oo.option_id FROM oc_ocfilter_option oo LEFT JOIN oc_ocfilter_option_to_category oo2c ON (oo.option_id = oo2c.option_id)";
 
       if ($this->config->get('ocfilter_sub_category')) {
-      	$sql .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (oo2c.category_id = cp.category_id)";
+      	$sql .= " LEFT JOIN oc_category_path cp ON (oo2c.category_id = cp.category_id)";
       }
 
       $sql .= " WHERE oo.status = '1' AND oo.option_id = '" . (int)$keyword . "'";
@@ -106,11 +106,10 @@ class ModelCatalogOCFilter extends Model {
   }
 
   public function decodeValue($keyword, $option_id) {
-    $query = $this->db->query("SELECT value_id FROM " . DB_PREFIX . "ocfilter_option_value WHERE option_id = '" . (int)$option_id . "' AND `keyword` = '" . $this->db->escape($keyword) . "' LIMIT 1");
+    $query = $this->db->query("SELECT value_id FROM oc_ocfilter_option_value WHERE option_id = '" . (int)$option_id . "' AND `keyword` = '" . $this->db->escape($keyword) . "' LIMIT 1");
 
-    // If keyword is ID
     if (!$query->num_rows && isID($keyword)) {
-      $query = $this->db->query("SELECT value_id FROM " . DB_PREFIX . "ocfilter_option_value WHERE value_id = '" . $this->db->escape((string)$keyword) . "'");
+      $query = $this->db->query("SELECT value_id FROM oc_ocfilter_option_value WHERE value_id = '" . $this->db->escape((string)$keyword) . "'");
     }
 
     if (!empty($query->row['value_id'])) {
@@ -121,45 +120,82 @@ class ModelCatalogOCFilter extends Model {
   }
 
   public function decodeManufacturer($keyword) {
-    $query = $this->db->query("SELECT REPLACE(`query`, 'manufacturer_id=', '') AS manufacturer_id FROM " . DB_PREFIX . "url_alias WHERE `query` LIKE 'manufacturer_id=%' AND LCASE(`keyword`) = '" . $this->db->escape(utf8_strtolower($keyword)) . "' LIMIT 1");
+    if ($this->registry->has('short_uri_queries')){
+        if (preg_match('/^[' . $this->registry->get('short_uri_queries')['manufacturer_id'] . '][0-9]+$/', $keyword, $matches) == 1){
+            return (int)trim(str_ireplace($this->registry->get('short_uri_queries')['manufacturer_id'], '', $keyword));
+        } else {
+          return false;
+        }
+    }
+
+    $query = $this->db->query("SELECT REPLACE(`query`, 'manufacturer_id=', '') AS manufacturer_id FROM oc_url_alias WHERE `query` LIKE 'manufacturer_id=%' AND LCASE(`keyword`) = '" . $this->db->escape(utf8_strtolower($keyword)) . "' LIMIT 1");
 
     if (!$query->num_rows && isID($keyword)) {
-      $query = $this->db->query("SELECT manufacturer_id FROM " . DB_PREFIX . "manufacturer WHERE manufacturer_id = '" . (int)$keyword . "'");
+      $query = $this->db->query("SELECT manufacturer_id FROM oc_manufacturer WHERE manufacturer_id = '" . (int)$keyword . "'");
     }
 
     if (!empty($query->row['manufacturer_id'])) {
     	return $query->row['manufacturer_id'];
     } else {
-      return 0;
+      return false;
     }
   }
 
-  public function decodeCategory($keywords = array()) {
-    $fields = array();
+  public function decodeCategoryShortUrls($keywords = []){
+        $path             = [];
+        $keywords_result  = [];
 
-    foreach ($keywords as $keyword) {
-      $fields[] = "'" . $this->db->escape($keyword) . "'";
-    }
+        foreach ($keywords as $keyword){
 
-    if ($fields) {
-      $query = $this->db->query("SELECT
-        GROUP_CONCAT(REPLACE(`query`, 'category_id=', '') ORDER BY FIELD(keyword, " . implode(", ", $fields) . ") SEPARATOR '_') AS path,
-        GROUP_CONCAT(`keyword` ORDER BY FIELD(keyword, " . implode(", ", $fields) . ") SEPARATOR '/') AS keywords
+            if (preg_match('/^[' . $this->registry->get('short_uri_queries')['category_id'] . '][0-9]+$/', $keyword, $matches) == 1){
+              $path[]             = trim(str_ireplace($this->registry->get('short_uri_queries')['category_id'], '', $keyword));
+              $keywords_result[]  = $keyword;
+            }
+          }
 
-        FROM " . DB_PREFIX . "url_alias WHERE `query` LIKE 'category_id=%' AND (keyword = " . implode(" OR keyword = ", $fields) . ")");
+          if ($path){
+              $result = new stdClass();
+              $result->path     = implode('_', $path);
+              $result->keywords = $keywords_result;
+
+              return $result;
+          }
+
+      return false;
+  }
+
+
+  public function decodeCategoryStock($keywords = []){
+   $fields = [];
+
+   foreach ($keywords as $keyword) {
+    $fields[] = "'" . $this->db->escape($keyword) . "'";
+  }
+
+  if ($fields) {
+      $query = $this->db->query("SELECT GROUP_CONCAT(REPLACE(`query`, 'category_id=', '') ORDER BY FIELD(keyword, " . implode(", ", $fields) . ") SEPARATOR '_') AS path, 
+      GROUP_CONCAT(`keyword` ORDER BY FIELD(keyword, " . implode(", ", $fields) . ") SEPARATOR '/') AS keywords 
+      FROM oc_url_alias WHERE `query` LIKE 'category_id=%' AND (keyword = " . implode(" OR keyword = ", $fields) . ")");
 
       if ($query->num_rows) {
         $result = new stdClass();
-
         $result->path = $query->row['path'];
         $result->keywords = explode('/', $query->row['keywords']);
 
         return $result;
       }
     }
-
-    return false;
   }
+
+public function decodeCategory($keywords = []) {
+  if ($this->registry->has('short_uri_queries')){
+     return $this->decodeCategoryShortUrls($keywords);
+  } else {
+    return $this->decodeCategoryStock($keywords);
+  }
+
+  return false;
+}
 
   public function getSliderRange($option_id, $data) {
     $range_data = array(
@@ -173,7 +209,7 @@ class ModelCatalogOCFilter extends Model {
     	$product_sql = false;
     }
 
-    $sql = "SELECT MIN(oov2p.slide_value_min) AS `min`, GREATEST(MAX(oov2p.slide_value_max), MAX(oov2p.slide_value_min)) AS `max`, oov2p.option_id FROM " . DB_PREFIX . "ocfilter_option_value_to_product oov2p LEFT JOIN " . DB_PREFIX . "product p ON (oov2p.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (p.product_id = p2c.product_id)";
+    $sql = "SELECT MIN(oov2p.slide_value_min) AS `min`, GREATEST(MAX(oov2p.slide_value_max), MAX(oov2p.slide_value_min)) AS `max`, oov2p.option_id FROM oc_ocfilter_option_value_to_product oov2p LEFT JOIN oc_product p ON (oov2p.product_id = p.product_id) LEFT JOIN oc_product_to_category p2c ON (p.product_id = p2c.product_id)";
 
     if ($product_sql && $product_sql->join) {
     	$sql .= $product_sql->join;
@@ -196,7 +232,7 @@ class ModelCatalogOCFilter extends Model {
   }
 
   public function getCategorySeoPathByCategoryId($category_id) {
-    $query = $this->db->query("SELECT GROUP_CONCAT(DISTINCT ua.`keyword` ORDER BY cp.`level` SEPARATOR '/') AS path FROM " . DB_PREFIX . "category_path cp LEFT JOIN " . DB_PREFIX . "url_alias ua ON (CONCAT('category_id=', cp.path_id) = ua.`query`) WHERE cp.category_id = '" . (int)$category_id . "'");
+    $query = $this->db->query("SELECT GROUP_CONCAT(DISTINCT ua.`keyword` ORDER BY cp.`level` SEPARATOR '/') AS path FROM oc_category_path cp LEFT JOIN oc_url_alias ua ON (CONCAT('category_id=', cp.path_id) = ua.`query`) WHERE cp.category_id = '" . (int)$category_id . "'");
 
     if ($query->num_rows) {
     	return $query->row['path'];
@@ -212,7 +248,7 @@ class ModelCatalogOCFilter extends Model {
 			return $stock_statuses_data;
 		}
 
-		$query = $this->db->query("SELECT stock_status_id AS value_id, name, 's' AS option_id FROM " . DB_PREFIX . "stock_status WHERE language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY name");
+		$query = $this->db->query("SELECT stock_status_id AS value_id, name, 's' AS option_id FROM oc_stock_status WHERE language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY name");
 
     $stock_statuses_data = $query->rows;
 
@@ -230,10 +266,10 @@ class ModelCatalogOCFilter extends Model {
 			return $manufacturers_data;
 		}
 
-    $sql = "SELECT m.manufacturer_id AS value_id, m.name, 'm' AS option_id, COUNT(DISTINCT p.product_id) AS total FROM " . DB_PREFIX . "manufacturer m LEFT JOIN " . DB_PREFIX . "manufacturer_to_store m2s ON (m.manufacturer_id = m2s.manufacturer_id) LEFT JOIN " . DB_PREFIX . "product p ON (m.manufacturer_id = p.manufacturer_id) LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (p.product_id = p2c.product_id)";
+    $sql = "SELECT m.manufacturer_id AS value_id, m.name, 'm' AS option_id, COUNT(DISTINCT p.product_id) AS total FROM oc_manufacturer m LEFT JOIN oc_manufacturer_to_store m2s ON (m.manufacturer_id = m2s.manufacturer_id) LEFT JOIN oc_product p ON (m.manufacturer_id = p.manufacturer_id) LEFT JOIN oc_product_to_category p2c ON (p.product_id = p2c.product_id)";
 
     if ($this->config->get('ocfilter_sub_category')) {
-    	$sql .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (p2c.category_id = cp.category_id)";
+    	$sql .= " LEFT JOIN oc_category_path cp ON (p2c.category_id = cp.category_id)";
     }
 
     $sql .= " WHERE p.status = '1' AND m2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
@@ -275,14 +311,14 @@ class ModelCatalogOCFilter extends Model {
     	$product_sql = false;
     }
 
-    $price_from = array();
-    $price_to = array();
+    $price_from = [];
+    $price_to = [];
 
     // Get default price range
-    $sql = "SELECT MIN(p.price) AS `min`, MAX(p.price) AS `max` FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (p.product_id = p2c.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id)";
+    $sql = "SELECT MIN(p.price) AS `min`, MAX(p.price) AS `max` FROM oc_product p LEFT JOIN oc_product_to_category p2c ON (p.product_id = p2c.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id)";
 
     if ($this->config->get('ocfilter_sub_category')) {
-    	$sql .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (p2c.category_id = cp.category_id)";
+    	$sql .= " LEFT JOIN oc_category_path cp ON (p2c.category_id = cp.category_id)";
     }
 
     if ($product_sql && $product_sql->join) {
@@ -311,10 +347,10 @@ class ModelCatalogOCFilter extends Model {
 
     // Get special price range
     if ($this->config->get('ocfilter_consider_special')) {
-      $sql = "SELECT MIN(ps.price) AS `min`, MAX(ps.price) AS `max` FROM " . DB_PREFIX . "product_special ps LEFT JOIN " . DB_PREFIX . "product p ON (ps.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (p.product_id = p2c.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id)";
+      $sql = "SELECT MIN(ps.price) AS `min`, MAX(ps.price) AS `max` FROM oc_product_special ps LEFT JOIN oc_product p ON (ps.product_id = p.product_id) LEFT JOIN oc_product_to_category p2c ON (p.product_id = p2c.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id)";
 
       if ($this->config->get('ocfilter_sub_category')) {
-      	$sql .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (p2c.category_id = cp.category_id)";
+      	$sql .= " LEFT JOIN oc_category_path cp ON (p2c.category_id = cp.category_id)";
       }
 
       if ($product_sql && $product_sql->join) {
@@ -344,10 +380,10 @@ class ModelCatalogOCFilter extends Model {
 
     // Get discount price range
     if ($this->config->get('ocfilter_consider_discount')) {
-      $sql = "SELECT MIN(pd.price) AS `min`, MAX(pd.price) AS `max` FROM " . DB_PREFIX . "product_discount pd LEFT JOIN " . DB_PREFIX . "product p ON (pd.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (p.product_id = p2c.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id)";
+      $sql = "SELECT MIN(pd.price) AS `min`, MAX(pd.price) AS `max` FROM oc_product_discount pd LEFT JOIN oc_product p ON (pd.product_id = p.product_id) LEFT JOIN oc_product_to_category p2c ON (p.product_id = p2c.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id)";
 
       if ($this->config->get('ocfilter_sub_category')) {
-      	$sql .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (p2c.category_id = cp.category_id)";
+      	$sql .= " LEFT JOIN oc_category_path cp ON (p2c.category_id = cp.category_id)";
       }
 
       if ($product_sql && $product_sql->join) {
@@ -390,13 +426,13 @@ class ModelCatalogOCFilter extends Model {
                     IF(pov.price_prefix = '=', pov.price, NULL),
                     p.price + pov.price,
                     p.price) AS option_price
-                FROM " . DB_PREFIX . "product_option_value pov
-                LEFT JOIN " . DB_PREFIX . "product p ON (pov.product_id = p.product_id)
-                LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (p.product_id = p2c.product_id)
-                LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id)";
+                FROM oc_product_option_value pov
+                LEFT JOIN oc_product p ON (pov.product_id = p.product_id)
+                LEFT JOIN oc_product_to_category p2c ON (p.product_id = p2c.product_id)
+                LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id)";
 
       if ($this->config->get('ocfilter_sub_category')) {
-      	$sql .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (p2c.category_id = cp.category_id)";
+      	$sql .= " LEFT JOIN oc_category_path cp ON (p2c.category_id = cp.category_id)";
       }
 
       if ($product_sql && $product_sql->join) {
@@ -438,7 +474,7 @@ class ModelCatalogOCFilter extends Model {
     return $product_price_data;
   }
 
-  public function getSearchSQL($params = array()) {
+  public function getSearchSQL($params = []) {
     if (!is_array($params)) {
       $params = decodeParamsFromString($params, $this->config);
     }
@@ -458,15 +494,15 @@ class ModelCatalogOCFilter extends Model {
           $where .= " AND (p.price BETWEEN '" . (float)$price_from . "' AND '" . (float)$price_to . "'";
 
           if ($this->config->get('ocfilter_consider_discount')) {
-            $where .= " OR EXISTS (SELECT pd.product_id FROM " . DB_PREFIX . "product_discount pd WHERE pd.product_id = p.product_id AND pd.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd.quantity > '0' AND ((pd.date_start = '0000-00-00' OR pd.date_start < '" . $this->db->escape(date('Y-m-d')) . "') AND (pd.date_end = '0000-00-00' OR pd.date_end > '" . $this->db->escape(date('Y-m-d')) . "')) AND pd.price BETWEEN '" . (float)$price_from . "' AND '" . (float)$price_to . "')";
+            $where .= " OR EXISTS (SELECT pd.product_id FROM oc_product_discount pd WHERE pd.product_id = p.product_id AND pd.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd.quantity > '0' AND ((pd.date_start = '0000-00-00' OR pd.date_start < '" . $this->db->escape(date('Y-m-d')) . "') AND (pd.date_end = '0000-00-00' OR pd.date_end > '" . $this->db->escape(date('Y-m-d')) . "')) AND pd.price BETWEEN '" . (float)$price_from . "' AND '" . (float)$price_to . "')";
           }
 
           if ($this->config->get('ocfilter_consider_special')) {
-            $where .= " OR EXISTS (SELECT ps.product_id FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < '" . $this->db->escape(date('Y-m-d')) . "') AND (ps.date_end = '0000-00-00' OR ps.date_end > '" . $this->db->escape(date('Y-m-d')) . "')) AND ps.price BETWEEN '" . (float)$price_from . "' AND '" . (float)$price_to . "')";
+            $where .= " OR EXISTS (SELECT ps.product_id FROM oc_product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < '" . $this->db->escape(date('Y-m-d')) . "') AND (ps.date_end = '0000-00-00' OR ps.date_end > '" . $this->db->escape(date('Y-m-d')) . "')) AND ps.price BETWEEN '" . (float)$price_from . "' AND '" . (float)$price_to . "')";
           }
 
           if ($this->config->get('ocfilter_consider_option')) {
-            $where .= " OR EXISTS (SELECT pov.product_id FROM " . DB_PREFIX . "product_option_value pov WHERE pov.product_id = p.product_id AND pov.quantity > '0' AND COALESCE(IF(pov.price_prefix = '-', p.price - pov.price, NULL), IF(pov.price_prefix = '+', p.price + pov.price, NULL), IF(pov.price_prefix = '*', p.price + p.price * pov.price, NULL), IF(pov.price_prefix = '%', p.price + p.price * (pov.price / 100), NULL), IF(pov.price_prefix = '=', pov.price, NULL), p.price + pov.price, p.price) BETWEEN '" . (float)$price_from . "' AND '" . (float)$price_to . "')";
+            $where .= " OR EXISTS (SELECT pov.product_id FROM oc_product_option_value pov WHERE pov.product_id = p.product_id AND pov.quantity > '0' AND COALESCE(IF(pov.price_prefix = '-', p.price - pov.price, NULL), IF(pov.price_prefix = '+', p.price + pov.price, NULL), IF(pov.price_prefix = '*', p.price + p.price * pov.price, NULL), IF(pov.price_prefix = '%', p.price + p.price * (pov.price / 100), NULL), IF(pov.price_prefix = '=', pov.price, NULL), p.price + pov.price, p.price) BETWEEN '" . (float)$price_from . "' AND '" . (float)$price_to . "')";
           }
 
           $where .= ")";
@@ -476,7 +512,7 @@ class ModelCatalogOCFilter extends Model {
 
       // Filter by manufacturer
       } else if ($option_id == 'm') {
-        $implode = array();
+        $implode = [];
 
         foreach ($values as $value_id) {
           $implode[] = "p.manufacturer_id = '" . (int)$value_id . "'";
@@ -490,7 +526,7 @@ class ModelCatalogOCFilter extends Model {
 
       // Filter by stock status
       } else if ($option_id == 's') {
-        $implode = array();
+        $implode = [];
 
         if ($this->config->get('ocfilter_stock_status_method') == 'stock_status_id') {
           foreach ($values as $value_id) {
@@ -520,13 +556,13 @@ class ModelCatalogOCFilter extends Model {
 
     // Find by option -> values
     if ($params) {
-      $implode_where = array();
-      $implode_join = array();
+      $implode_where = [];
+      $implode_join = [];
 
       $i = 1;
 
       foreach ($params as $option_id => $values) {
-        $or = array();
+        $or = [];
 
         if (isRange($values[0])) {
           $range = getRangeParts($values[0]);
@@ -554,7 +590,7 @@ class ModelCatalogOCFilter extends Model {
       }
 
       if ($implode_where) {
-        $join .= " LEFT JOIN " . DB_PREFIX . "ocfilter_option_value_to_product oov2p1 ON (p.product_id = oov2p1.product_id)";
+        $join .= " LEFT JOIN oc_ocfilter_option_value_to_product oov2p1 ON (p.product_id = oov2p1.product_id)";
 
         if ($implode_join) {
           $join .= " LEFT JOIN " . DB_PREFIX . implode(" LEFT JOIN " . DB_PREFIX, $implode_join);
@@ -572,7 +608,7 @@ class ModelCatalogOCFilter extends Model {
     return $sql;
   }
 
-	public function getCounters($data = array()) {
+	public function getCounters($data = []) {
 		$cache_key = 'product.ocfilter.counter.' . (int)$this->config->get('ocfilter_sub_category') . '.' . md5(serialize($data));
 
 		$ocfilter_counter_data = $this->cache->get($cache_key);
@@ -581,9 +617,9 @@ class ModelCatalogOCFilter extends Model {
 			return $ocfilter_counter_data;
 		}
 
-    $ocfilter_counter_data = array();
+    $ocfilter_counter_data = [];
 
-    $union = array();
+    $union = [];
 
     // Manufacturers
     $union[] = $this->getManufacturersCounterSQL($data);
@@ -653,10 +689,10 @@ class ModelCatalogOCFilter extends Model {
     	$product_sql = false;
     }
 
-    $sql = "SELECT p.manufacturer_id AS value_id, 'm' AS option_id, COUNT(DISTINCT p.product_id) AS total FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (p.product_id = p2c.product_id)";
+    $sql = "SELECT p.manufacturer_id AS value_id, 'm' AS option_id, COUNT(DISTINCT p.product_id) AS total FROM oc_product p LEFT JOIN oc_product_to_category p2c ON (p.product_id = p2c.product_id)";
 
     if ($this->config->get('ocfilter_sub_category')) {
-    	$sql .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (p2c.category_id = cp.category_id)";
+    	$sql .= " LEFT JOIN oc_category_path cp ON (p2c.category_id = cp.category_id)";
     }
 
     if ($product_sql && $product_sql->join) {
@@ -693,10 +729,10 @@ class ModelCatalogOCFilter extends Model {
     	$product_sql = false;
     }
 
-    $sql = "SELECT p.stock_status_id AS value_id, 's' AS option_id, COUNT(DISTINCT p.product_id) AS total FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (p.product_id = p2c.product_id)";
+    $sql = "SELECT p.stock_status_id AS value_id, 's' AS option_id, COUNT(DISTINCT p.product_id) AS total FROM oc_product p LEFT JOIN oc_product_to_category p2c ON (p.product_id = p2c.product_id)";
 
     if ($this->config->get('ocfilter_sub_category')) {
-    	$sql .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (p2c.category_id = cp.category_id)";
+    	$sql .= " LEFT JOIN oc_category_path cp ON (p2c.category_id = cp.category_id)";
     }
 
     if ($product_sql && $product_sql->join) {
@@ -733,10 +769,10 @@ class ModelCatalogOCFilter extends Model {
     	$product_sql = false;
     }
 
-    $sql = "SELECT IF(p.quantity > '0', 'in', 'out') AS value_id, 's' AS option_id, COUNT(DISTINCT p.product_id) AS total FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (p.product_id = p2c.product_id)";
+    $sql = "SELECT IF(p.quantity > '0', 'in', 'out') AS value_id, 's' AS option_id, COUNT(DISTINCT p.product_id) AS total FROM oc_product p LEFT JOIN oc_product_to_category p2c ON (p.product_id = p2c.product_id)";
 
     if ($this->config->get('ocfilter_sub_category')) {
-    	$sql .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (p2c.category_id = cp.category_id)";
+    	$sql .= " LEFT JOIN oc_category_path cp ON (p2c.category_id = cp.category_id)";
     }
 
     if ($product_sql && $product_sql->join) {
@@ -764,7 +800,7 @@ class ModelCatalogOCFilter extends Model {
     if (isset($data['filter_ocfilter']) && !is_null($data['filter_ocfilter'])) {
       $params = decodeParamsFromString($data['filter_ocfilter'], $this->config);
     } else {
-      $params = array();
+      $params = [];
     }
 
     if ($params) {
@@ -773,13 +809,13 @@ class ModelCatalogOCFilter extends Model {
     	$product_sql = false;
     }
 
-    $union = array();
+    $union = [];
 
     // All Options and values
-    $union['main'] = "SELECT oov2p.value_id, oov2p.option_id, COUNT(DISTINCT p.product_id) AS total FROM " . DB_PREFIX . "ocfilter_option_value_to_product oov2p LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (oov2p.product_id = p2c.product_id) LEFT JOIN " . DB_PREFIX . "product p ON (oov2p.product_id = p.product_id)";
+    $union['main'] = "SELECT oov2p.value_id, oov2p.option_id, COUNT(DISTINCT p.product_id) AS total FROM oc_ocfilter_option_value_to_product oov2p LEFT JOIN oc_product_to_category p2c ON (oov2p.product_id = p2c.product_id) LEFT JOIN oc_product p ON (oov2p.product_id = p.product_id)";
 
     if ($this->config->get('ocfilter_sub_category')) {
-    	$union['main'] .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (p2c.category_id = cp.category_id)";
+    	$union['main'] .= " LEFT JOIN oc_category_path cp ON (p2c.category_id = cp.category_id)";
     }
 
     if ($product_sql && $product_sql->join) {
@@ -800,9 +836,8 @@ class ModelCatalogOCFilter extends Model {
 
     $union['main'] .= " GROUP BY oov2p.option_id, oov2p.value_id";
 
-    // Selecteds
     if ($params) {
-      $added = array();
+      $added = [];
 
       foreach ($params as $option_id => $values) {
         if ($option_id == 'p' || $option_id == 'm' || $option_id == 's' || isRange($values[0])) {
@@ -819,10 +854,10 @@ class ModelCatalogOCFilter extends Model {
 
        	$product_sql = $this->getSearchSQL($_params);
 
-        $union[$option_id] = "SELECT oov2p.value_id, oov2p.option_id, COUNT(DISTINCT p.product_id) AS total FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (p.product_id = p2c.product_id) LEFT JOIN " . DB_PREFIX . "ocfilter_option_value_to_product oov2p ON (p.product_id = oov2p.product_id)";
+        $union[$option_id] = "SELECT oov2p.value_id, oov2p.option_id, COUNT(DISTINCT p.product_id) AS total FROM oc_product p LEFT JOIN oc_product_to_category p2c ON (p.product_id = p2c.product_id) LEFT JOIN oc_ocfilter_option_value_to_product oov2p ON (p.product_id = oov2p.product_id)";
 
         if ($this->config->get('ocfilter_sub_category')) {
-        	$union[$option_id] .= " LEFT JOIN " . DB_PREFIX . "category_path cp ON (p2c.category_id = cp.category_id)";
+        	$union[$option_id] .= " LEFT JOIN oc_category_path cp ON (p2c.category_id = cp.category_id)";
         }
 
         if ($product_sql && $product_sql->join) {
@@ -853,22 +888,20 @@ class ModelCatalogOCFilter extends Model {
     	return false;
     }
 
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "ocfilter_page op LEFT JOIN " . DB_PREFIX . "ocfilter_page_description opd ON (op.ocfilter_page_id = opd.ocfilter_page_id) WHERE op.status = '1' AND op.category_id = '" . (int)$category_id . "' AND opd.language_id = '" . $this->config->get('config_language_id') . "' AND op.params = '" . $this->db->escape($params) . "' LIMIT 1");
+		$query = $this->db->query("SELECT * FROM oc_ocfilter_page op LEFT JOIN oc_ocfilter_page_description opd ON (op.ocfilter_page_id = opd.ocfilter_page_id) WHERE op.status = '1' AND op.category_id = '" . (int)$category_id . "' AND opd.language_id = '" . $this->config->get('config_language_id') . "' AND op.params = '" . $this->db->escape($params) . "' LIMIT 1");
 
 		return $query->row;
 	}
 
 	public function decodePage($category_id, $keyword) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "ocfilter_page op LEFT JOIN " . DB_PREFIX . "ocfilter_page_description opd ON (op.ocfilter_page_id = opd.ocfilter_page_id) WHERE op.status = '1' AND opd.language_id = '" . $this->config->get('config_language_id') . "' AND op.category_id = '" . (int)$category_id . "' AND op.keyword = '" . $this->db->escape($keyword) . "' LIMIT 1");
+		$query = $this->db->query("SELECT * FROM oc_ocfilter_page op LEFT JOIN oc_ocfilter_page_description opd ON (op.ocfilter_page_id = opd.ocfilter_page_id) WHERE op.status = '1' AND opd.language_id = '" . $this->config->get('config_language_id') . "' AND op.category_id = '" . (int)$category_id . "' AND op.keyword = '" . $this->db->escape($keyword) . "' LIMIT 1");
 
 		return $query->row;
 	}
 
 	public function getPages() {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "ocfilter_page op LEFT JOIN " . DB_PREFIX . "ocfilter_page_description opd ON (op.ocfilter_page_id = opd.ocfilter_page_id) WHERE op.status = '1' AND opd.language_id = '" . $this->config->get('config_language_id') . "'");
+		$query = $this->db->query("SELECT * FROM oc_ocfilter_page op LEFT JOIN oc_ocfilter_page_description opd ON (op.ocfilter_page_id = opd.ocfilter_page_id) WHERE op.status = '1' AND opd.language_id = '" . $this->config->get('config_language_id') . "'");
 
 		return $query->rows;
 	}
 }
-
-?>

@@ -72,8 +72,6 @@
 				}
 				
 				if (!$json) {
-					
-					// Display prices
 					$boc_price = (float)$product_info['price'];
 					if ((float)$product_info['special']) {
 						$boc_price = (float)$product_info['special'];
@@ -247,83 +245,13 @@
 						$this->model_checkout_order->addOrderHistory($data['order_id'], $this->fastOrderStatus, $comment = '', $notify = false, $override = false, $redirect = false);
 						$json['success'] = sprintf($this->language->get('text_success'), $data['order_id'], $phone);
 						
-						
-						$this->load->library('hobotix/BitrixBot');
-						$this->bitrixBot = new hobotix\BitrixBot($this->registry);
-
+											
 						if (!empty($location)){	
 							$location_message = "[B]Клієнт оформив швидкий резерв в аптеці " . $location['address'] . "[/B]";
 						} else {
 							$location_message = "[B]Замовлення без резервування на будь-якій аптеці![/B]";
 						}
-						
-						$message = array(
-						'message' => ':!: :!: Замовлення в 1 один клік!',
-						'attach' => array(
-						"ID" => 1,
-						"COLOR" => "#29619b",
-						"BLOCKS" => Array(
-						Array("USER" => Array(
-						"NAME"      => "Клієнт зробив замовлення в один клік!",
-						"AVATAR"    => "https://e-apteka.com.ua/bitrix/images/bitrixavatar.jpg",
-						)),
-						
-						Array("DELIMITER" => Array(
-						'SIZE' => 200,
-						'COLOR' => "#c6c6c6"
-						)),
 
-						Array("MESSAGE" => $location_message),
-
-						Array("DELIMITER" => Array(
-							'SIZE' => 200,
-							'COLOR' => "#c6c6c6"
-						)),													
-						
-						Array("MESSAGE" => "[I]Клієнт:[/I] " . (trim($firstname . ' ' .  $lastname)?trim($firstname . ' ' .  $lastname):'Без реєстрації')),
-						Array("MESSAGE" => "[I]Карта лояльності:[/I] " . ($this->customer->getCard()?$this->customer->getCard():'немає')),
-						Array("MESSAGE" => "[I]Телефон клієнта:[/I] " . $phone),
-						Array("MESSAGE" => "[I]Номер замовлення сайта[/I] " . $data['order_id']),
-						
-						Array("DELIMITER" => Array(
-						'SIZE' => 200,
-						'COLOR' => "#c6c6c6"
-						)),
-						
-						Array("MESSAGE" => "[I]Товар:[/I] " . $product_info['name']),
-												
-						Array("LINK" => Array(
-							"NAME" => $product_info['name'],
-							"LINK" => $this->url->link('product/product', 'product_id=' . $product_info['product_id']),
-						)),
-						
-						Array("MESSAGE" => "[I]Частина упаковки:[/I] " . ($product_option?'Так':'Ні')),
-						Array("MESSAGE" => "[I]Кількість:[/I] " . $product_quantity),
-						Array("MESSAGE" => "[I]Ціна за од.:[/I] " . $this->currency->format($boc_unit_price, $this->session->data['currency'])),
-						Array("MESSAGE" => "[I]Всього:[/I] " . $this->currency->format($boc_total, $this->session->data['currency'])),
-
-						
-						Array("DELIMITER" => Array(
-						'SIZE' => 200,
-						'COLOR' => "#c6c6c6"
-						)),
-						)                
-						)
-						);
-						
-						try{
-							
-							if (!$this->bitrixBot->logRequest()->loadConfigFile()->validateAppsConfig()){
-								return;
-							}
-							
-							$this->bitrixBot->sendMessageToGroup('chat5644', $message);
-							
-						} catch(Exception $e)
-						{
-							
-						}
-						
 						if ($buyoneclick_success_type == '1') {
 							//$json['redirect'] = $this->url->link('checkout/success', '', 'SSL');
 						}
