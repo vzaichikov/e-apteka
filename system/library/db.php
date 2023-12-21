@@ -58,18 +58,20 @@
 			return $result;
 		}
 		
-		public function query($sql, $params = array()) {
-
+		public function query($sql, $params = array(), $cache = false) {
 			if (defined('DEBUGSQL') && DEBUGSQL) {
 				$startTime = microtime(true);
 			}
 
-			foreach ($this->uncacheableTables as $table){
-				if (strpos($sql, $table)){		
-					$result = $this->ncquery($sql, $params);
-					break;
-				}
-			}			
+			if (!$cache){
+				foreach ($this->uncacheableTables as $table){
+					if (strpos($sql, $table)){		
+						$result = $this->ncquery($sql, $params);
+						break;
+					}
+				}		
+			}
+				
 
 			if (empty($result)){
 				$result = $this->adaptor->query($sql, $params);
@@ -93,7 +95,6 @@
 			if (defined('DEBUGSQL') && DEBUGSQL) {
 				$startTime = microtime(true);
 			}
-
 
 			if (method_exists($this->adaptor, 'ncquery')){
 				

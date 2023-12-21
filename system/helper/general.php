@@ -13,6 +13,21 @@
 		return $token;
 	}
 
+	function querynorm($keyword){
+		$search = array(
+			'%E2%84%96',
+			'№',				
+		);
+		
+		$replace = array(
+			'_',
+			'_'
+		);
+		
+		return str_replace($search, $replace, $keyword);		
+	}
+		
+
 	function getPluralWord($number, $titles, $show_number = false) {
 		if( is_string( $titles ) ){
 			$titles = preg_split( '/, */', $titles );

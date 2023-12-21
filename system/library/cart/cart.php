@@ -16,10 +16,6 @@
 			$this->log 		= $registry->get('log');
 			$this->tax 		= $registry->get('tax');
 			$this->weight 	= $registry->get('weight');	
-			
-			// Remove all the expired carts with no customer ID
-			//$this->db->query("DELETE FROM oc_cart WHERE (api_id > '0' OR customer_id = '0') AND date_added < DATE_SUB(NOW(), INTERVAL 30 DAY)");
-			/*MOVED TO CRON*/
 
 			$query = $this->db->query("SELECT location_id FROM oc_location WHERE temprorary_closed = 0");			
 
@@ -38,8 +34,6 @@
 				
 				foreach ($cart_query->rows as $cart) {
 					$this->db->query("DELETE FROM oc_cart WHERE cart_id = '" . (int)$cart['cart_id'] . "'");
-					
-					// The advantage of using $this->add is that it will check if the products already exist and increaser the quantity if necessary.
 					$this->add($cart['product_id'], $cart['quantity'], json_decode($cart['option']), $cart['recurring_id']);
 				}
 			}

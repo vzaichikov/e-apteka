@@ -34,8 +34,6 @@
 	// Cache 
 	$registry->set('cache', new Cache($config->get('cache_type'), $config->get('cache_expire')));
 	
-	// Database
-	
 	if ($config->get('db_autostart_slave')) {
 		$registry->set('db_slave', new DB($config->get('db_type_slave'), $config->get('db_hostname_slave'), $config->get('db_username_slave'), $config->get('db_password_slave'), $config->get('db_database_slave'), $config->get('db_port_slave'), $registry));
 		} else {
@@ -82,6 +80,31 @@
 
 	//Branding
 	$registry->set('branding', loadJsonConfig('brands'));
+
+	//Languages
+	$query = $registry->get('db')->query("SELECT * FROM `oc_language` WHERE status = '1'"); 
+	foreach ($query->rows as $result) {		
+		$languages[$result['code']] = $result;
+		$languages_id_mapping[$result['language_id']] = $result;
+		$languages_id_code_mapping[$result['language_id']] = $result['code'];
+	}
+
+	$registry->set('languages', 					$languages);
+	$registry->set('languages_id_mapping', 			$languages_id_mapping);
+	$registry->set('languages_id_code_mapping', 	$languages_id_code_mapping);
+
+	$short_url_mapping = loadJsonConfig('shorturlmap');
+	$short_uri_queries = $short_uri_keywords = [];
+
+	if (is_array($short_url_mapping)){
+		foreach ($short_url_mapping as $query => $keyword){
+			$short_uri_queries[$query] = $keyword;
+			$short_uri_keywords[$keyword] = $query;
+		}
+	}
+       
+	$registry->set('short_uri_queries', $short_uri_queries);
+	$registry->set('short_uri_keywords', $short_uri_keywords);	
 	
 	// Document
 	$registry->set('document', new Document());

@@ -114,4 +114,3 @@ function encodeParamsToString($params, $config) {
 
   return cleanParamsString(implode($config->get('ocfilter_part_separator'), $encode), $config);
 }
-?>

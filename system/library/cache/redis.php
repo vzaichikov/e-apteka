@@ -44,7 +44,7 @@
 		}
 		
 		public function set($key, $value) {
-			return $this->rcache->set(CACHE_PREFIX . $key, $value, Array('nx', 'ex' => $this->expire));			
+			return $this->rcache->set(CACHE_PREFIX . $key, $value, ['ex' => $this->expire]);			
 		}				
 		
 		public function flush() {
