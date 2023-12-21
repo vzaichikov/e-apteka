@@ -39,8 +39,8 @@
 
 			$base_url = parse_url($url, PHP_URL_SCHEME) . '://' . parse_url($url, PHP_URL_HOST);
 			foreach ($links as $link) {
-				$local_path = DIR_APPLICATION . '../dls-data/' . $link;
-				$dir = DIR_APPLICATION . '../dls-data/' . pathinfo($link,  PATHINFO_DIRNAME);
+				$local_path = DIR_IMAGE . '/dls-data/' . $link;
+				$dir = DIR_IMAGE . '/dls-data/' . pathinfo($link,  PATHINFO_DIRNAME);
 
 				if (!is_dir($dir)){
 					mkdir($dir, 0755, true);
@@ -48,7 +48,7 @@
 
 				file_put_contents($local_path, $this->ecurl($base_url . $link));
 
-				$html = str_replace($link, 'https://e-apteka.com.ua/dls-data' . $link, $html);
+				$html = str_replace($link, 'https://e-apteka.com.ua/image/dls-data' . $link, $html);
 			}
 
 			$html = str_replace('href="/"', ' href="https://pharmacy.dls.gov.ua"', $html);
