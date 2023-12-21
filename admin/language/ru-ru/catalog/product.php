@@ -35,6 +35,10 @@ $_['column_dl_price']          = 'Ціна ДЛ';
 				$_['tab_faq']         	= 'FAQ';
 				$_['button_remove']     = 'Удалить';
 				$_['faq_name']     		= 'Название блока FAQ';
+
+				$_['entry_values']          		= 'Добавьте значения для этой опции.';
+				$_['tab_ocfilter']          		= 'Опции фильтра';
+				$_['ocfilter_select_category'] 	= 'Для начала, выберите категории для этого товара.';
 			
 // Entry
 $_['entry_name']             = 'Название товара';

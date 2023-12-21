@@ -10,32 +10,32 @@
 		}
 		
 		public function getProfile($profile_id){
-			$query = $this->db->query("SELECT `data` FROM `" . DB_PREFIX . "seogen_profile` WHERE profile_id='".(int)$profile_id."'");
+			$query = $this->db->query("SELECT `data` FROM `oc_seogen_profile` WHERE profile_id='".(int)$profile_id."'");
 			return unserialize($query->row['data']);
 		}
 		
 		public function deleteProfile($profile_id){
-			$this->db->query("DELETE FROM `" . DB_PREFIX . "seogen_profile` WHERE profile_id='".(int)$profile_id."'");
+			$this->db->query("DELETE FROM `oc_seogen_profile` WHERE profile_id='".(int)$profile_id."'");
 		}
 		
 		public function getProfiles(){
-			$query = $this->db->query("SELECT `profile_id`, `name` FROM `" . DB_PREFIX . "seogen_profile`");
+			$query = $this->db->query("SELECT `profile_id`, `name` FROM `oc_seogen_profile`");
 			return $query->rows;
 		}
 		
 		public function addProfile($name, $data) {
-			$query = $this->db->query("SELECT `profile_id` FROM `" . DB_PREFIX . "seogen_profile` WHERE `name` = '" . $this->db->escape($name) . "'");
+			$query = $this->db->query("SELECT `profile_id` FROM `oc_seogen_profile` WHERE `name` = '" . $this->db->escape($name) . "'");
 			if($query->num_rows) {
-				$this->db->query("UPDATE `" . DB_PREFIX . "seogen_profile` SET `data` = '" . $this->db->escape($data) . "' WHERE `profile_id`= '" . (int)$query->row['profile_id'] . "'");
+				$this->db->query("UPDATE `oc_seogen_profile` SET `data` = '" . $this->db->escape($data) . "' WHERE `profile_id`= '" . (int)$query->row['profile_id'] . "'");
 				} else {
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "seogen_profile`(name, data) VALUES('" . $this->db->escape($name) . "', '" . $this->db->escape($data) . "')");
+				$this->db->query("INSERT INTO `oc_seogen_profile`(name, data) VALUES('" . $this->db->escape($name) . "', '" . $this->db->escape($data) . "')");
 			}
 			return $this->db->getLastId();
 		}
 		
 		private function loadKeywords() {
 			$this->keywords = array();
-			$query = $this->db->query("SELECT LOWER(`keyword`) as 'keyword', `query` FROM " . DB_PREFIX . "url_alias ORDER BY url_alias_id");
+			$query = $this->db->query("SELECT LOWER(`keyword`) as 'keyword', `query` FROM oc_url_alias ORDER BY url_alias_id");
 			foreach($query->rows as $row) {
 				$this->keywords[$row['query']] = $row['keyword'];
 			}
@@ -77,10 +77,10 @@
 				if(isset($data['categories_overwrite'])) {
 					$setOnlyCategories = isset($data['only_categories']) && count($data['only_categories']);
 					if($setOnlyCategories) {
-						$this->db->query("DELETE FROM `" . DB_PREFIX . "url_alias` WHERE `query` IN" .
-						" (SELECT CONCAT('category_id=', category_id) FROM `" . DB_PREFIX . "category` WHERE category_id IN (" . implode(",", $data['only_categories']) . "))");
+						$this->db->query("DELETE FROM `oc_url_alias` WHERE `query` IN" .
+						" (SELECT CONCAT('category_id=', category_id) FROM `oc_category` WHERE category_id IN (" . implode(",", $data['only_categories']) . "))");
 						} else {
-						$this->db->query("DELETE FROM `" . DB_PREFIX . "url_alias` WHERE `query` LIKE ('category_id=%');");
+						$this->db->query("DELETE FROM `oc_url_alias` WHERE `query` LIKE ('category_id=%');");
 					}
 				}
 				$this->loadKeywords();
@@ -98,8 +98,8 @@
 					$setOnlyCategories = isset($data['only_categories']) && count($data['only_categories']);
 					if($setOnlyManufacturers || $setOnlyCategories) {
 						$sql = "SELECT DISTINCT concat('product_id=', p.product_id)" .
-						" FROM `" . DB_PREFIX . "product_to_category` p2c" .
-						" JOIN `" . DB_PREFIX . "product` p ON (p.product_id=p2c.product_id)" .
+						" FROM `oc_product_to_category` p2c" .
+						" JOIN `oc_product` p ON (p.product_id=p2c.product_id)" .
 						" WHERE (1=1)";
 						if($setOnlyManufacturers) {
 							$sql .= " AND p.manufacturer_id IN (" . implode(",", $data['only_manufacturers']) . ")";
@@ -107,9 +107,9 @@
 						if($setOnlyCategories) {
 							$sql .= " AND p2c.category_id IN (" . implode(",", $data['only_categories']) . ")";
 						}
-						$this->db->query("DELETE FROM `" . DB_PREFIX . "url_alias` WHERE `query` IN (" . $sql . ")");
+						$this->db->query("DELETE FROM `oc_url_alias` WHERE `query` IN (" . $sql . ")");
 						} else {
-						$this->db->query("DELETE FROM `" . DB_PREFIX . "url_alias` WHERE `query` LIKE ('product_id=%');");
+						$this->db->query("DELETE FROM `oc_url_alias` WHERE `query` LIKE ('product_id=%');");
 					}
 				}
 				
@@ -126,10 +126,10 @@
 				if(isset($data['manufacturers_overwrite'])) {
 					$setOnlyManufacturers = isset($data['only_manufacturers']) && count($data['only_manufacturers']);
 					if($setOnlyManufacturers) {
-						$this->db->query("DELETE FROM `" . DB_PREFIX . "url_alias` WHERE `query` IN" .
-						" (SELECT CONCAT('manufacturer_id=', manufacturer_id) FROM `" . DB_PREFIX . "manufacturer` WHERE manufacturer_id IN (" . implode(",", $data['only_manufacturers']) . "))");
+						$this->db->query("DELETE FROM `oc_url_alias` WHERE `query` IN" .
+						" (SELECT CONCAT('manufacturer_id=', manufacturer_id) FROM `oc_manufacturer` WHERE manufacturer_id IN (" . implode(",", $data['only_manufacturers']) . "))");
 						} else {
-						$this->db->query("DELETE FROM `" . DB_PREFIX . "url_alias` WHERE `query` LIKE ('manufacturer_id=%');");
+						$this->db->query("DELETE FROM `oc_url_alias` WHERE `query` LIKE ('manufacturer_id=%');");
 					}
 				}
 				$this->loadKeywords();
@@ -143,7 +143,7 @@
 		public function generateInformations($data) {
 			if(!empty($data['informations_template'])) {
 				if(isset($data['informations_overwrite'])) {
-					$this->db->query("DELETE FROM `" . DB_PREFIX . "url_alias` WHERE `query` LIKE ('information_id=%');");
+					$this->db->query("DELETE FROM `oc_url_alias` WHERE `query` LIKE ('information_id=%');");
 				}
 				$this->loadKeywords();
 			}
@@ -161,9 +161,9 @@
 			);
 			
 			if(!empty($data['categories_template']) && (isset($data['categories_overwrite']) || empty($category['keyword']))) {
-				$this->db->query("DELETE FROM `" . DB_PREFIX . "url_alias` WHERE `query`='category_id=" . (int)$category['category_id'] . "'");
+				$this->db->query("DELETE FROM `oc_url_alias` WHERE `query`='category_id=" . (int)$category['category_id'] . "'");
 				$keyword = $this->urlify($data['categories_template'], $tags);
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "url_alias` SET `query`='category_id=" . (int)$category['category_id'] . "', keyword='" . $this->db->escape($keyword) . "'");
+				//$this->db->query("INSERT INTO `oc_url_alias` SET `query`='category_id=" . (int)$category['category_id'] . "', keyword='" . $this->db->escape($keyword) . "'");
 			}
 			
 			
@@ -214,7 +214,7 @@
 			}
 			
 			if(count($updates)) {
-				$this->db->query("UPDATE `" . DB_PREFIX . "category_description`" .
+				$this->db->query("UPDATE `oc_category_description`" .
 				" SET " . implode(", ", $updates) .
 				" WHERE category_id='" . (int)$category['category_id'] . "' AND language_id='" . $language_id . "'");
 			}
@@ -238,9 +238,9 @@
             ),
 			);
 			if(!empty($data['products_template']) && (isset($data['products_overwrite']) || empty($product['keyword']))) {
-				$this->db->query("DELETE FROM `" . DB_PREFIX . "url_alias` WHERE `query`='product_id=" . (int)$product['product_id'] . "'");
+				$this->db->query("DELETE FROM `oc_url_alias` WHERE `query`='product_id=" . (int)$product['product_id'] . "'");
 				$keyword = $this->urlify($data['products_template'], $tags);
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "url_alias` SET `query`='product_id=" . (int)$product['product_id'] . "', keyword='" . $this->db->escape($keyword) . "'");
+				//$this->db->query("INSERT INTO `oc_url_alias` SET `query`='product_id=" . (int)$product['product_id'] . "', keyword='" . $this->db->escape($keyword) . "'");
 			}
 			
 			$updates = array();
@@ -307,12 +307,12 @@
 			
 			if(isset($product['model']) && (isset($data['products_model_overwrite']) || (strlen(trim($product['model']))) == 0)) {
 				$products_model_template = trim(strtr($data['products_model_template'], $tags));
-				$this->db->query("UPDATE `" . DB_PREFIX . "product`" .
+				$this->db->query("UPDATE `oc_product`" .
 				" SET `model`='" . $this->db->escape($products_model_template) . "' WHERE product_id='" . (int)$product['product_id'] . "'");
 			}
 			
 			if(count($updates)) {
-				$this->db->query("UPDATE `" . DB_PREFIX . "product_description`" .
+				$this->db->query("UPDATE `oc_product_description`" .
 				" SET " . implode(", ", $updates) .
 				" WHERE product_id='" . (int)$product['product_id'] . "' AND language_id='" . $language_id . "'");
 			}
@@ -324,9 +324,9 @@
 			$tags = array('[manufacturer_name]' => $manufacturer['name']);
 			
 			if(!empty($data['manufacturers_template']) && (isset($data['manufacturers_overwrite']) || empty($manufacturer['keyword']))) {
-				$this->db->query("DELETE FROM `" . DB_PREFIX . "url_alias` WHERE `query`='manufacturer_id=" . (int)$manufacturer['manufacturer_id'] . "'");
+				$this->db->query("DELETE FROM `oc_url_alias` WHERE `query`='manufacturer_id=" . (int)$manufacturer['manufacturer_id'] . "'");
 				$keyword = $this->urlify($data['manufacturers_template'], $tags);
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "url_alias` SET `query`='manufacturer_id=" . (int)$manufacturer['manufacturer_id'] . "', keyword='" . $this->db->escape($keyword) . "'");
+				//$this->db->query("INSERT INTO `oc_url_alias` SET `query`='manufacturer_id=" . (int)$manufacturer['manufacturer_id'] . "', keyword='" . $this->db->escape($keyword) . "'");
 			}
 			
 			$updates = array();
@@ -371,7 +371,7 @@
 			}
 			
 			if(count($updates)) {
-				$this->db->query("UPDATE `" . DB_PREFIX . "manufacturer_description`" .
+				$this->db->query("UPDATE `oc_manufacturer_description`" .
 				" SET " . implode(", ", $updates) .
 				" WHERE manufacturer_id='" . (int)$manufacturer['manufacturer_id'] . "' AND language_id='" . $language_id . "'");
 			}
@@ -383,9 +383,9 @@
 			
 			$tags = array('[information_title]' => $information['title']);
 			if(!empty($data['informations_template']) && (isset($data['informations_overwrite']) || empty($information['keyword']))) {
-				$this->db->query("DELETE FROM `" . DB_PREFIX . "url_alias` WHERE `query`='information_id=" . (int)$information['information_id'] . "'");
+				$this->db->query("DELETE FROM `oc_url_alias` WHERE `query`='information_id=" . (int)$information['information_id'] . "'");
 				$keyword = $this->urlify($data['informations_template'], $tags);
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "url_alias` SET `query`='information_id=" . (int)$information['information_id'] . "', keyword='" . $this->db->escape($keyword) . "'");
+				//$this->db->query("INSERT INTO `oc_url_alias` SET `query`='information_id=" . (int)$information['information_id'] . "', keyword='" . $this->db->escape($keyword) . "'");
 			}
 			
 			$updates = array();
@@ -407,7 +407,7 @@
 			}
 			
 			if(count($updates)) {
-				$this->db->query("UPDATE `" . DB_PREFIX . "information_description`" .
+				$this->db->query("UPDATE `oc_information_description`" .
 				" SET " . implode(", ", $updates) .
 				" WHERE information_id='" . (int)$information['information_id'] . "' AND language_id='" . $language_id . "'");
 			}
@@ -421,8 +421,8 @@
 				$only_categories = implode(",", $seogen['only_categories']);
 			}
 			
-			$sql = "SELECT cd.*, u.keyword FROM " . DB_PREFIX . "category_description cd" .
-			" LEFT JOIN " . DB_PREFIX . "url_alias u ON (CONCAT('category_id=', cd.category_id) = u.query)" .
+			$sql = "SELECT cd.*, u.keyword FROM oc_category_description cd" .
+			" LEFT JOIN oc_url_alias u ON (CONCAT('category_id=', cd.category_id) = u.query)" .
 			" WHERE cd.language_id = '" . $language_id . "'";
 			if($category_id) {
 				$sql .= " AND cd.category_id='" . (int)$category_id . "'";
@@ -448,22 +448,22 @@
 			}
 			
 			$query = $this->db->query("SELECT pd.product_id, pd.language_id, pd.name, pd.description, pd.meta_title, pd.meta_h1, pd.meta_description, pd.meta_keyword, m.name as 'manufacturer', p.model as 'model', p.sku, p.price, pd.tag as 'tag', ".
-			"(SELECT cd.name FROM `" . DB_PREFIX . "category_description` cd " .
-			" LEFT JOIN `" . DB_PREFIX . "product_to_category` p2c ON (cd.category_id = p2c.category_id)".
+			"(SELECT cd.name FROM `oc_category_description` cd " .
+			" LEFT JOIN `oc_product_to_category` p2c ON (cd.category_id = p2c.category_id)".
 			" WHERE p2c.product_id = p.product_id".
 			" AND cd.language_id ='" . $language_id . "'".
 			" ORDER BY p2c.main_category='1' DESC LIMIT 1) AS 'category'" .
-			" FROM `" . DB_PREFIX . "product` p" .
-			" INNER JOIN `" . DB_PREFIX . "product_description` pd ON ( pd.product_id = p.product_id )" .
-			" LEFT JOIN `" . DB_PREFIX . "manufacturer` m ON ( m.manufacturer_id = p.manufacturer_id )" .
-			($only_categories ? " LEFT JOIN `" . DB_PREFIX . "product_to_category` p2c ON (p2c.product_id=p.product_id)" : "") .
+			" FROM `oc_product` p" .
+			" INNER JOIN `oc_product_description` pd ON ( pd.product_id = p.product_id )" .
+			" LEFT JOIN `oc_manufacturer` m ON ( m.manufacturer_id = p.manufacturer_id )" .
+			($only_categories ? " LEFT JOIN `oc_product_to_category` p2c ON (p2c.product_id=p.product_id)" : "") .
 			" WHERE pd.language_id ='" . $language_id . "'" .
 			($only_categories ? " AND p2c.category_id IN (" . $only_categories . ")" : "") .
 			($only_manufacturers ? " AND p.manufacturer_id IN (" . $only_manufacturers . ")" : "") .
 			($product_id ? " AND p.product_id='" . (int)$product_id . "'" : "") .
 			" ORDER BY p.product_id");
 			if ($product_id) {
-				$query_keyword = $this->db->query("SELECT `keyword` FROM `" . DB_PREFIX . "url_alias` WHERE `query`='product_id=". $query->rows[0]['product_id']."' LIMIT 1");
+				$query_keyword = $this->db->query("SELECT `keyword` FROM `oc_url_alias` WHERE `query`='product_id=". $query->rows[0]['product_id']."' LIMIT 1");
 				$query->rows[0]['keyword'] = $query_keyword->num_rows ? $query_keyword->row['keyword'] : null;
 				} else if($this->keywords !== false) {
 				foreach($query->rows as &$row) {
@@ -484,9 +484,9 @@
 			}
 			
 			$sql = "SELECT md.*, u.keyword, m.name, m.manufacturer_id" .
-			" FROM `" . DB_PREFIX . "manufacturer` m" .
-			" LEFT JOIN `" . DB_PREFIX . "manufacturer_description` md ON (m.manufacturer_id=md.manufacturer_id AND md.language_id='" . $language_id . "')" .
-			" LEFT JOIN " . DB_PREFIX . "url_alias u ON (CONCAT('manufacturer_id=', m.manufacturer_id) = u.query)";
+			" FROM `oc_manufacturer` m" .
+			" LEFT JOIN `oc_manufacturer_description` md ON (m.manufacturer_id=md.manufacturer_id AND md.language_id='" . $language_id . "')" .
+			" LEFT JOIN oc_url_alias u ON (CONCAT('manufacturer_id=', m.manufacturer_id) = u.query)";
 			if($manufacturer_id) {
 				$sql .= " WHERE m.manufacturer_id='" . (int)$manufacturer_id . "'";
 				} elseif($only_manufacturers) {
@@ -503,8 +503,8 @@
 			$seogen = $this->config->get('seogen');
 			$language_id = (isset($seogen['language_id']) ? (int)$seogen['language_id'] : (int)$this->config->get('config_language_id'));
 			
-			$query = $this->db->query("SELECT id.*, u.keyword FROM " . DB_PREFIX . "information_description id" .
-			" LEFT JOIN " . DB_PREFIX . "url_alias u ON (CONCAT('information_id=', id.information_id) = u.query)" .
+			$query = $this->db->query("SELECT id.*, u.keyword FROM oc_information_description id" .
+			" LEFT JOIN oc_url_alias u ON (CONCAT('information_id=', id.information_id) = u.query)" .
 			" WHERE id.language_id = '" . $language_id . "'" .
 			($information_id ? " AND id.information_id='" . (int)$information_id . "'" : "") .
 			" ORDER BY id.information_id");
@@ -522,7 +522,7 @@
 				$this->keywords[] = $keyword;
 				} else {
 				do {
-					$query = $this->db->query("SELECT url_alias_id FROM " . DB_PREFIX . "url_alias WHERE keyword ='" . $this->db->escape($keyword) . "'");
+					$query = $this->db->query("SELECT url_alias_id FROM oc_url_alias WHERE keyword ='" . $this->db->escape($keyword) . "'");
 					if($query->num_rows > 0) {
 						$keyword = $k . '-' . ++$counter;
 					}

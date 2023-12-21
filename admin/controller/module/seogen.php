@@ -436,5 +436,3 @@ class ControllerModuleSeogen extends Controller {
 			"meta_keyword" => "meta_keyword");
 	}
 }
-
-?>

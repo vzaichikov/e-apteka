@@ -2679,6 +2679,25 @@ for(var zz=$(".note-editor").length,i=0;zz>i;i++){var yy=$(".note-editor").eq(i)
 $.ajax({type:"post",data:$("form").serialize(),url:"index.php?route=catalog/product/qsave&token=<?php echo $token; ?>&product_id=<?php echo $pidqs; ?>",dataType:"json",beforeSend:function(){$("#qsave").prop("disabled",!0)},complete:function(){$("#qsave").prop("disabled",!1)},success:function(e){if($(".alert").remove(),$(".text-danger").remove(),$(".form-group").removeClass("has-error"),e.error){if(html='<div class="alert alert-danger">',html+=" "+e.error.warning+' <button type="button" class="close" data-dismiss="alert">&times;</button></br>',e.error.model&&($("#input-model").after('<div class="text-danger">'+e.error.model+"</div>"),html+='</br><i class="fa fa-exclamation-circle"></i> '+e.error.model),e.error.keyword&&($("#input-keyword").after('<div class="text-danger">'+e.error.keyword+"</div>"),html+='</br><i class="fa fa-exclamation-circle"></i> '+e.error.keyword),e.error.name){var r="";for(i in e.error.name){var a=$("#input-name"+i);$(a).parent().hasClass("input-group")?($(a).parent().after('<div class="text-danger">'+e.error.name[i]+"</div>"),r='</br><i class="fa fa-exclamation-circle"></i> '+e.error.name[i]):($(a).after('<div class="text-danger">'+e.error.name[i]+"</div>"),r='</br><i class="fa fa-exclamation-circle"></i> '+e.error.name[i])}html+=r}if(e.error.meta_title){var r="";for(i in e.error.meta_title){var a=$("#input-meta-title"+i);$(a).parent().hasClass("input-group")?($(a).parent().after('<div class="text-danger">'+e.error.meta_title[i]+"</div>"),r='</br><i class="fa fa-exclamation-circle"></i> '+e.error.meta_title[i]):($(a).after('<div class="text-danger">'+e.error.meta_title[i]+"</div>"),r='</br><i class="fa fa-exclamation-circle"></i> '+e.error.meta_title[i])}html+=r}$(".text-danger").parentsUntil(".form-group").parent().addClass("has-error"),html+=" </div>",$("#content > .container-fluid").prepend(html)}e.success&&$("#content > .container-fluid").prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+e.success+'  <button type="button" class="close" data-dismiss="alert">&times;</button></div>')},error:function(e,r,a){alert(a+"\r\n"+e.statusText+"\r\n"+e.responseText)}})});
 //quicksave end
 //--></script>
+
+				<script type="text/javascript">
+				ocfilter.php = {
+				text_select: '<?php echo $text_select; ?>',
+				ocfilter_select_category: '<?php echo $ocfilter_select_category; ?>',
+				entry_values: '<?php echo $entry_values; ?>',
+				tab_ocfilter: '<?php echo $tab_ocfilter; ?>'
+				};
+				
+				ocfilter.php.languages = [];
+				
+				<?php foreach ($languages as $language) { ?>
+					ocfilter.php.languages.push({
+					'language_id': <?php echo $language['language_id']; ?>,
+					'name': '<?php echo $language['name']; ?>',
+					'image': '<?php echo $language['image']; ?>'
+					});
+				<?php } ?>
+				</script>
 			
 	<?php echo $footer; ?>
 		

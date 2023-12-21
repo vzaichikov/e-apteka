@@ -732,6 +732,9 @@
 		
 		protected function getForm() {
 			$data['heading_title'] = $this->language->get('heading_title');
+
+			$this->document->addStyle('view/stylesheet/ocfilter/ocfilter.css');
+			$this->document->addScript('view/javascript/ocfilter/ocfilter.js');				
 			
 			$data['text_form'] = !isset($this->request->get['product_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
 			$data['text_enabled'] = $this->language->get('text_enabled');
@@ -846,7 +849,9 @@
 			$data['button_image_add'] = $this->language->get('button_image_add');
 			$data['button_remove'] = $this->language->get('button_remove');
 			$data['button_recurring_add'] = $this->language->get('button_recurring_add');
-			
+			$data['tab_ocfilter'] = $this->language->get('tab_ocfilter');
+			$data['entry_values'] = $this->language->get('entry_values');
+			$data['ocfilter_select_category'] = $this->language->get('ocfilter_select_category');			
 			$data['tab_general'] = $this->language->get('tab_general');
 			$data['tab_data'] = $this->language->get('tab_data');
 			$data['tab_same'] = $this->language->get('tab_same');

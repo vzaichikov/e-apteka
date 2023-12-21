@@ -28,9 +28,6 @@
 					$data['image'] = '';
 				}			
 				
-				// Create a 3 level menu array
-				// Level 2 can not have children
-				
 				// Menu
 				$data['menus'][] = array(
 				'id'       => 'menu-dashboard',
@@ -93,10 +90,45 @@
 				
 				if ($this->user->hasPermission('access', 'catalog/filter')) {
 					$catalog[] = array(
-					'name'	   => $this->language->get('text_filter'),
-					'href'     => $this->url->link('catalog/filter', 'token=' . $this->session->data['token'], true),
-					'children' => array()		
+						'name'	   => $this->language->get('text_filter'),
+						'href'     => $this->url->link('catalog/filter', 'token=' . $this->session->data['token'], true),
+						'children' => array()		
 					);
+
+
+					$ocfilter = array();
+
+					if ($this->user->hasPermission('access', 'catalog/ocfilter')) {
+						$ocfilter[] = array(
+							'name'     => $this->language->get('text_ocfilter_option'),
+							'href'     => $this->url->link('catalog/ocfilter', 'token=' . $this->session->data['token'], true),
+							'children' => array()
+						);
+					}
+
+					if ($this->user->hasPermission('access', 'catalog/ocfilter_page')) {
+						$ocfilter[] = array(
+							'name'	   => $this->language->get('text_ocfilter_page'),
+							'href'     => $this->url->link('catalog/ocfilter_page', 'token=' . $this->session->data['token'], true),
+							'children' => array()
+						);
+					}
+
+					if ($this->user->hasPermission('access', 'extension/module/ocfilter')) {
+						$ocfilter[] = array(
+							'name'	   => $this->language->get('text_ocfilter_setting'),
+							'href'     => $this->url->link('extension/module/ocfilter', 'token=' . $this->session->data['token'], true),
+							'children' => array()
+						);
+					}
+
+					if ($ocfilter) {
+						$catalog[] = array(
+							'name'	   => $this->language->get('text_ocfilter'),
+							'href'     => '',
+							'children' => $ocfilter
+						);
+					}
 				}
 				
 				// Attributes

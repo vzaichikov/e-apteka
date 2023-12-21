@@ -12,6 +12,11 @@
 				$_['text_simple_blog_category_setting'] = 'Настройки категорий';
 				$_['text_simple_blog_view_report'] = 'Отчет';
 
+				$_['text_ocfilter']                    = 'Фильтр Eapteka';
+				$_['text_ocfilter_option']             = 'Фильтра';
+				$_['text_ocfilter_page']               = 'Страницы';
+				$_['text_ocfilter_setting']            = 'Настройки';
+
 $_['text_newsblog'] 			= 'Новости, обновления';
 $_['text_newsblog_category'] 	= 'Категоризация';
 $_['text_newsblog_article'] 	= 'Новости';
