@@ -4867,6 +4867,9 @@ h2.cat-header:before {
 .product-category-list .is-grid-hidden {
     display: none;
 }
+.product-item .product-layout__stock_info__wrap {
+    margin-bottom: 5px;
+}
 
 @media screen and (max-width: 556px) {
     .product-category-list--list .product-layout__caption {

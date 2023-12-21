@@ -122,6 +122,38 @@
 						</div>
 						<div class="tab-pane" id="tab-data">
 							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-status"><?php echo $entry_status; ?></label>
+								<div class="col-sm-10">
+									<select name="status" id="input-status" class="form-control">
+										<?php if ($status) { ?>
+											<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+											<option value="0"><?php echo $text_disabled; ?></option>
+											<?php } else { ?>
+											<option value="1"><?php echo $text_enabled; ?></option>
+											<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+										<?php } ?>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-homepage">Показать на главной</label>
+								<div class="col-sm-10">
+									<select name="homepage" id="input-homepage" class="form-control">
+										<?php if ($homepage) { ?>
+											<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+											<option value="0"><?php echo $text_disabled; ?></option>
+											<?php } else { ?>
+											<option value="1"><?php echo $text_enabled; ?></option>
+											<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+										<?php } ?>
+									</select>
+								</div>
+							</div>
+
+
+
+							<div class="form-group">
 								<label class="col-sm-2 control-label"><?php echo $entry_store; ?></label>
 								<div class="col-sm-10">
 									<div class="well well-sm" style="height: 150px; overflow: auto;">
@@ -240,21 +272,7 @@
 										<?php } ?>
 									</select>
 								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-2 control-label" for="input-status"><?php echo $entry_status; ?></label>
-								<div class="col-sm-10">
-									<select name="status" id="input-status" class="form-control">
-										<?php if ($status) { ?>
-											<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
-											<option value="0"><?php echo $text_disabled; ?></option>
-											<?php } else { ?>
-											<option value="1"><?php echo $text_enabled; ?></option>
-											<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
-										<?php } ?>
-									</select>
-								</div>
-							</div>
+							</div>							
 						</div>
 						<div class="tab-pane" id="tab-special">
 							<div class="table-responsive">

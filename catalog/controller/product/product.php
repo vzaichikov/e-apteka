@@ -406,14 +406,7 @@
 					$this->document->setOpengraph('og:description', $product_info['meta_description']);
 				}
 			
-				$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');				
-				
-				$this->document->addLink($this->url->link('product/amp_product', 'product_id=' . $this->request->get['product_id']), 'amphtml');
-				if (isset($this->request->get['add'])) {
-					$this->cart->add($this->request->get['product_id']);
-					$this->response->redirect($this->url->link('checkout/cart'));
-				}
-				
+				$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');							
 			//	$this->document->addScript('catalog/view/javascript/jquery/magnific/jquery.magnific-popup.min.js');
 			//	$this->document->addStyle('catalog/view/javascript/jquery/magnific/magnific-popup.css');
 				
@@ -947,7 +940,6 @@
 				$data['tags'] = array();				
 				$data['recurrings'] = $this->model_catalog_product->getProfiles($this->request->get['product_id']);
 				
-				$this->model_catalog_product->updateViewed($this->request->get['product_id']);
 				//$this->model_catalog_product->catchAlsoViewed($this->request->get['product_id']);
 				
 				$data['column_left'] 		= $this->load->controller('common/column_left');

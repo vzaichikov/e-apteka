@@ -121,13 +121,13 @@
 			if (isset($this->request->get['sort'])) {
 				$sort = $this->request->get['sort'];
 				} else {
-				$sort = 'nd.title';
+				$sort = 's.date_end';
 			}
 			
 			if (isset($this->request->get['order'])) {
 				$order = $this->request->get['order'];
 				} else {
-				$order = 'ASC';
+				$order = 'DESC';
 			}
 			
 			if (isset($this->request->get['page'])) {
@@ -220,16 +220,17 @@
 				}
 				
 				$data['specials'][] = array(
-				'special_id' => $result['special_id'],
-				'title' => $result['title'],
-				'image' => $image,
-				'banner' => $banner,
-				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'date_end' => date($this->language->get('date_format_short'), strtotime($result['date_end'])),
-				'active_now' => ($result['date_end'] >= date('Y-m-d')),
-				'status' => ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
-				'selected' => isset($this->request->post['selected']) && in_array($result['special_id'], $this->request->post['selected']),
-				'edit' => $this->url->link('catalog/ochelp_special/edit', 'token=' . $this->session->data['token'] . '&special_id=' . $result['special_id'], 'SSL'),
+				'special_id' 	=> $result['special_id'],
+				'title' 		=> $result['title'],
+				'image' 		=> $image,
+				'banner' 		=> $banner,
+				'date_added' 	=> date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+				'date_end' 		=> date($this->language->get('date_format_short'), strtotime($result['date_end'])),
+				'active_now' 	=> ($result['date_end'] >= date('Y-m-d')),
+				'status' 		=> ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
+				'homepage' 		=> ($result['homepage'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
+				'selected' 		=> isset($this->request->post['selected']) && in_array($result['special_id'], $this->request->post['selected']),
+				'edit' 			=> $this->url->link('catalog/ochelp_special/edit', 'token=' . $this->session->data['token'] . '&special_id=' . $result['special_id'], 'SSL'),
 				);
 			}
 			
@@ -522,6 +523,14 @@
 				$data['status'] = $special_info['status'];
 				} else {
 				$data['status'] = '';
+			}
+
+			if (isset($this->request->post['homepage'])) {
+				$data['homepage'] = $this->request->post['homepage'];
+				} elseif (isset($special_info)) {
+				$data['homepage'] = $special_info['homepage'];
+				} else {
+				$data['homepage'] = '';
 			}
 			
 			if (isset($this->request->post['image'])) {

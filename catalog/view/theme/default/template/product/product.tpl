@@ -937,8 +937,8 @@
 													navigator.permissions.query({name:'geolocation'}).then( function(result) {
 														if (result.state == 'granted') {
 															console.log('[Drugstore locator] Already have permissions');
-
-															countDistancesToCurrentPosition();
+															$('#find-closest-drugstore-button-wrap').show();
+														//	countDistancesToCurrentPosition();
 														} else if(result.state == 'prompt') {
 															$('#find-closest-drugstore-button-wrap').show();
 														}					

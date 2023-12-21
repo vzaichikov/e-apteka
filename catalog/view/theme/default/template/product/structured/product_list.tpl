@@ -1,9 +1,4 @@
-<style type="text/css">
-	
-		.product-category-list .product-item .product-layout__stock_info__wrap {
-		    margin-bottom: 5px;
-		}
-
+<style type="text/css">	
 	@media screen and (max-width: 560px) {
 		.product-category-list{
 			gap: 10px;

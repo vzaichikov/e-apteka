@@ -12,7 +12,6 @@ class ControllerExtensionModuleBestSeller extends Controller {
 		$data['button_compare'] = $this->language->get('button_compare');
 
 		$this->load->model('catalog/product');
-
 		$this->load->model('tool/image');
 
 		$data['products'] = array();
@@ -23,6 +22,7 @@ class ControllerExtensionModuleBestSeller extends Controller {
 		}
 		
 		$results = $this->model_catalog_product->getBestSellerProducts($setting['limit'], $parent_id);
+		$data['[products'] = $this->model_catalog_product->prepareProductsArray($results);
 
 		if ($results) {
 			foreach ($results as $result) {

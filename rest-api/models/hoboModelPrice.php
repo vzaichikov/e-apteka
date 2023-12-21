@@ -43,6 +43,10 @@ class hoboModelPrice extends hoboModel{
 		$this->db->query("UPDATE oc_product p SET p.price_of_part = ROUND(p.price / p.count_of_parts, 2) WHERE p.product_id = '" . (int)$product_id . "' AND p.count_of_parts > 0");
 	}
 
+	public function postAction(){
+		$this->db->query("UPDATE oc_product SET status = '0' WHERE price = '0'");
+	}
+
 	public function updatePrices($prices){
 		$result = [];
 
@@ -62,6 +66,8 @@ class hoboModelPrice extends hoboModel{
 				];
 			}
 		}
+
+		$this->postAction();
 
 		return $result;
 	}

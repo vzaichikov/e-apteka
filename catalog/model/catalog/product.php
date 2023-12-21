@@ -350,8 +350,8 @@
 					$query->row['price_of_part_special'] = false;
 
 					if (!empty($query->row['special'])){
-						$query->row['price'] 			= $query->row['price_retail'];
-						$query->row['price_of_part'] 	= $query->row['price_of_part_retail'];
+					//	$query->row['price'] 			= $query->row['price_retail'];
+					//	$query->row['price_of_part'] 	= $query->row['price_of_part_retail'];
 					}									
 
 					if (!empty($query->row['special']) && $query->row['special_type'] == '%'){

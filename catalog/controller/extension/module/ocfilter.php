@@ -695,7 +695,7 @@ class ControllerExtensionModuleOCFilter extends Controller {
       } else if ($option_id == 's') {
       	$path .= '/sklad';
       } else if ($option_id != 'm') {
-        $query = $this->db->query("SELECT keyword FROM " . DB_PREFIX . "ocfilter_option WHERE option_id = '" . (int)$option_id . "'");
+        $query = $this->db->query("SELECT keyword FROM oc_ocfilter_option WHERE option_id = '" . (int)$option_id . "'");
 
         if ($query->num_rows && $query->row['keyword']) {
         	$path .= '/' . $query->row['keyword'];
@@ -715,10 +715,10 @@ class ControllerExtensionModuleOCFilter extends Controller {
 
 
           } else {
-            $query = $this->db->query("SELECT keyword FROM " . DB_PREFIX . "url_alias WHERE `query` = 'manufacturer_id=" . (int)$value_id . "'");
+            $query = $this->db->query("SELECT keyword FROM oc_url_alias WHERE `query` = 'manufacturer_id=" . (int)$value_id . "'");
           }
         } else if (isID($value_id)) {
-          $query = $this->db->query("SELECT keyword FROM " . DB_PREFIX . "ocfilter_option_value WHERE value_id = '" . $this->db->escape((string)$value_id) . "'");
+          $query = $this->db->query("SELECT keyword FROM oc_ocfilter_option_value WHERE value_id = '" . $this->db->escape((string)$value_id) . "'");
         }
 
         if ($query && $query->num_rows && $query->row['keyword']) {

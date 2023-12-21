@@ -1,39 +1,6 @@
 <?php
 	class ControllerCommonFooter extends Controller {
 
-		public function online(){
-			if ($this->config->get('config_customer_online')) {
-				$this->load->model('tool/online');
-				
-				if (isset($this->request->server['REMOTE_ADDR'])) {
-					$ip = $this->request->server['REMOTE_ADDR'];
-					} else {
-					$ip = '';
-				}
-				
-				if (isset($this->request->server['HTTP_HOST']) && isset($this->request->server['REQUEST_URI'])) {
-					$url = 'http://' . $this->request->server['HTTP_HOST'] . $this->request->server['REQUEST_URI'];
-					} else {
-					$url = '';
-				}
-				
-				if (isset($this->request->server['HTTP_REFERER'])) {
-					$referer = $this->request->server['HTTP_REFERER'];
-					} else {
-					$referer = '';
-				}
-				
-				if (isset($this->request->server['HTTP_USER_AGENT'])) {
-					$useragent = $this->request->server['HTTP_USER_AGENT'];	
-					} else {
-					$useragent = '';
-				}
-				
-				$this->model_tool_online->addOnline($ip, $this->customer->getId(), $url, $referer, $useragent, $this->crawlerDetect->isCrawler());
-			}
-		}
-
-
 		public function index() {
 			$this->load->language('common/footer');
 
@@ -90,7 +57,7 @@
 				'catalog/view/theme/default/js/liFixar/liFixar.css'
 			];						
 			
-			$data['general_minified_css_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalCSS, 'css');
+			$data['general_minified_css_uri'] = HTTPS_IMG_SERVER . \hobotix\MinifyAdaptor::createFile($generalCSS, 'css');
 
 
 			$generalJS = [
@@ -98,7 +65,7 @@
 				'catalog/view/javascript/html5-qrcode.min.v2.2.5.js'
 			];					
 			
-			$data['general_minified_js_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalJS, 'js');
+			$data['general_minified_js_uri'] = HTTPS_IMG_SERVER . \hobotix\MinifyAdaptor::createFile($generalJS, 'js');
 
 
 			$data['hb_snippets_local_enable'] 	= $this->config->get('hb_snippets_local_enable');
@@ -224,15 +191,14 @@
 			if ($data['btn_close_field'] == '') {
 				$data['btn_close_field'] = $this->language->get('btn_close');
 			}
+
+			$data['stats_uri'] = $this->url->link('eapteka/stats');
 			
 			$data['tawkto'] = $this->load->controller('extension/module/tawkto');
 			
-			if (!empty($this->request->get['route']) && $this->request->get['route'] == 'checkout/simplecheckout'){
-				
-				return $this->load->view('common/footer_simple', $data);
-				
-				} else {
-				
+			if (!empty($this->request->get['route']) && $this->request->get['route'] == 'checkout/simplecheckout'){				
+				return $this->load->view('common/footer_simple', $data);				
+				} else {				
 				return $this->load->view('common/footer', $data);
 			}
 		}

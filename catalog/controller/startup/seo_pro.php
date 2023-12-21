@@ -117,15 +117,7 @@
 			if (!isset($this->request->get['_route_'])) {
 				$this->validate();
 				} else {
-				$route_ = $route = $this->request->get['_route_'];
-				
-				$ampDir = 'amp';
-				$route_ = str_replace('amp/', '', $route_);
-				$route = str_replace('amp/', '', $route);
-				$ampRoute = $this->request->get['_route_'];			
-				
-				$this->request->get['_route_'] = str_replace('amp/', '', $this->request->get['_route_']);
-				
+				$route_ = $route = $this->request->get['_route_'];						
 				unset($this->request->get['_route_']);
 				
 				$parts = explode('/', trim(utf8_strtolower($route), '/'));						
@@ -197,10 +189,6 @@
 					$this->request->get['route'] = 'newsblog/category';
 					} elseif (isset($this->request->get['product_id'])) {
 					$this->request->get['route'] = 'product/product';
-					
-					if (strpos($ampRoute, "amp/") !== FALSE ) {
-						$this->request->get['route'] = 'product/amp_product';						
-					}
 
 					if (isset($this->request->get['product-display']) && $this->request->get['product-display'] == 'analog'){
 						$this->request->get['route'] = 'product/product/analog';									
@@ -232,6 +220,8 @@
 					$this->request->get['route'] = 'simple_blog/category';
 
 					} elseif($this->getKeyword($route_) && isset($this->request->server['SERVER_PROTOCOL'])) {
+
+					header('X-REDIRECT: SeoPro Lib::index');		
 					header($this->request->server['SERVER_PROTOCOL'] . ' 301 Moved Permanently');
 					$this->response->redirect($this->getKeyword($route_), 301);
 
@@ -250,9 +240,6 @@
 		}
 		
 		public function rewrite($link) {
-			
-			$ampDir = 'amp';
-			
 			if (!$this->config->get('config_seo_url')) return $link;
 			
 			$seo_url = '';
@@ -266,25 +253,6 @@
 			unset($data['route']);
 			
 			switch ($route) {				
-				case 'product/amp_product':
-				if (isset($data['product_id'])) {
-					$tmp = $data;
-					$data = [];
-					if (true) {
-						$data['path'] = $this->getPathByProduct($tmp['product_id']);
-						if (!$data['path']) return $link  ;
-					}
-					$data['product_id'] = $tmp['product_id'];
-					
-					$isAmpURL = 1;
-					
-					foreach ($this->allowedGetParams as $allowedGetParam){
-						if (isset($tmp[$allowedGetParam])) {
-							$data[$allowedGetParam] = $tmp[$allowedGetParam];
-						}
-					}	
-				}
-				break;
 				case 'newsblog/article':
 				if (isset($data['newsblog_article_id'])) {
 					$tmp = $data;
@@ -303,6 +271,27 @@
 					if (!$data['newsblog_path']) return $link;
 				}
 				break;
+
+
+				case 'product/product/analog':
+				$data['product-display'] = 'analog';
+				if (true) {
+					$data['path'] = $this->getPathByProduct($data['product_id']);
+					if (!$data['path']) return $link;
+				} else {
+					unset($data['path']);
+				}
+				break;
+
+				case 'product/product/instruction':
+				$data['product-display'] = 'instruction';
+				if (true) {
+					$data['path'] = $this->getPathByProduct($data['product_id']);
+					if (!$data['path']) return $link;
+				} else {
+					unset($data['path']);
+				}
+				break;
 				
 				case 'product/product':
 				if (isset($data['product_id'])) {
@@ -319,26 +308,6 @@
 							$data[$allowedGetParam] = $tmp[$allowedGetParam];
 						}
 					}
-				}
-				break;
-
-				case 'product/product/analog':
-				$data['product-display'] = 'analog';
-				if (true) {
-					$data['path'] = $this->getPathByProduct($tmp['product_id']);
-					if (!$data['path']) return $link;
-				} else {
-					unset($data['path']);
-				}
-				break;
-
-				case 'product/product/instruction':
-				$data['product-display'] = 'instruction';
-				if (true) {
-					$data['path'] = $this->getPathByProduct($tmp['product_id']);
-					if (!$data['path']) return $link;
-				} else {
-					unset($data['path']);
 				}
 				break;
 				
@@ -505,11 +474,6 @@
 				}
 			}
 			
-			if (isset($isAmpURL)) {
-				$seo_url .=  $ampDir;
-			}
-			
-			
 			if(count($rows) == count($queries)) {
 				$aliases = [];
 				foreach($rows as $row) {
@@ -546,9 +510,7 @@
 			
 			if (count($data)) {
 				$seo_url .= '?' . urldecode(http_build_query($data, '', '&amp;'));
-			}
-			
-			
+			}					
 			
 			return $seo_url;
 		}
@@ -645,8 +607,7 @@
 				$this->cache->set('collection.manufacturer.seopath', $path);
 			}
 			
-			return $path[$collection_id];
-			
+			return $path[$collection_id];			
 		}
 		
 		private function getPathByCollection($collection_id) {
@@ -716,8 +677,6 @@
 		}
 		
 		private function validate() {
-			
-			$ampDir = 'amp';
 			if( isset( $this->request->get['add'] ) ) {
 				return;
 			}
@@ -749,7 +708,6 @@
 			if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
 				$config_ssl = substr($this->config->get('config_ssl'), 0, $this->strpos_offset('/', $this->config->get('config_ssl'), 3) + 1);
 				
-				//check for manyslashes
 				if (strpos($this->request->server['REQUEST_URI'], '//') !== false){
 					$url = str_replace('&amp;', '&', $config_ssl . $this->request->server['REQUEST_URI']);
 					} else {
@@ -757,22 +715,25 @@
 				}
 				
 				$seo = str_replace('&amp;', '&', $this->url->link($this->request->get['route'], $this->getQueryString(array('route')), true));
+
+				header('X-URL: ' . $url);
+				header('X-SEO: ' . $seo);
+
 				} else {
 				$config_url = substr($this->config->get('config_url'), 0, $this->strpos_offset('/', $this->config->get('config_url'), 3) + 1);
 				$url = str_replace('&amp;', '&', $config_url . ltrim($this->request->server['REQUEST_URI'], '/'));
 				$seo = str_replace('&amp;', '&', $this->url->link($this->request->get['route'], $this->getQueryString(array('route')), false));
 			}
 			
-			if (rawurldecode($url) != rawurldecode($seo) && isset($this->request->server['SERVER_PROTOCOL']) && rawurldecode($seo) != $ampDir) {				
-				header($this->request->server['SERVER_PROTOCOL'] . ' 301 Moved Permanently');				
+			if (rawurldecode($url) != rawurldecode($seo) && isset($this->request->server['SERVER_PROTOCOL'])) {				
+				header('X-REDIRECT: SeoPro Lib::validate');	
+				header($this->request->server['SERVER_PROTOCOL'] . ' 301 Moved Permanently');	
 				$this->response->redirect($seo);
 			}
 		}
 		
 		private function strpos_offset($needle, $haystack, $occurrence) {
-			// explode the haystack
 			$arr = explode($needle, $haystack);
-			// check the needle is not out of bounds
 			switch($occurrence) {
 				case $occurrence == 0:
 				return false;

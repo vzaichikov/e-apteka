@@ -1170,7 +1170,7 @@ $(document).ready(function() {
 
 <script>
 	$(document).ready(function(){
-		setTimeout(function(){ $.get('index.php?route=common/footer/online') }, 1500);
+		setTimeout(function(){ $.get('<?php echo $stats_uri; ?>') }, 1500);
 	});
 </script>
 

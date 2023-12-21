@@ -270,7 +270,7 @@
 				'catalog/view/theme/default/stylesheet/swiper.min.css'
 			];						
 			
-			$data['general_minified_css_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalCSS, 'css');
+			$data['general_minified_css_uri'] = HTTPS_IMG_SERVER . \hobotix\MinifyAdaptor::createFile($generalCSS, 'css');
 
 			$addedCSS = [];
 			foreach ($data['styles'] as $style) {				
@@ -285,7 +285,7 @@
 			}
 			
 			if ($addedCSS){
-				$data['added_minified_css_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($addedCSS, 'css');
+				$data['added_minified_css_uri'] = HTTPS_IMG_SERVER . \hobotix\MinifyAdaptor::createFile($addedCSS, 'css');
 			}
 			/*---------------- END STYLES -------------*/
 			
@@ -306,7 +306,7 @@
 				'catalog/view/theme/default/js/lib/jquery.mCustomScrollbar.concat.min.js'
 			];					
 			
-			$data['general_minified_js_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalJS, 'js');
+			$data['general_minified_js_uri'] = HTTPS_IMG_SERVER . \hobotix\MinifyAdaptor::createFile($generalJS, 'js');
 						
 			$data['incompatible_scripts'] = [];
 			foreach ($data['scripts'] as $script) {
@@ -330,7 +330,7 @@
 			
 			if ($addedJS){				
 				$query = "f=" . implode(',', $t);
-				$data['added_minified_js_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($addedJS, 'js');
+				$data['added_minified_js_uri'] = HTTPS_IMG_SERVER . \hobotix\MinifyAdaptor::createFile($addedJS, 'js');
 			}			
 			/*---------------- END SCRIPTS -------------*/
 			

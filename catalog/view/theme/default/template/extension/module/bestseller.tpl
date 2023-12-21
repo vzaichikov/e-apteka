@@ -1,7 +1,6 @@
  <?php foreach ($products as $product) { ?>
     <?php echo $product['seo']; ?>
     <?php } ?>
-<!-- <h3><?php echo $heading_title; ?></h3> -->
 
 <div class="bestseller-list slider__list">
   <?php foreach ($products as $product) { ?>
