@@ -72,6 +72,7 @@ final class MinifyAdaptor
 		$times = [];
 		foreach ($input as $file){
 			$file = DIR_ENGINE . ltrim($file, '/');
+
 			if (file_exists($file) && $time = filemtime($file)){
 				$files[] 		= $file;
 				$times[$file] 	= $time;	

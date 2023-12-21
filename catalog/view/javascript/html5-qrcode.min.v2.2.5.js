@@ -1,30 +1,14 @@
 var __Html5QrcodeLibrary__;
-/******/ (() => { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
+(() => {
+var __webpack_modules__ = ({
 
-/***/ 449:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+449:
+(function(__unused_webpack_module, exports, __webpack_require__) {
 
 (function (global, factory) {
      true ? factory(exports) :
     0;
 }(this, (function (exports) { 'use strict';
-
-    /*! *****************************************************************************
-    Copyright (c) Microsoft Corporation. All rights reserved.
-    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-    this file except in compliance with the License. You may obtain a copy of the
-    License at http://www.apache.org/licenses/LICENSE-2.0
-
-    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-    MERCHANTABLITY OR NON-INFRINGEMENT.
-
-    See the Apache Version 2.0 License for specific language governing permissions
-    and limitations under the License.
-    ***************************************************************************** */
-    /* global Reflect, Promise */
 
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -48,10 +32,6 @@ var __Html5QrcodeLibrary__;
         var captureStackTrace = Error.captureStackTrace;
         captureStackTrace && captureStackTrace(target, fn);
     }
-
-
-
-
 
     var CustomError = (function (_super) {
         __extends(CustomError, _super);

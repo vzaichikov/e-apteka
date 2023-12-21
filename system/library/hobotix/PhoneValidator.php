@@ -13,16 +13,11 @@ class phoneValidator
 		Mapping country codes to regular expressions
 	*/
 	private $validationMapping = [
-		'220' => "/^380(39|50|63|66|67|68|91|92|93|94|95|96|97|98|99|44|73)[0-9]{7}$/",
-		'109' => "/^7((7[0-9]{9})|(6(7|9)[0-9]{8}))$/",
-		/* for future */
-		'176' => "/^7(9[0-9]{9})$/"
+		'220' => "/^380(39|50|63|66|67|68|91|92|93|94|95|96|97|98|99|44|73)[0-9]{7}$/"
 	];
 
 	private $formatMapping = [
-		'220' => "+XX(XXX)XXX-XX-XX",
-		'109' => "+X(XXX)XXX-XX-XX",
-		'176' => "+X(XXX)XXX-XX-XX"
+		'220' => "+XX(XXX)XXX-XX-XX"
 	];
 
 	public function __construct($registry){

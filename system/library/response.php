@@ -59,6 +59,15 @@ class Response {
 		return gzencode($data, (int)$level);
 	}
 
+	public function minify(){
+		$minifier = new \voku\helper\HtmlMin();
+		$this->output = $minifier->minify($this->output);
+	}
+
+	public function returnOutput() {
+		return $this->output;
+	}
+
 	public function output() {
 		global $timer;
 
@@ -74,8 +83,6 @@ class Response {
 			$this->sqlDebug();
 		}
 	}
-
-
 
 	public function sqlDebug(){
 		if (defined('DEBUGSQL') && DEBUGSQL) {

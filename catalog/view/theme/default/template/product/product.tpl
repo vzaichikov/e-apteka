@@ -1,7 +1,6 @@
 <?php echo $header; ?>
 <?php echo $seo; ?>
 
-<link href="catalog/view/theme/default/js/liFixar/liFixar.css" rel="stylesheet" media="screen" />
 <script src="catalog/view/theme/default/js/liFixar/jquery.liFixar.js" type="text/javascript"></script>
 <script src="catalog/view/theme/default/js/scrollbooster.min.js" type="text/javascript"></script>
 

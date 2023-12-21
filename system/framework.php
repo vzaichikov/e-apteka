@@ -151,5 +151,7 @@
 	$controller->dispatch(new Action($config->get('action_router')), new Action($config->get('action_error')));
 	
 	// Output
-	$response->setCompression($config->get('config_compression'));
+	//$response->setCompression($config->get('config_compression'))
+
+//	$response->minify();
 	$response->output();

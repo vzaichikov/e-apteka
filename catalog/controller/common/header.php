@@ -2,12 +2,14 @@
 	class ControllerCommonHeader extends Controller {
 		public function index() {
 			$this->load->controller('startup/hoboseo/postSeoPro');
-			
-			// Analytics
+						
 			$this->load->model('extension/extension');
+			$this->load->model('extension/module/xdstickers');
+			$this->load->model('tool/image');
+			$this->load->model('catalog/ochelp_special');
+			$this->load->model('catalog/product');
 			
-			$data['analytics'] = array();
-			
+			$data['analytics'] = [];			
 			$analytics = $this->model_extension_extension->getExtensions('analytics');
 			
 			foreach ($analytics as $analytic) {
@@ -38,13 +40,11 @@
 			$data['tlt_metatags'] 	= $this->document->getTLTMetaTags();
 			
 			if (!empty($this->request->get['page']) && is_numeric($this->request->get['page']) && (int)$this->request->get['page'] > 1){
-				$data['seo_page'] = (int)$this->request->get['page'];	
-				
-				$data['title'] = sprintf($this->language->get('text_page'), (int)$this->request->get['page']) . $data['title'];
-				$data['description'] = sprintf($this->language->get('text_page'), (int)$this->request->get['page']) . $data['description'];
+				$data['seo_page'] 		= (int)$this->request->get['page'];					
+				$data['title'] 			= sprintf($this->language->get('text_page'), (int)$this->request->get['page']) . $data['title'];
+				$data['description'] 	= sprintf($this->language->get('text_page'), (int)$this->request->get['page']) . $data['description'];
 			}
 			
-			$this->load->model('tool/image');
 			$data['licence_logo'] = $this->model_tool_image->resize('licence-logo.png', 140, 70);
 			$data['licence_href'] = $this->url->link('information/contact/dls');
 			
@@ -60,7 +60,7 @@
 			$xdstickers = $this->config->get('xdstickers');
 			$data['xdstickers_status'] = $xdstickers['status'];
 			if ($xdstickers['status']) {
-				$data['xdstickers'] = array();
+				$data['xdstickers'] = [];
 				$data['xdstickers_position'] = $xdstickers['position'];
 				$data['xdstickers_inline_styles'] = $xdstickers['inline_styles'];
 				$data['xdstickers'][] = array(
@@ -107,7 +107,6 @@
 					}
 				}
 
-				$this->load->model('extension/module/xdstickers');
 				$custom_xdstickers = $this->model_extension_module_xdstickers->getCustomXDStickers();
 				if (!empty($custom_xdstickers)) {
 					foreach ($custom_xdstickers as $custom_xdsticker) {
@@ -122,9 +121,8 @@
 				}
 			}
 			
-			$this->load->model('localisation/language');
-			$languages = $this->registry->get('languages');
-			$default_language = $this->config->get('config_language');			
+			$languages 			= $this->registry->get('languages');
+			$default_language 	= $this->config->get('config_language');			
 			
 			$real_url = $this->request->server['REQUEST_URI'];
 			foreach ($languages as $language){	
@@ -156,22 +154,19 @@
 			$this->load->language('common/header');
 			$data['store_url'] = HTTPS_SERVER;
 			
-			$data['text_home'] = $this->language->get('text_home');
-			$data['text_callcenter'] = $this->language->get('text_callcenter');
-			$data['text_mycard'] = $this->language->get('text_mycard');
-			$data['text_mycard_small'] = $this->language->get('text_mycard_small');
-			$data['text_simple_call'] = $this->language->get('text_simple_call');
+			$data['text_home'] 			= $this->language->get('text_home');
+			$data['text_callcenter'] 	= $this->language->get('text_callcenter');
+			$data['text_mycard'] 		= $this->language->get('text_mycard');
+			$data['text_mycard_small'] 	= $this->language->get('text_mycard_small');
+			$data['text_simple_call'] 	= $this->language->get('text_simple_call');
 			
 			if ($this->customer->isLogged()) {
-				$this->load->model('account/wishlist');
-				
-				$data['text_wishlist'] = sprintf($this->language->get('text_wishlist'), $this->model_account_wishlist->getTotalWishlist());				
-				
+				$this->load->model('account/wishlist');			
+				$data['text_wishlist'] = sprintf($this->language->get('text_wishlist'), $this->model_account_wishlist->getTotalWishlist());							
 				} else {
 				$data['text_wishlist'] = sprintf($this->language->get('text_wishlist'), (isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0));
 			}
 			
-			// DISCOUNT CARD
 			if ($this->customer->isLogged()) {
 				$data['card'] = $this->customer->getCard();	
 				$data['cardmodal'] = $this->load->controller('account/account/cardmodal');
@@ -179,10 +174,9 @@
 				$data['card'] = false;
 			}
 			
-			$data['text_compare'] = sprintf($this->language->get('text_compare'), (isset($this->session->data['compare']) ? count($this->session->data['compare']) : 0));
-			
+			$data['text_compare'] 		= sprintf($this->language->get('text_compare'), (isset($this->session->data['compare']) ? count($this->session->data['compare']) : 0));
+			$data['text_logged'] 		= sprintf($this->language->get('text_logged'), $this->url->link('account/account', '', true), $this->customer->getFirstName(), $this->url->link('account/logout', '', true));
 			$data['text_shopping_cart'] = $this->language->get('text_shopping_cart');
-			$data['text_logged'] = sprintf($this->language->get('text_logged'), $this->url->link('account/account', '', true), $this->customer->getFirstName(), $this->url->link('account/logout', '', true));
 			
 			$data['text_account'] = $this->language->get('text_account');
 			
@@ -206,6 +200,7 @@
 			$data['text_promotions'] = $this->language->get('text_promotions');
 			$data['text_spr'] = $this->language->get('text_spr');
 			$data['text_order_call'] = $this->language->get('text_order_call');
+			$data['telephone'] = $this->config->get('config_telephone');
 			
 			
 			$data['home'] = $this->url->link('common/home');
@@ -223,24 +218,29 @@
 			$data['checkout'] = $this->url->link('checkout/checkout', '', true);
 			$data['contact'] = $this->url->link('information/contact');
 			$data['drugstores'] = $this->url->link('information/contact/drugstores');
-			$data['telephone'] = $this->config->get('config_telephone');
+			$data['specials'] = $this->url->link('product/special');
+			$data['promotions'] = $this->url->link('information/ochelp_special', '', true);			
+			$data['brands'] 	= $this->url->link('product/manufacturer');			
+			$data['contacts'] 	= $this->url->link('information/contact');
+			$data['delivery'] 	= $this->url->link('information/information', 'information_id=6');
+			$data['loyality'] 	= $this->url->link('information/information', 'information_id=7');
+			$data['about_us'] 	= $this->url->link('information/information', 'information_id=4');
+			$data['newsfeed'] 	= $this->url->link('simple_blog/article');
+			$data['spravochnik'] = $this->url->link('product/category', 'path=1');
+			$data['vacancies'] = $this->url->link('newsblog/category', 'newsblog_category_id=3');			
 			
 			$buyoneclick = $this->config->get('buyoneclick');
-			$data['buyoneclick_status_product'] = $buyoneclick["status_product"];
-			$data['buyoneclick_status_category'] = $buyoneclick["status_category"];
-			$data['buyoneclick_status_module'] = $buyoneclick["status_module"];
-			
-			$data['buyoneclick_style_status'] = $buyoneclick["style_status"];
-			$data['buyoneclick_validation_type'] = $buyoneclick["validation_type"];
-			
-			$data['buyoneclick_exan_status'] = $buyoneclick["exan_status"];
-			
+			$data['buyoneclick_status_product'] 	= $buyoneclick["status_product"];
+			$data['buyoneclick_status_category'] 	= $buyoneclick["status_category"];
+			$data['buyoneclick_status_module'] 		= $buyoneclick["status_module"];			
+			$data['buyoneclick_style_status'] 		= $buyoneclick["style_status"];
+			$data['buyoneclick_validation_type'] 	= $buyoneclick["validation_type"];			
+			$data['buyoneclick_exan_status'] 		= $buyoneclick["exan_status"];			
 			$data['buyoneclick_ya_status'] 					= $buyoneclick['ya_status'];
 			$data['buyoneclick_ya_counter'] 				= $buyoneclick['ya_counter'];
 			$data['buyoneclick_ya_identificator'] 			= $buyoneclick['ya_identificator'];
 			$data['buyoneclick_ya_identificator_send'] 		= $buyoneclick['ya_identificator_send'];
-			$data['buyoneclick_ya_identificator_success'] 	= $buyoneclick['ya_identificator_success'];
-			
+			$data['buyoneclick_ya_identificator_success'] 	= $buyoneclick['ya_identificator_success'];			
 			$data['buyoneclick_google_status'] 				= $buyoneclick['google_status'];
 			$data['buyoneclick_google_category_btn'] 		= $buyoneclick['google_category_btn'];
 			$data['buyoneclick_google_action_btn'] 			= $buyoneclick['google_action_btn'];
@@ -249,25 +249,9 @@
 			$data['buyoneclick_google_category_success'] 	= $buyoneclick['google_category_success'];
 			$data['buyoneclick_google_action_success'] 		= $buyoneclick['google_action_success'];
 			
-			$data['specials'] = $this->url->link('product/special');
-			$data['promotions'] = $this->url->link('information/ochelp_special', '', true);
 
-			$this->load->model('catalog/ochelp_special');
 			$data['display_promotions'] = $this->model_catalog_ochelp_special->getTotalSpecial();
-
-			$this->load->model('catalog/product');
 			$data['display_specials'] = $this->model_catalog_product->getTotalProductSpecials();
-
-			$data['brands'] = $this->url->link('product/manufacturer');
-			
-			$data['contacts'] = $this->url->link('information/contact');
-			$data['delivery'] = $this->url->link('information/information', 'information_id=6');
-			$data['loyality'] = $this->url->link('information/information', 'information_id=7');
-			$data['about_us'] = $this->url->link('information/information', 'information_id=4');
-			$data['newsfeed'] = $this->url->link('simple_blog/article');
-			$data['spravochnik'] = $this->url->link('product/category', 'path=1');
-			
-			$data['vacancies'] = $this->url->link('newsblog/category', 'newsblog_category_id=3');
 			$data['text_vacancies'] = $this->language->get('text_vacancies');
 			$data['store_id'] = $this->config->get('config_store_id');
 			$data['lang'] = $this->config->get('config_language_id');
@@ -276,36 +260,20 @@
 			$lang = $this->config->get('config_language_id');
 			$data['registry'] = $this->registry;
 			
-			require_once DIR_SYSTEM . '../min/static/lib.php';
-			$static_uri = "/min/static";
-			
-			
 			/*---------------- STYLES -------------*/									
-			$general_css = array(			
-			'catalog/view/javascript/font-awesome4.7/css/font-awesome.css',
-			'catalog/view/theme/default/stylesheet/stylesheet.css',
-			'catalog/view/theme/default/stylesheet/main.css',
-			'catalog/view/javascript/IMCallMeAskMe/jquery.imcallback.css',
-			'catalog/view/theme/default/stylesheet/popupcart.css',
-			'catalog/view/theme/default/stylesheet/swiper.min.css'
-			);						
+			$generalCSS = [			
+				'catalog/view/javascript/font-awesome4.7/css/font-awesome.css',
+				'catalog/view/theme/default/stylesheet/stylesheet.css',
+				'catalog/view/theme/default/stylesheet/main.css',
+				'catalog/view/javascript/IMCallMeAskMe/jquery.imcallback.css',
+				'catalog/view/theme/default/stylesheet/popupcart.css',
+				'catalog/view/theme/default/stylesheet/swiper.min.css'
+			];						
 			
-			$query = "f=" . implode(',', $general_css);
-			$data['general_minified_css_uri'] = Minify\StaticService\build_uri($static_uri, $query, 'css');
-			
-			$t = array();
-			if (isset($data['cssfile']) AND $data['cssfile']){
-				$_style = array();
-				foreach ($data['cssfile'] as $_cssfile){
-					$_style[] = array(
-					'href' => $_cssfile
-					);
-				}
-				$data['styles'] = array_merge($data['styles'], $_style);
-			}
-			
-			foreach ($data['styles'] as $style) {
-				
+			$data['general_minified_css_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalCSS, 'css');
+
+			$addedCSS = [];
+			foreach ($data['styles'] as $style) {				
 				$href = $style['href'];
 				
 				if (stripos($href, '?v=')){
@@ -313,56 +281,41 @@
 					$href = $version[0];
 				}
 				
-				if (stripos($href, '?v')){
-					$version = explode("?v",$href);
-					$href = $version[0];
-				}
-				
-				$t[] = $href;
-			}				
-			$query = "f=" . implode(',', $t);
-			
-			if ($t){
-				$data['added_minified_css_uri'] = Minify\StaticService\build_uri($static_uri, $query, 'css');
+				$addedCSS[$href] = $href;
 			}
 			
-			$data['_styles'] = array();
-			
-			foreach ($general_css as $_style){
-				$data['_styles'][md5($_style)] = array('href' => $_style);
-			}
-			
-			unset($_style);
-			foreach ($data['styles'] as $_style) {
-				$data['_styles'][md5($_style['href'])] = array('href' => $_style['href']);	
+			if ($addedCSS){
+				$data['added_minified_css_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($addedCSS, 'css');
 			}
 			/*---------------- END STYLES -------------*/
 			
 			/*---------------- SCRIPTS -------------*/			
-			$general_js = array(
-			'catalog/view/theme/default/js/lib/slick.min.js',
-			'catalog/view/javascript/common.js',
-			'catalog/view/javascript/ecommerce.functions.js',
-			'catalog/view/javascript/inputmask.js',
-			'catalog/view/javascript/popupcart.js',
-			'catalog/view/theme/default/js/main.js',
-			'catalog/view/javascript/IMCallMeAskMe/jquery.imcallask.js',
-			'catalog/view/javascript/social_auth.js',
-			'catalog/view/theme/default/js/swiper.min.js',
-			'catalog/view/javascript/html5-qrcode.min.v2.2.5.js'
-			);					
+			$generalJS = [
+				'catalog/view/theme/default/js/lib/slick.min.js',
+				'catalog/view/javascript/common.js',
+				'catalog/view/javascript/ecommerce.functions.js',
+				'catalog/view/javascript/inputmask.js',
+				'catalog/view/javascript/popupcart.js',
+				'catalog/view/theme/default/js/main.js',
+				'catalog/view/javascript/IMCallMeAskMe/jquery.imcallask.js',
+			//	'catalog/view/javascript/social_auth.js',
+				'catalog/view/theme/default/js/swiper.min.js',
+			//	'catalog/view/javascript/html5-qrcode.min.v2.2.5.js',
+				'catalog/view/theme/default/js/lib/jquery.magnific-popup.min.js',
+				'catalog/view/theme/default/js/lib/jquery.maskedinput.js',
+				'catalog/view/theme/default/js/lib/jquery.mCustomScrollbar.concat.min.js'
+			];					
 			
-			$query = "f=" . implode(',', $general_js);
-			$data['general_minified_js_uri'] = Minify\StaticService\build_uri($static_uri, $query, 'js');
+			$data['general_minified_js_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalJS, 'js');
 						
-			$data['incompatible_scripts'] = array();
+			$data['incompatible_scripts'] = [];
 			foreach ($data['scripts'] as $script) {
 				if (stripos('//', $script) !== false){
 					$data['incompatible_scripts'][] = $script;
 				}
 			}						
 			
-			$t = array();
+			$addedJS = [];
 			foreach ($data['scripts'] as $script) {
 				if (!in_array($script, $data['incompatible_scripts'])) {
 					
@@ -371,24 +324,14 @@
 						$script = $version[0];
 					}
 					
-					if (stripos($script, '?v')){
-						$version = explode("?v",$script);
-						$script = $version[0];
-					}
-					
-					$t[] = $script; 
+					$addedJS[] = $script; 
 				}
 			}
 			
-			if (is_array($t) && $t){				
+			if ($addedJS){				
 				$query = "f=" . implode(',', $t);
-				$data['added_minified_js_uri'] = Minify\StaticService\build_uri($static_uri, $query, 'js');
-				} else {
-				$data['added_minified_js_uri'] = false;
-			}
-			
-			$data['_scripts'] = array_merge($general_js, $data['incompatible_scripts'], $data['scripts']);
-			
+				$data['added_minified_js_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($addedJS, 'js');
+			}			
 			/*---------------- END SCRIPTS -------------*/
 			
 			
@@ -431,7 +374,7 @@
 				
 				$this->load->model('extension/module');
 				
-				$data['modules'] = array();
+				$data['modules'] = [];
 				$modules = $this->model_design_layout->getLayoutModules($layout_id, 'content_top');
 				
 				foreach ($modules as $module) {

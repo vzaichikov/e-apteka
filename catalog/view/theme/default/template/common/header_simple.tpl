@@ -72,9 +72,6 @@
 			<meta name="keywords" content= "<?php echo $keywords; ?>" />
 		<?php } ?>
 		<script src="catalog/view/javascript/jquery/jquery-2.1.1.min.js" type="text/javascript"></script>
-		<!-- <link href="catalog/view/javascript/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" /> -->
-		<!-- <link href="catalog/view/theme/default/stylesheet/swiper.min.css" rel="stylesheet" media="screen" />
-		<script src="catalog/view/javascript/bootstrap/js/swiper.min.js" type="text/javascript"></script> -->
 		<link href="catalog/view/theme/default/stylesheet/bootstrap.min.css" rel="stylesheet" media="screen" />
 		<script src="catalog/view/javascript/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 		
@@ -619,10 +616,7 @@
 		<script src="<?php echo $script; ?>" type="text/javascript"></script>
 	<?php } */ ?>
 	
-	<script src="catalog/view/theme/default/js/lib/jquery.magnific-popup.min.js"></script>
-	<script src="catalog/view/theme/default/js/lib/jquery.maskedinput.js"></script>
 	<script src="catalog/view/theme/default/js/lib/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-	<script src="catalog/view/theme/default/js/lib/jquery.mCustomScrollbar.concat.min.js"></script>
 	
 	<script src="catalog/view/javascript/jquery/owl-carousel/owl.carousel.min.js" type="text/javascript"></script>
 	<link href="catalog/view/javascript/jquery/owl-carousel/owl.carousel.css" rel="stylesheet" type="text/css" />

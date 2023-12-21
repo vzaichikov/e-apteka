@@ -522,14 +522,7 @@
 					<script src="<?php echo $added_minified_js_uri; ?>" type="text/javascript"></script>
 				<?php } ?>
 				
-				<?php /* foreach ($scripts as $script) { ?>
-					<script src="<?php echo $script; ?>" type="text/javascript"></script>
-				<?php } */ ?>
-				
-				<script src="/catalog/view/theme/default/js/lib/jquery.magnific-popup.min.js"></script>
-				<script src="/catalog/view/theme/default/js/lib/jquery.maskedinput.js"></script>
 				<script src="/catalog/view/theme/default/js/lib/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-				<script src="/catalog/view/theme/default/js/lib/jquery.mCustomScrollbar.concat.min.js"></script>
 				
 				<?php foreach ($analytics as $analytic) { ?>
 					<?php echo $analytic; ?>

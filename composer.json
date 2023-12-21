@@ -29,6 +29,7 @@
         "matthiasmullie/minify": "^1.3",
         "google/apiclient": "^2.14",
         "google/apiclient-services": "^0.328.0",
-        "google/auth": "^1.26"
+        "google/auth": "^1.26",
+        "voku/html-min": "^4.5"
     }
 }

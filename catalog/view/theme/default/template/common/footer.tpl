@@ -487,7 +487,6 @@ $(document).ready(function() {
 
 
 <script src="/catalog/view/javascript/nprogress/nprogress.js" async="async" defer></script>
-<link href="/catalog/view/javascript/nprogress/nprogress.css?xv=12" rel="stylesheet">
 <script type="text/javascript">
 	window.addEventListener('beforeunload', function(event) {
 		console.log('beforeunload fired');			
@@ -570,30 +569,17 @@ $(document).ready(function() {
 	
 </script>
 
-
-
-<?php if (false) { ?>
-	<script>
-		(function(w,d,u){
-			var s=d.createElement('script');s.async=true;s.src=u+'?'+(Date.now()/60000|0);
-			var h=d.getElementsByTagName('script')[0];h.parentNode.insertBefore(s,h);
-		})(window,document,'https://cdn.bitrix24.ua/b16692179/crm/site_button/loader_2_pd2hv8.js');
-	</script>
-<?php } ?>
-
 <?php if ($tawkto) { ?>
 	<?php echo $tawkto; ?>
 <?php } ?>
 
 
-<?php if($_SERVER['REQUEST_URI'] == "/index.php?route=common/home" OR $_SERVER['REQUEST_URI'] == "/") { ?>
+<?php if($_SERVER['REQUEST_URI'] == "/index.php?route=common/home" || $_SERVER['REQUEST_URI'] == "/" || $_SERVER['REQUEST_URI'] == "/ru/") { ?>
 	<?php if ($is_mobile) { ?>
-		<!-- Кнопка каталог товаров на главной -->
 		<script>
 			document.body.onload = addBtnCatalog;
 
 			function addBtnCatalog() {
-
 				var btnCatalog   = document.createElement('button'),
 				home_baner   = document.querySelector('.home-banner'),
 				mob_catalog_wrap = document.getElementById('mob_catalog'),
@@ -624,7 +610,7 @@ $(document).ready(function() {
 		</button>
 	</div>
 <?php } ?>
-<? /* VOICE SEARCH */ ?>
+
 <style type="text/css">
     @-webkit-keyframes voice-modal__preview--outer{
 	0%{box-shadow:0 0 0 0 rgb(35 173 218 / 60%)}
@@ -749,14 +735,14 @@ $(document).ready(function() {
                 <div class="voice-modal__icon">
                     <i class="fa fa-microphone"></i>
 				</div>
-                <p class="voice-modal__say">Скажите что-нибудь</p>
+                <p class="voice-modal__say">Скажіть що-небудь</p>
                 <p class="voice-modal__text-recognize"></p>
                 <div class="voice-modal__error">
                     <p class="voice-modal__error-text">
-                        Ничего не найдено. Произнесите текст еще раз
+                        Нічого не знайдено, спробуйте ще раз
 					</p> 
                     <button class="voice-modal__repeat">
-                        Повторить
+                        Повторити
 					</button>
 				</div>
 			</div>            
@@ -915,7 +901,13 @@ $(document).ready(function() {
 		}
 	}
 </style>
-<link href="/catalog/view/theme/default/stylesheet/buyoneclick.css" rel="stylesheet">
+
+<link href="<?php echo $general_minified_css_uri; ?>" rel="stylesheet" type="text/css" />
+
+<?php if (!empty($general_minified_js_uri)) { ?>
+					<script src="<?php echo $general_minified_js_uri; ?>" type="text/javascript"></script>
+				<?php } ?>
+
 <? /* VOICE SEARCH */ ?>
 <script>
 	

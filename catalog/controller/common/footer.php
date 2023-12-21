@@ -2,7 +2,6 @@
 	class ControllerCommonFooter extends Controller {
 
 		public function online(){
-			// Whos Online
 			if ($this->config->get('config_customer_online')) {
 				$this->load->model('tool/online');
 				
@@ -37,8 +36,7 @@
 
 		public function index() {
 			$this->load->language('common/footer');
-			
-			
+
 			$data['scripts'] = $this->document->getScripts('footer');
 			
 			$data['text_applications'] = $this->language->get('text_applications');
@@ -67,7 +65,6 @@
 			$data['text_pwa_2'] = $this->language->get('text_pwa_2');
 			$data['text_pwa_btn_install'] = $this->language->get('text_pwa_btn_install');
 			
-			// Captcha
 			if ($this->config->get($this->config->get('config_captcha') . '_status') ) {
 				$data['captcha'] = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha'), $this->error);
 				} else {
@@ -86,6 +83,23 @@
 					);
 				}
 			}
+
+			$generalCSS = [			
+				'catalog/view/theme/default/stylesheet/buyoneclick.css',
+				'catalog/view/javascript/nprogress/nprogress.css',
+				'catalog/view/theme/default/js/liFixar/liFixar.css'
+			];						
+			
+			$data['general_minified_css_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalCSS, 'css');
+
+
+			$generalJS = [
+				'catalog/view/javascript/social_auth.js',
+				'catalog/view/javascript/html5-qrcode.min.v2.2.5.js'
+			];					
+			
+			$data['general_minified_js_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalJS, 'js');
+
 
 			$data['hb_snippets_local_enable'] 	= $this->config->get('hb_snippets_local_enable');
 			$data['hb_snippets_local_snippet'] 	= html_entity_decode($this->config->get('hb_snippets_local_snippet'));
@@ -210,7 +224,6 @@
 			if ($data['btn_close_field'] == '') {
 				$data['btn_close_field'] = $this->language->get('btn_close');
 			}
-			// BuyOneClickEnd
 			
 			$data['tawkto'] = $this->load->controller('extension/module/tawkto');
 			
