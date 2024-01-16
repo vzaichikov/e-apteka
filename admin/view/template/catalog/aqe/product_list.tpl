@@ -79,7 +79,11 @@
 								</div>
 								<div class="nav navbar-nav btn-group">
 									<button type="button" class="btn btn-primary" data-toggle="tooltip" data-container="body" data-placement="bottom" title="<?php echo $button_add; ?>" data-url="<?php echo $add; ?>" id="btn-insert" data-form="#pqe-list-form" data-context="#content"><i class="fa fa-plus"></i> <span class="visible-lg-inline visible-xs-inline"><?php echo $button_add; ?></span></button>
+									
+									<button type="button" class="btn btn-warning" data-toggle="tooltip" data-container="body" data-placement="bottom" title="Объединить" data-url="<?php echo $merge; ?>" id="btn-merge" data-form="#pqe-list-form" data-context="#content" data-loading-text="<i class='fa fa-spinner fa-spin'></i> <?php echo $text_copying; ?>" disabled><i class="fa fa-files-o"></i> <span class="visible-lg-inline visible-xs-inline">Объединить MS + АГП ❤️</span></button>
+
 									<button type="button" class="btn btn-default" data-toggle="tooltip" data-container="body" data-placement="bottom" title="<?php echo $button_copy; ?>" data-url="<?php echo $copy; ?>" id="btn-copy" data-form="#pqe-list-form" data-context="#content" data-loading-text="<i class='fa fa-spinner fa-spin'></i> <?php echo $text_copying; ?>" disabled><i class="fa fa-files-o"></i> <span class="visible-lg-inline visible-xs-inline"><?php echo $button_copy; ?></span></button>
+
 									<button type="button" class="btn btn-danger" data-toggle="tooltip" data-container="body" data-placement="bottom" title="<?php echo $button_delete; ?>" data-url="<?php echo $delete; ?>" id="btn-delete" data-form="#pqe-list-form" data-context="#content" data-loading-text="<i class='fa fa-spinner fa-spin'></i> <?php echo $text_deleting; ?>" disabled><i class="fa fa-trash-o"></i> <span class="visible-lg-inline visible-xs-inline"><?php echo $button_delete; ?></span></button>
 								</div>
 							</div>
@@ -343,24 +347,36 @@
 									<?php } ?>
 									</div>
 								</td>
+								<?php break;
+											case 'manufacturer': ?>
+									<td class="<?php echo $column_info[$col]['align']; ?><?php echo ($column_info[$col]['qe_status']) ? ' ' . $column_info[$col]['type'] : ''; ?>" id="<?php echo $col . "-" . $product['product_id']; ?>"><?php echo $product[$col]; ?>
+										
+										<div><small><a href="<?php echo $product['edit_manufacturer']; ?>" target="_blank">редактировать</a></small></div>
+
+									</td>
 
 								<?php break;
 											case 'sku': ?>
-									<td class="<?php echo $column_info[$col]['align']; ?><?php echo ($column_info[$col]['qe_status']) ? ' ' . $column_info[$col]['type'] : ''; ?>" id="<?php echo $col . "-" . $product['product_id']; ?>"><?php echo $product[$col]; ?>
+									<td style="width:120px;" class="<?php echo $column_info[$col]['align']; ?><?php echo ($column_info[$col]['qe_status']) ? ' ' . $column_info[$col]['type'] : ''; ?>" id="<?php echo $col . "-" . $product['product_id']; ?>">	
+											<div><img src="https://e-apteka.com.ua/image/brand/marker-icon-brand-agp.svg" height="20px"><?php echo $product[$col]; ?></div>
 
-										<?php if ($product['ms_code']) { ?>
-											<br/>
-											<span class="label label-info"><?php echo $product['ms_code']; ?></span>
+										<?php if ($product['ms_code'] != $product['model']) { ?>
+											<div><img src="https://e-apteka.com.ua/image/brand/marker-icon-brand-med-service.svg" height="20px"><?php echo $product['ms_code']; ?></div>
 										<?php } ?>
+
+										<hr />
+										<div>Качество: <b><?php echo $product['content_score']?></b></div>
 									</td>				
 								<?php break;
 											case 'name': ?>
-									<td class="<?php echo $column_info[$col]['align']; ?><?php echo ($column_info[$col]['qe_status']) ? ' ' . $column_info[$col]['type'] : ''; ?>" id="<?php echo $col . "-" . $product['product_id']; ?>"><?php echo $product[$col]; ?>
+									<td class="<?php echo $column_info[$col]['align']; ?><?php echo ($column_info[$col]['qe_status']) ? ' ' . $column_info[$col]['type'] : ''; ?>" id="<?php echo $col . "-" . $product['product_id']; ?>">	<img src="https://e-apteka.com.ua/image/brand/marker-icon-brand-agp.svg" height="20px"> <?php echo $product[$col]; ?>
 									
 										
 									<?php if ($product['name'] != $product['original_name']) { ?>
-										<br /><small><kbd><?php echo $product['original_name']; ?></kbd></small><br />
+										<br /><img src="https://e-apteka.com.ua/image/brand/marker-icon-brand-med-service.svg" height="20px"><?php echo $product['original_name']; ?><br />
 									<?php } ?>
+
+									<code><?echo $product['uuid']; ?></code>
 									
 									<?php if ($product['is_receipt']) { ?>
 										<span class="label label-warning">Рецепт</span>
@@ -373,19 +389,6 @@
 									<?php } ?>
 									<?php if ($product['dnup']) { ?>
 										<span class="label label-danger"><i class="fa fa-times" aria-hidden="true"></i> Наименование</span>
-									<?php } ?>
-
-									<?php if ($product['has_dl_price_real']) { ?>
-										<br /><br />										
-										<img src="https://e-apteka.com.ua/image/dl-logo.svg" width="50px" />
-									<?php } ?>
-
-									<?php if ($product['ehealth']) { ?>
-										<br /><br />
-										<span class="text-success"><i class="fa fa-check"></i> Ehealth: <?php echo $product['ehealth']?></span>
-									<?php } else { ?>
-										<br /><br />
-										<span class="text-danger"><b><i class="fa fa-exclamation-triangle"></i> Ehealth</b></span>
 									<?php } ?>
 									</td>		
 											

@@ -1,7 +1,7 @@
 <?php
 	class ModelCatalogProduct extends Model {
 		public function addProduct($data) {
-			$this->db->query("INSERT INTO oc_product SET model = '" . $this->db->escape($data['model']) . "', sku = '" . $this->db->escape($data['sku']) . "', upc = '" . $this->db->escape($data['upc']) . "', ean = '" . $this->db->escape($data['ean']) . "', jan = '" . $this->db->escape($data['jan']) . "', isbn = '" . $this->db->escape($data['isbn']) . "', mpn = '" . $this->db->escape($data['mpn']) . "', location = '" . $this->db->escape($data['location']) . "', quantity = '" . (int)$data['quantity'] . "', minimum = '" . (int)$data['minimum'] . "', subtract = '" . (int)$data['subtract'] . "', stock_status_id = '" . (int)$data['stock_status_id'] . "', date_available = '" . $this->db->escape($data['date_available']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "', price_retail = '" . (float)$data['price_retail'] . "', points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "', weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$data['length'] . "', width = '" . (float)$data['width'] . "', height = '" . (float)$data['height'] . "', length_class_id = '" . (int)$data['length_class_id'] . "', status = '" . (int)$data['status'] . "', tax_class_id = '" . (int)$data['tax_class_id'] . "', pricegroup_id = '" . (int)$data['pricegroup_id'] . "', no_payment = '" . (int)$data['no_payment'] . "', no_shipping = '" . (int)$data['no_shipping'] . "', no_advert = '" . (int)$data['no_advert'] . "', is_receipt = '" . (int)$data['is_receipt'] . "', is_preorder = '" . (int)$data['is_preorder'] . "', is_thermolabel = '" . (int)$data['is_thermolabel'] . "', is_pko = '" . (int)$data['is_pko'] . "', is_drug = '" . (int)$data['is_drug'] . "', dnup = '" . (int)$data['dnup'] . "', social_program = '" . $this->db->escape($data['social_program']) . "', social_parent_id = '" . (int)$data['social_parent_id'] . "', social_parent_uuid = '" . $this->db->escape($data['social_parent_uuid']) . "', has_dl_price = '" . (int)$data['has_dl_price'] . "', dl_price = '" . (float)$data['dl_price'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', ehealth_id = '" . $this->db->escape($data['ehealth_id']) . "', ehealth_id_1 = '" . $this->db->escape($data['ehealth_id_1']) . "', ehealth_id_2 = '" . $this->db->escape($data['ehealth_id_2']) . "', ehealth_id_3 = '" . $this->db->escape($data['ehealth_id_3']) . "', program_id = '" . $this->db->escape($data['program_id']) . "', program_id_1 = '" . $this->db->escape($data['program_id_1']) . "', program_id_2 = '" . $this->db->escape($data['program_id_2']) . "', program_id_3 = '" . $this->db->escape($data['program_id_3']) . "', reg_number = '" . $this->db->escape($data['reg_number']) . "', backlight = '" . $this->db->escape($data['backlight']) . "', name_of_part = '" . $this->db->escape($data['name_of_part']) . "', uuid_of_part = '" . $this->db->escape($data['uuid_of_part']) . "', count_of_parts = '" . (int)$data['count_of_parts'] . "', bestseller = '" . (int)$data['bestseller'] . "', sort_order = '" . (int)$data['sort_order'] . "', date_added = NOW()");
+			$this->db->query("INSERT INTO oc_product SET model = '" . $this->db->escape($data['model']) . "', sku = '" . $this->db->escape($data['sku']) . "', upc = '" . $this->db->escape($data['upc']) . "', ean = '" . $this->db->escape($data['ean']) . "', jan = '" . $this->db->escape($data['jan']) . "', isbn = '" . $this->db->escape($data['isbn']) . "', mpn = '" . $this->db->escape($data['mpn']) . "', location = '" . $this->db->escape($data['location']) . "', quantity = '" . (int)$data['quantity'] . "', minimum = '" . (int)$data['minimum'] . "', subtract = '" . (int)$data['subtract'] . "', stock_status_id = '" . (int)$data['stock_status_id'] . "', date_available = '" . $this->db->escape($data['date_available']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "', price_retail = '" . (float)$data['price_retail'] . "', points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "', weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$data['length'] . "', width = '" . (float)$data['width'] . "', height = '" . (float)$data['height'] . "', length_class_id = '" . (int)$data['length_class_id'] . "', status = '" . (int)$data['status'] . "', tax_class_id = '" . (int)$data['tax_class_id'] . "', pricegroup_id = '" . (int)$data['pricegroup_id'] . "', no_payment = '" . (int)$data['no_payment'] . "', no_shipping = '" . (int)$data['no_shipping'] . "', no_advert = '" . (int)$data['no_advert'] . "', is_receipt = '" . (int)$data['is_receipt'] . "', is_preorder = '" . (int)$data['is_preorder'] . "', is_thermolabel = '" . (int)$data['is_thermolabel'] . "', is_pko = '" . (int)$data['is_pko'] . "', is_drug = '" . (int)$data['is_drug'] . "', is_poison = '" . (int)$data['is_poison'] . "',  dnup = '" . (int)$data['dnup'] . "', social_program = '" . $this->db->escape($data['social_program']) . "', social_parent_id = '" . (int)$data['social_parent_id'] . "', social_parent_uuid = '" . $this->db->escape($data['social_parent_uuid']) . "', has_dl_price = '" . (int)$data['has_dl_price'] . "', dl_price = '" . (float)$data['dl_price'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', ehealth_id = '" . $this->db->escape($data['ehealth_id']) . "', ehealth_id_1 = '" . $this->db->escape($data['ehealth_id_1']) . "', ehealth_id_2 = '" . $this->db->escape($data['ehealth_id_2']) . "', ehealth_id_3 = '" . $this->db->escape($data['ehealth_id_3']) . "', program_id = '" . $this->db->escape($data['program_id']) . "', program_id_1 = '" . $this->db->escape($data['program_id_1']) . "', program_id_2 = '" . $this->db->escape($data['program_id_2']) . "', program_id_3 = '" . $this->db->escape($data['program_id_3']) . "', reg_number = '" . $this->db->escape($data['reg_number']) . "', backlight = '" . $this->db->escape($data['backlight']) . "', name_of_part = '" . $this->db->escape($data['name_of_part']) . "', uuid_of_part = '" . $this->db->escape($data['uuid_of_part']) . "', count_of_parts = '" . (int)$data['count_of_parts'] . "', bestseller = '" . (int)$data['bestseller'] . "', sort_order = '" . (int)$data['sort_order'] . "', date_added = NOW()");
 			
 			$product_id = $this->db->getLastId();
 			
@@ -10,7 +10,7 @@
 			}
 			
 			foreach ($data['product_description'] as $language_id => $value) {
-				$this->db->query("INSERT INTO oc_product_description SET product_id = '" . (int)$product_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', original_name = '" . $this->db->escape($value['original_name']) . "',  normalized_firstword = '" . $this->db->escape(normalizeString(firstWord($value['name']))) . "', soundex_firstword = '" . $this->db->escape(transSoundex(firstWord($value['name']))) . "', normalized_name = '" . $this->db->escape(normalizeString($value['name'])) . "', soundex_name = '" . $this->db->escape(transSoundex($value['name'])) . "', description = '" . $this->db->escape($value['description']) . "', instruction = '" . $this->db->escape($value['instruction']) . "', tag = '" . $this->db->escape($value['tag']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
+				$this->db->query("INSERT INTO oc_product_description SET product_id = '" . (int)$product_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', original_name = '" . $this->db->escape($value['original_name']) . "', description = '" . $this->db->escape($value['description']) . "', instruction = '" . $this->db->escape($value['instruction']) . "', tag = '" . $this->db->escape($value['tag']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
 			}
 			
 			
@@ -227,7 +227,7 @@
 		}
 		
 		public function editProduct($product_id, $data) {
-			$this->db->query("UPDATE oc_product SET model = '" . $this->db->escape($data['model']) . "', sku = '" . $this->db->escape($data['sku']) . "', upc = '" . $this->db->escape($data['upc']) . "', ean = '" . $this->db->escape($data['ean']) . "', jan = '" . $this->db->escape($data['jan']) . "', isbn = '" . $this->db->escape($data['isbn']) . "', mpn = '" . $this->db->escape($data['mpn']) . "', location = '" . $this->db->escape($data['location']) . "', quantity = '" . (int)$data['quantity'] . "', minimum = '" . (int)$data['minimum'] . "', subtract = '" . (int)$data['subtract'] . "', stock_status_id = '" . (int)$data['stock_status_id'] . "', date_available = '" . $this->db->escape($data['date_available']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "', price_retail = '" . (float)$data['price_retail'] . "', points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "', weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$data['length'] . "', width = '" . (float)$data['width'] . "', height = '" . (float)$data['height'] . "', length_class_id = '" . (int)$data['length_class_id'] . "', status = '" . (int)$data['status'] . "', tax_class_id = '" . (int)$data['tax_class_id'] . "', pricegroup_id = '" . (int)$data['pricegroup_id'] . "', no_payment = '" . (int)$data['no_payment'] . "', no_shipping = '" . (int)$data['no_shipping'] . "', no_advert = '" . (int)$data['no_advert'] . "', is_receipt = '" . (int)$data['is_receipt'] . "', is_preorder = '" . (int)$data['is_preorder'] . "', is_thermolabel = '" . (int)$data['is_thermolabel'] . "', is_pko = '" . (int)$data['is_pko'] . "', is_drug = '" . (int)$data['is_drug'] . "', dnup = '" . (int)$data['dnup'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', ehealth_id = '" . $this->db->escape($data['ehealth_id']) . "', ehealth_id_1 = '" . $this->db->escape($data['ehealth_id_1']) . "', ehealth_id_2 = '" . $this->db->escape($data['ehealth_id_2']) . "', ehealth_id_3 = '" . $this->db->escape($data['ehealth_id_3']) . "', program_id = '" . $this->db->escape($data['program_id']) . "', program_id_1 = '" . $this->db->escape($data['program_id_1']) . "', program_id_2 = '" . $this->db->escape($data['program_id_2']) . "', program_id_3 = '" . $this->db->escape($data['program_id_3']) . "', reg_number = '" . $this->db->escape($data['reg_number']) . "', social_program = '" . $this->db->escape($data['social_program']) . "', social_parent_id = '" . (int)$data['social_parent_id'] . "', social_parent_uuid = '" . $this->db->escape($data['social_parent_uuid']) . "', has_dl_price = '" . (int)$data['has_dl_price'] . "', dl_price = '" . (float)$data['dl_price'] . "', backlight = '" . $this->db->escape($data['backlight']) . "', name_of_part = '" . $this->db->escape($data['name_of_part']) . "', uuid_of_part = '" . $this->db->escape($data['uuid_of_part']) . "', count_of_parts = '" . (int)$data['count_of_parts'] . "', bestseller = '" . (int)$data['bestseller'] . "', sort_order = '" . (int)$data['sort_order'] . "', date_modified = NOW() WHERE product_id = '" . (int)$product_id . "'");
+			$this->db->query("UPDATE oc_product SET model = '" . $this->db->escape($data['model']) . "', sku = '" . $this->db->escape($data['sku']) . "', upc = '" . $this->db->escape($data['upc']) . "', ean = '" . $this->db->escape($data['ean']) . "', jan = '" . $this->db->escape($data['jan']) . "', isbn = '" . $this->db->escape($data['isbn']) . "', mpn = '" . $this->db->escape($data['mpn']) . "', location = '" . $this->db->escape($data['location']) . "', quantity = '" . (int)$data['quantity'] . "', minimum = '" . (int)$data['minimum'] . "', subtract = '" . (int)$data['subtract'] . "', stock_status_id = '" . (int)$data['stock_status_id'] . "', date_available = '" . $this->db->escape($data['date_available']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "', price_retail = '" . (float)$data['price_retail'] . "', points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "', weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$data['length'] . "', width = '" . (float)$data['width'] . "', height = '" . (float)$data['height'] . "', length_class_id = '" . (int)$data['length_class_id'] . "', status = '" . (int)$data['status'] . "', tax_class_id = '" . (int)$data['tax_class_id'] . "', pricegroup_id = '" . (int)$data['pricegroup_id'] . "', no_payment = '" . (int)$data['no_payment'] . "', no_shipping = '" . (int)$data['no_shipping'] . "', no_advert = '" . (int)$data['no_advert'] . "', is_receipt = '" . (int)$data['is_receipt'] . "', is_preorder = '" . (int)$data['is_preorder'] . "', is_thermolabel = '" . (int)$data['is_thermolabel'] . "', is_pko = '" . (int)$data['is_pko'] . "', is_drug = '" . (int)$data['is_drug'] . "', is_poison = '" . (int)$data['is_poison'] . "', dnup = '" . (int)$data['dnup'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', ehealth_id = '" . $this->db->escape($data['ehealth_id']) . "', ehealth_id_1 = '" . $this->db->escape($data['ehealth_id_1']) . "', ehealth_id_2 = '" . $this->db->escape($data['ehealth_id_2']) . "', ehealth_id_3 = '" . $this->db->escape($data['ehealth_id_3']) . "', program_id = '" . $this->db->escape($data['program_id']) . "', program_id_1 = '" . $this->db->escape($data['program_id_1']) . "', program_id_2 = '" . $this->db->escape($data['program_id_2']) . "', program_id_3 = '" . $this->db->escape($data['program_id_3']) . "', reg_number = '" . $this->db->escape($data['reg_number']) . "', social_program = '" . $this->db->escape($data['social_program']) . "', social_parent_id = '" . (int)$data['social_parent_id'] . "', social_parent_uuid = '" . $this->db->escape($data['social_parent_uuid']) . "', has_dl_price = '" . (int)$data['has_dl_price'] . "', dl_price = '" . (float)$data['dl_price'] . "', backlight = '" . $this->db->escape($data['backlight']) . "', name_of_part = '" . $this->db->escape($data['name_of_part']) . "', uuid_of_part = '" . $this->db->escape($data['uuid_of_part']) . "', count_of_parts = '" . (int)$data['count_of_parts'] . "', bestseller = '" . (int)$data['bestseller'] . "', sort_order = '" . (int)$data['sort_order'] . "', date_modified = NOW() WHERE product_id = '" . (int)$product_id . "'");
 			
 			if (isset($data['image'])) {
 				$this->db->query("UPDATE oc_product SET image = '" . $this->db->escape($data['image']) . "' WHERE product_id = '" . (int)$product_id . "'");
@@ -240,7 +240,7 @@
 			$this->db->query("DELETE FROM oc_product_description WHERE product_id = '" . (int)$product_id . "'");
 			
 			foreach ($data['product_description'] as $language_id => $value) {
-				$this->db->query("INSERT INTO oc_product_description SET product_id = '" . (int)$product_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', original_name = '" . $this->db->escape($value['original_name']) . "', normalized_firstword = '" . $this->db->escape(normalizeString(firstWord($value['name']))) . "', soundex_firstword = '" . $this->db->escape(transSoundex(firstWord($value['name']))) . "', normalized_name = '" . $this->db->escape(normalizeString($value['name'])) . "', soundex_name = '" . $this->db->escape(transSoundex($value['name'])) . "', description = '" . $this->db->escape($value['description']) . "', instruction = '" . $this->db->escape($value['instruction']) . "', tag = '" . $this->db->escape($value['tag']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
+				$this->db->query("INSERT INTO oc_product_description SET product_id = '" . (int)$product_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', original_name = '" . $this->db->escape($value['original_name']) . "', description = '" . $this->db->escape($value['description']) . "', instruction = '" . $this->db->escape($value['instruction']) . "', tag = '" . $this->db->escape($value['tag']) . "', faq_name = '" . $this->db->escape($value['faq_name']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
 			}
 			
 			
@@ -568,6 +568,59 @@
 			$this->db->query("DELETE FROM oc_coupon_product WHERE product_id = '" . (int)$product_id . "'");
 			
 			$this->cache->delete('product');
+		}
+
+		public function checkProductContentScore($product){
+			$score = 0;
+
+			if (!empty($product['reg_number'])){
+				$score++;
+			}
+
+			if (!empty($product['reg_trade_name'])){
+				$score++;
+			}
+
+			if ($product['date_added'] <= '2024-01-11'){
+				$score++;
+			}
+
+			$score += $product['is_receipt'];
+			$score += $product['is_pko'];
+			$score += $product['is_drug'];
+			$score += $product['no_advert'];
+			$score += $product['no_payment'];
+			$score += $product['no_shipping'];	
+
+			if (!empty($product['image'])){
+				$score++;
+			}	
+
+			if (!empty($product['quantity'])){
+				$score++;
+			}		
+
+			if (mb_strpos($product['model'], 'УТ-') !== false){
+				$score++;			
+			}
+
+			if (mb_strpos($product['model'], 'БП') !== false){
+				$score++;			
+			}
+
+			return $score;
+		}
+
+		public function updateCodes($data){
+			$sql = "UPDATE oc_product SET 
+				model 	= '" . $this->db->escape($data['model']) . "', 
+				sku 	= '" . $this->db->escape($data['sku']) . "',
+				ms_code = '" . $this->db->escape($data['ms_code']) . "',  
+				uuid 	= '" . $this->db->escape($data['uuid']) . "',
+				price 	= '" . $this->db->escape($data['price']) . "',
+				WHERE product_id = '" . (int)$data['product_id'] . "'";
+
+			$this->db->query($sql);
 		}
 		
 		public function getProduct($product_id) {

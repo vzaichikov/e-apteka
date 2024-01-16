@@ -115,6 +115,9 @@ class ModelCatalogAqeCategory extends Model {
 				$where[] = "c2s.store_id = '" . (int)$data['filter_store'] . "'";
 		}
 
+		$where[] = "c.atx_code = ''";
+		$where[] = "c.substance = ''";
+
 		if ($where) {
 			$sql .= " WHERE " . implode($where, " AND ");
 		}

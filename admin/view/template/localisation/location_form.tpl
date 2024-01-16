@@ -48,6 +48,37 @@
 								</div>
 							</div>
 
+							<div class="form-group">
+								<label class="col-sm-2 control-label text-danger" for="input-is_stock">Продажа без наличия</label>
+								<div class="col-sm-10">
+									<select name="can_free_stocks" id="input-temprorary_closed" class="form-control">
+										<?php if ($can_free_stocks) { ?>
+											<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+											<option value="0"><?php echo $text_disabled; ?></option>
+											<?php } else { ?>
+											<option value="1"><?php echo $text_enabled; ?></option>
+											<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+										<?php } ?>
+									</select>
+									<br /><span class="help">Если включить, то в аптеке можно резервировать товар, которого нет в наличии в этой аптеке</span>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label text-danger" for="input-is_stock">Отправка НП</label>
+								<div class="col-sm-10">
+									<select name="can_send_np" id="input-temprorary_closed" class="form-control">
+										<?php if ($can_send_np) { ?>
+											<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+											<option value="0"><?php echo $text_disabled; ?></option>
+											<?php } else { ?>
+											<option value="1"><?php echo $text_enabled; ?></option>
+											<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+										<?php } ?>
+									</select>
+									<br /><span class="help">Если включить, то с этой аптеки можно отправлять товары Новой Почтой</span>
+								</div>
+							</div>
 
 							<div class="form-group required">
 								<label class="col-sm-2 control-label" for="input-name"><?php echo $entry_name; ?></label>

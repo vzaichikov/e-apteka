@@ -636,6 +636,16 @@
                 } else {
                 $data['parent_id'] = 0;
             }
+
+            if (isset($this->request->post['onlineapteka_id'])) {
+                $data['onlineapteka_id'] = $this->request->post['onlineapteka_id'];
+                } elseif (!empty($category_info)) {
+                $data['onlineapteka_id'] = $category_info['onlineapteka_id'];
+                } else {
+                $data['onlineapteka_id'] = 0;
+            }
+
+            $data['onlineapteka'] = $this->model_catalog_category->getOnlineAptekaCategoryName($data['onlineapteka_id']);
             
             $this->load->model('extension/feed/google_base');
 			if (isset($this->request->post['google_base_category_id'])) {
@@ -924,44 +934,44 @@
         
         public function autocomplete() {
 
-		if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_categories_status')) {
-			return $this->load->controller('catalog/aqe/category/autocomplete');
-		}
-			
-            $json = array();
-            
-            if (isset($this->request->get['filter_name'])) {
-                $this->load->model('catalog/category');
-                
-                $filter_data = array(
+          if ((int)$this->config->get('aqe_status') && (int)$this->config->get('aqe_catalog_categories_status')) {
+             return $this->load->controller('catalog/aqe/category/autocomplete');
+         }
+
+         $json = array();
+
+         if (isset($this->request->get['filter_name'])) {
+            $this->load->model('catalog/category');
+
+            $filter_data = array(
                 'filter_name' => $this->request->get['filter_name'],
                 'sort'        => 'name',
                 'order'       => 'ASC',
                 'start'       => 0,
                 'limit'       => 5
-                );
-                
-                $results = $this->model_catalog_category->getCategories($filter_data);
-                
-                foreach ($results as $result) {
-                    $json[] = array(
+            );
+
+            $results = $this->model_catalog_category->getCategories($filter_data);
+
+            foreach ($results as $result) {
+                $json[] = [
                     'category_id' => $result['category_id'],
                     'name'        => strip_tags(html_entity_decode($result['name'], ENT_QUOTES, 'UTF-8'))
-                    );
-                }
+                ];
             }
-            
-            $sort_order = array();
-            
-            foreach ($json as $key => $value) {
-                $sort_order[$key] = $value['name'];
-            }
-            
-            array_multisort($sort_order, SORT_ASC, $json);
-            
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(json_encode($json));
         }
+
+        $sort_order = array();
+
+        foreach ($json as $key => $value) {
+            $sort_order[$key] = $value['name'];
+        }
+
+        array_multisort($sort_order, SORT_ASC, $json);
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
         
         public function autocomplete2() {
             $json = array();
@@ -988,6 +998,38 @@
                         );
                     }
                     
+                }
+            }
+            
+            $sort_order = array();
+            
+            foreach ($json as $key => $value) {
+                $sort_order[$key] = $value['name'];
+            }
+            
+            array_multisort($sort_order, SORT_ASC, $json);
+            
+            $this->response->addHeader('Content-Type: application/json');
+            $this->response->setOutput(json_encode($json));
+        }
+
+        public function onlineapteka() {
+            $json = array();
+            
+            if (isset($this->request->get['filter_name'])) {
+                $this->load->model('catalog/category');
+                
+                $filter_data = array(
+                'filter_name' => $this->request->get['filter_name'],
+                );
+                
+                $results = $this->model_catalog_category->getOnlineAptekaCategories($this->request->get['filter_name']);
+                
+                foreach ($results as $result) {
+                        $json[] = array(
+                        'category_id' => $result['id'],
+                        'name'      => strip_tags(html_entity_decode($result['pagetitle'], ENT_QUOTES, 'UTF-8'))
+                        );
                 }
             }
             

@@ -51,70 +51,76 @@
                   <td class="text-left">GeoCode</td>
                   <td class="text-left">GM Код</td>                  
                   <td class="text-left">1C UUID</td>
-                  <td class="text-left">Остатки</td>
                   <td class="text-left">Наркотики</td>
+                  <td class="text-left">Без наличия</td>
+                  <td class="text-left">Отправляет НП</td>
                   <td class="text-left">Открыто</td>
-                  <td class="text-left">Открыто Структ</td>
-                  <td class="text-left">Статья - описание</td>
                   <td class="text-left">Сорт</td>
-                  <td class="text-right"><?php echo $column_action; ?></td>
+                  <td class="text-right"></td>
                 </tr>
               </thead>
               <tbody>
-                <?php if ($location) { ?>
-                  <?php foreach ($location as $locations) { ?>
+                <?php if ($locations) { ?>
+                  <?php foreach ($locations as $location) { ?>
                     <tr>
-                      <td class="text-center"><?php if (in_array($locations['location_id'], $selected)) { ?>
-                        <input type="checkbox" name="selected[]" value="<?php echo $locations['location_id']; ?>" checked="checked" />
+                      <td class="text-center"><?php if (in_array($location['location_id'], $selected)) { ?>
+                        <input type="checkbox" name="selected[]" value="<?php echo $location['location_id']; ?>" checked="checked" />
                       <?php } else { ?>
-                        <input type="checkbox" name="selected[]" value="<?php echo $locations['location_id']; ?>" />
+                        <input type="checkbox" name="selected[]" value="<?php echo $location['location_id']; ?>" />
                         <?php } ?></td>
                         <td class="text-left">
-                          <?php echo $locations['name']; ?>
+                          <?php echo $location['name']; ?>
                           
-                          <?php if ($locations['temprorary_closed']) { ?>
+                          <?php if ($location['temprorary_closed']) { ?>
                             <br /><span class="label label-danger">Временно закрыто</span>
                           <?php } else { ?>
                             <br /><span class="label label-success">Открыто</span>
                           <?php } ?>
                         </td>
 
-                        <td class="text-left"><?php echo $locations['brand']; ?> </td>
+                        <td class="text-left"><?php echo $location['brand']; ?> </td>
 
-                        <td class="text-left"><?php echo $locations['city']; ?></td>
-                        <td class="text-left"><?php echo $locations['address']; ?></td>
-                        <td class="text-left"><?php echo $locations['telephone']; ?></td>
+                        <td class="text-left"><?php echo $location['city']; ?></td>
+                        <td class="text-left"><?php echo $location['address']; ?></td>
+                        <td class="text-left"><?php echo $location['telephone']; ?></td>
                         <td class="text-left">
-                          <span class="label label-success"><?php echo $locations['geocode']; ?></span>
-                          <?php if ($locations['gmaps_link']) { ?>
-                          <br /><small><?php echo $locations['gmaps_link']; ?></small>
+                          <span class="label label-success"><?php echo $location['geocode']; ?></span>
+                          <?php if ($location['gmaps_link']) { ?>
+                          <br /><small><?php echo $location['gmaps_link']; ?></small>
                           <?php } ?>                          
                         </td>
 
-                        <td class="text-left"><span class="label label-success">drugstore<?php echo $locations['location_id']; ?></span></td>
+                        <td class="text-left"><span class="label label-success">drugstore<?php echo $location['location_id']; ?></span></td>
 
-                        <td class="text-left"><small><?php echo $locations['uuid']; ?></small></td>
-                        <td class="text-left">
-                         <?php if ($locations['is_stock']) { ?>
-                           <span class="btn btn-success"><i class="fa fa-plus"></i></span>
-                         <? } else { ?>					  
-                           <span class="btn btn-danger"><i class="fa fa-minus"></i></span>
-                         <? } ?>
-                       </td>
+                        <td class="text-left"><small><?php echo $location['uuid']; ?></small></td>
 
                        <td class="text-left">
-                         <?php if ($locations['can_sell_drugs']) { ?>
+                         <?php if ($location['can_sell_drugs']) { ?>
                            <span class="btn btn-success"><i class="fa fa-plus"></i></span>
                          <? } else { ?>           
                            <span class="btn btn-danger"><i class="fa fa-minus"></i></span>
                          <? } ?>
                        </td>
 
-                       <td class="text-left" style="font-size:10px; white-space: nowrap;"><?php echo $locations['open']; ?></td>
-                       <td class="text-left" style="font-size:10px; white-space: nowrap;"><?php echo $locations['open_struct']; ?></td>
-                       <td class="text-left" style="font-size:10px;"><?php echo $locations['information']; ?></td>
-                       <td class="text-left"><?php echo $locations['sort_order']; ?></td>
-                       <td class="text-right"><a href="<?php echo $locations['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+                       <td class="text-left">
+                         <?php if ($location['can_free_stocks']) { ?>
+                           <span class="btn btn-success"><i class="fa fa-plus"></i></span>
+                         <? } else { ?>           
+                           <span class="btn btn-danger"><i class="fa fa-minus"></i></span>
+                         <? } ?>
+                       </td>
+
+                       <td class="text-left">
+                         <?php if ($location['can_send_np']) { ?>
+                           <span class="btn btn-success"><i class="fa fa-plus"></i></span>
+                         <? } else { ?>           
+                           <span class="btn btn-danger"><i class="fa fa-minus"></i></span>
+                         <? } ?>
+                       </td>
+
+                       <td class="text-left" style="font-size:10px; white-space: nowrap;"><?php echo $location['open']; ?></td>
+                       <td class="text-left"><?php echo $location['sort_order']; ?></td>
+                       <td class="text-right"><a href="<?php echo $location['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
                      </tr>
                    <?php } ?>
                  <?php } else { ?>

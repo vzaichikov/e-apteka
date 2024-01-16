@@ -36,7 +36,7 @@
 						<li class="active"><a href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li>
 						<li><a href="#tab-data" data-toggle="tab"><?php echo $tab_data; ?></a></li>
 						<li><a href="#tab-design" data-toggle="tab"><?php echo $tab_design; ?></a></li>
-<li><a href="#tab-faq" data-toggle="tab"><?php echo $tab_faq; ?></a></li>
+						<li><a href="#tab-faq" data-toggle="tab"><?php echo $tab_faq; ?></a></li>
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active" id="tab-general">
@@ -114,14 +114,13 @@
 						<div class="tab-pane" id="tab-data">
 							
 							<div class="form-group">
-								<label class="col-sm-2 control-label" for="input-parent">Google/Facebook Merchant</label>
-								<div class="col-sm-8">
-									<input type="text" name="google_base_category" value="<?php echo $google_base_category; ?>" placeholder="Категория Google (автодополнение)" id="input-google-category" class="form-control" />
-									<input type="hidden" name="google_base_category_id" value="<?php echo $google_base_category_id; ?>" />
+								<label class="col-sm-2 control-label" for="input-onlineapteka"><img height="20px" src="https://e-apteka.com.ua/image/brand/marker-icon-brand-med-service.svg" />Онлайн-аптека</label>
+								<div class="col-sm-10">
+									<input type="text" name="onlineapteka" value="<?php echo $onlineapteka; ?>" placeholder="Начните вводить для автоподбора" id="input-onlineapteka" class="form-control" />
+									<input type="hidden" name="onlineapteka_id" value="<?php echo $onlineapteka_id; ?>" />
 								</div>
-								<div class="col-sm-2"><button type="button" data-toggle="tooltip" title="" class="btn btn-danger" onclick="$('input[name=\'google_base_category\']').val('');$('input[name=\'google_base_category_id\']').val('');" data-original-title="Отключить"><i class="fa fa-trash-o"></i></button></div>
 							</div>
-							
+
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-uuid">UUID</label>
 								<div class="col-sm-10">
@@ -185,6 +184,16 @@
 									<?php } ?>
 								</div>
 							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-parent">Google/Facebook Merchant</label>
+								<div class="col-sm-8">
+									<input type="text" name="google_base_category" value="<?php echo $google_base_category; ?>" placeholder="Категория Google (автодополнение)" id="input-google-category" class="form-control" />
+									<input type="hidden" name="google_base_category_id" value="<?php echo $google_base_category_id; ?>" />
+								</div>
+								<div class="col-sm-2"><button type="button" data-toggle="tooltip" title="" class="btn btn-danger" onclick="$('input[name=\'google_base_category\']').val('');$('input[name=\'google_base_category_id\']').val('');" data-original-title="Отключить"><i class="fa fa-trash-o"></i></button></div>
+							</div>
+							
 							
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-banner">Баннер</label>
@@ -408,144 +417,62 @@
 								</table>
 							</div>
 						</div>
-
-				<div class="tab-pane" id="tab-faq">
-				<div class="form-group">
-				<label class="col-sm-2 control-label"><?php echo $faq_name; ?></label>
-				<div class="col-sm-10">
-				<?php foreach($languages as $language) { ?>
-                    <div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" style="display:inline-block;"/></span><input type="text" name="category_description[<?php echo $language['language_id']; ?>][faq_name]" value="<?php echo isset($category_description[$language['language_id']]) ? $category_description[$language['language_id']]['faq_name'] : ''; ?>" id="input-name<?php echo $language['language_id']; ?>" class="form-control" style="width:50%;display:inline-block;"/></div><br />
-				<?php } ?>
-				</div>
-				</div>  
-				<div class="table-responsive">
-                <table id="faq" class="table table-striped table-bordered table-hover">
-				<thead>
-				<tr>
-				<td class="text-center"><?php echo $column_question; ?></td>
-				<td class="text-center"><?php echo $column_faq; ?></td>
-				<td class="text-center" style="width:10%"><?php echo $column_icon; ?></td>
-				<td class="text-center" style="width:10%"><?php echo $column_sort_order; ?></td>
-				<td class="text-center" style="width:10%"></td>
-				</tr>
-				</thead>
-				<tbody>
-				<?php $faq_row = 0; ?>
-				<?php foreach ($category_faq as $category_faq) { ?>
-                    <tr id="faq-row<?php echo $faq_row; ?>">
-					<td class="text-center">
-					<?php foreach($languages as $language) { ?>
-						<div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" style="display:inline-block;"/></span><input type="text" name="category_faq[<?php echo $faq_row; ?>][question][<?php echo $language['language_id']; ?>]" value="<?php if (isset($category_faq['question'][$language['language_id']])) echo $category_faq['question'][$language['language_id']]; ?>" class="form-control" style="display:inline-block;width:80%;" /></div><br />
-					<?php } ?>
-					</td>
-					<td class="text-center">
-					<?php foreach($languages as $language) { ?>
-						<div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" style="display:inline-block;"/></span><textarea rows="3" name="category_faq[<?php echo $faq_row; ?>][faq][<?php echo $language['language_id']; ?>]" class="form-control summernote" style="display:inline-block;width:80%;"><?php if (isset($category_faq['faq'][$language['language_id']])) echo $category_faq['faq'][$language['language_id']]; ?></textarea></div><br />
-					<?php } ?> 
-					</td>
-					<td class="text-center"><input type="text" name="category_faq[<?php echo $faq_row; ?>][icon]" value="<?php echo $category_faq['icon']; ?>" class="form-control" /></td>
-					<td class="text-center"><input type="text" name="category_faq[<?php echo $faq_row; ?>][sort_order]" value="<?php echo $category_faq['sort_order']; ?>" class="form-control" /></td>
-					<td class="text-center"><button type="button" onclick="$('#faq-row<?php echo $faq_row; ?>').remove();" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
-                    </tr> 
-                    <?php $faq_row++; ?>
-				<?php } ?>
-				</tbody>
-				<tfoot>
-				<tr>
-				<td colspan="4"></td>
-				<td class="text-center"><button type="button" onclick="addFaq();" data-toggle="tooltip" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
-				</tr>
-				</tfoot>
-                </table>
-				</div>
-				</div>
-			
+						<div class="tab-pane" id="tab-faq">
+							<div class="form-group">
+								<label class="col-sm-2 control-label"><?php echo $faq_name; ?></label>
+								<div class="col-sm-10">
+									<?php foreach($languages as $language) { ?>
+										<div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" style="display:inline-block;"/></span><input type="text" name="category_description[<?php echo $language['language_id']; ?>][faq_name]" value="<?php echo isset($category_description[$language['language_id']]) ? $category_description[$language['language_id']]['faq_name'] : ''; ?>" id="input-name<?php echo $language['language_id']; ?>" class="form-control" style="width:50%;display:inline-block;"/></div><br />
+									<?php } ?>
+								</div>
+							</div>  
+							<div class="table-responsive">
+								<table id="faq" class="table table-striped table-bordered table-hover">
+									<thead>
+										<tr>
+											<td class="text-center"><?php echo $column_question; ?></td>
+											<td class="text-center"><?php echo $column_faq; ?></td>
+											<td class="text-center" style="width:10%"><?php echo $column_icon; ?></td>
+											<td class="text-center" style="width:10%"><?php echo $column_sort_order; ?></td>
+											<td class="text-center" style="width:10%"></td>
+										</tr>
+									</thead>
+									<tbody>
+										<?php $faq_row = 0; ?>
+										<?php foreach ($category_faq as $category_faq) { ?>
+											<tr id="faq-row<?php echo $faq_row; ?>">
+												<td class="text-center">
+													<?php foreach($languages as $language) { ?>
+														<div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" style="display:inline-block;"/></span><input type="text" name="category_faq[<?php echo $faq_row; ?>][question][<?php echo $language['language_id']; ?>]" value="<?php if (isset($category_faq['question'][$language['language_id']])) echo $category_faq['question'][$language['language_id']]; ?>" class="form-control" style="display:inline-block;width:80%;" /></div><br />
+													<?php } ?>
+												</td>
+												<td class="text-center">
+													<?php foreach($languages as $language) { ?>
+														<div class="input-group"><span class="input-group-addon"><img src="language/<?php echo $language['code']; ?>/<?php echo $language['code']; ?>.png" style="display:inline-block;"/></span><textarea rows="3" name="category_faq[<?php echo $faq_row; ?>][faq][<?php echo $language['language_id']; ?>]" class="form-control summernote" style="display:inline-block;width:80%;"><?php if (isset($category_faq['faq'][$language['language_id']])) echo $category_faq['faq'][$language['language_id']]; ?></textarea></div><br />
+													<?php } ?> 
+												</td>
+												<td class="text-center"><input type="text" name="category_faq[<?php echo $faq_row; ?>][icon]" value="<?php echo $category_faq['icon']; ?>" class="form-control" /></td>
+												<td class="text-center"><input type="text" name="category_faq[<?php echo $faq_row; ?>][sort_order]" value="<?php echo $category_faq['sort_order']; ?>" class="form-control" /></td>
+												<td class="text-center"><button type="button" onclick="$('#faq-row<?php echo $faq_row; ?>').remove();" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+											</tr> 
+											<?php $faq_row++; ?>
+										<?php } ?>
+									</tbody>
+									<tfoot>
+										<tr>
+											<td colspan="4"></td>
+											<td class="text-center"><button type="button" onclick="addFaq();" data-toggle="tooltip" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						</div>			
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
-	<? /*	
-		<script type="text/javascript" src="view/javascript/tinymce/tinymce.min.js"></script>
-		<script type="text/javascript">
-		
-		function elFinderBrowser (callback, value, meta) {
-		try {
-		var fm = $('<div/>').dialogelfinder({
-		url : 'index.php?route=common/elfinder/connector&token=' + getURLVar('token'),
-		lang : 'ru',
-		width : 900,
-		height: 400,
-		destroyOnClose : true,
-		getFileCallback : function(file, fm) {
-		var info = file.name + ' (' + fm.formatSize(file.size) + ')';
-		callback(file.url, {alt: info});
-		},
-		commandsOptions : {
-		getfile : {
-		oncomplete : 'close',
-		multiple : false,
-		folders : false
-		}
-		}
-		}).dialogelfinder('instance');
-		} catch (err) {
-		$('#filePickerError').modal('show');
-		$.ajax({
-		url: 'index.php?route=common/filemanager&token=' + getURLVar('token'),
-		dataType: 'html',
-		beforeSend: function() {
-		$('#button-image i').replaceWith('<i class="fa fa-circle-o-notch fa-spin"></i>');
-		$('#button-image').prop('disabled', true);
-		},
-		complete: function() {
-		$('#button-image i').replaceWith('<i class="fa fa-upload"></i>');
-		$('#button-image').prop('disabled', false);
-		},
-		success: function(html) {
-		$('body').append('<div id="modal-image" class="modal">' + html + '</div>');
-		
-		$('#modal-image').modal('show');
-		
-		$('#modal-image').delegate('a.thumbnail', 'click', function(e) {
-		e.preventDefault();
-		
-		//$(element).summernote('insertImage', $(this).attr('href'));
-		callback($(this).attr('href'));
-		$('#modal-image').modal('hide');
-		});
-		}
-		});
-		}
-		return false;
-		}
-		tinymce.init({
-		selector: '.summernote',
-		skin: 'bootstrap',
-		language: 'ru',
-		height:300,
-		image_title: true,
-		automatic_uploads: true,
-		file_picker_types: 'image',
-		file_picker_callback : elFinderBrowser,
-		
-		
-		plugins: [
-		'advlist autolink link image code lists charmap print preview hr anchor pagebreak spellchecker',
-		'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
-		'save table contextmenu directionality emoticons template paste textcolor colorpicker'
-		],
-		toolbar: 'bold italic sizeselect fontselect fontsizeselect | hr alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | insertfile undo redo | forecolor backcolor emoticons | code',
-		fontsize_formats: "8pt 10pt 12pt 14pt 18pt 24pt 36pt",
-		});
-		
-		</script>
-		<style>
-		#modal-image{
-		z-index: 99999;
-		}
-		</style>
-	*/ ?>	
+	
 	<script type="text/javascript" src="view/javascript/summernote/summernote.js"></script>
 	<link href="view/javascript/summernote/summernote.css" rel="stylesheet" />
 	<script type="text/javascript" src="view/javascript/summernote/opencart.js"></script>
@@ -575,6 +502,33 @@
 				$('input[name=\'google_base_category_id\']').val(item['value']);
 			}
 		});
+
+		$('input[name=\'onlineapteka\']').autocomplete({
+			'source': function(request, response) {
+				$.ajax({
+					url: 'index.php?route=catalog/category/onlineapteka&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request),
+					dataType: 'json',
+					success: function(json) {
+						json.unshift({
+							category_id: 0,
+							name: '<?php echo $text_none; ?>'
+						});
+						
+						response($.map(json, function(item) {
+							return {
+								label: item['name'],
+								value: item['category_id']
+							}
+						}));
+					}
+				});
+			},
+			'select': function(item) {
+				$('input[name=\'onlineapteka\']').val(item['label']);
+				$('input[name=\'onlineapteka_id\']').val(item['value']);
+			}
+		});
+
 		$('input[name=\'path\']').autocomplete({
 			'source': function(request, response) {
 				$.ajax({

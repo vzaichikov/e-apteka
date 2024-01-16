@@ -41,7 +41,7 @@
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li>
 						<li><a href="#tab-data" data-toggle="tab"><?php echo $tab_data; ?></a></li>
-						<li><a href="#tab-likreestr" data-toggle="tab">Реестр, Ehealth</a></li>
+						<li><a href="#tab-likreestr" data-toggle="tab">Реестр, Ehealth, Медсервис</a></li>
 						<li><a href="#tab-stocks" data-toggle="tab">Цены, нал</a></li>
 						<li><a href="#tab-links" data-toggle="tab"><?php echo $tab_links; ?></a></li>
 						<li><a href="#tab-same" data-toggle="tab"><?php echo $tab_same; ?></a></li>
@@ -215,6 +215,28 @@
 									</table>
 								</div>
 							<?php } ?>
+							<hr />
+
+							<div class="form-group">
+								<table class="table table-striped table-bordered">
+									<?php if (!empty($ms_json)) { ?>										
+										<?php foreach ($ms_json as $key => $value) {  ?>											
+											<tr>
+												<td>
+													<?php echo $key; ?>
+												</td>
+												<td>
+													<?php if (!is_array($value)) { ?>
+														<?php echo $value; ?>
+													<?php } else { ?>
+														<?php print $value; ?>
+													<?php } ?>
+												</td>
+											</tr>											
+										<?php } ?>										
+									<?php } ?>
+								</table>
+							</div>
 							<hr />
 
 							<div class="form-group">
@@ -431,6 +453,22 @@
 										<?php } ?>
 									</select>
 									<span class="help"><i class="fa fa-info-circle"></i> наркотический препарат</span>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-is_poison">Яд</label>
+								<div class="col-sm-10">
+									<select name="is_poison" id="input-is_poison" class="form-control">
+										<?php if ($is_poison) { ?>
+											<option value="1" selected="selected"><?php echo $text_yes; ?></option>
+											<option value="0"><?php echo $text_no; ?></option>
+											<?php } else { ?>
+											<option value="1"><?php echo $text_yes; ?></option>
+											<option value="0" selected="selected"><?php echo $text_no; ?></option>
+										<?php } ?>
+									</select>
+									<span class="help"><i class="fa fa-info-circle"></i> это яд</span>
 								</div>
 							</div>
 							

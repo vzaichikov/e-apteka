@@ -494,9 +494,8 @@
 					}
 				}
 				
-				$this->load->model('extension/feed/google_base');
-				if ($result['google_base_category_id']){
-					$row['google_base_category'] = $this->model_extension_feed_google_base->getGoogleBaseCategoryName($result['google_base_category_id']);
+				if ($result['onlineapteka_id']){
+					$row['onlineapteka'] = $this->model_catalog_category->getOnlineAptekaCategoryName($result['onlineapteka_id']);
 				}
 				
 				$row['alternate_name'] = $result['alternate_name'];

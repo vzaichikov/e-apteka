@@ -221,9 +221,13 @@
 									<tr>
 										
 										<td style="width:1px" class="text-left" nowrap>
-											<?php foreach ($category['problems'] as $problem) { ?>
+											<?php /* foreach ($category['problems'] as $problem) { ?>
 												<div class="text-danger"><i class="fa fa-exclamation-triangle"></i> <?php echo $problem; ?></div>
-											<?php } ?>
+											<?php } */ ?>
+
+											<?php if ($category['onlineapteka']) { ?>													
+												<div><img src="https://e-apteka.com.ua/image/brand/marker-icon-brand-med-service.svg" height="20px" /><code><?php echo $category['onlineapteka']; ?></code></div>
+											<? } ?>
 										</td>
 										<?php foreach($columns as $col) {
 											switch ($col) {
@@ -272,12 +276,8 @@
 											case 'parent': ?>
 											<td class="<?php echo $column_info[$col]['align']; ?><?php echo ($column_info[$col]['qe_status']) ? ' ' . $column_info[$col]['type'] : ''; ?>" id="<?php echo $col . "-" . $category['category_id']; ?>">
 												<?php if ($category[$col]) { ?>
-													<kbd><?php echo $category[$col]; ?></kbd>
-												<?php } ?>
-												<?php if ($category['google_base_category']) { ?>
-													<br />
-													GM/FB: <code><?php echo $category['google_base_category']; ?></code>
-												<? } ?>
+													<?php echo $category[$col]; ?>
+												<?php } ?>												
 											</td>
 											<?php break;
 											case 'filter': ?>

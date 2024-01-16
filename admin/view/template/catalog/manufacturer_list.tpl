@@ -81,7 +81,7 @@
                                                 <?php if ($manufacturer['products']) { ?>
                                                     <br />
                                                     <?php foreach ($manufacturer['products'] as $product) { ?>
-                                                        <div><?php echo $product['name']; ?>, цена <?php echo $product['price']; ?>, нал <?php echo $product['quantity']; ?></div>
+                                                        <div class="label label-<?php if ($product['status']) { ?>success<?php } else { ?>danger<?php } ?>"><?php echo $product['name']; ?>, цена <?php echo $product['price']; ?>, нал <?php echo $product['quantity']; ?></div>
                                                     <? } ?>
                                                 <? } ?>
                                             </td>

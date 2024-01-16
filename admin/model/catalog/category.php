@@ -1,7 +1,7 @@
 <?php
 	class ModelCatalogCategory extends Model {
 		public function addCategory($data) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "', substance = '" . $this->db->escape($data['substance']) . "', date_modified = NOW(), date_added = NOW()");
+			$this->db->query("INSERT INTO " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', onlineapteka_id = '" . (int)$data['onlineapteka_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "', substance = '" . $this->db->escape($data['substance']) . "', date_modified = NOW(), date_added = NOW()");
 			
 			$category_id = $this->db->getLastId();
 			
@@ -90,7 +90,7 @@
 		
 		public function editCategory($category_id, $data) {
 			
-			$this->db->query("UPDATE " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "',  substance = '" . $this->db->escape($data['substance']) . "', date_modified = NOW() WHERE category_id = '" . (int)$category_id . "'");
+			$this->db->query("UPDATE " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', onlineapteka_id = '" . (int)$data['onlineapteka_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "',  substance = '" . $this->db->escape($data['substance']) . "', date_modified = NOW() WHERE category_id = '" . (int)$category_id . "'");
 			
 			if (isset($data['image'])) {
 				$this->db->query("UPDATE " . DB_PREFIX . "category SET image = '" . $this->db->escape($data['image']) . "' WHERE category_id = '" . (int)$category_id . "'");
@@ -244,6 +244,24 @@
 			
 			$this->cache->delete('category');
 		}
+
+		public function getOnlineAptekaCategoryName($onlineapteka_id){
+			$query = $this->db->query("SELECT pagetitle FROM modx_site_content WHERE context_key = 'ua' AND id = '" . (int)$onlineapteka_id . "'");
+
+			if ($query->num_rows){
+				return $query->row['pagetitle'];
+			}
+
+			return false;
+		}
+
+		public function getOnlineAptekaCategories($filter_name){
+			$sql = "SELECT pagetitle, id FROM modx_site_content WHERE LOWER(pagetitle) LIKE '%" . $this->db->escape(mb_strtolower($filter_name)) . "%' AND context_key = 'ua' AND class_key = 'msCategory' ORDER BY pagetitle DESC LIMIT 20";
+
+			$query = $this->db->query($sql);
+
+			return $query->rows;
+		}
 		
 		public function repairCategories($parent_id = 0) {
 			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "category WHERE parent_id = '" . (int)$parent_id . "'");
@@ -298,6 +316,7 @@
 			if (!empty($data['filter_name'])) {
 				$sql .= " AND cd2.name LIKE '%" . $this->db->escape($data['filter_name']) . "%'";
 			}
+
 			if (!empty($data['category_id'])) {
 				$sql .= " AND c1.parent_id= '" . (int)$data['category_id'] . "'";
 			}

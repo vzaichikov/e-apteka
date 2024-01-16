@@ -118,6 +118,81 @@ class ControllerCatalogAqeProduct extends Controller {
 		$this->getList();
 	}
 
+	public function merge(){
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		if (isset($this->request->post['selected']) && $this->validateMerge()) {
+			$product1 = $this->model_catalog_product->getProduct($this->request->post['selected'][0]);
+			$product2 = $this->model_catalog_product->getProduct($this->request->post['selected'][1]);
+
+			$product1_score = $this->model_catalog_product->checkProductContentScore($product1);
+			$product2_score = $this->model_catalog_product->checkProductContentScore($product2);
+
+			if ($product1_score > $product2_score){
+				$data = [
+					'product_id'=> $product1['product_id'],
+					'uuid' 		=> $product2['uuid'],
+					'sku' 		=> $product2['model'],
+					'model'		=> $product2['model'],
+					'ms_code' 	=> $product2['model'],
+					'price' 	=> $product2['price'],
+				];
+			}
+
+			if ($product2_score > $product1_score){
+				$data = [
+					'product_id'=> $product2['product_id'],
+					'uuid' 		=> $product1['uuid'],
+					'sku' 		=> $product1['model'],
+					'model'		=> $product1['model'],
+					'ms_code' 	=> $product1['model'],
+					'price' 	=> $product1['price'],
+				];
+			}
+			
+			if ($data){
+				$this->model_catalog_product->updateCodes($data);
+				$this->session->data['success'] = 'Идентификатор перенесен на товар ' . $data['product_id'] . ', обязательно удали ненужный';
+			} else {
+				$this->session->data['error'] = 'Невозможно перенести идентификаторы';
+			}
+			
+
+			$url = '';
+
+			foreach($this->config->get('aqe_catalog_products') as $column => $attr) {
+				if (isset($this->request->get['filter_' . $column])) {
+					$url .= '&filter_' . $column . '=' . urlencode(html_entity_decode($this->request->get['filter_' . $column], ENT_QUOTES, 'UTF-8'));
+				}
+			}
+
+			if (isset($this->request->get['filter_sub_category'])) {
+				$url .= '&filter_sub_category=' . urlencode(html_entity_decode($this->request->get['filter_sub_category'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['filter_special_price'])) {
+				$url .= '&filter_special_price=' . urlencode(html_entity_decode($this->request->get['filter_special_price'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
+			if (isset($this->request->get['page'])) {
+				$url .= '&page=' . $this->request->get['page'];
+			}
+
+			$this->response->redirect($this->url->link('catalog/product', 'token=' . $this->session->data['token'] . $url, true));
+		}
+
+		$this->getList();
+	}
+
 	protected function getList() {
 		$data['heading_title'] = $this->language->get('heading_title');
 
@@ -317,6 +392,7 @@ class ControllerCatalogAqeProduct extends Controller {
 
 		$data['add'] = $this->url->link('catalog/product/add', 'token=' . $this->session->data['token'] . $url, true);
 		$data['copy'] = $this->url->link('catalog/product/copy', 'token=' . $this->session->data['token'] . $url, true);
+		$data['merge'] = $this->url->link('catalog/product/merge', 'token=' . $this->session->data['token'] . $url, true);
 		$data['delete'] = $this->url->link('catalog/product/delete', 'token=' . $this->session->data['token'] . $url, true);
 
 		if ($this->config->get('config_seo_url')) {
@@ -421,7 +497,6 @@ class ControllerCatalogAqeProduct extends Controller {
 		$this->load->model('tool/image');
 
 		$results = $this->model_catalog_aqe_product->getProducts($filter_data);
-
 		$product_total = $this->model_catalog_aqe_product->getTotalProducts();
 
 		foreach ($results as $result) {
@@ -605,11 +680,15 @@ class ControllerCatalogAqeProduct extends Controller {
 				}
 			}
 			
+			$row['edit_manufacturer'] 	= $this->url->link('catalog/manufacturer/edit', 'token=' . $this->session->data['token'] . '&manufacturer_id=' . $result['manufacturer_id'], true);
 			$row['is_pko'] 			= $result['is_pko'];
 			$row['is_drug'] 		= $result['is_drug'];
 			$row['is_receipt'] 		= $result['is_receipt'];
 			$row['original_name'] 	= $result['original_name'];
 			$row['dnup'] 			= $result['dnup'];
+			$row['uuid'] 			= $result['uuid'];
+
+			$row['content_score'] 	= $this->model_catalog_product->checkProductContentScore($result);
 
 			$row['ms_code'] 		= $result['ms_code'];
 
@@ -1513,7 +1592,7 @@ class ControllerCatalogAqeProduct extends Controller {
 					$response['values']['*'] = $response['value'];
 				} else if ($column == 'manufacturer') {
 					$this->load->model('catalog/manufacturer');
-					$manufacturer = $this->model_catalog_manufacturer->getManufacturer((int)$value);
+					$manufacturer 		= $this->model_catalog_manufacturer->getManufacturer((int)$value);					
 					if ($manufacturer)
 						$response['value'] = $manufacturer['name'];
 					else
@@ -1647,6 +1726,17 @@ class ControllerCatalogAqeProduct extends Controller {
 
 	protected function validateCopy() {
 		return $this->validatePermissions();
+	}
+
+	protected function validateMerge() {
+		if ($this->validatePermissions()){
+			if (count($this->request->post['selected']) == 2){
+				return true;
+			}
+		}
+		
+
+		return false;		
 	}
 
 	protected function validateLoadPopup(&$data) {

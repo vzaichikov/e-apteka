@@ -161,7 +161,7 @@ class ControllerLocalisationLocation extends Controller {
 		$data['add'] = $this->url->link('localisation/location/add', 'token=' . $this->session->data['token'] . $url, true);
 		$data['delete'] = $this->url->link('localisation/location/delete', 'token=' . $this->session->data['token'] . $url, true);
 
-		$data['location'] = array();
+		$data['locations'] = array();
 
 		$filter_data = array(
 			'sort'  => $sort,
@@ -171,13 +171,12 @@ class ControllerLocalisationLocation extends Controller {
 		);
 
 		$location_total = $this->model_localisation_location->getTotalLocations();
-
 		$results = $this->model_localisation_location->getLocations($filter_data);
 		
 		$this->load->model('catalog/information');	
 
 		foreach ($results as $result) {
-			$data['location'][] =   array(
+			$data['locations'][] =   array(
 				'location_id' 		=> $result['location_id'],
 				'name'        		=> $result['name'],
 				'node'        		=> $this->model_setting_nodes->getNodeName($result['node_id']),
@@ -192,6 +191,8 @@ class ControllerLocalisationLocation extends Controller {
 				'default_price'     => $result['default_price'],
 				'is_stock'    		=> $result['is_stock'],
 				'can_sell_drugs'    => $result['can_sell_drugs'],
+				'can_free_stocks'   => $result['can_free_stocks'],
+				'can_send_np'   	=> $result['can_send_np'],
 				'temprorary_closed' => $result['temprorary_closed'],
 				'information_id'    => $result['information_id'],
 				'information' 		=> $result['information_id']?$this->model_catalog_information->getInformationDescriptions($result['information_id'])[$this->config->get('config_language_id')]['title']:'',
@@ -557,6 +558,22 @@ class ControllerLocalisationLocation extends Controller {
 			$data['can_sell_drugs'] = $location_info['can_sell_drugs'];
 		} else {
 			$data['can_sell_drugs'] = 0;
+		}
+
+		if (isset($this->request->post['can_free_stocks'])) {
+			$data['can_free_stocks'] = $this->request->post['can_free_stocks'];
+		} elseif (!empty($location_info)) {
+			$data['can_free_stocks'] = $location_info['can_free_stocks'];
+		} else {
+			$data['can_free_stocks'] = 0;
+		}
+
+		if (isset($this->request->post['can_send_np'])) {
+			$data['can_send_np'] = $this->request->post['can_send_np'];
+		} elseif (!empty($location_info)) {
+			$data['can_send_np'] = $location_info['can_send_np'];
+		} else {
+			$data['can_send_np'] = 0;
 		}
 
 		if (isset($this->request->post['temprorary_closed'])) {
