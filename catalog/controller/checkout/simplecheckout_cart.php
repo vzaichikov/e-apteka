@@ -192,7 +192,6 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
         $points_total = 0;
 
         foreach ($products as $product) {
-
             $product_total = 0;
 
             foreach ($products as $product_2) {
@@ -297,28 +296,41 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
                     }
                 }
 
-                  $stocks_count = $this->model_catalog_product->getProductStockSum($product['product_id']);
+                $stocks_count = $this->model_catalog_product->getProductStockSum($product['product_id']);
+                $stocks_all   = $this->model_catalog_product->getProductStocks($product['product_id']);
 
                 $text_available_in_drugstores = false;
                 if ($stocks_count['quantity'] > 0){
-                    $text_available_in_drugstores = sprintf($this->language->get('text_available_in_drugstores'), $stocks_count['quantity'], $stocks_count['drugstores']);
+                    $text_available_in_drugstores = sprintf($this->language->get('text_available_in_drugstores'), $stocks_count['quantity'], $stocks_count['drugstores'], getPluralWord($result['total_drugstores'], $this->language->get('text_drugstore_plural'), false));
                 } 
-                
-                $stocks = [];
-                if ($stocks_count['drugstores'] <= 3){                    
-                    $results = $this->model_catalog_product->getProductStocks($product['product_id']);
 
-                    foreach ($results as $result) {
-                        if ($result['quantity'] > 0){
+                $stocks = [];
+                if ($stocks_count['drugstores'] <= 4){                                       
+                    foreach ($stocks_all as $stock) {
+                        if ($stock['quantity'] > 0){
                             $stocks[] = array(
-                                'stock'     => $result['quantity'],                        
-                                'name'   => $result['name']
+                                'stock'  => $stock['quantity'],                        
+                                'name'   => $stock['name']
                             );
                         }
                     }            
                 }
 
-               
+                $text_not_available_in_selected_drugstore = '';
+                if (!empty($this->session->data['shipping_method']) && !empty($this->session->data['shipping_method']['code']) && $this->session->data['shipping_method']['code'] == 'pickup.pickup'){
+                    if (!empty($this->session->data['simple']) && !empty($this->session->data['simple']['shipping']) && !empty($this->session->data['simple']['shipping']['location_id'])){
+                        foreach ($stocks_all as $stock){
+                            if ((int)$stock['location_id'] > 0 && (int)$stock['location_id'] == (int)$this->session->data['simple']['shipping']['location_id'] && $stock['quantity'] < $product['quantity']){
+                                $text_not_available_in_selected_drugstore = $this->language->get('text_not_available_in_selected_drugstore');
+                            }
+                        }
+                    }
+                }
+
+                $text_can_be_only_picked_up = '';
+                if (!$this->cart->getIfProductIsOnStockInDrugstoresWhichCanSendNP($product['product_id'])){
+                    $text_can_be_only_picked_up = $this->language->get('text_can_be_only_picked_up');
+                }
 
                 $this->_templateData['products'][] = array(
                     'key'       => isset($product['key']) ? $product['key'] : '',
@@ -336,57 +348,15 @@ class ControllerCheckoutSimpleCheckoutCart extends SimpleController {
                     'option'    => $option_data,
                     'recurring' => $recurring,
                     'quantity'  => $product['quantity'],
-                    'tai_drugstores' => $text_available_in_drugstores,
+                    'text_can_be_only_picked_up'                => $text_can_be_only_picked_up,                    
+                    'text_available_in_drugstores'              => $text_available_in_drugstores,
+                    'text_not_available_in_selected_drugstore'  => $text_not_available_in_selected_drugstore,
                     'stock'     => $product['stock'] ? true : !(!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')),
                     'reward'    => ($product['reward'] ? sprintf($this->language->get('text_points'), $product['reward']) : ''),
                     'price'     => $price,
                     'total'     => $total,
                     'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
-                );
-            } elseif ($version >= 156) {
-                $profile_description = '';
-
-                if ($product['recurring']) {
-                    $frequencies = array(
-                        'day'        => $this->language->get('text_day'),
-                        'week'       => $this->language->get('text_week'),
-                        'semi_month' => $this->language->get('text_semi_month'),
-                        'month'      => $this->language->get('text_month'),
-                        'year'       => $this->language->get('text_year'),
-                    );
-
-                    if ($product['recurring_trial']) {
-                        $recurring_price = $this->simplecheckout->formatCurrency($this->tax->calculate($product['recurring_trial_price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax')));
-                        $profile_description = sprintf($this->language->get('text_trial_description'), $recurring_price, $product['recurring_trial_cycle'], $frequencies[$product['recurring_trial_frequency']], $product['recurring_trial_duration']) . ' ';
-                    }
-
-                    $recurring_price = $this->simplecheckout->formatCurrency($this->tax->calculate($product['recurring_price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax')));
-
-                    if ($product['recurring_duration']) {
-                        $profile_description .= sprintf($this->language->get('text_payment_description'), $recurring_price, $product['recurring_cycle'], $frequencies[$product['recurring_frequency']], $product['recurring_duration']);
-                    } else {
-                        $profile_description .= sprintf($this->language->get('text_payment_until_canceled_description'), $recurring_price, $product['recurring_cycle'], $frequencies[$product['recurring_frequency']], $product['recurring_duration']);
-                    }
-                }
-
-                $this->_templateData['products'][] = array(
-                    'key'                 => $product['key'],
-                    'thumb'               => $image,
-                    'name'                => $product['name'],
-                    'model'               => $product['model'],
-                    'option'              => $option_data,
-                    'quantity'            => $product['quantity'],
-                    'no_payment'          => $product['no_payment'],
-                    'no_shipping'         => $product['no_shipping'],
-                    'stock'               => $product['stock'],
-                    'reward'              => ($product['reward'] ? sprintf($this->language->get('text_reward'), $product['reward']) : ''),
-                    'price'               => $price,
-                    'total'               => $total,
-                    'href'                => $this->url->link('product/product', 'product_id=' . $product['product_id']),
-                    'recurring'           => $product['recurring'],
-                    'profile_name'        => isset($product['profile_name']) ? $product['profile_name'] : '',
-                    'profile_description' => $profile_description,
-                );
+                );            
             } else {
                 $this->_templateData['products'][] = array(
                     'key'      => $product['key'],

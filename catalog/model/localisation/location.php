@@ -31,8 +31,43 @@
 			LEFT JOIN oc_location_description ld ON (l.location_id = ld.location_id)
 			WHERE l.temprorary_closed = '0' AND ld.language_id = '" . (int)$this->config->get('config_language_id') . "'";
 
+			if (!empty($filter_data) && (!empty($filter_data['novaposhta_city_guid']) || !empty($filter_data['city']))){
+				if (!empty($filter_data['novaposhta_city_guid']) && !empty($filter_data['city'])){
+					$sql .= " AND ( ";
+					$sql .= " l.city_id = '" . $this->db->escape($filter_data['novaposhta_city_guid']) . "' OR LOWER(l.city) = '" . $this->db->escape(mb_strtolower($filter_data['city'])) . "'";
+
+					if (in_array(mb_strtolower($filter_data['city']), $this->cart->getDefaultCityNames()) || $filter_data['novaposhta_city_guid'] == $this->cart->getDefaultCityRef()){
+						$sql .= " OR LOWER(l.address) LIKE '%київська обл.%' ";
+					}
+
+					$sql .= " ) ";	
+				} elseif (!empty($filter_data['novaposhta_city_guid']) && empty($filter_data['city'])){
+					$sql .= " AND ( ";
+					$sql .= " l.city_id = '" . $this->db->escape($filter_data['novaposhta_city_guid']) . "'";
+
+					if ($filter_data['novaposhta_city_guid'] == $this->cart->getDefaultCityRef()){
+						$sql .= " OR LOWER(l.address) LIKE '%київська обл.%' ";
+					}
+
+					$sql .= " ) ";	
+				} elseif (empty($filter_data['novaposhta_city_guid']) && !empty($filter_data['city'])){
+					$sql .= " AND ( ";
+					$sql .= " LOWER(l.city) = '" . $this->db->escape(mb_strtolower($filter_data['city'])) . "'";
+
+					if (in_array(mb_strtolower($filter_data['city']), $this->cart->getDefaultCityNames())){
+						$sql .= " OR LOWER(l.address) LIKE '%київська обл.%' ";
+					}
+
+					$sql .= " ) ";		
+				}					
+			}			
+
 			if (!empty($filter_data['filter_can_sell_drugs'])){
 				$sql .= " AND can_sell_drugs = 1";
+			}
+
+			if (!empty($filter_data['filter_can_free_stocks'])){
+				$sql .= " AND (can_free_stocks = 1)";
 			}
 
 			$query = $this->db->query($sql);

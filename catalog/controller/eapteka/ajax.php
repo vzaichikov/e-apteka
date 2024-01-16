@@ -56,7 +56,8 @@
 				$this->response->redirect($this->url->link('product/product', 'product_id=' . $product_id), 301);	
 			}	
 
-			$results = $this->model_catalog_product->getProductStocks($product_id);
+			$results 			= $this->model_catalog_product->getProductStocks($product_id);
+			$in_stock_for_np 	= $this->cart->getIfProductIsOnStockInDrugstoresWhichCanSendNP($product_id);
 
 			$data['text_is_in_stock_in_drugstores'] = $this->language->get('text_is_in_stock_in_drugstores');
 			$data['text_make_route'] 				= $this->language->get('text_make_route');
@@ -67,7 +68,6 @@
 			$data['text_we_can_deliver_in_4_days'] 	= $this->language->get('text_we_can_deliver_in_4_days');
 
 			foreach ($results as $result) {
-
 				if ($result['image']) {
 					$image = $this->model_tool_image->resize($result['image'], 100, 100);
 				} else {
@@ -133,7 +133,6 @@
 								$open = $this->language->get('text_closed_now');
 							}
 						}
-
 					}									
 				}
 
@@ -163,12 +162,10 @@
 				$stock_icon 		= 'fa-clock-o';
 				$can_not_deliver 	= false;
 
-				if ($result['quantity'] >= 3){
-					
+				if ($result['quantity'] >= 3){					
 					$text_class = 'text-success';
 					$stock_text = $result['quantity'] . ' шт.';
 					$stock_icon = 'fa-check';
-
 				} elseif ($result['quantity'] > 0){					
 					$text_class = 'text-warning';
 					$stock_text = $result['quantity'] . ' шт.';
@@ -195,8 +192,14 @@
 					$stock_icon = 'fa-clock-o';
 				}
 
-				if ($result['quantity'] == 0 && !$result['is_preorder']){
-					continue;
+				if ($result['quantity'] == 0){
+					if (!$result['is_preorder'] && !$result['can_free_stocks']){
+						 continue;
+					}
+
+					if (!$in_stock_for_np){
+						continue;
+					}
 				}
 
 				if (!$result['gmaps_link']){
@@ -211,7 +214,7 @@
 					$logo = HTTPS_SERVER . 'image/brand/marker-icon-brand-default.svg';
 				}				
 
-				$data['stocks'][] = array(
+				$data['stocks'][] = [
 					'location_id'	=> $result['location_id'],
 					'name'        	=> str_replace("'", '`', $result['name']),
 					'address'     	=> str_replace("'", '`', $result['address']),
@@ -234,7 +237,7 @@
 					'faclass' 		=> $faclass,
 					'icon' 	    	=> HTTPS_SERVER . 'image/gmarkers/source/marker_' . $mcolor . '.png',
 					'price' 		=> ($result['quantity'] && $price)?$price:$this->language->get('text_preorder'),					
-				);									
+				];									
 			}		
 
 			$tmp_stocks = [];
@@ -245,6 +248,8 @@
 					array_push($tmp_stocks, $stock);
 				}
 			}
+
+			$data['stocks'] = $tmp_stocks;
 
 			if ($this->mobileDetect->isMobile()){
 				$this->response->setOutput($this->load->view('product/structured/stocks_mobile', $data));				

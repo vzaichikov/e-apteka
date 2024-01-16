@@ -261,16 +261,14 @@
 			$data['registry'] = $this->registry;
 			
 			/*---------------- STYLES -------------*/									
-			$generalCSS = [			
+			$generalCSS = [							
 				'catalog/view/javascript/font-awesome4.7/css/font-awesome.css',
 				'catalog/view/theme/default/stylesheet/stylesheet.css',
-				'catalog/view/theme/default/stylesheet/main.css',
-				'catalog/view/javascript/IMCallMeAskMe/jquery.imcallback.css',
-				'catalog/view/theme/default/stylesheet/popupcart.css',
+				'catalog/view/theme/default/stylesheet/main.css',								
 				'catalog/view/theme/default/stylesheet/swiper.min.css'
 			];						
 			
-			$data['general_minified_css_uri'] = HTTPS_IMG_SERVER . \hobotix\MinifyAdaptor::createFile($generalCSS, 'css');
+			$data['general_minified_css_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalCSS, 'css');
 
 			$addedCSS = [];
 			foreach ($data['styles'] as $style) {				
@@ -285,7 +283,7 @@
 			}
 			
 			if ($addedCSS){
-				$data['added_minified_css_uri'] = HTTPS_IMG_SERVER . \hobotix\MinifyAdaptor::createFile($addedCSS, 'css');
+				$data['added_minified_css_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($addedCSS, 'css');
 			}
 			/*---------------- END STYLES -------------*/
 			
@@ -306,7 +304,7 @@
 				'catalog/view/theme/default/js/lib/jquery.mCustomScrollbar.concat.min.js'
 			];					
 			
-			$data['general_minified_js_uri'] = HTTPS_IMG_SERVER . \hobotix\MinifyAdaptor::createFile($generalJS, 'js');
+			$data['general_minified_js_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalJS, 'js');
 						
 			$data['incompatible_scripts'] = [];
 			foreach ($data['scripts'] as $script) {

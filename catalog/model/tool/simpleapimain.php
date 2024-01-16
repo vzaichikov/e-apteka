@@ -430,7 +430,14 @@ class ModelToolSimpleApiMain extends Model {
         return '';
     }
 
-    // example of code for getting a mask of field
+    public function checkTelephone($telephone){
+        $this->load->library('hobotix/PhoneValidator');
+
+        $phoneValidator = new \hobotix\PhoneValidator($this->registry);
+
+        return $phoneValidator->validate($telephone);
+    }
+   
     public function getTelephoneMask($country_id) {
         switch ($country_id) {
             case 176:

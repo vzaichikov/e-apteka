@@ -27,6 +27,8 @@
 			$data['text_alphabet_drugs'] = $this->language->get('text_alphabet_drugs');
 			$data['text_drugstores'] = $this->language->get('text_drugstores');
 			$data['text_newsfeed'] = $this->language->get('text_newsfeed');
+
+			$data['text_catalogue_btn'] = $this->language->get('text_catalogue_btn');
 			
 			$data['text_pwa_1'] = $this->language->get('text_pwa_1');
 			$data['text_pwa_2'] = $this->language->get('text_pwa_2');
@@ -52,12 +54,14 @@
 			}
 
 			$generalCSS = [			
+				'catalog/view/javascript/IMCallMeAskMe/jquery.imcallback.css',
+				'catalog/view/theme/default/stylesheet/popupcart.css',
 				'catalog/view/theme/default/stylesheet/buyoneclick.css',
 				'catalog/view/javascript/nprogress/nprogress.css',
 				'catalog/view/theme/default/js/liFixar/liFixar.css'
 			];						
 			
-			$data['general_minified_css_uri'] = HTTPS_IMG_SERVER . \hobotix\MinifyAdaptor::createFile($generalCSS, 'css');
+			$data['general_minified_css_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalCSS, 'css');
 
 
 			$generalJS = [
@@ -65,7 +69,7 @@
 				'catalog/view/javascript/html5-qrcode.min.v2.2.5.js'
 			];					
 			
-			$data['general_minified_js_uri'] = HTTPS_IMG_SERVER . \hobotix\MinifyAdaptor::createFile($generalJS, 'js');
+			$data['general_minified_js_uri'] = HTTPS_SERVER . \hobotix\MinifyAdaptor::createFile($generalJS, 'js');
 
 
 			$data['hb_snippets_local_enable'] 	= $this->config->get('hb_snippets_local_enable');

@@ -112,7 +112,7 @@
 					} else {
 					$image = $this->model_tool_image->resize('no_image.png', $this->config->get($this->config->get('config_theme') . '_image_thumb_width'), $this->config->get($this->config->get('config_theme') . '_image_thumb_height'));
 				}
-				// options
+
 				if (isset($this->request->post['option'])) {
 					$option = array_filter($this->request->post['option']);
 					} else {
@@ -136,7 +136,6 @@
 						foreach ($product_options as $product_option) {
 							if (!empty($option[$product_option['product_option_id']])) {
 								if ($product_option['type'] != 'checkbox' && $product_option['type'] != 'file' && $product_option['type'] != 'text' && $product_option['type'] != 'textarea' && $product_option['type'] != 'date' &&$product_option['type'] != 'time' && $product_option['type'] != 'datetime') {
-									// var_dump($product_option['value']);
 									foreach ($product_option['product_option_value'] as $option_value) {
 										if ($option_value['product_option_value_id'] == $option[$product_option['product_option_id']]) {
 											$product_option_value_id = $option_value['product_option_value_id'];
@@ -222,8 +221,8 @@
 										} else {
 										$value = '';
 									}
-									$value_price_value = false;
-									$value_price = false;
+									$value_price_value 	= false;
+									$value_price 		= false;
 									$value_price_prefix = false;
 									$option_data[] = array(
 									'product_option_id' => $product_option['product_option_id'],
@@ -233,7 +232,7 @@
 									'name'  => $product_option['name'],
 									'value' => $value,
 									'value_price_value' => $value_price_value,
-									'value_price' => $value_price,
+									'value_price' 		=> $value_price,
 									'value_price_prefix' => $value_price_prefix,
 									'type'  => $product_option['type']
 									);
@@ -270,28 +269,24 @@
 					}
 
 					$numeric_price = $boc_price;					
-					
-					// Display total
-					if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
-						if (!$option_data) {
-							$total = $this->currency->format($this->tax->calculate($boc_price, $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity'], $this->session->data['currency']);							
-							} else {
-							$option_total = 0;
-							foreach ($option_data as $option) {
-								if ($option['value_price_prefix'] == '+') {
-									$option_total += (float)$option['value_price_value'];
-									} else if ($option['value_price_prefix'] == '-') {
-									$option_total -= (float)$option['value_price_value'];
-									}  else if ($option['value_price_prefix'] == '=') {
-									$option_total = (float)$option['value_price_value'];
-								}
-							}						
-							
-							$total = $this->currency->format($this->tax->calculate($option_total, $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity'], $this->session->data['currency']);
-						}
-						} else {
-						$total = false;
+
+					if (!$option_data) {
+						$total = $this->currency->format($this->tax->calculate($boc_price, $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity'], $this->session->data['currency']);							
+					} else {
+						$option_total = 0;
+						foreach ($option_data as $option) {
+							if ($option['value_price_prefix'] == '+') {
+								$option_total += (float)$option['value_price_value'];
+							} else if ($option['value_price_prefix'] == '-') {
+								$option_total -= (float)$option['value_price_value'];
+							}  else if ($option['value_price_prefix'] == '=') {
+								$option_total = (float)$option['value_price_value'];
+							}
+						}						
+
+						$total = $this->currency->format($this->tax->calculate($option_total, $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity'], $this->session->data['currency']);
 					}
+						
 					
 					$data['product'] = array (
 					'thumb'     	=> $image,
@@ -332,6 +327,7 @@
 						if ($location = $this->model_catalog_product->getProductStock($this->request->post['product_id'], $this->request->post['oneclick_location_id'])){
 							if ($location['quantity'] > 0){								
 								$data['location'] = $location;
+								$data['buyoneclick_button_order'] = $this->language->get('text_do_reserve');
 							}
 						}
 					}

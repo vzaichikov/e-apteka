@@ -1,9 +1,5 @@
 <?php
-	/*
-		@author Dmitriy Kubarev
-		@link   http://www.simpleopencart.com
-	*/
-		
+
 		class ModelToolSimpleApiCustom extends Model {			
 			private $leftShoreRegions = array('Дарницький','Деснянський','Дніпровський');
 
@@ -252,7 +248,6 @@
 					$riverSideAvailability = 'left';
 				}
 
-
 				if ($riverSideAvailability == 'right'){
 					$sql = "SELECT * FROM kyiv_streets WHERE riverside = 'R'";
 				} elseif ($riverSideAvailability == 'left'){
@@ -338,14 +333,15 @@
 				$values = [];
 				$this->load->model('localisation/location');
 				
-				$available_locations 		= $this->cart->getCurrentLocationsAvailableForPickup(['novaposhta_city_guid' => $novaposhta_city_guid], false, false);
+				$available_locations 		= $this->cart->getCurrentLocationsAvailableForPickup(['novaposhta_city_guid' => $novaposhta_city_guid]);
 				$cart_has_narcotic_drugs 	= $this->cart->getIfCartHasNarcoticDrugs();
 				$cart_has_preorder 			= $this->cart->getIfCartHasPreorder();
+				$cart_can_be_sent_np 		=  $this->cart->getIfCartIsOnStockInDrugstoresWhichCanSendNP();
 
 				if ($cart_has_narcotic_drugs){
-					$all_locations 				= $this->model_localisation_location->getLocationsGood(['filter_can_sell_drugs' => true]);
+					$all_locations 				= $this->model_localisation_location->getLocationsGood(['filter_can_sell_drugs' => true, 'novaposhta_city_guid' => $novaposhta_city_guid]);
 				} else {
-					$all_locations 				= $this->model_localisation_location->getLocationsGood();
+					$all_locations 				= $this->model_localisation_location->getLocationsGood(['novaposhta_city_guid' => $novaposhta_city_guid]);
 				}				
 
 				$stock_locations = $not_stock_locations = [];
@@ -353,12 +349,10 @@
 					if (in_array($location['location_id'], $available_locations)){
 						$stock_locations[] = $location;
 					} else {
-						$not_stock_locations[] = $location;
+						if ($location['can_free_stocks'] && $cart_can_be_sent_np){
+							$not_stock_locations[] = $location;
+						}						
 					}
-				}
-
-				if (!$this->cart->getIfEnableLogicDeliverFromAny()){
-					$not_stock_locations = [];
 				}
 
 				unset($location);
@@ -401,6 +395,15 @@
 				foreach ($not_stock_locations as $location){
 					$name = '<b class="drugstore-radio-head grey">';
 
+					if (!empty($this->registry->get('branding')[$location['brand']])){
+						$icon = HTTPS_SERVER . 'image/brand/marker-icon-'. $this->registry->get('branding')[$location['brand']] .'.png';
+						$logo = HTTPS_SERVER . 'image/brand/marker-icon-'. $this->registry->get('branding')[$location['brand']] .'.svg';
+					} else {
+						$icon = HTTPS_SERVER . 'image/brand/marker-icon-brand-default.png';
+						$logo = HTTPS_SERVER . 'image/brand/marker-icon-brand-default.svg';
+					}	
+
+					$name .= '<img src="'. $logo .'" height="15px" width="15px"> ';
 					$name .= $location['name'];
 					$name .= '</b>';
 					//$name .= '<br /><small class="text-success"><b>' . $this->language->get('text_we_work_while_no_light') . '</b></small>';
@@ -409,7 +412,7 @@
 					if ($cart_has_preorder){
 						$name .= '<span class="text text-warning "><i class="fa fa-clock-o" aria-hidden="true"></i> ' . sprintf($this->language->get('products_available_later'), date('d.m', strtotime('+4 days'))) . '</span>';	
 					} else {
-						$name .= '<span class="text text-warning "><i class="fa fa-clock-o" aria-hidden="true"></i> ' . sprintf($this->language->get('products_available_later'), date('d.m', strtotime('+2 days'))) . '</span>';
+						$name .= '<span class="text text-warning "><i class="fa fa-clock-o" aria-hidden="true"></i> ' . sprintf($this->language->get('products_available_later'), date('d.m', strtotime('+3 days'))) . '</span>';
 					}
 									
 					$values[] = array(

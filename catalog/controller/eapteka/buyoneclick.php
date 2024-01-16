@@ -10,22 +10,41 @@
 
 			$this->response->setOutput($result);
 		}
-		
+
 		public function submit() {
-			$buyoneclick = $this->config->get('buyoneclick');
-			$buyoneclick_exan_status = $buyoneclick['exan_status'];
-			$buyoneclick_success_type = $buyoneclick['success_type'];
+			$this->load->language('extension/module/buyoneclick');
+
+			if (isset($this->request->post['boc_phone'])) {
+				$phone = $this->request->post['boc_phone'];
+				} else {
+				$phone = $this->customer->getTelephone();
+			}
+
+			$this->load->model('tool/simpleapimain');
+
+			if (!$this->model_tool_simpleapimain->checkTelephone($phone)){
+				$json = ['error' => $this->language->get('buyoneclick_error_telephone')];
+
+				$this->response->addHeader('Content-Type: application/json');
+				$this->response->setOutput(json_encode($json));
+			} else {
+				$this->order();
+			}
+		}
+		
+		public function order() {
+			$buyoneclick 				= $this->config->get('buyoneclick');
+			$buyoneclick_exan_status 	= $buyoneclick['exan_status'];
+			$buyoneclick_success_type 	= $buyoneclick['success_type'];
 			
 			$data['logged'] = $this->customer->isLogged();
 			
-			$customer_id = $this->customer->isLogged();
-			$customer_group_id = $this->customer->getGroupId();
+			$customer_id 		= $this->customer->isLogged();
+			$customer_group_id 	= $this->customer->getGroupId();
 			
-			$firstname = $this->customer->getFirstName();
-			$lastname = $this->customer->getLastName();
-			$email = $this->customer->getEmail()?$this->customer->getEmail():'';
-			
-		
+			$firstname 	= $this->customer->getFirstName();
+			$lastname 	= $this->customer->getLastName();
+			$email 		= $this->customer->getEmail()?$this->customer->getEmail():'';			
 			
 			if (isset($this->request->post['boc_phone'])) {
 				$phone = $this->request->post['boc_phone'];

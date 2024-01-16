@@ -302,8 +302,7 @@
 					setcookie('recently_viewed', $recently_viewed, 0, '/', $this->request->server['HTTP_HOST']);
 					
 				}
-				
-				//Акции				
+		
 				$this->load->model('catalog/ochelp_special');
 				$data['current_action'] = $this->model_catalog_ochelp_special->getActiveSpecialByProduct($product_info['product_id']);
 				
@@ -802,19 +801,18 @@
 								
 				$data['disable_map'] = $data['is_mobile'] = $this->mobileDetect->isMobile();
 
-				//DELIVERY && PAYMENT
-				$data['delivery_title_kyiv'] = $this->language->get('delivery_title_kyiv');
+				$data['delivery_title_kyiv'] 	= $this->language->get('delivery_title_kyiv');
 				$data['delivery_title_ukraine'] = $this->language->get('delivery_title_ukraine');
 				$data['delivery_title_payment'] = $this->language->get('delivery_title_payment');
 
-				$data['delivery_text_kyiv'] = $this->language->get('delivery_text_kyiv');
-				$data['delivery_text_payment'] = $this->language->get('delivery_text_payment');
+				$data['delivery_text_kyiv'] 		= $this->language->get('delivery_text_kyiv');
+				$data['delivery_text_payment'] 		= $this->language->get('delivery_text_payment');
 
 				if (!$product_info['no_shipping'] && !$product_info['no_payment']){
 					$data['delivery_text_ukraine'] = $this->language->get('delivery_text_ukraine');					
 				} else {
-					$data['delivery_text_kyiv'] = $this->language->get('delivery_text_kyiv_receipt');
-					$data['delivery_text_payment'] = $this->language->get('delivery_text_payment_receipt');
+					$data['delivery_text_kyiv'] 	= $this->language->get('delivery_text_kyiv_receipt');
+					$data['delivery_text_payment'] 	= $this->language->get('delivery_text_payment_receipt');
 				}
 
 				
@@ -886,7 +884,6 @@
 				
 				$data['gtin'] = $product_info['ean'];
 				
-				//Коллекция
 				$data['collection'] = false;
 				$data['collection_products'] = false;
 				$data['text_all_collection_products'] = $this->language->get('text_all_collection_products');
@@ -1121,15 +1118,13 @@
 					$json['error'] = $this->language->get('error_rating');
 				}
 				
-				// Captcha
 				if ($this->config->get($this->config->get('config_captcha') . '_status') && in_array('review', (array)$this->config->get('config_captcha_page'))) {
 					$captcha = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha') . '/validate');
 					
 					if ($captcha) {
 						$json['error'] = $captcha;
 					}
-				}
-				
+				}				
 				
 				if (!isset($json['error'])) {
 					$this->load->model('catalog/review');

@@ -1116,10 +1116,22 @@
 				'quantity' 	 => $query_total->row['total'],
 				'drugstores' => $query_drugstores->row['total'],
 			];
-		}		
+		}	
 		
 		public function getProductStocks($product_id, $cached = false, $in_stock = false){
-			$sql = "SELECT s.*, ld.*, l.gmaps_link, l.can_sell_drugs, l.brand, l.geocode, l.information_id, p.tax_class_id, p.is_preorder, p.is_pko, p.is_drug FROM oc_stocks s
+			$sql = "SELECT s.*, 
+			ld.*, 
+			l.gmaps_link, 
+			l.can_sell_drugs, 
+			l.can_free_stocks,
+			l.can_send_np,
+			l.brand, 
+			l.geocode, 
+			l.information_id, 
+			p.tax_class_id, 
+			p.is_preorder, 
+			p.is_pko, 
+			p.is_drug FROM oc_stocks s
 			LEFT JOIN oc_location l ON s.location_id = l.location_id 
 			LEFT JOIN oc_location_description ld ON l.location_id = ld.location_id 
 			LEFT JOIN oc_product p ON p.product_id = s.product_id
@@ -1290,7 +1302,10 @@
 					$option_special = false;
 					if (!empty($product['special'])){					
 						$option_special =  round($product['special'] / $product['count_of_parts'], 2);
-						$product_option_value['price'] = $product_option_value['price_retail'];
+						$option_special =  round($product['special'] / $product['count_of_parts'], 2);
+						if ($product_option_value['price_retail'] > 0){
+							$product_option_value['price'] = $product_option_value['price_retail'];							
+						}
 					}
 					
 					$product_option_value_data[] = array(
