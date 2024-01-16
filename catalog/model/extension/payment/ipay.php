@@ -25,12 +25,20 @@ class ModelExtensionPaymentiPay extends Model {
 			$description    = '';
 			$text_danger 	= $this->language->get('ipay_text_danger');
 		}
-		
-		//Невозможность оплаты в случае необходимости разделять заказ
-		if (!$this->cart->getCurrentLocationsAvailableForPickup($address)){
-			$status = false;
-			$dummy  = true;
-		}
+
+		if (!empty($this->session->data['shipping_method']) && !empty($this->session->data['shipping_method']['code']) && $this->session->data['shipping_method']['code'] == 'pickup.pickup'){
+			if (!$this->cart->getCurrentLocationsAvailableForPickup($address)){
+				$status = false;
+				$dummy  = true;
+			}			
+		}		
+
+		if (!$this->cart->getIfCartIsOnStockInDrugstoresWhichCanSendNP()){	
+			if (!$this->cart->getIfCartIsOnlyInStockInDrugstoresWhichCanNotSendNP()){
+				$status = false;
+				$dummy  = true;
+			}		
+		}		
 
 		$method_data = array();
 

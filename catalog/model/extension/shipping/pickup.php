@@ -2,6 +2,8 @@
 class ModelExtensionShippingPickup extends Model {
 	function getQuote($address) {
 		$this->load->language('extension/shipping/pickup');
+		$this->load->model('localisation/location');
+		$this->load->model('tool/simpleapicustom');
 		
 		$query = $this->db->query("SELECT * FROM oc_zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('pickup_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 		
@@ -13,16 +15,14 @@ class ModelExtensionShippingPickup extends Model {
 			$status = false;
 		}
 
-		$status = true;
+		$status = false;
 		
-		$method_data = array();		
+		$method_data = array();				
 
-		$locations = $this->cart->getCurrentLocationsAvailableForPickup($address);
-
-		if ($status == true && (!empty($address['novaposhta_city_guid'] || !empty($address['city'])))){	
-			if (!$locations){								
-				$status = false;
-			}		
+		if (!$status && !empty($address['novaposhta_city_guid'])){
+			if ($this->model_tool_simpleapicustom->getCurrentLocationsAvailableForPickup($address['novaposhta_city_guid'])){
+				$status = true;
+			}
 		}
 		
 		if (!$this->cart->getIfEnableLogicDeliverFromAny()){			

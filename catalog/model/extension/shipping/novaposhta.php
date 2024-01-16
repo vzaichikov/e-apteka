@@ -233,12 +233,18 @@
 					if (!$this->cart->getIfOneLocationIsCurrentlyAvailableForPickup(7, true)){			
 						$dummy = true;
 					}
+
+					if (!$this->cart->getIfCartIsOnStockInDrugstoresWhichCanSendNP()){	
+						if (!$this->cart->getIfCartIsOnlyInStockInDrugstoresWhichCanNotSendNP()){
+							$dummy = true;
+						}		
+					}
 					
 					$quote_data[$code] = array(
                     'code'				=> 'novaposhta.' . $code,
                     'title'				=> $description,
                     'img'				=> $img,
-                    'cost'				=> 0,//$cost,
+                    'cost'				=> 0,
                     'tax_class_id'		=> $method['tax_class_id'],
 					'dummy'				=> $dummy,
                     'text'				=> $text,                    

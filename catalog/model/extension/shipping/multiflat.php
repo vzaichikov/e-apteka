@@ -1,7 +1,5 @@
 <?php
 	class ModelExtensionShippingMultiFlat extends Model {
-		private $weCanDeliverEvenFromNonStockDrugstores = true;
-
 		function getQuote($address) {
 			$status = false;
 			$multiflats = $this->config->get('multiflat');
@@ -16,7 +14,7 @@
 				if (!$flat['geo_zone_id']) {
 					$status = true;
 					} else {
-					$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$flat['geo_zone_id'] . "'" . " AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
+					$query = $this->db->query("SELECT * FROM oc_zone_to_geo_zone WHERE geo_zone_id = '" . (int)$flat['geo_zone_id'] . "'" . " AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 					if ($query->num_rows) {
 						$status = true;
 						} else {
@@ -39,14 +37,12 @@
 				
 			}
 			
-			$method_data = array();
-			
-			//$cart_weight = $this->cart->getWeight();
+			$method_data = [];
 			$cart_total = $this->cart->getTotal();		
 			
 			if ($status) {
-				$quote_data = array();
-				$sort_order = array();
+				$quote_data = [];
+				$sort_order = [];
 				
 				foreach ($multiflats as $i => $flat) {
 					if (!$flat['status']) {
@@ -85,7 +81,7 @@
 						}
 						$product_sql .= ')';
 						
-						$check_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE category_id = '" . (int)$flat['category_id'] . "' AND " . $product_sql);
+						$check_query = $this->db->query("SELECT * FROM oc_product_to_category WHERE category_id = '" . (int)$flat['category_id'] . "' AND " . $product_sql);
 						
 						$excluded_cat = $check_query->num_rows;
 					}
@@ -121,45 +117,45 @@
 
 					/*
 					Если мы можем доставлять даже при отсутствии в любой аптеке
-					*/
-					if ($this->weCanDeliverEvenFromNonStockDrugstores){
-					
-						//	Первый способ - обычная курьерская доставка						
-						if ($i == 0){
-
-						//	Нет ни в 4, ни в 5 аптеках, нам нужно время чтоб собрать
-							if (!$rightSide && !$leftSide){
+					*/				
+					//Первый способ - обычная курьерская доставка						
+					if ($i == 0){
+						//Нет ни в 4, ни в 5 аптеках, нам нужно время чтоб собрать
+						if (!$rightSide && !$leftSide){
+							if ($this->cart->getIfCartIsOnStockInDrugstoresWhichCanSendNP()){
 								$text_info   = '';
 								$text_info = $this->language->get('text_defer_both');
-							}
-
-						//Нету в 5, но есть в 4
-							if (!$rightSide && $leftSide){
-								$text_info = $this->language->get('text_defer_right_riverside');
-							}
-
-						//Нету в 4, но есть в 5
-							if ($rightSide && !$leftSide) {
-								$text_info = $this->language->get('text_defer_left_riverside');
-							}
+							} else {
+								$dummy = true;
+							}						
 						}
 
-						 
+						//Нету в 5, но есть в 4
+						if (!$rightSide && $leftSide){
+							$text_info = $this->language->get('text_defer_right_riverside');
+						}
+
+						//Нету в 4, но есть в 5
+						if ($rightSide && !$leftSide) {
+							$text_info = $this->language->get('text_defer_left_riverside');
+						}
+					}
+
+					
 						//Экспресс-доставка, мы можем доставлять ВСЕ ТОВАРЫ только по конкретному берегу, либо вообще не доставлять, если нет в наличии в 4 и 5 всех вместе						
-						if ($i == 1){							
+					if ($i == 1){							
 							//	Нет ни в 4, ни в 5 аптеках, отключаем
-							if (!$rightSide && !$leftSide){
+						if (!$rightSide && !$leftSide){
 							//	$text_danger2 = $this->language->get('text_danger_nosides');
-								$dummy = true;
-							}
+							$dummy = true;
+						}
 
-							if ($rightSide && !$leftSide){
-								$text_danger2 = $this->language->get('text_danger_rightSide');
-							}
+						if ($rightSide && !$leftSide){
+							$text_danger2 = $this->language->get('text_danger_rightSide');
+						}
 
-							if (!$rightSide && $leftSide){
-								$text_danger2 = $this->language->get('text_danger_leftSide');
-							}
+						if (!$rightSide && $leftSide){
+							$text_danger2 = $this->language->get('text_danger_leftSide');
 						}
 					}
 
@@ -208,8 +204,19 @@
 				$text_danger 	= false;
 				$text_info 		= false;
 
-				if (!$this->weCanDeliverEvenFromNonStockDrugstores) {					
+				$all_dummy = true;
+				foreach ($quote_data as $quote){
+					if (!$quote['dummy']){
+						$all_dummy = false;
+					}
+				}
+
+				if (!$this->cart->getIfWeCanDeliverEvenFromNonStockDrugstores()) {										
 					$text_info 		= $this->language->get('text_info_all');
+
+					if ($all_dummy){
+						$text_info = '';
+					}
 
 					if ($rightSide && !$leftSide){
 						$text_danger = $this->language->get('text_danger_rightSide');
