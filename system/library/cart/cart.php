@@ -4,7 +4,9 @@
 		private $data = [];
 		private $openedStores = [];
 
-		private $enableLogicDeliverFromAny = false;
+		private $enableLogicDeliverFromAny 				= true;
+		private $weCanDeliverEvenFromNonStockDrugstores = false;
+
 		private $defaultCityRef 	= '8d5a980d-391c-11dd-90d9-001a92567626';
 		private $defaultCityNames 	= ['киев','київ'];
 		
@@ -54,6 +56,10 @@
 
 		public function getIfEnableLogicDeliverFromAny(){
 			return $this->enableLogicDeliverFromAny;
+		}
+
+		public function getIfWeCanDeliverEvenFromNonStockDrugstores(){
+			return $this->weCanDeliverEvenFromNonStockDrugstores;
 		}
 
 		public function getDefaultCityRef(){
@@ -235,13 +241,22 @@
 					}
 					
 					$price 			= $product_query->row['price'];
-					$price_retail 	= $product_query->row['price_retail'];	
+					if ($product_query->row['price_retail'] > 0){
+						$price_retail 	= $product_query->row['price_retail'];
+					} else {
+						$price_retail 	= $product_query->row['price'];
+					}	
 
 					$product_special_query = $this->db->query("SELECT price, type FROM oc_product_special WHERE product_id = '" . (int)$cart['product_id'] . "' AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((date_start = '0000-00-00' OR date_start < NOW()) AND (date_end = '0000-00-00' OR date_end > NOW())) ORDER BY priority ASC, price ASC LIMIT 1");
 
 					if ($product_special_query->num_rows){
-						$price 			= $price_retail;
-						$option_price 	= $option_price_retail;
+						if ($price_retail > 0){
+							$price 			= $price_retail;
+						}
+
+						if ($option_price_retail > 0){
+							$option_price 	= $option_price_retail;
+						}												
 					}
 					
 					if ($option_price){
@@ -249,8 +264,7 @@
 					}
 					
 					$general_price = false;
-					
-					//Overload Location Price
+
 					if (isset($this->session->data['shipping_method']) && $this->session->data['shipping_method']['code'] == 'pickup.pickup' && ($cart['location_id'] || !empty($this->session->data['pickup_location_id']))){
 						
 						$_location_id = $cart['location_id'];
@@ -482,16 +496,82 @@
 
 			return in_array($location_id, $locations);
 		}
+
+		public function getIfCartIsOnlyInStockInDrugstoresWhichCanNotSendNP(){		
+			$products = $this->getProducts();
+			
+			foreach ($products as $value){
+				if (!$this->getIfProductIsOnStockInDrugstoresWhichCanNotSendNP($value['product_id'], $value['quantity'])){
+					return false;
+				}
+			}
+			
+			return true;
+		}
+
+		public function getIfCartIsOnStockInDrugstoresWhichCanSendNP(){		
+			$products = $this->getProducts();
+			
+			foreach ($products as $value){
+				if (!$this->getIfProductIsOnStockInDrugstoresWhichCanSendNP($value['product_id'], $value['quantity'])){
+					return false;
+				}
+			}
+			
+			return true;
+		}
+
+		public function getIfProductIsOnStockInDrugstoresWhichCanSendNP($product_id, $quantity = 0){		
+			$sql = "SELECT s.*, 
+			l.location_id
+			FROM oc_stocks s
+			LEFT JOIN oc_location l ON s.location_id = l.location_id 			
+			WHERE s.product_id = '" . (int)$product_id . "' AND s.quantity ";
+
+			if ($quantity > 0) {
+				$sql .= " >= "; 
+			} else {
+				$sql .= " > ";
+			}
+
+			$sql .= "'" . (int)$quantity . "' AND l.can_send_np = 1";
+
+
+			$query = $this->db->ncquery($sql);
+
+			return $query->num_rows;
+		}
+
+		public function getIfProductIsOnStockInDrugstoresWhichCanNotSendNP($product_id, $quantity = 0){		
+			$sql = "SELECT s.*, 
+			l.location_id
+			FROM oc_stocks s
+			LEFT JOIN oc_location l ON s.location_id = l.location_id 			
+			WHERE s.product_id = '" . (int)$product_id . "' AND s.quantity ";
+
+			if ($quantity > 0) {
+				$sql .= " >= "; 
+			} else {
+				$sql .= " > ";
+			}
+
+			$sql .= "'" . (int)$quantity . "' AND l.can_send_np = 0";
+
+
+			$query = $this->db->ncquery($sql);
+
+			return $query->num_rows;
+		}
 		
-		public function getCurrentLocationsAvailableForPickup($address = [], $return_ids = false, $return_with_names = false){
-			$location_data = []; 
-			$available_locations = [];
+		public function getCurrentLocationsAvailableForPickup($address = []){
+			$location_data 			= []; 
+			$available_locations 	= [];
 			$first_time = true;
 			
 			foreach ($this->getProducts() as $value) {				
 				$product_available_locations = [];
 
-				$sql = "SELECT s.location_id, s.price, l.can_sell_drugs, p.is_drug, p.is_pko
+				$sql = "SELECT s.location_id, s.price, l.can_sell_drugs,  l.can_free_stocks, p.is_drug, p.is_pko
 				FROM oc_stocks s 
 				JOIN oc_location l ON s.location_id = l.location_id
 				LEFT JOIN oc_product p ON s.product_id = p.product_id				
@@ -500,19 +580,38 @@
 
 				if (!empty($address) && (!empty($address['novaposhta_city_guid']) || !empty($address['city']))){
 					if (!empty($address['novaposhta_city_guid']) && !empty($address['city'])){
-						$sql .= " AND (l.city_id = '" . $this->db->escape($address['novaposhta_city_guid']) . "' OR LOWER(l.city) = '" . $this->db->escape(mb_strtolower($address['city'])) . "')";	
+						$sql .= " AND ( ";
+						$sql .= " l.city_id = '" . $this->db->escape($address['novaposhta_city_guid']) . "' OR LOWER(l.city) = '" . $this->db->escape(mb_strtolower($address['city'])) . "'";
+
+						if (in_array(mb_strtolower($address['city']), $this->defaultCityNames) || $address['novaposhta_city_guid'] == $this->defaultCityRef){
+							$sql .= " OR LOWER(l.address) LIKE '%київська обл.%' ";
+						}
+
+						$sql .= " ) ";	
 					} elseif (!empty($address['novaposhta_city_guid']) && empty($address['city'])){
-						$sql .= " AND (l.city_id = '" . $this->db->escape($address['novaposhta_city_guid']) . "')";	
+						$sql .= " AND ( ";
+						$sql .= " l.city_id = '" . $this->db->escape($address['novaposhta_city_guid']) . "'";
+
+						if ($address['novaposhta_city_guid'] == $this->defaultCityRef){
+							$sql .= " OR LOWER(l.address) LIKE '%київська обл.%' ";
+						}
+
+						$sql .= " ) ";	
 					} elseif (empty($address['novaposhta_city_guid']) && !empty($address['city'])){
-						$sql .= " AND (LOWER(l.city) = '" . $this->db->escape(mb_strtolower($address['city'])) . "')";	
+						$sql .= " AND ( ";
+						$sql .= " LOWER(l.city) = '" . $this->db->escape(mb_strtolower($address['city'])) . "'";
+
+						if (in_array(mb_strtolower($address['city']), $this->defaultCityNames)){
+							$sql .= " OR LOWER(l.address) LIKE '%київська обл.%' ";
+						}
+
+						$sql .= " ) ";		
 					}					
-				}
+				}			
 
 				$sql .= " AND l.temprorary_closed = 0 
 				AND s.product_id = '" . (int)$value['product_id'] . "' 
-				AND s.quantity >= '" . $value['quantity'] . "'";
-
-				//var_dump($sql);				
+				AND (s.quantity >= '" . $value['quantity'] . "')";	
 
 				$location_query = $this->db->query($sql);	
 
@@ -533,16 +632,7 @@
 				
 				$first_time = false;			
 			}
-						
-			if ($return_ids){
-				$temp_available_locations = [];
-				foreach ($available_locations as $location){
-					$temp_available_locations[] = $location['location_id'];
-				}
-
-				return $temp_available_locations;
-			}
-			
+									
 			return $available_locations;
 		}
 
