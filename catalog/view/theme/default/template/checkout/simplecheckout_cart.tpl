@@ -24,14 +24,22 @@
                 <?php } ?>
 				<tr>
 					<td colspan="3" class="name">
-						<a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>                        
+						<a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>     
+
+                         <?php if ($product['text_can_be_only_picked_up']) { ?>
+                            <div><small class="text text-danger"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> <?php echo $product['text_can_be_only_picked_up']; ?></small></div>
+                        <?php } ?>                   
 
                         <?php if ($product['stocks']) { ?>
                             <?php foreach ($product['stocks'] as $stock) { ?>
                                 <div><small class="text text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> <?php echo $stock['name'];?>: доступно <?php echo $stock['stock']; ?> шт.</small></div>
                             <?php } ?>
-                        <?php } elseif ($product['tai_drugstores']) { ?>
-                                 <div><small class="text text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> <?php echo $product['tai_drugstores']; ?></small></div>
+                        <?php } elseif ($product['text_available_in_drugstores']) { ?>
+                                 <div><small class="text text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> <?php echo $product['text_available_in_drugstores']; ?></small></div>
+                        <?php } ?>
+
+                        <?php if ($product['text_not_available_in_selected_drugstore']) { ?>
+                            <div><small class="text text-danger"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> <?php echo $product['text_not_available_in_selected_drugstore']; ?></small></div>
                         <?php } ?>
 
                         <?php if ($product['is_preorder']) { ?>

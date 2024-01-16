@@ -19,7 +19,8 @@
 		<link rel="dns-prefetch" href="//img3.e-apteka.com.ua">
 		<link rel="dns-prefetch" href="//img4.e-apteka.com.ua">
 		
-		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link rel="preconnect" href="//img.e-apteka.com.ua">
 		<link rel="preconnect" href="//img0.e-apteka.com.ua">
 		<link rel="preconnect" href="//img1.e-apteka.com.ua">
@@ -49,7 +50,8 @@
 			<?php } ?>
 		<?php } ?>
 		
-		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="google-site-verification" content="Xj1IBpEpxR3c0bhDSGoxF0YtNpcn5qYkZ8pbbaa_5oE" />
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title><?php echo $title; ?></title>
 		<base href="<?php echo $base; ?>" />
@@ -85,10 +87,7 @@
 		<?php } ?>
 
 		<script src="/catalog/view/javascript/jquery/jquery-2.1.1.min.js" type="text/javascript"></script>
-		<link href="/catalog/view/theme/default/stylesheet/bootstrap.min.css" rel="stylesheet" media="screen" />
-		<script src="/catalog/view/javascript/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-		
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+		<script src="/catalog/view/javascript/bootstrap/js/bootstrap.min.js" type="text/javascript" async></script>
 
 		<?php foreach ($links as $link) { ?>
 			<link href="<?php echo $link['href']; ?>" rel="<?php echo $link['rel']; ?>" />
@@ -252,14 +251,7 @@
 											<?php } ?>
 										</li>
 
-										<script>
-											var copyCart = function(returnData){
-												$('#mobile-cart').html(returnData);
-											}
-											var copyСustomer = function(returnData){
-												$('#mobile-customer').html(returnData);
-											}
-										</script>
+									
 										<li id="wide-cart" class="ajax-module-reloadable" data-modpath="common/cart/info" data-afterload="copyCart"></li>
 									</ul>
 								</div>
@@ -505,6 +497,8 @@
 				<?php } ?>
 			</header>  <!-- /.site__header -->
 			<div class="site__content">
+						<link href="/catalog/view/theme/default/stylesheet/bootstrap.min.css" rel="stylesheet" media="screen" />
+
 				<link href="<?php echo $general_minified_css_uri; ?>" rel="stylesheet" type="text/css" />
 				<?php if (!empty($added_minified_css_uri)) { ?>
 					<link href="<?php echo $added_minified_css_uri; ?>" rel="stylesheet" type="text/css" />
@@ -513,6 +507,8 @@
 				<?php /* foreach ($styles as $style) { ?>
 					<link href="<?php echo $style['href']; ?>" type="text/css" rel="<?php echo $style['rel']; ?>" media="<?php echo $style['media']; ?>" />
 				<?php } */ ?>
+
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 				
 				<?php if (!empty($general_minified_js_uri)) { ?>
 					<script src="<?php echo $general_minified_js_uri; ?>" type="text/javascript"></script>
@@ -580,3 +576,11 @@
 					display: block;
 					}
 				</style>				
+				<script>
+					var copyCart = function(returnData){
+						$('#mobile-cart').html(returnData);
+					}
+					var copyСustomer = function(returnData){
+						$('#mobile-customer').html(returnData);
+					}
+				</script>

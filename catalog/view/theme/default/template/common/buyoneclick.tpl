@@ -150,6 +150,8 @@
 								<span class="input-group-addon"><i class="fa fa-fw fa-phone-square" aria-hidden="true"></i></span>
 								<input id="boc_phone" class="form-control<?php if ($buyoneclick_field2_required) { echo ' required';} ?>" type="tel" name="boc_phone" placeholder="<?php if ($buyoneclick_validation_type) { echo $buyoneclick_validation_type; } else { echo $buyoneclick_field2_title; } ?>"<?php if ($buyoneclick_validation_type) {echo ' data-pattern="true"';} else {echo ' data-pattern="false"';} ?> value="<?php echo (isset($customer_info) && $customer_info['telephone'] != '') ? $customer_info['telephone'] : ''; ?>" >
 							</div>
+							<div class="col-mb-10 input-group text-danger" style="display:none;" id="boc_phone_error">
+							</div>
 						<?php } ?>
 						<?php if ($buyoneclick_field3_status) { ?>
 							<div class="col-mb-10 input-group<?php if ($buyoneclick_field3_required) { echo ' has-warning';} ?>">

@@ -76,7 +76,6 @@ $(document).ready(function() {
 
 	$('body').on('submit','#boc_form', function(event) {
 		event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-		if(!formValidation(event.target)){return false;}
 		var sendingForm = $(this);
 		var submit_btn = $(this).find('button[type=submit]');
 		var value_text = $(submit_btn).text();
@@ -95,8 +94,9 @@ $(document).ready(function() {
 				$(submit_btn).button('reset');
 			},
 			success: function(json) {
-				console.log('Fastorder success, from footer happened!');
 				if (json['success']) {
+					console.log('Fastorder success, from footer happened!');
+
 					var success = true;
 					$(sendingForm).trigger('reset');
 					$(submit_btn).removeClass('waiting');
@@ -114,6 +114,13 @@ $(document).ready(function() {
 					});
 
 					$('#ecommerce-result').load('index.php?route=checkout/success&ecommerce=true');
+				} else {
+					console.log('Fastorder error, from footer happened!');
+
+					$('#boc_phone_error').text(json['error']).show();
+					$(submit_btn).removeClass('waiting');
+					$(submit_btn).text(value_text);
+					$(submit_btn).prop( 'disabled', false );
 				}
 			},
 			error: function(xhr, ajaxOptions, thrownError) {
@@ -151,11 +158,9 @@ function formValidation(formElem){
 	}
 
 	$(formElem).find('input[name="boc_phone"]').each(function() {
-				// console.log('phone testing');
 				var pattern = new RegExp(/^(\(?\+?[0-9]*\)?)?[0-9_\- \(\)]*$/);
 				var data_pattern = $(this).attr('data-pattern');
 				var data_placeholder = $(this).attr('placeholder');
-				// console.log(pattern.test($(this).val()));
 				if(!pattern.test($(this).val()) || $.trim($(this).val()) == '' ){
 					console.log('NON valid phone!');
 					$('input[name="boc_phone"]').parent().addClass('has-error');
@@ -211,8 +216,6 @@ function callFastOrderPopup(btnClicked){
 				if (json['error']['recurring']) {
 					$('select[name=\'recurring_id\']').after('<div class="text-danger">' + json['error']['recurring'] + '</div>');
 				}
-
-						// Highlight any found errors
 						$('.text-danger').parent().addClass('has-error');
 					} else {
 						$("#boc_order").modal('show');
@@ -225,10 +228,6 @@ function callFastOrderPopup(btnClicked){
 					console.log(thrownError + " | " + xhr.statusText + " | " + xhr.responseText);
 				}
 			});
-
-
-
-
 }
 
 $(document).ready(function() {	
@@ -252,7 +251,6 @@ $(document).ready(function() {
 				if (json['redirect']) {
 					location = json['redirect'];
 				} else {
-							// console.log(json);
 							$("#boc_order").modal('show');
 							$('#boc_order').empty();
 							$('#boc_order').html(json['success']);
@@ -373,10 +371,8 @@ $(document).ready(function() {
 											max-width: 100% !important;
 										}
 									</style>
-
-									<script src="https://apis.google.com/js/platform.js?onload=renderBadge" async defer></script>
+									
 									<div id="ratingBadgeContainer" class="footer__ratingbadgecontainer"></div>
-
 									<script>
 										window.renderBadge = function() {
 											var ratingBadgeContainer = document.getElementById('ratingBadgeContainer');								
@@ -387,11 +383,8 @@ $(document).ready(function() {
 												});
 											}
 										}
-
-										$(document).ready(function(){
-											renderBadge();
-										});
 									</script>
+									<script src="https://apis.google.com/js/platform.js?onload=renderBadge" async defer></script>
 								</div>						
 							</div>
 						</div>
@@ -587,7 +580,7 @@ $(document).ready(function() {
 				catalog_list_clone = catalog_list.cloneNode(true);
 
 				btnCatalog.classList.add('btn_mob_catalog');
-				btnCatalog.innerHTML = 'Каталог товаров';
+				btnCatalog.innerHTML = '<?php echo $text_catalogue_btn; ?>';
 				btnCatalog.onclick = function(){
 					mob_catalog_wrap.style.display = 'block';
 					return false;

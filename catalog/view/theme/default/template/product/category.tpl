@@ -1,6 +1,6 @@
 <?php echo $header; ?>
 
-<?php if(isset($seo)){ ?>
+<?php if(isset($seo) && !empty($seo['offerCount'])){ ?>
 	<script type="application/ld+json">
 		{
 			"@context": "http://schema.org/",

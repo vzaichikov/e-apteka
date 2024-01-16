@@ -48,7 +48,11 @@
 				</td>
 
 				<td style="white-space: nowrap;" class="hidden-xs <?php echo $stock['text_class']; ?>">
-					<b><?php echo $stock['stock_text']; ?></b>
+					<b>
+						<?php if (!$stock['stock']) { ?><small><?php } ?>
+						<?php echo $stock['stock_text']; ?>	
+						<?php if (!$stock['stock']) { ?></small><?php } ?>						
+					</b>
 				</td>
 
 				<td style="white-space: nowrap;" class="text-right">					

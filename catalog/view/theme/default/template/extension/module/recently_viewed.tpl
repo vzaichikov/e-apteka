@@ -1,7 +1,7 @@
 <?php if ($products) { ?>
 <div class="wrap-slider container">
 	<div class="row">
-		<div class="slider-nav col-xs-12 col-sm-12 col-md-3">	
+		<div class="slider-nav col-xs-12 col-sm-12 col-md-12">	
 			<h3 class="title-slider">
 				<?php if($heading_title) { ?>
 					<?php echo $heading_title; ?>
@@ -20,7 +20,7 @@
 				</div>
 			</div>
 		</div>
-		<div  id="viewer-swiper-container" class="swiper swiper-container col-xs-12 col-sm-12 col-md-9">
+		<div  id="viewer-swiper-container" class="swiper swiper-container col-xs-12 col-sm-12 col-md-12">
 			<div class="swiper-wrapper">				
 				<?php foreach ($products as $product) { ?>
 					<?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single.tpl'); ?>

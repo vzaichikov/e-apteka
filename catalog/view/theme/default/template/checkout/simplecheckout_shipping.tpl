@@ -59,19 +59,19 @@
 								<div class="text text-info"><?php echo $shipping_method['text_info']; ?></div> 
 							<?php } ?>
 
-							<?php if (!empty($shipping_method['text_warning'])) { ?>
+							<?php if (false && !empty($shipping_method['text_warning'])) { ?>
 								<div class="alert alert-warning"><?php echo $shipping_method['text_warning']; ?></div> 
 							<?php } ?>
 
-							<?php if (!empty($shipping_method['text_danger'])) { ?>
+							<?php if (false && !empty($shipping_method['text_danger'])) { ?>
 								<div class="alert alert-danger"><?php echo $shipping_method['text_danger']; ?></div>
 							<?php } ?>
 
-							<?php if (!empty($shipping_method['text_danger2'])) { ?>
+							<?php if (false && !empty($shipping_method['text_danger2'])) { ?>
 								<div class="alert alert-danger"><?php echo $shipping_method['text_danger2']; ?></div>
 							<?php } ?>
 
-							<?php if (!empty($shipping_method['warning'])) { ?>
+							<?php if (false && !empty($shipping_method['warning'])) { ?>
 								<div class="simplecheckout-error-text"><?php echo $shipping_method['warning']; ?></div>
 							<?php } ?>
 

@@ -4,7 +4,7 @@
 
 <div class="wrap-slider container">
 	<div class="row">
-		<div class="slider-nav col-xs-12 col-sm-12 col-md-3">	
+		<div class="slider-nav col-xs-12 col-sm-12 col-md-12">	
 			<h3 class="title-slider">
 				<?php if($slider_title) { ?>
 					<?php echo $slider_title; ?>
@@ -23,7 +23,7 @@
 		</div>
 	</div>
 </div>
-<div class="swiper-container col-xs-12 col-sm-12 col-md-9">	
+<div class="swiper-container col-xs-12 col-sm-12 col-md-12">	
 	<div class="swiper-wrapper">				
 		<?php $sli=0; foreach ($slider_products as $product) { ?>
 			<?php $product['ecommerceData']['position'] = $sli; $sli++;  ?>

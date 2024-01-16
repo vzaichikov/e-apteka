@@ -1,7 +1,7 @@
 
 <div class="wrap-slider container featured_slider">
     <div class="row">
-        <div class="slider-nav col-xs-12 col-sm-12 col-md-3"> 
+        <div class="slider-nav col-xs-12 col-sm-12 col-md-12"> 
             <h3 class="title-slider">
                 <?php echo $heading_title; ?>          
             </h3>
@@ -18,7 +18,7 @@
         </div>
     </div>
 </div>
-<div class="swiper-container col-xs-12 col-sm-12 col-md-9"> 
+<div class="swiper-container col-xs-12 col-sm-12 col-md-12"> 
     <div class="swiper-wrapper">        
         <?php foreach ($products as $product) { ?>  
             <?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single_slider.tpl'); ?>

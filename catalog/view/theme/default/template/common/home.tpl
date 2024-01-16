@@ -6,12 +6,6 @@
 </div>
 
 
-
-
-
-
-
-
 <?php if(false) { ?>
 <div class="container">
   <div class="row"><?php echo $column_left; ?>

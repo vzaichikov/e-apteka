@@ -4494,8 +4494,7 @@ a.bbtn--small .icon {
     margin: 0 auto;
     border-radius: 20px;
 }
-.product-category-list.collection-list .product-layout__image img {
-    border-radius: 50%;
+.product-category-list.collection-list .product-layout__image img {    
     width: 204px;
     height: 204px;
     object-fit: cover;
@@ -9164,21 +9163,27 @@ label.el-checkbox {
 .featured_slider {
     margin-bottom: 20px;
 }
+.wrap-slider .slider-nav,
+.featured_slider .slider-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+.wrap-slider .slider-nav .slider-nav-btn .swiper-button-disabled{
+    opacity: 0.7;
+    cursor: default;
+    pointer-events: none;
+}
 .featured_slider .product-layout__caption .product-layout__name {
     display: block;
-}
-.wrap-slider .slider-nav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .wrap-slider .slider-nav .title-slider {
     font-size: 32px;
     font-weight: 500;
     line-height: 1.1em;
-    margin-bottom: 50px;
-    margin-top: 35px;
     text-align: center;
 }
 
@@ -9654,6 +9659,10 @@ label.el-checkbox {
     }
 }
 @media screen and (max-width: 556px) {
+    .wrap-slider .slider-nav,
+    .featured_slider .slider-nav {
+        flex-direction: column;
+    }
     .product-item  .product-layout__dl{
         gap: 5px;
     }
@@ -9748,6 +9757,32 @@ label.el-checkbox {
         grid-column-gap: 10px;
         padding: 15px 10px;
     }
+    .swiper-wrapper .product-item {
+        display: flex;
+        flex-direction: column;
+    }
+    .product-item.tmp_single_slider .product-layout__caption .product-layout__name__wrap{
+        height: auto;
+    }
+     .product-item  .product-layout__name__manufacturer{
+        font-size: 9px;
+    }
+    .product-item .price_group .price{
+        font-size: 16px;
+    }
+    .wrap-slider .swiper-container{
+        padding: 0;
+    }
+    .swiper-wrapper .product-item .button-group{
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .swiper-wrapper .product-item .button-group svg{
+        max-width: 25px;
+        fill: #afdfee;
+    }
+    
     .product-item .button-group {
         display: flex;
         flex-wrap: wrap;

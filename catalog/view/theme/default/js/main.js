@@ -650,10 +650,8 @@ $(document).ready(function () {
             lazy: true,
             breakpoints: {
                 320: {
-                    slidesPerView: 1,
-                },
-                450: {
-                    slidesPerView: 1,
+                    spaceBetween: 5,
+                    slidesPerView: 2,
                 },
                 556: {
                     slidesPerView: 2,

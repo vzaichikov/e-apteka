@@ -13,7 +13,7 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 		<?php } ?>
 		
 		<a href="<?php echo $product['href']; ?>" title="<?php echo strip_tags($product['name']); ?>" >
-			<img src="<?php echo $product['thumb']; ?>" alt="<?php echo strip_tags($product['name']); ?>" title="<?php echo strip_tags($product['name']); ?>" width="200" height="200" class="img-responsive swiper-lazy" loading="lazy">
+			<img src="<?php echo $product['thumb']; ?>" alt="<?php echo strip_tags($product['name']); ?>" title="<?php echo strip_tags($product['name']); ?>" width="200" height="200" class="img-responsive swiper-lazy" <?php if ($pli >= 4) { ?>loading="lazy" <? } ?>/>
 		</a>
 		<?php if (false /*!$is_mobile*/) { ?>
 			<?php if ($product['rating']) { ?>
