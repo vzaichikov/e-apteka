@@ -181,21 +181,51 @@ $restApp->get('/products/{id}', function (Request $request, Response $response, 
 
 
 /*
-    Point to add or modify some product data (this adds product to queue)
+    Point to add or modify some product data
 */
 $restApp->post('/products/', function (Request $request, Response $response, array $args) use ($modelProduct) {
+    $log = new \Log('rest-api/post-products.log');
     $body = $request->getBody()->getContents();
+    $log->write($body);
+
+
     $data = json_decode($body, true);
     if (!is_array($data)) {
         throw new HttpBadRequestException($request, "Invalid JSON body");
     }
 
-    $fileid     = date('Y-m-d-H-i-s') . mt_rand(0,10000) . '.json';
-    $filename   = __DIR__ . '/queue/product/' . $fileid;
-    file_put_contents($filename, json_encode($data));
+    if ($products = $modelProduct->parseProducts($data)){
+        $payload = ['success' => true, 'data' => $products];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');        
+    } else {
+        throw new HttpNotFoundException($request, 'Some error happened!');
+    } 
 
-    $payload = ['success' => true, 'message' => 'Added data to queue at ' . $fileid];
-    $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+/*
+    Point to add or modify some product data
+*/
+$restApp->post('/ehealth/', function (Request $request, Response $response, array $args) use ($modelProduct) {
+    $log = new \Log('rest-api/post-ehealth.log');
+    $body = $request->getBody()->getContents();
+    $log->write($body);
+
+
+    $data = json_decode($body, true);
+    if (!is_array($data)) {
+        throw new HttpBadRequestException($request, "Invalid JSON body");
+    }
+
+    if ($products = $modelProduct->updateEhealth($data)){
+        $payload = ['success' => true, 'data' => $products];
+        $response->getBody()->write(json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->withHeader('Content-Type', 'application/json');        
+    } else {
+        throw new HttpNotFoundException($request, 'Some error happened!');
+    } 
 
     return $response->withHeader('Content-Type', 'application/json');
 });
@@ -235,7 +265,10 @@ $restApp->get('/drugstores/{id}', function (Request $request, Response $response
 });
 
 $restApp->post('/drugstores/', function (Request $request, Response $response, array $args) use ($modelDrugstore) {
+    $log = new \Log('rest-api/post-drugstores.log');
     $body = $request->getBody()->getContents();
+    $log->write($body);
+
     $data = json_decode($body, true);
     if (!is_array($data)) {
         throw new HttpBadRequestException($request, "Invalid JSON body");
@@ -268,7 +301,10 @@ $restApp->post('/drugstores/', function (Request $request, Response $response, a
 });
 
 $restApp->patch('/drugstores/{id}', function (Request $request, Response $response, array $args) use ($modelDrugstore) {
-    $body = $request->getBody()->getContents();
+    $log    = new \Log('rest-api/patch-drugstores-' . $args['id'] . '.log');
+    $body   = $request->getBody()->getContents();
+    $log->write($body);
+
     $data = json_decode($body, true);
     if (!is_array($data)) {
         throw new HttpBadRequestException($request, "Invalid JSON body");

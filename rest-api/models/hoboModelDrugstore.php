@@ -46,6 +46,8 @@ class hoboModelDrugstore extends hoboModel{
 					'drugstoreNodeID' 			=> $row['node_id'],
 					'drugstoreIsStock' 			=> $row['is_stock'],
 					'drugstoreCanSellDrugs'		=> $row['can_sell_drugs'],
+					'drugstoreCanFreeStocks'	=> $row['can_free_stocks'],
+					'drugstoreCanSendNP'		=> $row['can_send_np'],
 					'drugstoreUUID' 			=> $row['uuid'],
 					'drugstoreLastSync'			=> $row['last_sync'],
 					'drugstoreDefaultPrice'		=> $row['default_price'],
@@ -111,6 +113,8 @@ class hoboModelDrugstore extends hoboModel{
 				'drugstoreNodeID' 			=> $query->row['node_id'],
 				'drugstoreIsStock' 			=> $query->row['is_stock'],
 				'drugstoreCanSellDrugs'		=> $query->row['can_sell_drugs'],
+				'drugstoreCanFreeStocks'	=> $query->row['can_free_stocks'],
+				'drugstoreCanSendNP'		=> $query->row['can_send_np'],
 				'drugstoreUUID' 			=> $query->row['uuid'],
 				'drugstoreLastSync'			=> $query->row['last_sync'],
 				'drugstoreDefaultPrice'		=> $query->row['default_price'],
@@ -165,6 +169,8 @@ class hoboModelDrugstore extends hoboModel{
 			city 				= '" . (!empty($data['drugstoreCity'])?$this->db->escape($data['drugstoreCity']):'') . "',
 			city_id 			= '" . (!empty($data['drugstoreCityUUID'])?$this->db->escape($data['drugstoreCityUUID']):'') . "',
 			can_sell_drugs 		= '" . (isset($data['drugstoreCanSellDrugs'])?(int)$data['drugstoreCanSellDrugs']:'0') . "',  
+			can_free_stocks 	= '" . (isset($data['drugstoreCanFreeStocks'])?(int)$data['drugstoreCanFreeStocks']:'0') . "', 
+			can_send_np 		= '" . (isset($data['drugstoreCanSendNP'])?(int)$data['drugstoreCanSendNP']:'0') . "', 
 			temprorary_closed 	= '" . (isset($data['drugstoreClosed'])?(int)$data['drugstoreClosed']:'0') . "', 
 			sort_order 			= '" . (!empty($data['drugstoreSortOrder'])?(int)$data['drugstoreSortOrder']:'0') . "',  
 			uuid 				= '" . $this->db->escape($data['drugstoreUUID']) . "'");
@@ -225,6 +231,14 @@ class hoboModelDrugstore extends hoboModel{
 			$data['drugstoreCanSellDrugs'] = $drugstore['drugstoreCanSellDrugs'];
 		}
 
+		if (empty($data['drugstoreCanFreeStocks'])){
+			$data['drugstoreCanFreeStocks'] = $drugstore['drugstoreCanFreeStocks'];
+		}
+
+		if (empty($data['drugstoreCanSendNP'])){
+			$data['drugstoreCanSendNP'] = $drugstore['drugstoreCanSendNP'];
+		}
+
 		if (empty($data['drugstoreSortOrder'])){
 			$data['drugstoreSortOrder'] = $drugstore['drugstoreSortOrder'];
 		}
@@ -247,6 +261,8 @@ class hoboModelDrugstore extends hoboModel{
 			city 				= '" . (!empty($data['drugstoreCity'])?$this->db->escape($data['drugstoreCity']):'') . "',
 			city_id 			= '" . (!empty($data['drugstoreCityUUID'])?$this->db->escape($data['drugstoreCityUUID']):'') . "',
 			can_sell_drugs 		= '" . (isset($data['drugstoreCanSellDrugs'])?(int)$data['drugstoreCanSellDrugs']:'0') . "',  
+			can_free_stocks 	= '" . (isset($data['drugstoreCanFreeStocks'])?(int)$data['drugstoreCanFreeStocks']:'0') . "',
+			can_send_np 		= '" . (isset($data['drugstoreCanSendNP'])?(int)$data['drugstoreCanSendNP']:'0') . "', 
 			temprorary_closed 	= '" . (isset($data['drugstoreClosed'])?(int)$data['drugstoreClosed']:'0') . "', 
 			sort_order 			= '" . (!empty($data['drugstoreSortOrder'])?(int)$data['drugstoreSortOrder']:'0') . "'
 			WHERE  			

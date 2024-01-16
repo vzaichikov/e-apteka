@@ -6,7 +6,6 @@ class hoboModelOrder extends hoboModel{
 	private $leftShoreRegions = array('Дарницький','Деснянський','Дніпровський');
 	private $shippingUUID     = '86fc6f5d-4aee-11ee-bba8-00505601220a';
 
-
 	private function simpleCustomFieldsToValues($custom_field, $customer_field_value){			
 		if ($custom_field == 'time') {
 			$r = array(
@@ -36,7 +35,6 @@ class hoboModelOrder extends hoboModel{
 		}
 	}
 
-
 	private function getIfStreetIsOnLeftSide($street_id){
 		$query = $this->db->query("SELECT district FROM `kyiv_streets` WHERE street_id = '" . (int)$street_id . "' LIMIT 1");
 		$district = $query->row['district'];
@@ -50,7 +48,6 @@ class hoboModelOrder extends hoboModel{
 
 		return false;
 	}
-
 
 	public function getOrderJSON($order_id, $action = false){
 
@@ -272,7 +269,6 @@ class hoboModelOrder extends hoboModel{
 		}
 	}
 
-
 	public function getOrderStatuses(){
 		$result = [];
 		$query = $this->db->ncquery("SELECT * FROM oc_order_status");		
@@ -329,7 +325,6 @@ class hoboModelOrder extends hoboModel{
 	}
 
 	public function addOrderHistory($order_id, $data){
-
 		$this->db->query("UPDATE oc_order SET order_status_id = '" . (int)$data['orderStatusID'] . "', date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'");
 
 		if (empty($data['orderComment'])){
@@ -345,7 +340,6 @@ class hoboModelOrder extends hoboModel{
 			'orderUUID' 	=> $order['uuid'],
 			'orderStatusID' => $order['order_status_id'],
 		];
-
 	}
 
 	public function confirmOrder($order_id, $data){
@@ -361,7 +355,6 @@ class hoboModelOrder extends hoboModel{
 		];
 	}
 		
-
 	public function editOrder(){
 	}	
 

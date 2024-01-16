@@ -34,13 +34,27 @@ class hoboModelPrice extends hoboModel{
 	}
 
 
-	public function updateProductPrice($product_id, $price){
-		$this->db->query("UPDATE oc_product SET price = '" . (float)$price . "' WHERE product_id = '" . (int)$product_id . "'");
-		$this->db->query("UPDATE oc_stocks SET price = '" . (float)$price . "' WHERE product_id = '" . (int)$product_id . "'");
+	public function updateProductPrice($product_id, $price, $special = false){
+		if ((float)$price > 0){
+			$this->db->query("UPDATE oc_product SET price = '" . (float)$price . "' WHERE product_id = '" . (int)$product_id . "'");
+			$this->db->query("UPDATE oc_stocks SET price = '" . (float)$price . "' WHERE product_id = '" . (int)$product_id . "'");	
+			$this->db->query("DELETE FROM oc_product_special WHERE product_id = '" . (int)$product_id . "' AND type = '='");	
 
-		$this->db->query("UPDATE oc_product_option_value oopv LEFT JOIN oc_product p ON (p.product_id = oopv.product_id AND option_id = 2 AND option_value_id = 2) SET oopv.quantity = (p.quantity * p.count_of_parts), oopv.price = ROUND(p.price / p.count_of_parts, 2) WHERE oopv.product_id = '" . (int)$product_id . "' AND option_id = 2 AND option_value_id = 2");
+			if ($special && $special < $price){
+				$this->db->query("INSERT INTO oc_product_special SET 
+					product_id 			= '" . (int)$product_id . "',
+					customer_group_id 	= '1', 
+					priority 			= '-1', 
+					price 				= '" . (float)$special . "', 
+					type 				= '=', 
+					date_start 			= '" . $this->db->escape(date('Y-m-d', strtotime('-2 day'))) . "', 
+					date_end 			= '" . $this->db->escape(date('Y-m-d', strtotime('+7 day'))) . "'");
+			}
 
-		$this->db->query("UPDATE oc_product p SET p.price_of_part = ROUND(p.price / p.count_of_parts, 2) WHERE p.product_id = '" . (int)$product_id . "' AND p.count_of_parts > 0");
+			$this->db->query("UPDATE oc_product_option_value oopv LEFT JOIN oc_product p ON (p.product_id = oopv.product_id AND option_id = 2 AND option_value_id = 2) SET oopv.quantity = (p.quantity * p.count_of_parts), oopv.price = ROUND(p.price / p.count_of_parts, 2) WHERE oopv.product_id = '" . (int)$product_id . "' AND option_id = 2 AND option_value_id = 2");
+
+			$this->db->query("UPDATE oc_product p SET p.price_of_part = ROUND(p.price / p.count_of_parts, 2) WHERE p.product_id = '" . (int)$product_id . "' AND p.count_of_parts > 0");
+		}		
 	}
 
 	public function postAction(){
@@ -48,13 +62,13 @@ class hoboModelPrice extends hoboModel{
 	}
 
 	public function updatePrices($prices){
-		$result = [];
+		$result 	= [];
 
 		foreach ($prices as $price){
 			$product_id_int = $this->getProductIdByUUID($price['ProductID']);
 
 			if ($product_id_int){
-				$this->updateProductPrice($product_id_int, $price['ProductPrice']);
+				$this->updateProductPrice($product_id_int, $price['ProductPrice'], (!empty($price['ProductPriceWithDiscount'])?$price['ProductPriceWithDiscount']:false));
 				$result[] = [
 					'ProductID' => $price['ProductID'],
 					'Success' 	=> true
@@ -130,7 +144,6 @@ class hoboModelPrice extends hoboModel{
 		if ($product_id && !empty($price) && (float)$price > 0 && (int)$stocks == 0){
 			$this->db->query("UPDATE oc_product SET is_preorder = 1, quantity = 10 WHERE product_id = '" . (int)$product_id . "'");	
 			$this->updateProductPrice($product_id, $price);
-
 		} elseif ($product_id && (empty($price) || (float)$price == 0) && (int)$stocks == 0){
 			$this->db->query("UPDATE oc_product SET is_preorder = 0, quantity = 0, price = '0' WHERE product_id = '" . (int)$product_id . "'");
 		}
