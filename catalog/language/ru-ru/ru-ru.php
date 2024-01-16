@@ -33,6 +33,8 @@
 	$_['text_full_pack']                     = 'Упаковка (%s шт.)';
 	$_['text_part_pack']                         = 'Часть упаковки';
 	
+	$_['text_catalogue_btn'] 		= 'Каталог товаров';
+
 	$_['text_search_field'] 		= '';
 	$_['text_search_total_product'] = 'всего %s товаров';
 	$_['search_show_all_results'] 		= 'Посмотреть все результаты';
@@ -40,6 +42,7 @@
 	
 	$_['text_catalog']		= 'Каталог<span class="hidden-lg hidden-md hidden-sm hidden-xs">&nbsp;&nbsp;товаров';
 	$_['text_order_call']	= 'Перезвоните мне';
+	$_['text_do_reserve']	= 'Зарезервировать';
 	
 	$_['text_order_accept'] = 'Подтверждая заказ, я принимаю условия ';
 	
@@ -48,6 +51,9 @@
 	$_['text_we_work_while_no_light'] = '<i class="fa fa-lightbulb-o" aria-hidden="true"></i> Работаем без света';
 	$_['text_available_in_drugstores']    	= 'Доступно %s шт. в %s %s';
 	$_['text_drugstore_plural'] = ['аптеке', 'аптеках', 'аптеках'];
+
+	$_['text_not_available_in_selected_drugstore'] = 'Необходимое количество товара сейчас недоступно в выбранной аптеке, но мы доставим за 2-3 дня';
+	$_['text_can_be_only_picked_up'] = 'Этот товар можно приобрести только самовывозом, или Новой Почтой напрямую из аптеки';
 
 	// Buttons
 	$_['button_address_add']		= 'Добавить адрес';
@@ -151,7 +157,7 @@
 
 
 
-	$_['text_we_can_deliver_in_2_days']    = 'Доставим<br />до 2 дней';
+	$_['text_we_can_deliver_in_2_days']    = 'Доставим<br />до 3 дней';
 	$_['text_price_actual_only_from_site']    = 'Цена %s актуальна только при заказе на сайте. Цена в аптеках может отличаться.';
 
 	$_['text_dl_receipt']    = 'Цена по рецепту: ';
