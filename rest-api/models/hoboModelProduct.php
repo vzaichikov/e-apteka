@@ -448,6 +448,10 @@ class hoboModelProduct extends hoboModel{
 			$data['NoAdvertising'] 	= true;
 		}
 
+		if (!empty($data['IsOQA'])){
+			$data['NumberOfParts'] = 0;
+		}
+
 		$sql = "UPDATE oc_product SET 
 			model 			= '" . $this->db->escape($data['ProductCode']) . "', 
 			sku 			= '" . $this->db->escape($data['ProductCode']) . "',

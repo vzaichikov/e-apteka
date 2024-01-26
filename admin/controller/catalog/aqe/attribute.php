@@ -107,7 +107,7 @@ class ControllerCatalogAqeAttribute extends Controller {
 		$data['aqe_row_hover_highlighting'] = $this->config->get('aqe_row_hover_highlighting');
 		$data['aqe_alternate_row_colour'] = $this->config->get('aqe_alternate_row_colour');
 
-		$this->document->addScript('view/javascript/aqe/catalog.min.js');
+		$this->document->addScript('view/javascript/aqe/catalog.min.updated.js');
 
 		$this->document->addStyle('view/stylesheet/aqe/css/catalog.min.css');
 

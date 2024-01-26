@@ -617,7 +617,7 @@
 				sku 	= '" . $this->db->escape($data['sku']) . "',
 				ms_code = '" . $this->db->escape($data['ms_code']) . "',  
 				uuid 	= '" . $this->db->escape($data['uuid']) . "',
-				price 	= '" . $this->db->escape($data['price']) . "',
+				price 	= '" . $this->db->escape($data['price']) . "'
 				WHERE product_id = '" . (int)$data['product_id'] . "'";
 
 			$this->db->query($sql);

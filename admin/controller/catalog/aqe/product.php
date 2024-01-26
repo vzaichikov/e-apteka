@@ -297,8 +297,7 @@ class ControllerCatalogAqeProduct extends Controller {
 		$data['aqe_list_view_image_width'] = $this->config->get('aqe_list_view_image_width');
 		$data['aqe_list_view_image_height'] = $this->config->get('aqe_list_view_image_height');
 
-		$this->document->addScript('view/javascript/aqe/catalog.min.js');
-
+		$this->document->addScript('view/javascript/aqe/catalog.min.updated.js');
 		$this->document->addStyle('view/stylesheet/aqe/css/catalog.min.css');
 
 		$filters = array();
