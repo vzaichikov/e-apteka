@@ -12,16 +12,15 @@ class Image {
             $this->file     = $file;
 
             try {  
-
                 $this->image    = new Imagick($file);
-                $this->width    = $this->image->getImageWidth();
-                $this->height   = $this->image->getImageHeight();
-                $this->bits     = $this->image->getImageLength();
-                $this->mime     = $this->image->getFormat();
-
             } catch (Exception $e) {
-                echo $e->getMessage();
-            }
+                $this->image = new Imagick(DIR_IMAGE . 'no_image.png');
+            }            
+
+            $this->width    = $this->image->getImageWidth();
+            $this->height   = $this->image->getImageHeight();
+            $this->bits     = $this->image->getImageLength();
+            $this->mime     = $this->image->getFormat();
 
         } else {           
         }
@@ -69,13 +68,17 @@ class Image {
     }
 
     public function saveavif($file, $quality = IMAGE_QUALITY) {
-        $this->image->setImageFormat('avif');
-        $this->save($file, $quality = IMAGE_QUALITY);
+    	if ($this->image){
+    		$this->image->setImageFormat('avif');
+        	$this->save($file, $quality = IMAGE_QUALITY);
+    	}
     }
 
     public function savewebp($file, $quality = IMAGE_QUALITY) {
-        $this->image->setImageFormat('webp');
-        $this->save($file, $quality = IMAGE_QUALITY);
+    	if ($this->image){
+        	$this->image->setImageFormat('webp');
+        	$this->save($file, $quality = IMAGE_QUALITY);
+    	}
     }
 
     public function save($file, $quality = IMAGE_QUALITY) {                
