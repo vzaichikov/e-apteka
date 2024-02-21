@@ -1,7 +1,7 @@
 <?php
 // Heading
 $_['heading_name']  	   	= 'XD BuyOneClick v.4.0.3';
-$_['heading_title']			= '<span style="font-weight:800; color:#0066cc; text-align:left; font-size:1.25em">XD</span>&nbsp;&nbsp;<i class="fa fa-bolt" style="color:#990000; text-align:left; font-size:1.25em" aria-hidden="true"></i>&nbsp;&nbsp;<span style="font-weight:800; text-align:left; font-size:1.25em"><span style="color:#003366;">BuyOneClick</span> v.4.0.3</span>';
+$_['heading_title']			= 'Покупка в один клик';
 
 // Text
 $_['text_module']       	= 'Модули';

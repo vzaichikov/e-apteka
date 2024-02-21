@@ -160,7 +160,7 @@ class hoboModelDrugstore extends hoboModel{
 			address 			= '" . $this->db->escape($data['drugstoreAddress_UA']) . "', 
 			geocode 			= '" . $this->db->escape($data['drugstoreGeoCode']) . "', 
 			gmaps_link 			= '" . (!empty($data['drugstoreGmapsLink'])?$this->db->escape($data['drugstoreGmapsLink']):'') . "', 
-			telephone 			= '" . (!empty($data['drugstoreTelephone'])?$this->db->escape($data['drugstoreTelephone']):'+38(044)520-03-33') . "', 
+			telephone 			= '" . '+38(044)520-03-33' . "', 
 			fax 				= '" . (!empty($data['drugstoreFax'])?$this->db->escape($data['drugstoreFax']):'') . "', 			
 			open 				= '" . $this->db->escape($data['drugstoreOpen']) . "', 
 			open_struct 		= '" . (!empty($data['drugstoreOpenStruct'])?$this->db->escape($data['drugstoreOpenStruct']):'') . "', 

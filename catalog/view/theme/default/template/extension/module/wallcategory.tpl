@@ -1,10 +1,11 @@
 <style type="text/css">
 	.category_wall_allcat_container {
+		margin-top:20px;
 	    display: grid;
-	    grid-template-columns: repeat(5, 1fr);
-	    grid-gap: 15px;
+	    grid-template-columns: repeat(9, 1fr);
+	    grid-gap: 10px;
 	    text-align: center;
-	    margin-bottom: 30px;
+	    margin-bottom: 20px;
 	}
 	.category_wall_allcat_container .category_wall_allcat_item {
 	    padding: 15px;
@@ -17,18 +18,18 @@
 	    box-shadow: 0 0 30px rgba(0,0,0,.1);
 	}
 	.category_wall_allcat_container .category_wall_allcat_item .image{
-		width: 120px;
-	    height: 120px;
+		width: 100px;
+	    height: 100px;
 	    margin: auto;
 	}
 	.category_wall_allcat_container .category_wall_allcat_item .image svg {
-	    width: 120px;
-	    height: 120px;
+	    width: 100px;
+	    height: 100px;
 	    position: unset;
 	    margin: 0;
 	}
 	.category_wall_allcat_item a h5{
-		font-size: 21px;
+		font-size: 16px;
 		margin: 15px 0 0 0;
 		display: block;
 		padding-bottom: 10px;
@@ -46,17 +47,17 @@
 	}
 	@media screen and (max-width: 992px){
 		.category_wall_allcat_container {
-		    grid-template-columns: repeat(3, 1fr);
+		    grid-template-columns: repeat(4, 1fr);
 		}
 	}
 	@media screen and (max-width: 567px){
 		.category_wall_allcat_container {
-		    grid-template-columns: repeat(2, 1fr);
+		    grid-template-columns: repeat(3, 1fr);
 		}
 	}
 	@media screen and (max-width: 480px){
 		.category_wall_allcat_container .category_wall_allcat_item a h5 {
-		    font-size: 16px;
+		    font-size: 14px;
 		}
 		.category_wall_allcat_container .category_wall_allcat_item .image,
 		.category_wall_allcat_container .category_wall_allcat_item .image svg {

@@ -227,8 +227,9 @@
 				'date_added' 	=> date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'date_end' 		=> date($this->language->get('date_format_short'), strtotime($result['date_end'])),
 				'active_now' 	=> ($result['date_end'] >= date('Y-m-d')),
-				'status' 		=> ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
-				'homepage' 		=> ($result['homepage'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
+				'status' 		=> (int)$result['status'],
+				'homepage' 		=> (int)$result['homepage'],
+				'retail' 		=> (int)$result['retail'],
 				'selected' 		=> isset($this->request->post['selected']) && in_array($result['special_id'], $this->request->post['selected']),
 				'edit' 			=> $this->url->link('catalog/ochelp_special/edit', 'token=' . $this->session->data['token'] . '&special_id=' . $result['special_id'], 'SSL'),
 				);
@@ -531,6 +532,14 @@
 				$data['homepage'] = $special_info['homepage'];
 				} else {
 				$data['homepage'] = '';
+			}
+
+			if (isset($this->request->post['retail'])) {
+				$data['retail'] = $this->request->post['retail'];
+				} elseif (isset($special_info)) {
+				$data['retail'] = $special_info['retail'];
+				} else {
+				$data['retail'] = '';
 			}
 			
 			if (isset($this->request->post['image'])) {

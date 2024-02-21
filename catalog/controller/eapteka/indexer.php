@@ -21,10 +21,8 @@
 			echo $line;			
 		}
 		
-		private function addIndexerHistory($url){
-			
-			$this->db->query("INSERT INTO " . DB_PREFIX . "indexer_history SET indexer_url = '" . $this->db->escape($url) . "', date_added = NOW()");
-			
+		private function addIndexerHistory($url){			
+			$this->db->query("INSERT INTO " . DB_PREFIX . "indexer_history SET indexer_url = '" . $this->db->escape($url) . "', date_added = NOW()");			
 		}
 		
 		private function updateURL($url){		
@@ -169,6 +167,5 @@
 					$query = $this->db->query("DELETE FROM " . DB_PREFIX . "indexer_queue WHERE indexer_id = '" . (int)$row['indexer_id'] . "'");
 				}
 			}
-		}
-		
+		}		
 	}	

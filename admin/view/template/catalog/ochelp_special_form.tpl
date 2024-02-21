@@ -151,6 +151,21 @@
 								</div>
 							</div>
 
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-retail">Акция только для ритейла</label>
+								<div class="col-sm-10">
+									<select name="retail" id="input-retail" class="form-control">
+										<?php if ($retail) { ?>
+											<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+											<option value="0"><?php echo $text_disabled; ?></option>
+											<?php } else { ?>
+											<option value="1"><?php echo $text_enabled; ?></option>
+											<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+										<?php } ?>
+									</select>
+									<span class="help">включить в случае, если акция действует только при покупке в аптеках сети</span>
+								</div>
+							</div>
 
 
 							<div class="form-group">

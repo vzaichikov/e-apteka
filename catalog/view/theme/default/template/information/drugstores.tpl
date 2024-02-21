@@ -78,7 +78,6 @@
 			select.innerHTML = "";
 			for(var i = 0; i < options.length; i++) {
 				var opt = options[i].textContent;
-			    // var data = 7;
 				select.innerHTML += "<option value=\"" + i + "\" data-i=\"" + i + "\" class=\"location_has_geocode\">" + opt + "</option>";
 			}
 

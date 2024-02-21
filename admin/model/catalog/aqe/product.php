@@ -172,6 +172,7 @@ class ModelCatalogAqeProduct extends Model {
 			'jan'       => 'p.jan',
 			'isbn'      => 'p.isbn',
 			'mpn'       => 'p.mpn',
+			'uuid' 		=> 'p.uuid',
 			'location'  => 'p.location',
 			'name'      => 'pd.name',
 			'model'     => 'p.model',

@@ -1,5 +1,5 @@
 <?php
-$_['heading_title']     = '<b>Всплывающая корзина с заменой кнопки "Купить" v1.6.1</b>'; 
+$_['heading_title']     = 'Всплывающая корзина с заменой кнопки'; 
 
 $_['text_module']       = 'Модули';
 $_['text_success']      = 'Модуль "Всплывающая корзина с заменой кнопки "Купить" успешно обновлен!';
@@ -38,7 +38,7 @@ $_['entry_button_name_incart_with_options'] = 'Купить ещё';
 $_['text_select_all']      = 'Отметить все';
 $_['text_unselect_all']      = 'Убрать все';
 
-$_['text_copyright'] = '<a href="http://oc-dev.ru" target="_blank"><b>Поблагодарить автора за модуль и техподдержку.</b></a>';
+$_['text_copyright'] = '';
 
 $_['button_apply']      = 'Применить';
 

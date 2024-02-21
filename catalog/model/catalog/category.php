@@ -52,8 +52,7 @@
 			
 			return $query->rows;
 		}
-		
-		
+				
 		public function getCategoryFilters($category_id) {
 			$implode = array();
 			
@@ -144,6 +143,65 @@
 			}
 			
 			return $s;
+		}
+
+		public function getMostBoughtCategories($limit){
+			if ((int)$limit < 0){
+				$limit = 0;
+			} else {
+				$limit = (int)$limit;
+			}
+
+			$sql = "SELECT DISTINCT(c.category_id), cd.name
+			FROM oc_category c 
+			LEFT JOIN oc_category_description cd ON (c.category_id = cd.category_id) ";
+
+			$sql .= " LEFT JOIN oc_category_to_store c2s ON (c.category_id = c2s.category_id) ";
+			$sql .= " WHERE cd.language_id = '" . (int)$this->config->get('config_language_id') . "' ";
+			$sql .= " 	AND c2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ";
+
+			$sql .= " AND c.status = '1' ";
+			$sql .= " AND c.homepage <> '-1' AND c.atx_code = '' AND c.substance = '' AND c.special_category = 0";
+			$sql .= " AND ((c.bought_for_month > 0) OR c.homepage = 1)";		
+			$sql .= " ORDER BY (c.homepage = 1) DESC, c.bought_for_month DESC";
+
+			if ($limit){
+				$sql .= " LIMIT 0, $limit";
+			}
+
+			$query = $this->db->query($sql);
+
+			return $query->rows;
+		}
+
+		public function getMostViewedCategories($limit){
+			if ((int)$limit < 0){
+				$limit = 0;
+			} else {
+				$limit = (int)$limit;
+			}
+
+			$sql = "SELECT DISTINCT(c.category_id), cd.name
+			FROM oc_category c 
+			LEFT JOIN oc_category_description cd ON (c.category_id = cd.category_id) ";
+
+			$sql .= " LEFT JOIN oc_category_to_store c2s ON (c.category_id = c2s.category_id) ";
+
+			$sql .= " WHERE cd.language_id = '" . (int)$this->config->get('config_language_id') . "' ";
+			$sql .= " 	AND c2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ";			
+
+			$sql .= " AND c.status = '1' ";
+			$sql .= " AND c.homepage <> '-1' AND c.atx_code = '' AND c.substance = '' AND c.special_category = 0";
+			$sql .= " AND ((c.viewed > 0) OR c.homepage = 1)";		
+			$sql .= " ORDER BY (c.homepage = 1) DESC, c.viewed DESC";
+
+			if ($limit){
+				$sql .= " LIMIT 0, $limit";
+			}
+
+			$query = $this->db->query($sql);
+
+			return $query->rows;
 		}
 		
 		public function getCategoryLayoutId($category_id) {

@@ -1,6 +1,6 @@
 <?php
 class ModelCatalogOchelpSpecial extends Model {
-	private $customerGroups = array(1, 1389, 1390, 1388);
+	private $customerGroups = array(1);
 	
 	
 	private function editProductSpecialData($data){
@@ -47,7 +47,7 @@ class ModelCatalogOchelpSpecial extends Model {
 	
 	
 	public function addSpecial($data) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "special SET date_end = '" . $this->db->escape($data['date_end']) . "', sort_order = '" . (int)$data['sort_order'] . "', counter = '" . (int)$data['counter'] . "', total = '" . (int)$data['total'] . "', show_title = '" . (int)$data['show_title'] . "', status = '" . (int)$data['status'] . "', homepage = '" . (int)$data['homepage'] . "', date_added = now()");
+		$this->db->query("INSERT INTO " . DB_PREFIX . "special SET date_end = '" . $this->db->escape($data['date_end']) . "', sort_order = '" . (int)$data['sort_order'] . "', counter = '" . (int)$data['counter'] . "', total = '" . (int)$data['total'] . "', show_title = '" . (int)$data['show_title'] . "', status = '" . (int)$data['status'] . "', homepage = '" . (int)$data['homepage'] . "', retail = '" . (int)$data['retail'] . "', date_added = now()");
 		
 		$special_id = $this->db->getLastId();
 		
@@ -88,7 +88,7 @@ class ModelCatalogOchelpSpecial extends Model {
 	}
 	
 	public function editSpecial($special_id, $data) {
-		$this->db->query("UPDATE " . DB_PREFIX . "special SET date_end = '" . $this->db->escape($data['date_end']) . "', sort_order = '" . (int)$data['sort_order'] . "', counter = '" . (int)$data['counter'] . "', total = '" . (int)$data['total'] . "',  show_title = '" . (int)$data['show_title'] . "', homepage = '" . (int)$data['homepage'] . "', status = '" . (int)$data['status'] . "' WHERE special_id = '" . (int)$special_id . "'");
+		$this->db->query("UPDATE " . DB_PREFIX . "special SET date_end = '" . $this->db->escape($data['date_end']) . "', sort_order = '" . (int)$data['sort_order'] . "', counter = '" . (int)$data['counter'] . "', total = '" . (int)$data['total'] . "',  show_title = '" . (int)$data['show_title'] . "', homepage = '" . (int)$data['homepage'] . "', retail = '" . (int)$data['retail'] . "', status = '" . (int)$data['status'] . "' WHERE special_id = '" . (int)$special_id . "'");
 		
 		if (isset($data['image'])) {
 			$this->db->query("UPDATE " . DB_PREFIX . "special SET image = '" . $this->db->escape($data['image']) . "' WHERE special_id = '" . (int)$special_id . "'");

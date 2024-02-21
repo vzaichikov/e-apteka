@@ -9,7 +9,7 @@ class ControllerCommonColumnLeft extends Controller {
 			$route = 'common/home';
 		}
 
-		if(isset($this->request->get['route']) AND ($this->request->get['route'] == 'product/category' or $this->request->get['route'] == 'product/manufacturer/info') ){
+		if(isset($this->request->get['route']) AND ($this->request->get['route'] == 'product/category' || $this->request->get['route'] == 'product/special' || $this->request->get['route'] == 'product/manufacturer/info') ){
 			$data['is_category'] = true;
 		}else{
 			$data['is_category'] = false;

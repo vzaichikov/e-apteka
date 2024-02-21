@@ -53,6 +53,7 @@
 										<?php } else { ?>
 										<a href="<?php echo $sort_date_end; ?>"><?php echo $column_date_end; ?></a>
 									<?php } ?></td>
+									<td class="left">Только ритейл</td>
 									<td class="left">Домашняя страница</td>
 									<td class="left"><?php echo $column_status; ?></td>
 									<td class="right"><?php echo $column_action; ?></td>
@@ -81,8 +82,27 @@
 											<span class="label label-danger"><?php echo $special['date_end']; ?></span>
 										<? } ?>
 									</td>
-									<td class="left"><?php echo $special['homepage']; ?></td>
-									<td class="left"><?php echo $special['status']; ?></td>
+									<td align="center">
+										<? if ($special['retail']) { ?>
+											<i class="fa fa-check-circle" style="color:#4ea24e"></i>
+										<? } else { ?>
+											<i class="fa fa-times-circle" style="color:#cf4a61"></i>
+										<? } ?>
+									</td>
+									<td align="center">
+										<? if ($special['homepage']) { ?>
+											<i class="fa fa-check-circle" style="color:#4ea24e"></i>
+										<? } else { ?>
+											<i class="fa fa-times-circle" style="color:#cf4a61"></i>
+										<? } ?>
+									</td>
+									<td align="center">
+										<? if ($special['status']) { ?>
+											<i class="fa fa-check-circle" style="color:#4ea24e"></i>
+										<? } else { ?>
+											<i class="fa fa-times-circle" style="color:#cf4a61"></i>
+										<? } ?>
+									</td>
 				                	<td class="text-right"><a href="<?php echo $special['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>	
 								</tr>
 								<?php } ?>

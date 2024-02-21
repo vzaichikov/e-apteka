@@ -195,6 +195,11 @@
 			if (isset($this->request->get['order'])) {
 				$url .= '&order=' . $this->request->get['order'];
 			}
+
+			$data['loadmore_button'] 		= $this->config->get('loadmore_button_name_'.$this->config->get('config_language_id'));
+			$data['loadmore_status'] 		= $this->config->get('loadmore_status');
+			$data['loadmore_style'] 		= $this->config->get('loadmore_style');
+			$data['loadmore_arrow_status'] 	= $this->config->get('loadmore_arrow_status');
 			
 			$data['limits'] = array();
 			

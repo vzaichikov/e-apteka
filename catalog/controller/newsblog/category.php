@@ -52,7 +52,6 @@ class ControllerNewsBlogCategory extends Controller {
 
 		if ($category_info) {
 
-			//for no errors with versions < 20160920
 			$articles_image_size=array($this->config->get($this->config->get('config_theme') . '_image_product_width'),$this->config->get($this->config->get('config_theme') . '_image_product_height'));
 	        $category_image_size=array($this->config->get($this->config->get('config_theme') . '_image_category_width'),$this->config->get($this->config->get('config_theme') . '_image_category_height'));
 			$date_format=$this->language->get('date_format_short');
@@ -85,13 +84,7 @@ class ControllerNewsBlogCategory extends Controller {
 			$data['text_refine'] = $this->language->get('text_refine');
 			$data['text_attributes'] = $this->language->get('text_attributes');
 
-			$data['continue'] = $this->url->link('common/home');
-
-			// Set the last category breadcrumb
-			$data['breadcrumbs'][] = array(
-				'text' => $category_info['name'],
-				'href' => $this->url->link('newsblog/category', 'newsblog_path=' . $this->request->get['newsblog_path'])
-			);
+			$data['continue'] = $this->url->link('common/home');			
 
 			if ($category_info['image']) {
 				$data['original']	= HTTP_SERVER.'image/'.$category_info['image'];
@@ -131,7 +124,6 @@ class ControllerNewsBlogCategory extends Controller {
 					'href' 			=> $this->url->link('newsblog/category', 'newsblog_path=' . $this->request->get['newsblog_path'] . '_' . $category['category_id'])
 				);
 			}
-
 
 
 			$data['articles'] = array();
@@ -210,7 +202,8 @@ class ControllerNewsBlogCategory extends Controller {
 			$data['comments_vk'] = false;
 			$data['comments_fb'] = false;
 			$data['comments_dq'] = false;
-			if ($settings && isset($settings['show_comments_vk_id'])) {				if ($settings && $settings['show_comments_vk_id'] && $settings['show_comments_vk_category']) {
+			if ($settings && isset($settings['show_comments_vk_id'])) {
+				if ($settings && $settings['show_comments_vk_id'] && $settings['show_comments_vk_category']) {
 		            $data['comments_vk'] = $settings['show_comments_vk_id'];
 		            $this->document->addScript('//vk.com/js/api/openapi.js');
 	            }

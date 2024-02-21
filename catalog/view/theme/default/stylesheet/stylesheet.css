@@ -518,14 +518,16 @@ footer h5 {
 	content: '\f054';
 	font-family: FontAwesome;
 }
-/* product list */
 .product-thumb {
 	border: 1px solid #ddd;
+	padding:20px 10px;
 	margin-bottom: 20px;
+	border-radius: 10px;
 	overflow: auto;
 }
 .product-thumb .image {
 	text-align: center;
+	margin-bottom: 20px;
 }
 .product-thumb .image a {
 	display: block;

@@ -129,6 +129,36 @@
 							</div>
 
 							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-homepage">Отобразить на главной</label>
+								<div class="col-sm-10">
+									<select name="homepage" id="input-homepage" class="form-control">
+										<?php if ($homepage) { ?>
+											<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+											<option value="0"><?php echo $text_disabled; ?></option>
+											<?php } else { ?>
+											<option value="1"><?php echo $text_enabled; ?></option>
+											<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+										<?php } ?>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-special_category">Специальная категория (ATX, действующее, алфавитный)</label>
+								<div class="col-sm-10">
+									<select name="special_category" id="input-special_category" class="form-control">
+										<?php if ($special_category) { ?>
+											<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+											<option value="0"><?php echo $text_disabled; ?></option>
+											<?php } else { ?>
+											<option value="1"><?php echo $text_enabled; ?></option>
+											<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+										<?php } ?>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-uuid">ATX CODE</label>
 								<div class="col-sm-10">
 									<input type="text" name="atx_code" value="<?php echo $atx_code; ?>" placeholder="atx_code" id="input-atx_code" class="form-control" />

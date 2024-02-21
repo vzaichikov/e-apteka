@@ -54,6 +54,7 @@ $_['entry_ean']              = 'EAN';
 $_['entry_jan']              = 'JAN';
 $_['entry_isbn']             = 'Бренд';
 $_['entry_mpn']              = 'MPN';
+$_['entry_uuid']             = 'UUID';
 $_['entry_location']         = 'Расположение';
 $_['entry_shipping']         = 'Необходима доставка';
 $_['entry_manufacturer']     = 'Производитель';

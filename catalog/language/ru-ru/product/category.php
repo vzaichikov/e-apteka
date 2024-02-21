@@ -25,6 +25,8 @@ $_['text_limit']        = 'Показать:';
 $_['text_write']        = 'Написать отзыв:';
 $_['text_writes']        = 'отзывов';
 
+$_['text_view_all']        = 'Смотреть все';
+
 $_['text_special_time_to_left']                    = 'Скидка будет действовать еще ';
 
 //$_['text_name_order_count_asc']        = 'Продаваемые (А - Я)';

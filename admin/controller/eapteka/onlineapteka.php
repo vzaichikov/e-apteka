@@ -104,7 +104,6 @@
 
 			}
 
-
 			echoLine(json_encode($uuids_to_delete), 's');
 		}
 

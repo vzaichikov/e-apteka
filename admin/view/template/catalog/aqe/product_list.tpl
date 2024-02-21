@@ -296,7 +296,7 @@
 									case 'upc':
 									case 'ean':
 									case 'jan':
-									case 'isbn':
+									case 'isbn':									
 									case 'mpn':
 									case 'location':
 									case 'seo': ?>

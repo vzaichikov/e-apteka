@@ -25,6 +25,8 @@ $_['text_limit'] = 'Показати';
 $_['text_write']        = 'Написати вiдгук:';
 $_['text_writes']        = 'вiдгукiв';
 
+$_['text_view_all']        = 'Дивитись всі';
+
 $_['text_special_time_to_left']                    = 'Знижка буде діяти ще ';
 
 

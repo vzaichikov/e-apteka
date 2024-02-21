@@ -825,27 +825,41 @@
                 $data['status_widget'] = true;
             }
             
-						
+			if (isset($this->request->post['homepage'])) {
+                $data['homepage'] = $this->request->post['homepage'];
+                } elseif (!empty($category_info)) {
+                $data['homepage'] = $category_info['homepage'];
+                } else {
+                $data['homepage'] = false;
+            }	
+
+            if (isset($this->request->post['special_category'])) {
+                $data['special_category'] = $this->request->post['special_category'];
+                } elseif (!empty($category_info)) {
+                $data['special_category'] = $category_info['special_category'];
+                } else {
+                $data['special_category'] = false;
+            }		
 				
-				$data['category_faq'] = array(); 
-				if (isset($this->request->post['category_faq'])) {
-				$category_faq = $this->request->post['category_faq'];
-				} elseif (isset($this->request->get['category_id'])) {
-				$category_faq = $this->model_catalog_category->getCategoryFaq($this->request->get['category_id']);
-				} else {
-				$category_faq = array();
-				}
-				
-				$data['category_faq'] = array();
-				
-				foreach ($category_faq as $category_faq) {
-				$data['category_faq'][] = array(
-				'question'       => unserialize($category_faq['question']),
-				'faq'       => unserialize($category_faq['faq']),
-				'icon'     => $category_faq['icon'],
-				'sort_order' => $category_faq['sort_order']
-				);
-				}
+            $data['category_faq'] = array(); 
+            if (isset($this->request->post['category_faq'])) {
+                $category_faq = $this->request->post['category_faq'];
+            } elseif (isset($this->request->get['category_id'])) {
+                $category_faq = $this->model_catalog_category->getCategoryFaq($this->request->get['category_id']);
+            } else {
+                $category_faq = array();
+            }
+
+            $data['category_faq'] = array();
+
+            foreach ($category_faq as $category_faq) {
+                $data['category_faq'][] = array(
+                    'question'       => unserialize($category_faq['question']),
+                    'faq'       => unserialize($category_faq['faq']),
+                    'icon'     => $category_faq['icon'],
+                    'sort_order' => $category_faq['sort_order']
+                );
+            }
 			
             if (isset($this->request->post['category_layout'])) {
                 $data['category_layout'] = $this->request->post['category_layout'];

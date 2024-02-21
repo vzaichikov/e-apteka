@@ -1,7 +1,7 @@
 <?php
 	class ModelCatalogCategory extends Model {
 		public function addCategory($data) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', onlineapteka_id = '" . (int)$data['onlineapteka_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "', substance = '" . $this->db->escape($data['substance']) . "', date_modified = NOW(), date_added = NOW()");
+			$this->db->query("INSERT INTO " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', onlineapteka_id = '" . (int)$data['onlineapteka_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', homepage = '" . (int)$data['homepage'] . "', special_category = '" . (int)$data['special_category'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "', substance = '" . $this->db->escape($data['substance']) . "', date_modified = NOW(), date_added = NOW()");
 			
 			$category_id = $this->db->getLastId();
 			
@@ -30,7 +30,7 @@
 					$this->db->query("UPDATE " . DB_PREFIX . "category SET banner = '" . (int)$data['banner'] . "' WHERE category_id = '" . (int)$cat_id . "'");
 				}
 			}
-			// MySQL Hierarchical Data Closure Table Pattern
+
 			$level = 0;
 			
 			$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "category_path` WHERE category_id = '" . (int)$data['parent_id'] . "' ORDER BY `level` ASC");
@@ -90,7 +90,7 @@
 		
 		public function editCategory($category_id, $data) {
 			
-			$this->db->query("UPDATE " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', onlineapteka_id = '" . (int)$data['onlineapteka_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "',  substance = '" . $this->db->escape($data['substance']) . "', date_modified = NOW() WHERE category_id = '" . (int)$category_id . "'");
+			$this->db->query("UPDATE " . DB_PREFIX . "category SET parent_id = '" . (int)$data['parent_id'] . "', onlineapteka_id = '" . (int)$data['onlineapteka_id'] . "', `top` = '" . (isset($data['top']) ? (int)$data['top'] : 0) . "', `column` = '" . (int)$data['column'] . "', uuid = '" . $this->db->escape($data['uuid']) . "', sort_order = '" . (int)$data['sort_order'] . "', banner = '" . (int)$data['banner'] . "', status_widget = '" . (int)$data['status_widget'] . "', is_searched = '" . (int)$data['is_searched'] . "', show_subcats = '" . (int)$data['show_subcats'] . "', homepage = '" . (int)$data['homepage'] . "', special_category = '" . (int)$data['special_category'] . "', status = '" . (int)$data['status'] . "', atx_code = '" . $this->db->escape($data['atx_code']) . "',  substance = '" . $this->db->escape($data['substance']) . "', date_modified = NOW() WHERE category_id = '" . (int)$category_id . "'");
 			
 			if (isset($data['image'])) {
 				$this->db->query("UPDATE " . DB_PREFIX . "category SET image = '" . $this->db->escape($data['image']) . "' WHERE category_id = '" . (int)$category_id . "'");

@@ -56,11 +56,11 @@
         <div class="col-sm-4">
           <select name="category_wall_type" id="input-type" class="form-control">
             <?php if ($category_wall_type == 'viewed') { ?>
-              <option value="viewed" selected="selected">Покупки</option>
-              <option value="bought">Просмотры</option>
+              <option value="viewed" selected="selected">Просмотры</option>
+              <option value="bought">Покупки</option>
             <?php } else { ?>
-              <option value="viewed">Покупки</option>
-              <option value="bought" selected="selected">Просмотры</option>
+              <option value="viewed">Просмотры</option>
+              <option value="bought" selected="selected">Покупки</option>
             <?php } ?>
           </select>
         </div>

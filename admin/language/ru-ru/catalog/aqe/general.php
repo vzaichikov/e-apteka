@@ -96,6 +96,7 @@ $_['column_discount']               = 'Дисконт';
 $_['column_download']               = 'Загрузки';
 $_['column_duration']               = 'Продолжительность';
 $_['column_ean']                    = 'EAN';
+$_['column_uuid']                    = 'UUID';
 $_['column_email']                  = 'E-Mail';
 $_['column_fax']                    = 'Факс';
 $_['column_filename']               = 'Имя файла';
