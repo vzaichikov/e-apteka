@@ -37,6 +37,12 @@ $_['text_model_desc'] = 'За Моделі (Z - A)';
 
 $_['text_more_actions']  = 'Ще діючі акції';
 
+$_['text_only_retail'] = 'Акція діє тільки в <a href="%s" class="text-danger" style="text-decoration:underline" title="Мережа аптек АГП">аптечній мережі <i class="fa fa-external-link"></i></a>';
+$_['text_only_site'] = 'Акція діє тільки при замовленні на сайті';
+
+$_['text_only_retail_alert'] = 'Зверніть увагу, акція діє тільки в <a href="%s" title="Мережа аптек АГП">аптечній мережі <i class="fa fa-external-link"></i></a>, або під час оформлення резерву в колл-центрі.';
+$_['text_only_site_alert'] = 'Зверніть увагу! Акційні ціни діють тільки при замовленні на сайті. Будь ласка, резервуйте товар на сайті.';
+
 $_['text_specials_archive']  = 'Завершені акції';
 $_['text_special_label'] = 'Акція';
 $_['text_special'] = 'Залишилось';

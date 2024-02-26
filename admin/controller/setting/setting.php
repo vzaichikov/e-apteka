@@ -504,10 +504,34 @@
 				$data['config_email'] = $this->config->get('config_email');
 				}
 				
-				if (isset($this->request->post['config_telephone'])) {
-					$data['config_telephone'] = $this->request->post['config_telephone'];
+			if (isset($this->request->post['config_telephone'])) {
+				$data['config_telephone'] = $this->request->post['config_telephone'];
 				} else {
 				$data['config_telephone'] = $this->config->get('config_telephone');
+			}
+
+			if (isset($this->request->post['config_telephone_1'])) {
+				$data['config_telephone_1'] = $this->request->post['config_telephone_1'];
+				} else {
+				$data['config_telephone_1'] = $this->config->get('config_telephone_1');
+			}
+
+			if (isset($this->request->post['config_telephone_2'])) {
+				$data['config_telephone_2'] = $this->request->post['config_telephone_2'];
+				} else {
+				$data['config_telephone_2'] = $this->config->get('config_telephone_2');
+			}
+
+			if (isset($this->request->post['config_telephone_3'])) {
+				$data['config_telephone_3'] = $this->request->post['config_telephone_3'];
+				} else {
+				$data['config_telephone_3'] = $this->config->get('config_telephone_3');
+			}
+
+			if (isset($this->request->post['config_telephone_4'])) {
+				$data['config_telephone_4'] = $this->request->post['config_telephone_4'];
+				} else {
+				$data['config_telephone_4'] = $this->config->get('config_telephone_4');
 			}
 			
 			if (isset($this->request->post['config_fax'])) {

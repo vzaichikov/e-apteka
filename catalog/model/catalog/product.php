@@ -514,7 +514,7 @@
 					$product_xdstickers = array();
 					$data['xdstickers_position'] = ($xdstickers['position'] == '0') ? ' position_upleft' : ' position_upright';
 					if ($xdstickers['status']) {
-						if ($xdstickers['sale']['status'] == '1' && $special) {
+						if ($xdstickers['sale']['status'] == '1' && $query->row['special']) {
 							if ($xdstickers['sale']['discount_status'] == '1') {
 								$sale_value = round(((float)$query->row['price'] - (float)$query->row['special']) / ((float)$query->row['price'] * 0.01));
 								$sale_text = $xdstickers['sale']['text'][$current_language_id] . ' -' . strval($sale_value) . '%';
@@ -983,8 +983,7 @@
 		}
 		
 		public function getProductSpecials($data = array()) {
-			$sql = "SELECT DISTINCT ps.product_id, ps.date_end, p.price,
-			(SELECT AVG(rating) AS total FROM oc_review r1 WHERE r1.product_id = ps.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating ";
+			$sql = "SELECT DISTINCT ps.product_id, ps.date_end, p.price ";
 						
 			if (!empty($data['filter_category_id'])) {
 				$sql .= " FROM oc_product_to_category p2c			
@@ -1003,25 +1002,33 @@
 			if (!empty($data['filter_category_id'])) {
 				$sql .= " AND p2c.category_id = '" . (int)$data['filter_category_id'] . "'";
 			}
+
+			if(isset($data['filter_notnull_price']) && $data['filter_notnull_price']){
+				$sql .= " AND p.price > 0";
+			}
+			
+			if(isset($data['filter_in_stock']) && $data['filter_in_stock']){
+				$sql .= " AND (p.quantity > 0 OR (p.quantity = 0 AND p.is_preorder = 1))";
+			}
+			
+			if(isset($data['filter_dangerous']) && $data['filter_dangerous']){
+				$sql .= " AND (p.no_payment = 0 AND p.is_receipt = 0 AND p.no_advert = 0)";
+			}
 			
 			$sql .= " GROUP BY ps.product_id";
 			
 			$sort_data = array(
-			'pd.name',
-			'p.model',
-			'rating',
 			'p.sort_order',
 			'pd.name',
 			'p.model',
+			'p.xrating',
 			'p.quantity',
-			'p.rating',
 			'p.order_count',
 			'p.is_onstock DESC, date_modified',
 			'p.image',
 			'p.price',
-			'rating',
-			'p.sort_order',
-			'p.date_added'
+			'p.date_added',
+			'rand()'
 			);
 			
 			if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
@@ -1034,22 +1041,12 @@
 				}
 				} else {
 				$sql .= " ORDER BY p.is_onstock DESC, p.order_count";
-				
-				/*
-					if ($data['sort'] == 'pd.name' || $data['sort'] == 'p.model') {
-					$sql .= " ORDER BY LCASE(" . $data['sort'] . ")";
-					} else {
-					$sql .= " ORDER BY " . $data['sort'];
-					}
-					} else {
-					$sql .= " ORDER BY p.sort_order";
-				*/
 			}
 			
 			if (isset($data['order']) && ($data['order'] == 'DESC')) {
-				$sql .= " DESC, LCASE(pd.name) DESC";
+				$sql .= " DESC";
 				} else {
-				$sql .= " ASC, LCASE(pd.name) ASC";
+				$sql .= " ASC";
 			}
 			
 			if (isset($data['start']) || isset($data['limit'])) {
@@ -1064,13 +1061,13 @@
 				$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
 			}
 			
-			$product_data = array();
+			$product_data = [];
 			
 			$query = $this->db->query($sql);
 			
 			foreach ($query->rows as $result) {
-				$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
-				$product_data[$result['product_id']]['date_end'] = $result['date_end'];
+				$product_data[$result['product_id']] 				= $this->getProduct($result['product_id']);
+				$product_data[$result['product_id']]['date_end'] 	= $result['date_end'];
 			}
 									
 			return $product_data;
@@ -1350,8 +1347,7 @@
 			return $query->rows;
 		}
 		
-		public function catchAlsoViewed($product_id)
-		{
+		public function catchAlsoViewed($product_id){
 			
 			if (empty($this->session->data['alsoViewed'])) {
 				$this->session->data['alsoViewed'] = $product_id;
@@ -1414,8 +1410,7 @@
 			}
 			
 			
-			return $product_data;
-			
+			return $product_data;			
 		}
 		
 		public function getProductRelatedSales($product_id, $category_id) {
@@ -1604,8 +1599,7 @@
 			
 			return $query->rows;
 		}
-		
-		
+				
 		public function getMainCategory($product_id) {
 			$query = $this->db->query("SELECT * FROM oc_product_to_category WHERE product_id = '" . (int)$product_id . "' ORDER BY main_category DESC LIMIT 1");
 			return $query->row;
@@ -1630,8 +1624,7 @@
 			$query = $this->db->query("SELECT parent_id FROM oc_category WHERE category_id = '" . (int)$category_id . "'");
 			return $query->row;
 		}
-		
-		
+				
 		public function getTotalProducts($data = array()) {		
 			$sql = "SELECT COUNT(DISTINCT p.product_id) AS total";
 			
@@ -1929,8 +1922,7 @@
 				return $this->getProduct($query->row['product_id']);
 			}
 			
-			return false;
-			
+			return false;			
 		}
 		
 		public function getProductIDByUUID($uuid){
@@ -1941,13 +1933,43 @@
 				return $query->row['product_id'];
 			}
 			
-			return false;
-			
+			return false;			
 		}
 		
 		public function getTotalProductSpecials() {
-			$query = $this->db->query("SELECT COUNT(DISTINCT ps.product_id) AS total FROM oc_product_special ps LEFT JOIN oc_product p ON (ps.product_id = p.product_id) LEFT JOIN oc_product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW()))");
+			$sql = "SELECT COUNT(DISTINCT ps.product_id) AS total ";
+
+			if (!empty($data['filter_category_id'])) {
+				$sql .= " FROM oc_product_to_category p2c			
+				LEFT JOIN oc_product_special ps ON (p2c.product_id = ps.product_id)
+				LEFT JOIN oc_product p ON (ps.product_id = p.product_id)
+				LEFT JOIN oc_product_description pd ON (p.product_id = pd.product_id)";
+				}else{
+				$sql .= "FROM oc_product_special ps
+				LEFT JOIN oc_product p ON (ps.product_id = p.product_id)
+				LEFT JOIN oc_product_description pd ON (p.product_id = pd.product_id)";
+			}
+
+			$sql .= "WHERE p.status = '1' AND p.date_available <= NOW() AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW()))";
+
+			if (!empty($data['filter_category_id'])) {
+				$sql .= " AND p2c.category_id = '" . (int)$data['filter_category_id'] . "'";
+			}
+
+			if(isset($data['filter_notnull_price']) && $data['filter_notnull_price']){
+				$sql .= " AND p.price > 0";
+			}
 			
+			if(isset($data['filter_in_stock']) && $data['filter_in_stock']){
+				$sql .= " AND (p.quantity > 0 OR (p.quantity = 0 AND p.is_preorder = 1))";
+			}
+			
+			if(isset($data['filter_dangerous']) && $data['filter_dangerous']){
+				$sql .= " AND (p.no_payment = 0 AND p.is_receipt = 0 AND p.no_advert = 0)";
+			}
+			
+			$query = $this->db->query($sql);
+
 			if (isset($query->row['total'])) {
 				return $query->row['total'];
 				} else {
@@ -1955,8 +1977,7 @@
 			}
 		}
 		
-		public function getProductsForSiteMap($language_id, $start)
-		{
+		public function getProductsForSiteMap($language_id, $start){
 			$query = $this->db->query("SELECT p.product_id, p.date_modified, p.date_added, p.image, p.manufacturer_id, pd.name FROM oc_product p LEFT JOIN oc_product_description pd ON pd.product_id = p.product_id WHERE  pd.language_id ='". (int)$language_id ."' AND p.product_id >= '". (int)$start ."' ORDER BY p.product_id ASC");
 			return $query->rows;
 		}
@@ -1971,28 +1992,23 @@
 					$str .= ' ' . mb_strtolower($tag['tags']);
 				}
 			}
-			return trim($str);
-			
+			return trim($str);			
 		}
 		
-		public function getProductsForSiteMap2($language_id, $start)
-		{
+		public function getProductsForSiteMap2($language_id, $start){
 			$query = $this->db->query("SELECT p.product_id, p.date_modified, p.date_added, p.image, p.manufacturer_id, pd.name, pd.description, pd.instruction FROM oc_product p LEFT JOIN oc_product_description pd ON pd.product_id = p.product_id  WHERE  pd.language_id ='". (int)$language_id ."' AND p.product_id >= '". (int)$start ."' ORDER BY p.product_id ASC");
 			
 			
 			return $query->rows;
-		}
+		}		
 		
-		
-		public function getProductByManufacturer($manufacturerId)
-		{
+		public function getProductByManufacturer($manufacturerId){
 			$query = $this->db->query("SELECT product_id FROM oc_product WHERE manufacturer_id = '". (int)$manufacturerId ."'");
 			
 			return $query->rows;
 		}
 		
-		public function getProductsByCategory($categoryId)
-		{
+		public function getProductsByCategory($categoryId){
 			$query = $this->db->query("SELECT * FROM oc_product_to_category WHERE category_id='" . (int)$categoryId . "'");
 			
 			return $query->rows;

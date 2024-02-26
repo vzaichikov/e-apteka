@@ -654,13 +654,13 @@ $(document).ready(function () {
                     slidesPerView: 2,
                 },
                 556: {
-                    slidesPerView: 2,
-                },
-                992: {
                     slidesPerView: 3,
                 },
-                1300: {
+                992: {
                     slidesPerView: 4,
+                },
+                1300: {
+                    slidesPerView: 5,
                 },
             },
         });

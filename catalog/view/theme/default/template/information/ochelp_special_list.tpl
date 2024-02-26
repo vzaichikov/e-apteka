@@ -135,8 +135,7 @@
 			<div id="content" class="<?php echo $class; ?> promotions-content">
 				<?php if ($specials) { ?>
 					<div class="row">
-						<?php $i=0; foreach ($specials as $special) { $i++; ?>
-							
+						<?php $i=0; foreach ($specials as $special) { $i++; ?>							
 							<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 <?php if (!$special['active']) { ?>deactivated<? } ?>">	
 								<div class="promotions-item">				
 									<?php if($special['thumb']) { ?>
@@ -149,7 +148,16 @@
 										<h3 class="title">
 											<a href="<?php echo $special['href']; ?>"><?php echo $special['title']; ?></a>
 										</h3>	
-										<div class="row" style="margin-top:15px;">
+
+										<div class="row">
+											<div class="col-xs-12">
+												<div class="alert alert-<?php if ($special['retail']) { ?>danger<? } else { ?>success<?php } ?>">
+													<?php echo $special['retail_info'];?>
+												</div>
+											</div>
+										</div>
+
+										<div class="row" style="margin-top:5px;">
 											<div class="col-xs-12 col-sm-6 text-left pull-left">
 												<?php if ($special['active'] && $special['dateDiff']) { ?>
 													<div class="promotion-days-left"><?php echo $text_special; ?> <span><?php echo $special['dateDiff']; ?></span> <?php echo $text_days; ?></div>

@@ -580,7 +580,7 @@ $(document).ready(function() {
 				catalog_list_clone = catalog_list.cloneNode(true);
 
 				btnCatalog.classList.add('btn_mob_catalog');
-				btnCatalog.innerHTML = '<?php echo $text_catalogue_btn; ?>';
+				btnCatalog.innerHTML = '<i class="fa fa-bars" style="font-size:18px;"></i>&nbsp;&nbsp; <?php echo $text_catalogue_btn; ?>';
 				btnCatalog.onclick = function(){
 					mob_catalog_wrap.style.display = 'block';
 					return false;

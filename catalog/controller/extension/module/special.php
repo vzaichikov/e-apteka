@@ -1,77 +1,71 @@
 <?php
 class ControllerExtensionModuleSpecial extends Controller {
-	public function index($setting) {
-		$this->load->language('extension/module/special');
+	public function index($setting) {		
+		if ($setting['type'] == 'products'){
+			$data = $this->load->language('extension/module/special');		
+			$this->load->model('catalog/product');
+			$this->load->model('tool/image');		
 
-		$data['heading_title'] = $this->language->get('heading_title');
+			$data['heading_title'] = $this->language->get('heading_title');
+			$data['module'] = md5($setting['title']);
 
-		$data['text_tax'] = $this->language->get('text_tax');
+			$data['text_tax'] = $this->language->get('text_tax');
 
-		$data['button_cart'] = $this->language->get('button_cart');
-		$data['button_wishlist'] = $this->language->get('button_wishlist');
-		$data['button_compare'] = $this->language->get('button_compare');
+			$data['button_cart'] 		= $this->language->get('button_cart');
+			$data['button_wishlist'] 	= $this->language->get('button_wishlist');
+			$data['button_compare'] 	= $this->language->get('button_compare');
+			$data['text_view_all'] 	= $this->language->get('text_view_all');
 
-		$this->load->model('catalog/product');
+			$data['all_special_link'] = $this->url->link('product/special');
 
-		$this->load->model('tool/image');
 
-		$data['products'] = array();
+			$data['products'] = [];
 
-		$filter_data = array(
-			'sort'  => 'pd.name',
-			'order' => 'ASC',
-			'start' => 0,
-			'limit' => $setting['limit']
-		);
+			$filter_data = array(
+				'sort'  				=> 'rand()',
+				'filter_notnull_price' 	=> true,	
+				'filter_in_stock' 		=> true,
+				'start' 				=> 0,
+				'limit' 				=> $setting['limit']
+			);
 
-		$results = $this->model_catalog_product->getProductSpecials($filter_data);
+			$results = $this->model_catalog_product->getProductSpecials($filter_data);
+			if ($results) {
+				$data['products'] = $this->model_catalog_product->prepareProductArray($results);
 
-		if ($results) {
-			foreach ($results as $result) {
-				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
-				} else {
-					$image = $this->model_tool_image->resize('placeholder.png', $setting['width'], $setting['height']);
-				}
+				return $this->load->view('extension/module/special', $data);
+			}			
+		} elseif ($setting['type'] == 'actions'){
+			$this->load->model('catalog/ochelp_special');
+			$data = $this->load->language('information/ochelp_special');
 
-				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$price = false;
-				}
+			$data['module'] = md5($setting['title']);
+			$data['text_only_retail'] = sprintf($data['text_only_retail'], $this->url->link('information/contact/drugstores'));
 
-				if ((float)$result['special']) {
-					$special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$special = false;
-				}
+			$data['specials'] = [];
 
-				if ($this->config->get('config_tax')) {
-					$tax = $this->currency->format((float)$result['special'] ? $result['special'] : $result['price'], $this->session->data['currency']);
-				} else {
-					$tax = false;
-				}
+			$filter_data = [
+				'sort' 				=> 's.date_added',
+				'order' 			=> 'DESC',
+				'filter_homepage' 	=> true,
+				'filter_image' 		=> true,
+				'start' 			=> 0,
+				'limit' 			=> $setting['limit'],
+			];
 
-				if ($this->config->get('config_review_status')) {
-					$rating = $result['rating'];
-				} else {
-					$rating = false;
-				}
+			$results 			= $this->model_catalog_ochelp_special->getSpecials($filter_data);			
 
-				$data['products'][] = array(
-					'product_id'  => $result['product_id'],
-					'thumb'       => $image,
-					'name'        => $result['name'],
-					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',
-					'price'       => $price,
-					'special'     => $special,
-					'tax'         => $tax,
-					'rating'      => $rating,
-					'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id'])
-				);
+			foreach ($results as $result){
+				$data['specials'][] = [
+					'special_id' 	=> 'action_' . $result['special_id'],
+					'title' 		=> $result['title'],
+					'retail' 		=> $result['retail'],
+					'image' 		=> $this->model_tool_image->resize($result['image'], 400, 300),
+					'href' 			=> $this->url->link('information/ochelp_special/info', 'special_id=' . $result['special_id']),
+				];
 			}
 
-			return $this->load->view('extension/module/special', $data);
-		}
+			return $this->load->view('extension/module/special_actions', $data);
+		}		
 	}
 }

@@ -2,15 +2,23 @@
 data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => $ecommerceValue) { ?>"<?php echo $ecommerceKey; ?>": "<?php echo $ecommerceValue; ?>",<?php } ?> "url": "<?php echo $product['href']; ?>"}' <?php if ($product['backlight']) { ?>style="background-color:<?php echo $product['backlight']; ?>"<? } ?>>
 	<div class="product-layout__image 1">
 		
-		<?php if (!empty($product['product_xdstickers'])) { ?>
-			<div class="xdstickers_wrapper<?php echo $xdstickers_position ?>">
+
+		
+		<div class="xdstickers_wrapper<?php echo $xdstickers_position ?>">
+			<?php if ($product['text_available_in_drugstores']) { ?>
+				<div class="xdstickers xdsticker_novelty">
+					<?php echo $product['text_available_in_drugstores']; ?>
+				</div><br />
+			<?php } ?>
+
+			<?php if (!empty($product['product_xdstickers'])) { ?>
 				<?php foreach($product['product_xdstickers'] as $xdsticker) { ?>
 					<div class="xdstickers <?php echo $xdsticker['id']; ?>">
 						<?php echo $xdsticker['text']; ?>
-					</div>
+					</div><br />
 				<?php } ?>
-			</div>
-		<?php } ?>
+			<?php } ?>
+		</div>
 		
 		<a href="<?php echo $product['href']; ?>" title="<?php echo strip_tags($product['name']); ?>" >
 			<img src="<?php echo $product['thumb']; ?>" alt="<?php echo strip_tags($product['name']); ?>" title="<?php echo strip_tags($product['name']); ?>" width="200" height="200" class="img-responsive swiper-lazy" <?php if ($pli >= 4) { ?>loading="lazy" <? } ?>/>
@@ -49,13 +57,7 @@ data-gtm-product='{<?php foreach ($product['ecommerceData'] as $ecommerceKey => 
 			<?php if ($product['manufacturer']) { ?>
 				<small class='product-layout__name__manufacturer text-muted'><?php echo $product['manufacturer']; ?></small>
 			<?php } ?>
-		</div>
-
-		<?php if ($product['text_available_in_drugstores']) { ?>
-			<div class="product-layout__stock_info__wrap">
-				<span class='product-layout__name__manufacturer  label label-success label-400'><?php echo $product['text_available_in_drugstores']; ?></span>
-			</div>
-		<?php } ?>
+		</div>	
 	</div>
 
 	<?php if ($product['dl_price']) { ?>

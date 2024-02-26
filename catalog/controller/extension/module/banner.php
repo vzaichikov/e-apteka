@@ -6,10 +6,6 @@
             $this->load->model('design/banner');
             $this->load->model('tool/image');
 			
-            //$this->document->addStyle('catalog/view/javascript/jquery/owl-carousel/owl.carousel.css');
-            //$this->document->addStyle('catalog/view/javascript/jquery/owl-carousel/owl.transitions.css');
-            //$this->document->addScript('catalog/view/javascript/jquery/owl-carousel/owl.carousel.min.js');
-			
             $data['banners'] = array();
             if(isset($setting['category'])){
                 $results = $this->model_design_banner->getBanner2($setting['banner_id']);
@@ -40,9 +36,7 @@
                     );
 					
 					$data['background'] = $result['background']?$result['background']:$setting['background'];
-				}
-				
-				
+				}								
 			}
 			
             $data['module'] = $module++;

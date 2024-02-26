@@ -1,6 +1,5 @@
 
-<div id="banner<?php echo $module; ?>" class="swiper home-banner">
-	
+<div id="banner<?php echo $module; ?>" class="swiper home-banner">	
 	<div class="swiper-wrapper">
 		<?php $i=0; foreach ($banners as $banner) { ?>
 			<div class="swiper-slide banner-promo-single" data-gtm-banner='{"id": "<?php echo $banner['banner_analytics_id']; ?>", "name": "<?php echo $banner['title']; ?>", "creative": "InCategoryCreative", "position": "slot<?php echo $i; ?>", "url": "<?php echo $banner['link']; ?>"}'>
@@ -20,10 +19,8 @@
 				<?php } ?>
 			</div>
 		<?php $i++; } ?>
-	</div>
-	
-	<div class="pagination"></div>
-	
+	</div>	
+	<div class="pagination"></div>	
 </div>
 
 <script type="text/javascript">
@@ -40,9 +37,6 @@
 	});
 	
 	swiper<?php echo $module; ?>.on('slideChange', function () {
-		
-		
-		
 	});
 	
 </script>

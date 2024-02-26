@@ -7,23 +7,22 @@
 			$this->load->model('tool/image');
 			$this->load->language('information/ochelp_special');
 			
-			$_data = array();
-			$_data['specials'] = array();
+			$data = [];
+			$data['specials'] = [];
 			
 			if ($results) {						
 				
-				$setting = array();
+				$setting = [];
 				
 				if ($this->config->get('special_setting')) {
 					$setting = $this->config->get('special_setting');
 					} else {
-					$setting['description_limit'] = '300';
-					$setting['special_thumb_width'] = '400';
-					$setting['special_thumb_height'] = '300';
+					$setting['description_limit'] 		= '300';
+					$setting['special_thumb_width'] 	= '400';
+					$setting['special_thumb_height'] 	= '300';
 				}								
 				
-				foreach ($results as $result) {
-					
+				foreach ($results as $result) {					
 					if ($result['image']) {
 						$image = $this->model_tool_image->resize($result['image'], $setting['special_thumb_width'], $setting['special_thumb_height']);
 						} else {
@@ -38,23 +37,31 @@
 					
 					$description = utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, 200);
 					$description = substr(rtrim($description, "!,.-"), 0, strrpos($description, ' '));
+
+					if ($result['retail']){
+						$retail_info = sprintf($this->language->get('text_only_retail_alert'), $this->url->link('information/contact/drugstores'));
+					} else {
+						$retail_info = $this->language->get('text_only_site_alert');
+					}
 					
-					$_data['specials'][] = array(
-					'title' => $result['title'],
-					'thumb' => $image,
-					'date_end' => $date_end,
-					'counter' => $result['counter'],
-					'dateDiff' => dateDiff($date_end),
-					'active' => $date_end?($date_end >= date('Y-m-d')):true,				
-					'description' => $description . '...',
-					'href' => $this->url->link('information/ochelp_special/info', 'special_id=' . $result['special_id']),
-					'posted' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					$data['specials'][] = array(
+					'title' 		=> $result['title'],
+					'thumb' 		=> $image,
+					'date_end' 		=> $date_end,
+					'retail' 		=> $result['retail'],
+					'retail_info' 	=> $retail_info,
+					'counter' 		=> $result['counter'],
+					'dateDiff' 		=> dateDiff($date_end),
+					'active' 		=> $date_end?($date_end >= date('Y-m-d')):true,				
+					'description' 	=> $description . '...',
+					'href' 			=> $this->url->link('information/ochelp_special/info', 'special_id=' . $result['special_id']),
+					'posted' 		=> date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 					);
 				}
 				
 			}
 			
-			return $_data['specials'];			
+			return $data['specials'];			
 		}
 		
 		public function index() {
@@ -120,7 +127,7 @@
 			$data['button_continue'] = $this->language->get('button_continue');
 			$data['continue'] = $this->url->link('common/home');
 			
-			$data['breadcrumbs'] = array();
+			$data['breadcrumbs'] = [];
 			
 			$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),
@@ -133,18 +140,18 @@
 				$url .= '&page=' . $this->request->get['page'];
 			}						
 			
-			$filter_data = array(
+			$filterdata = array(
 			'sort' 	=> $sort,
 			'order' => $order,
 			'start' => ($page - 1) * $limit,
 			'limit' => $limit,
 			);
 			
-			$results = $this->model_catalog_ochelp_special->getSpecials($filter_data);
-			$data['specials'] = $this->prepareSpecialsArchive($results);
+			$results 			= $this->model_catalog_ochelp_special->getSpecials($filterdata);
+			$data['specials'] 	= $this->prepareSpecialsArchive($results);
 			
-			$results = $this->model_catalog_ochelp_special->getSpecialsArchive($filter_data);
-			$data['specials_archive'] = $this->prepareSpecialsArchive($results);
+			$results 					= $this->model_catalog_ochelp_special->getSpecialsArchive($filterdata);
+			$data['specials_archive'] 	= $this->prepareSpecialsArchive($results);
 			
 			$url = '';
 			
@@ -195,7 +202,7 @@
 		public function info() {
 			$this->language->load('information/ochelp_special');
 			
-			$data['oct_popup_view_data'] = $this->config->get('oct_popup_view_data');
+			$data['oct_popup_viewdata'] = $this->config->get('oct_popup_viewdata');
 			$data['button_popup_view'] = $this->language->get('button_popup_view');	
 			
 			
@@ -232,7 +239,7 @@
 				$limit = $this->config->get($this->config->get('config_theme') . '_product_limit');
 			}
 			
-			$data['breadcrumbs'] = array();
+			$data['breadcrumbs'] = [];
 			
 			$data['breadcrumbs'][] = array(
 			'href' => $this->url->link('common/home'),
@@ -301,8 +308,6 @@
 			$result = $this->model_catalog_ochelp_special->getSpecial($this->request->get['special_id']);
 			
 			if ($result) {
-				
-				
 				if ($result['meta_title']) {
 					$this->document->setTitle($result['meta_title']);
 					} else {
@@ -349,6 +354,10 @@
 					} else {
 					$data['thumb'] = '';
 				}
+
+				if (empty($result['banner'])){
+					$result['banner'] = $result['image'];
+				}
 				
 				if ($result['banner']) {
 					$data['banner'] = $this->model_tool_image->resize($result['banner'], $setting['special_popup_width'], $setting['special_popup_height']);
@@ -372,6 +381,13 @@
 				$data['posted'] = date($this->language->get('date_format_short'), strtotime($result['date_added']));
 				
 				$data['description'] = html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8');
+
+				$data['retail'] = $result['retail'];
+				if ($result['retail']){
+					$data['retail_info'] = sprintf($this->language->get('text_only_retail_alert'), $this->url->link('information/contact/drugstores'));
+				} else {
+					$data['retail_info'] = $this->language->get('text_only_site_alert');
+				}
 				
 				if($result['date_end'] == '0000-00-00' || $result['date_end'] < date('Y-m-d') || $result['date_end'] == '0'){
 					$data['date_end'] = false;
@@ -381,15 +397,13 @@
 				
 				$data['special_date_diff'] = $data['date_end'];
 				
-				$data['special_list'] = $this->url->link('information/ochelp_special');
-				$data['continue'] = $this->url->link('common/home');
-				$data['compare'] = $this->url->link('product/compare');
+				$data['special_list'] 	= $this->url->link('information/ochelp_special');
+				$data['continue'] 		= $this->url->link('common/home');
+				$data['compare'] 		= $this->url->link('product/compare');
 				
-				$data['products'] = array();
-					
-					
-					
-				$filter_data = array(
+				$data['products'] = [];
+															
+				$filterdata = array(
 				'special_id' => $result['special_id'],
 				'sort'       => $sort,
 				'order'      => $order,
@@ -397,9 +411,8 @@
 				'limit'      => $limit,
 				);
 				$data['show_stock'] = true;
-				$product_total = $this->model_catalog_ochelp_special->getTotalSpecialProducts($result['special_id']);
-				
-				$results = $this->model_catalog_ochelp_special->getSpecialProducts($filter_data);
+				$product_total = $this->model_catalog_ochelp_special->getTotalSpecialProducts($result['special_id']);				
+				$results = $this->model_catalog_ochelp_special->getSpecialProducts($filterdata);
 				
 				foreach ($results as $result) {
 					if ($result['image']) {
@@ -450,9 +463,7 @@
 					);
 				}
 				
-				
-				//Еще акции
-				$filter_data = array(
+				$filterdata = array(
 				'sort' => 'rand()',
 				'order' => 'DESC',
 				'exclude' => $this->request->get['special_id'],
@@ -460,7 +471,7 @@
 				'limit' => 3,
 				);
 				
-				$results = $this->model_catalog_ochelp_special->getSpecials($filter_data);
+				$results = $this->model_catalog_ochelp_special->getSpecials($filterdata);
 				$data['specials'] = $this->prepareSpecialsArchive($results);
 				
 				$data['text_more_actions'] = $this->language->get('text_more_actions');
@@ -472,7 +483,7 @@
 					$url .= '&limit=' . $this->request->get['limit'];
 				}
 				
-				$data['sorts'] = array();
+				$data['sorts'] = [];
 				
 				$data['sorts'][] = array(
 				'text'  => $this->language->get('text_default'),
@@ -540,7 +551,7 @@
 					$url .= '&order=' . $this->request->get['order'];
 				}
 				
-				$data['limits'] = array();
+				$data['limits'] = [];
 				
 				$limits = array_unique(array($this->config->get('config_product_limit'), 25, 50, 75, 100));
 				

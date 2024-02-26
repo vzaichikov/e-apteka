@@ -200,7 +200,12 @@
 			$data['text_promotions'] = $this->language->get('text_promotions');
 			$data['text_spr'] = $this->language->get('text_spr');
 			$data['text_order_call'] = $this->language->get('text_order_call');
+
 			$data['telephone'] = $this->config->get('config_telephone');
+			$data['telephone_1'] = $this->config->get('config_telephone_1');
+			$data['telephone_2'] = $this->config->get('config_telephone_2');
+			$data['telephone_3'] = $this->config->get('config_telephone_3');
+			$data['telephone_4'] = $this->config->get('config_telephone_4');
 			
 			
 			$data['home'] = $this->url->link('common/home');

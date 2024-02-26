@@ -35,6 +35,20 @@
             </div>
           </div>
           <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-type">Тип данных</label>
+            <div class="col-sm-10">
+              <select name="type" id="input-type" class="form-control">
+                <?php if ($type == 'products') { ?>
+                <option value="products" selected="selected">Товары со скидкой</option>
+                <option value="actions">Акции (баннеры)</option>
+                <?php } else { ?>
+                <option value="products">Товары со скидкой</option>
+                <option value="actions" selected="selected">Акции (баннеры)</option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
             <label class="col-sm-2 control-label" for="input-limit"><?php echo $entry_limit; ?></label>
             <div class="col-sm-10">
               <input type="text" name="limit" value="<?php echo $limit; ?>" placeholder="<?php echo $entry_limit; ?>" id="input-limit" class="form-control" />

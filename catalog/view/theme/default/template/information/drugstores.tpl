@@ -123,10 +123,30 @@
 						html += '<div class="col-xs-2 text-center"><i class="fa fa-clock-o fa-big"></i></div>';
 						html += '<div class="col-xs-10"><h4><? echo $location['open']; ?></h4></div>';
 						html += '</div>';
-						html += '<div class="row popup-info-row">';
-						html += '<div class="col-xs-2 text-center"><i class="fa fa-mobile fa-big"></i></div>';
-						html += '<div class="col-xs-10"><h4><a href="tel:<? echo $location['telephone']; ?>"><? echo $location['telephone']; ?></a></h4></div>';
-						html += '</div>';
+						<?php if ($telephone) { ?>
+							html += '<div class="row popup-info-row">';
+							html += '<div class="col-xs-2 text-center"><i class="fa fa-mobile fa-big"></i></div>';
+							html += '<div class="col-xs-10"><h4><a href="tel:<? echo $telephone; ?>"><? echo $telephone; ?></a></h4></div>';	
+							html += '</div>';
+						<?php } ?>
+						<?php if ($telephone_1) { ?>
+							html += '<div class="row popup-info-row">';
+							html += '<div class="col-xs-2 text-center"><i class="fa fa-mobile fa-big"></i></div>';
+							html += '<div class="col-xs-10"><h4><a href="tel:<? echo $telephone_1; ?>"><? echo $telephone_1; ?></a></h4></div>';	
+							html += '</div>';
+						<?php } ?>
+						<?php if ($telephone_2) { ?>
+							html += '<div class="row popup-info-row">';
+							html += '<div class="col-xs-2 text-center"><i class="fa fa-mobile fa-big"></i></div>';
+							html += '<div class="col-xs-10"><h4><a href="tel:<? echo $telephone_2; ?>"><? echo $telephone_2; ?></a></h4></div>';	
+							html += '</div>';
+						<?php } ?>
+						<?php if ($telephone_3) { ?>
+							html += '<div class="row popup-info-row">';
+							html += '<div class="col-xs-2 text-center"><i class="fa fa-phone fa-big"></i></div>';
+							html += '<div class="col-xs-10"><h4><a href="tel:<? echo $telephone_3; ?>"><? echo $telephone_3; ?></a></h4></div>';	
+							html += '</div>';
+						<?php } ?>
 						html += '<div class="row popup-info-row">';
 						html += '<div class="col-xs-2 text-center"><i class="fa fa-envelope fa-big"></i></div>';
 						html += '<div class="col-xs-10"><h4><a href="tel:<? echo $location['email']; ?>"><? echo $location['email']; ?></a></h4></div>';
@@ -160,6 +180,13 @@
 	</div>
 </div>
 
+<div class="container">
+	<div class="col-sm-12  content-row">
+		<div class="row">
+			<?php echo $content_bottom;?>
+		</div>
+	</div>
+</div>
 
 <?php echo $footer; ?>
 

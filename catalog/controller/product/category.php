@@ -283,18 +283,15 @@
 				}
 				
 				$filter_data = array(
-                'filter_category_id' => $category_id,
-				'filter_sub_category' => false,
+                'filter_category_id' 	=> $category_id,
+				'filter_sub_category' 	=> false,
                 'start'              => 1,
                 'limit'              => 10
 				);
 				
-				$results = $this->model_catalog_product->getProductSpecials($filter_data);
+				$results = $this->model_catalog_product->getProductSpecials($filter_data);			
 				
-				$data['special_products'] = array();
-				
-				foreach ($results as $result) {
-					
+				foreach ($results as $result) {					
 					if(!isset($result['product_id'])) continue;
 					
 					if ($result['image']) {
@@ -328,16 +325,16 @@
 					}
 					
 					$data['special_products'][] = array(
-                    'product_id'  => $result['product_id'],
-                    'seo'  => '', //$result['seo'],
-                    'thumb'       => $image,
-                    'name'        => $result['name'],
-                    'review_status'        => true,
-                    'reviews'        => $result['reviews'],
-                    'date_end'        => $result['date_end'],
+                    'product_id'  	=> $result['product_id'],
+                    'seo'  			=> '', //$result['seo'],
+                    'thumb'       	=> $image,
+                    'name'        	=> $result['name'],
+                    'review_status' => true,
+                    'reviews'       => $result['reviews'],
+                    'date_end'      => $result['date_end'],
                     'rating'        => $result['rating'],
-					'dateDiff' => dateDiff($result['date_end']),
-                    'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',
+					'dateDiff' 		=> dateDiff($result['date_end']),
+                    'description'	=> utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get($this->config->get('config_theme') . '_product_description_length')) . '..',
                     'price'       => $price,
                     'special'     => $special,
                     'tax'         => $tax,

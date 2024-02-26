@@ -185,9 +185,12 @@
 	padding: 0 !important;		
 	}
 	#promotion-content .banner-block,
+	#promotion-content .retail-info-block,
 	#promotion-content .product-timer-block{
 	padding: 0 5px !important;
 	}
+
+	.product-timer-block .well{border-radius:0px; margin-top:10px;}
 	}
 	
 </style>
@@ -198,20 +201,15 @@
 	<div class="col-sm-12  content-row">
 		<div class="row">
 			<h1 class="headline-collection cat-header"><?php echo $heading_title; ?></h1>
-		</div>
-		
-		
-		
-		<div id="promotion-content" class="row top-row ">
+		</div>						
+		<div id="promotion-content" class="row top-row">
 			<? if ($banner) { ?>
-				<div class="col-xs-12 col-md-8 banner-block">
+				<div class="col-xs-12 col-md-4 banner-block">
 					<img class="img-responsive" src="<?php echo $banner; ?>" alt="<?php echo $heading_title; ?>" />
 				</div>				
 			<? } ?>
-			<div class="col-xs-12 col-md-4 col-xs-12 product-timer-block">
+			<div class="col-xs-12 col-md-4 product-timer-block">
 				<div class="well">
-					
-					
 					<?php if($special_date_diff) { ?>					
 						<?php echo $timer_custom_css_styles;?>
 						<div class="timer pull-right col-xs-12">									
@@ -221,10 +219,15 @@
 						<? } else { ?>
 						<?php echo $text_ended; ?>
 						<span class="special_end"><?php echo $text_promo_ended; ?></span>
-					<?php } ?>
+					<?php } ?>					
 					<div class="col-xs-12 description">		
 						<?php echo $description; ?>	
 					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-4 retail-info-block">
+				<div class="alert alert-<?php if ($retail) { ?>danger<? } else { ?>success<?php } ?>">
+					<?php echo $retail_info;?>
 				</div>
 			</div>
 		</div>
@@ -248,7 +251,7 @@
 		
 		<?php if ($specials) { ?>
 			<div class="col-sm-12 promotions-content">
-				<h2><?php echo $text_more_actions; ?></h2>
+				<h2 class="cat-header"><?php echo $text_more_actions; ?></h2>
 				<div class="row">
 					<?php $i=0; foreach ($specials as $special) { $i++; ?>
 						
@@ -293,9 +296,9 @@
 		ts = new Date('<?php echo date("Y/m/d", strtotime($special_date_diff)); ?>');
 		$('#timer-end').countdown('<?php echo date("Y/m/d", strtotime($special_date_diff)); ?>', function(event) {
 			var $this = $(this).html(event.strftime(''
-			+ '<div><span>%D</span>дни</div>'
-			+ '<div><span>%H</span>час.</div>'
-			+ '<div><span>%M</span>мин.</div>'
+			+ '<div><span>%D</span>дн.</div>'
+			+ '<div><span>%H</span>год.</div>'
+			+ '<div><span>%M</span>хв.</div>'
 			+ '<div><span>%S</span>сек.</div>'));
 		});  
 		

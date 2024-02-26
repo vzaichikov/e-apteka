@@ -1,43 +1,38 @@
-<h3><?php echo $heading_title; ?></h3>
-vao day
-<div class="row">
-  <?php foreach ($products as $product) { ?>
-  <div class="product-layout col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="product-thumb transition">
-      <div class="image"><a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" class="img-responsive" /></a></div>
-      <div class="caption">
-        <h4><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a></h4>
-        <p><?php echo $product['description']; ?></p>
-        <?php if ($product['rating']) { ?>
-        <div class="rating">
-          <?php for ($i = 1; $i <= 5; $i++) { ?>
-          <?php if ($product['rating'] < $i) { ?>
-          <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
-          <?php } else { ?>
-          <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
-          <?php } ?>
-          <?php } ?>
+<?php if ($products) { ?>
+  <style>
+    .title-slider a{color:#353535}
+    .title-slider button{margin-left:20px; background-color: #14a0d4; border: 1px solid #14a0d4;}
+    .title-slider button > a{color:#FFF}
+  </style>
+  <div class="wrap-slider container featured_slider">
+    <div class="row">
+      <div class="slider-nav col-xs-12 col-sm-12 col-md-12"> 
+        <div class="title-slider">
+          <?php echo $heading_title; ?>
+          <button class="hidden-xs bbtn bbtn-primary product__btn-cart"><a href="<?php echo $all_special_link; ?>" title="<?php echo $heading_title; ?>" ><?php echo $text_view_all; ?></a></button>            
         </div>
-        <?php } ?>
-        <?php if ($product['price']) { ?>
-        <p class="price">
-          <?php if (!$product['special']) { ?>
-          <?php echo $product['price']; ?>
-          <?php } else { ?>
-          <span class="price-new"><?php echo $product['special']; ?></span> <span class="price-old"><?php echo $product['price']; ?></span>
-          <?php } ?>
-          <?php if ($product['tax']) { ?>
-          <span class="price-tax"><?php echo $text_tax; ?> <?php echo $product['tax']; ?></span>
-          <?php } ?>
-        </p>
-        <?php } ?>
+
+        <div class="slider-nav-btn">
+          <div class="slider__arrow slider__arrow--prev">
+            <svg class="icon">
+              <use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#left-arrow-chevron"></use>
+            </svg>
+          </div>
+          <div class="slider__arrow slider__arrow--next">
+            <svg class="icon">
+              <use xlink:href="catalog/view/theme/default/img/sprite/symbol/sprite.svg#right-arrow-chevron"></use>
+            </svg>
+          </div>
+        </div>
       </div>
-      <div class="button-group">
-        <button type="button" onclick="cart.add('<?php echo $product['product_id']; ?>');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md"><?php echo $button_cart; ?></span></button>
-        <button type="button" data-toggle="tooltip" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $product['product_id']; ?>');"><i class="fa fa-heart"></i></button>
-        <button type="button" data-toggle="tooltip" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $product['product_id']; ?>');"><i class="fa fa-exchange"></i></button>
+      <div class="swiper-container col-xs-12 col-sm-12 col-md-12"> 
+        <div class="swiper-wrapper">        
+          <?php foreach ($products as $product) { ?>  
+            <?php include(DIR_TEMPLATEINCLUDE . 'product/structured/product_single_slider.tpl'); ?>
+          <?php } ?>     
+        </div>  
       </div>
     </div>
+    <div class="clearfix"></div>
   </div>
-  <?php } ?>
-</div>
+<?php } ?>
