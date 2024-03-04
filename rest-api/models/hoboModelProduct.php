@@ -376,7 +376,6 @@ class hoboModelProduct extends hoboModel{
 			foreach ([2, 3] as $language_id){
 				$this->db->query("UPDATE oc_manufacturer_description SET name = '" . $this->db->escape($data['ManufacturerName_UA']) . "' WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
 			}
-
 		}
 
 		$this->db->query("UPDATE oc_product SET manufacturer_id = '" . (int)$manufacturer_id . "' WHERE product_id = '". (int)$product_id ."'");

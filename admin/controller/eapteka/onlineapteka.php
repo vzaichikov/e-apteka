@@ -1,7 +1,6 @@
 	<?php
 	ini_set('memory_limit', '-1');
 	class ControllerEaptekaOnlineApteka extends Controller {
-		private $token = '4SClk7BZTDFwS77F8QPtHsIhoOyH30ywnvzz';
 		private $url = 'https://online-apteka.com.ua/rest/products/';
 
 
@@ -53,7 +52,7 @@
 
 			$this->db->query("TRUNCATE TABLE oc_onlineapteka");
 
-			$this->get_data($this->token, $this->url, $total);
+			$this->get_data(ONLINEAPTEKA_API_KEY, $this->url, $total);
 		}
 
 		public function image(){
